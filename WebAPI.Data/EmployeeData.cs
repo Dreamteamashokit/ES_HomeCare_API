@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Employee;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -104,7 +105,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                                 HasEmail = table.Rows[i]["HasEmail"].ToString(),
                                 HasDOB = table.Rows[i]["HasDOB"].ToString(),
                                 IsActive = Convert.ToInt32(table.Rows[i]["IsActive"].ToString()),
-                                EnteredDate = table.Rows[i]["EnteredDate"].ToString(),
+                                //EnteredDate = table.Rows[i]["CreatedOn"].ToString(),
                                 CState = table.Rows[i]["CState"].ToString()
                             });
                         }
@@ -214,6 +215,274 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             }
         }
+
+        public async Task<ServiceResponse<string>> AddEmpAddress(AddressModel _model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sqlQuery = "Insert Into tblAddress (EmpId,AddressType,Owner,FlatNo,Address,City,Country,State,ZipCode,CreatedOn,CreatedBy) Values (@EmpId,@AddressType,@Owner,@FlatNo,@Address,@City,@Country,@State,@ZipCode,@CreatedOn,@CreatedBy);";
+                    int rowsAffected = db.Execute(sqlQuery, new
+                    {
+                        EmpId = _model.EmpId,
+                        AddressType = _model.AddressType,
+                        Owner = _model.Owner,
+                        FlatNo = _model.FlatNo,
+                        Address = _model.Address,
+                        City = _model.City,
+                        Country = _model.Country,
+                        State = _model.State,
+                        ZipCode = _model.ZipCode,
+                        CreatedOn = _model.CreatedOn,
+                        CreatedBy = _model.CreatedBy
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new creation.";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+                return sres;
+            }
+            finally
+            {
+
+            }
+            return sres;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<AddressModel>>> GetEmpAddressList(int empId)
+        {
+            ServiceResponse<IEnumerable<AddressModel>> obj = new ServiceResponse<IEnumerable<AddressModel>>();
+
+           
+
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "SELECT * FROM tblAddress Where EmpId=@EmpId;";
+                IEnumerable<AddressModel> cmeetings = (await connection.QueryAsync<AddressModel>(sql,
+                         new { @EmpId = empId }));
+                obj.Data = cmeetings;
+                obj.Result = cmeetings.Any() ? true : false;
+                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
+
+            }
+            return obj;
+
+        }
+
+        public async Task<ServiceResponse<string>> AddIncident(IncidentMode _model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sqlQuery = "Insert Into tblIncident (EmpId,IncidentDate,ClientId,IncidentDetail,CreatedOn,CreatedBy) Values (@EmpId,@IncidentDate,@ClientId,@IncidentDetail,@CreatedOn,@CreatedBy);";
+                    int rowsAffected = db.Execute(sqlQuery, new
+                    {
+                        EmpId = _model.EmpId,
+                        ClientId = _model.ClientId,
+                        IncidentDate = Convert.ToDateTime(_model.IncidentDate),
+                        IncidentDetail = _model.IncidentDetail,                                    
+                        CreatedOn = _model.CreatedOn,
+                        CreatedBy = _model.CreatedBy
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new creation.";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+                return sres;
+            }
+            finally
+            {
+
+            }
+            return sres;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<IncidentMode>>> GetIncidentList(int empId)
+        {
+            ServiceResponse<IEnumerable<IncidentMode>> obj = new ServiceResponse<IEnumerable<IncidentMode>>();          
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+
+                string sql = "SELECT * FROM tblIncident Where EmpId=@EmpId;";
+
+                IEnumerable<IncidentMode> cmeetings = (await connection.QueryAsync<IncidentMode>(sql,
+                         new { EmpId = empId }));
+                obj.Data = cmeetings;
+                obj.Result = cmeetings.Any() ? true : false;
+                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
+
+            }
+            return obj;
+
+        }
+                
+        public async Task<ServiceResponse<string>> AddAttendance(AttendanceModel _model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sqlQuery = "Insert Into tblAttendance (EmpId,Reason,StartDate,EndDate,Notes,CreatedOn,CreatedBy) Values (@EmpId,@Reason,@StartDate,@EndDate,@Notes,@CreatedOn,@CreatedBy);";
+                    int rowsAffected = db.Execute(sqlQuery, new
+                    {
+                        EmpId = _model.EmpId,
+                        Reason = _model.Reason,
+                        StartDate = _model.StartDate,
+                        EndDate = _model.EndDate,
+                        Notes = _model.Notes,
+                        CreatedOn = _model.CreatedOn,
+                        CreatedBy = _model.CreatedBy
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new creation.";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+                return sres;
+            }
+            finally
+            {
+
+            }
+            return sres;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<AttendanceModel>>> GetAttendanceList(int empId)
+        {
+            ServiceResponse<IEnumerable<AttendanceModel>> obj = new ServiceResponse<IEnumerable<AttendanceModel>>();
+                       
+
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "SELECT * FROM tblAttendance Where EmpId=@EmpId;";
+                IEnumerable<AttendanceModel> cmeetings = (await connection.QueryAsync<AttendanceModel>(sql,
+                         new { @EmpId = empId }));
+                obj.Data = cmeetings;
+                obj.Result = cmeetings.Any() ? true : false;
+                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
+
+            }
+            return obj;
+
+        }
+
+        public async Task<ServiceResponse<string>> SaveExitEmpStatus(StatusModel _model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sqlQuery = "Insert Into tblEmpStatus (EmployeeId,TypeId,ScheduleId," +
+                        "OfficeUserID,Note,OKResume,ReHire,TextCheck,ScreenCheck,EmailCheck,EffectiveDate,ReturnDate) " +
+                        "Values(@EmpId,@TypeStatusID,@Scheduling,@Resume,@Note,@Rehire,@Text,@Screen," +
+                        "@Email,@EffectiveDate,@ReturnDate)";
+
+                    int rowsAffected = db.Execute(sqlQuery, new
+                    {
+                        EmpId = _model.EmployeeId,
+                        TypeStatusId = _model.TypeStatusId,
+                        Scheduling = _model.Scheduling,
+                        OfficeUserId = _model.OfficeUserId,
+                        Note = _model.Note,
+                        Resume = _model.Resume,
+                        Rehire = _model.Rehire,
+                        Text = _model.Text,
+                        Screen = _model.Screen,
+                        Email = _model.Email,
+                        EffectiveDate = _model.EffectiveDate,
+                        ReturnDate = _model.ReturnDate,
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new creation.";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+                
+            }
+            
+            return sres;
+        }
+
+
+        public async Task<ServiceResponse<IEnumerable<AvailabilityMaster>>> GetAvailabilityList()
+        {
+            ServiceResponse<IEnumerable<AvailabilityMaster>> obj = new ServiceResponse<IEnumerable<AvailabilityMaster>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "SELECT * FROM tblAvailabilityMaster;";
+                IEnumerable<AvailabilityMaster> cmeetings = (await connection.QueryAsync<AvailabilityMaster>(sql));
+                obj.Data = cmeetings;
+                obj.Result = cmeetings.Any() ? true : false;
+                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+
+        }
+
+
+
+
+
+
+
+
+
 
     }
 }
