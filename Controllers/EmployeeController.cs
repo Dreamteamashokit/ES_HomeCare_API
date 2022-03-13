@@ -18,12 +18,12 @@ namespace WebAPI_SAMPLE.Controllers
     {
         private readonly IEmployeeService service;
 
-        private readonly ICommanService CommanService;
+        private readonly ICommanService _comService;
         
         public EmployeeController(IEmployeeService service, ICommanService Sev)
         {
             this.service = service;
-            this.CommanService = Sev;
+            this._comService = Sev;
         }
 
 
@@ -143,7 +143,7 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetOfficeUserLst()
         {
-            return Ok(await CommanService.GetOfficeUserLst());
+            return Ok(await _comService.GetOfficeUserLst());
         }
 
         [HttpGet("getTypeStatusList")]
@@ -151,7 +151,7 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetTypeStatusLst()
         {
-            return Ok(await CommanService.GetTypeStatusLst());
+            return Ok(await _comService.GetTypeStatusLst());
         }
 
         [HttpGet("getEmployeeStatusList")]
@@ -159,7 +159,7 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetStatusEmployeeLst()
         {
-            return Ok(await CommanService.GetEmployeeLst());
+            return Ok(await _comService.GetEmployeeLst());
         }
 
         [HttpGet("getScheduleLst")]
@@ -167,7 +167,7 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetScheduleLst()
         {
-            return Ok(await CommanService.GetScheduleLst());
+            return Ok(await _comService.GetScheduleLst());
         }
 
 

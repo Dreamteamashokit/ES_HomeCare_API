@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ES_HomeCare_API.Model.Meeting
+namespace ES_HomeCare_API.ViewModel
 {
-    public class MeetingModel:BaseModel
+    public class MeetingJson
     {
         public int MeetingId { get; set; }
         public int ClientId { get; set; }
         public List<int> EmpList { get; set; }
-        public DateTime MeetingDate { get; set; }
-        public TimeSpan StartTime { get; set; }
-        public TimeSpan EndTime { get; set; }
+        public string MeetingDate { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
         public string MeetingNote { get; set; }
+
     }
 }

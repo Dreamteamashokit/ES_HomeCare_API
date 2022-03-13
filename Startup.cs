@@ -48,7 +48,9 @@ namespace WebAPI_SAMPLE
             services.AddScoped<IInvoiceData, InvoiceData>();
             services.AddScoped<ICommanData, CommanData>();
             services.AddScoped<ICommanService, CommanService>();
-
+            services.AddScoped<IMeetingData, MeetingData>();
+            services.AddScoped<IMeetingService, MeetingService>();
+            
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,
