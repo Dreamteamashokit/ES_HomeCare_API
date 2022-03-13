@@ -66,6 +66,10 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         }
 
 
+        
+
+
+
         public async Task<ServiceResponse<string>> SaveExitEmpStatus(StatusModel _obj)
         {
             return await data.SaveExitEmpStatus(_obj);
@@ -80,8 +84,10 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         }
 
 
-
-
+        public async Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList()
+        {
+            return await data.GetEmpStatusList();
+        }
 
 
 

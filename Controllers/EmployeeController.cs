@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ES_HomeCare_API.Model.Employee;
+using ES_HomeCare_API.WebAPI.Service;
+using ES_HomeCare_API.WebAPI.Service.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI_SAMPLE.Model;
@@ -16,10 +18,14 @@ namespace WebAPI_SAMPLE.Controllers
     {
         private readonly IEmployeeService service;
 
-        public EmployeeController(IEmployeeService service)
+        private readonly ICommanService CommanService;
+        
+        public EmployeeController(IEmployeeService service, ICommanService Sev)
         {
             this.service = service;
+            this.CommanService = Sev;
         }
+
 
         [HttpPost("savenewemployeeinfo")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
@@ -100,14 +106,7 @@ namespace WebAPI_SAMPLE.Controllers
 
 
 
-        [HttpPost("addStatus")]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SaveExitEmpStatus([FromBody] StatusModel model)
-        {
-            return Ok(await service.SaveExitEmpStatus(model));
-        }
-
+        
 
 
         [HttpGet("getAvailabilityList")]
@@ -118,6 +117,58 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.GetAvailabilityList());
         }
 
+
+
+
+        [HttpPost("addStatus")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> SaveExitEmpStatus([FromBody] StatusModel model)
+        {
+            model.CreatedOn = DateTime.Now;
+            return Ok(await service.SaveExitEmpStatus(model));
+        }
+
+
+        [HttpGet("getEmpStatusList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> getEmpStatusList()
+        {
+            return Ok(await service.GetEmpStatusList());
+        }
+
+        [HttpGet("getOfficeUserList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetOfficeUserLst()
+        {
+            return Ok(await CommanService.GetOfficeUserLst());
+        }
+
+        [HttpGet("getTypeStatusList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetTypeStatusLst()
+        {
+            return Ok(await CommanService.GetTypeStatusLst());
+        }
+
+        [HttpGet("getEmployeeStatusList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetStatusEmployeeLst()
+        {
+            return Ok(await CommanService.GetEmployeeLst());
+        }
+
+        [HttpGet("getScheduleLst")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetScheduleLst()
+        {
+            return Ok(await CommanService.GetScheduleLst());
+        }
 
 
     }

@@ -268,7 +268,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         {
             ServiceResponse<IEnumerable<AddressModel>> obj = new ServiceResponse<IEnumerable<AddressModel>>();
 
-           
+
 
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
@@ -297,7 +297,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                         EmpId = _model.EmpId,
                         ClientId = _model.ClientId,
                         IncidentDate = Convert.ToDateTime(_model.IncidentDate),
-                        IncidentDetail = _model.IncidentDetail,                                    
+                        IncidentDetail = _model.IncidentDetail,
                         CreatedOn = _model.CreatedOn,
                         CreatedBy = _model.CreatedBy
                     });
@@ -329,7 +329,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
         public async Task<ServiceResponse<IEnumerable<IncidentMode>>> GetIncidentList(int empId)
         {
-            ServiceResponse<IEnumerable<IncidentMode>> obj = new ServiceResponse<IEnumerable<IncidentMode>>();          
+            ServiceResponse<IEnumerable<IncidentMode>> obj = new ServiceResponse<IEnumerable<IncidentMode>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
 
@@ -345,7 +345,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return obj;
 
         }
-                
+
         public async Task<ServiceResponse<string>> AddAttendance(AttendanceModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -393,7 +393,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         public async Task<ServiceResponse<IEnumerable<AttendanceModel>>> GetAttendanceList(int empId)
         {
             ServiceResponse<IEnumerable<AttendanceModel>> obj = new ServiceResponse<IEnumerable<AttendanceModel>>();
-                       
+
 
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
@@ -417,9 +417,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
                     string sqlQuery = "Insert Into tblEmpStatus (EmployeeId,TypeId,ScheduleId," +
-                        "OfficeUserID,Note,OKResume,ReHire,TextCheck,ScreenCheck,EmailCheck,EffectiveDate,ReturnDate) " +
-                        "Values(@EmpId,@TypeStatusID,@Scheduling,@Resume,@Note,@Rehire,@Text,@Screen," +
-                        "@Email,@EffectiveDate,@ReturnDate)";
+                        "OfficeUserID,Note,OKResume,ReHire,TextCheck,ScreenCheck,EmailCheck,EffectiveDate,ReturnDate,CreatedOn,CreatedBy) " +
+                        "Values(@EmpId,@TypeStatusID,@Scheduling,@OfficeUserId,@Note,@Resume,@Rehire,@Text,@Screen," +
+                        "@Email,@EffectiveDate,@ReturnDate,@CreatedOn,@CreatedBy)";
 
                     int rowsAffected = db.Execute(sqlQuery, new
                     {
@@ -435,6 +435,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                         Email = _model.Email,
                         EffectiveDate = _model.EffectiveDate,
                         ReturnDate = _model.ReturnDate,
+                        CreatedOn = _model.CreatedOn,
+                        CreatedBy = _model.CreatedBy
+
                     });
 
                     if (rowsAffected > 0)
@@ -453,9 +456,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             catch (Exception ex)
             {
                 sres.Message = ex.Message;
-                
+
             }
-            
+
             return sres;
         }
 
@@ -476,10 +479,21 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         }
 
 
+        public async Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList()
+        {
+            ServiceResponse<IEnumerable<AvailabilityStatus>> obj = new ServiceResponse<IEnumerable<AvailabilityStatus>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "select Text as StatusType,EffectiveDate,ReturnDate,OKResume as Resume,ReHire as Rehire,Note " +
+                    "from dbo.tblEmpStatus ES inner join tblEmpStatusMaster ESM  on ES.TypeId = ESM.Id; ";
+                IEnumerable<AvailabilityStatus> cmeetings = (await connection.QueryAsync<AvailabilityStatus>(sql));
+                obj.Data = cmeetings;
+                obj.Result = cmeetings.Any() ? true : false;
+                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
 
-
-
-
+        }
 
 
 

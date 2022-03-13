@@ -46,6 +46,8 @@ namespace WebAPI_SAMPLE
             services.AddScoped<ICustomerData, CustomerData>();
             services.AddScoped<IInvoiceService, InvoiceService>();
             services.AddScoped<IInvoiceData, InvoiceData>();
+            services.AddScoped<ICommanData, CommanData>();
+            services.AddScoped<ICommanService, CommanService>();
 
             services.AddCors(options =>
             {

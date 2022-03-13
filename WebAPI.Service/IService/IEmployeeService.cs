@@ -20,8 +20,14 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<string>> AddAttendance(AttendanceModel _model);
         Task<ServiceResponse<IEnumerable<AttendanceModel>>> GetAttendanceList(int empId);
 
+        
+        
         Task<ServiceResponse<string>> SaveExitEmpStatus(StatusModel EmpId);
 
         Task<ServiceResponse<IEnumerable<AvailabilityMaster>>> GetAvailabilityList();
+
+        Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList();
+
+
     }
 }
