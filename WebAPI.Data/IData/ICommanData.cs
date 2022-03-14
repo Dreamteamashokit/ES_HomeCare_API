@@ -1,4 +1,5 @@
-﻿using ES_HomeCare_API.Model.Employee;
+﻿using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Employee;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
@@ -11,5 +12,6 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
         Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetTypeStatusLst();
         Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetEmployeeLst();
         Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetScheduleLst();
+        Task<ServiceResponse<IEnumerable<ItemList>>> GetMasterList(short typeId);
     }
 }

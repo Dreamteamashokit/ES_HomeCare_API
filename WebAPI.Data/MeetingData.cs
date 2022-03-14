@@ -65,5 +65,27 @@ namespace ES_HomeCare_API.WebAPI.Data
         }
 
 
+
+
+        public async Task<ServiceResponse<IEnumerable<EmpMeeting>>> GetEmpMeetingList(int empId)
+        {
+            ServiceResponse<IEnumerable<EmpMeeting>> obj = new ServiceResponse<IEnumerable<EmpMeeting>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "select  IsNull(p.LastName,'')  +' '+ p.FirstName as EmpName,q.EmpId,r.*,IsNull(s.LastName,'')+' '+s.FirstName as ClientName " +
+                    " from tblEmployee p inner join tblEmpClientMeeting q on p.EmpId=q.EmpId inner join tblMeeting r on q.MeetingId=r.MeetingId inner join tblClient s on " +
+                    "r.ClientId=s.ClientId where q.EmpId=@EmpId";
+
+                IEnumerable<EmpMeeting> cmeetings = (await connection.QueryAsync<EmpMeeting>(sql,
+                       new { @EmpId = empId }));
+                
+                obj.Data = cmeetings;
+                obj.Result = cmeetings.Any() ? true : false;
+                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
+
+
     }
 }

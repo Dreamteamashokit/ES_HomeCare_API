@@ -24,5 +24,10 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.AddMeeting(model);
         }
 
+        public async Task<ServiceResponse<IEnumerable<EmpMeeting>>> GetEmpMeetingList(int empId)
+        {
+            return await data.GetEmpMeetingList(empId);
+        }
+
     }
 }

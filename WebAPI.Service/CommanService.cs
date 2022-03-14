@@ -1,4 +1,5 @@
-﻿using ES_HomeCare_API.Model.Employee;
+﻿using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using WebAPI_SAMPLE.Model;
 
 namespace ES_HomeCare_API.WebAPI.Service
 {
-    public class CommanService: ICommanService
+    public class CommanService : ICommanService
     {
         private readonly ICommanData data;
         public CommanService(ICommanData ldata)
@@ -19,9 +20,6 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.GetOfficeUserLst();
         }
 
-
-
-
         public async Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetTypeStatusLst()
         {
             return await data.GetTypeStatusLst();
@@ -32,12 +30,15 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             return await data.GetEmployeeLst();
         }
-
-
         public async Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetScheduleLst()
         {
             return await data.GetScheduleLst();
         }
 
+
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetMasterList(short typeId)
+        {
+            return await data.GetMasterList(typeId);
+        }
     }
 }

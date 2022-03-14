@@ -19,7 +19,7 @@ namespace ES_HomeCare_API.Controllers
     public class MeetingController : ControllerBase
     {
         private readonly IMeetingService mtgSrv;
-       private readonly ICommanService comSrv;
+        private readonly ICommanService comSrv;
 
         public MeetingController(IMeetingService _mtgSrv, ICommanService _comSrv)
         {
@@ -32,22 +32,47 @@ namespace ES_HomeCare_API.Controllers
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateNewMeeting([FromBody] MeetingJson model)
         {
-            MeetingModel obj = new MeetingModel() {
-                MeetingDate = model.MeetingDate.ParseDate(),
-                MeetingNote = model.MeetingNote,
-                ClientId = model.ClientId,
-                StartTime=model.StartTime.ParseTime(),
-                EndTime=model.EndTime.ParseTime(),
-                EmpList=model.EmpList,
-                CreatedBy=1,
-                CreatedOn=DateTime.Now
+            try
+            {
+                MeetingModel obj = new MeetingModel()
+                {
+                    MeetingDate = model.MeetingDate.ParseDate(),
+                    MeetingNote = model.MeetingNote,
+                    ClientId = model.ClientId,
+                    StartTime = model.StartTime.ParseTime(),
+                    EndTime = model.EndTime.ParseTime(),
+                    EmpList = model.EmpList,
+                    CreatedBy = 1,
+                    CreatedOn = DateTime.Now
 
 
-            };
+                };
+                return Ok(await mtgSrv.AddMeeting(obj));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
-            
-            return Ok(await mtgSrv.AddMeeting(obj));
+
+
         }
+
+
+
+
+        [HttpGet("getEmpMeeting/{empId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetEmpMeetingList(int empId)
+        {
+            return Ok(await mtgSrv.GetEmpMeetingList(empId));
+        }
+
+
+
+
+
 
     }
 }
