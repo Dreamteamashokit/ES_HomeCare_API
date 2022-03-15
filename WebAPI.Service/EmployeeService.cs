@@ -37,13 +37,16 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.GetEmployeeById(EmpId);
         }
-        
+        #region Address
         public async Task<ServiceResponse<string>> AddEmpAddress(AddressModel _model)
         {
             return await data.AddEmpAddress(_model);
         }
-        
-
+        public async Task<ServiceResponse<AddressModel>> GetEmpAddress(int empId)
+        {
+            return await data.GetEmpAddress(empId);
+        }
+        #endregion
         public async Task<ServiceResponse<string>> AddIncident(IncidentMode _model)
         {
             return await data.AddIncident(_model);
@@ -66,7 +69,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         }
 
 
-        
+
 
 
 
@@ -87,6 +90,19 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         public async Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList()
         {
             return await data.GetEmpStatusList();
+        }
+
+
+
+
+        public async Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model)
+        {
+            return await data.AddCompliance(_model);
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ComplianceModel>>> GetComplianceList(int empId)
+        {
+            return await data.GetComplianceList(empId);
         }
 
 

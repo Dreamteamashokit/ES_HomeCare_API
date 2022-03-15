@@ -19,7 +19,7 @@ namespace WebAPI_SAMPLE.Controllers
         private readonly IEmployeeService service;
 
         private readonly ICommanService _comService;
-        
+
         public EmployeeController(IEmployeeService service, ICommanService Sev)
         {
             this.service = service;
@@ -106,7 +106,7 @@ namespace WebAPI_SAMPLE.Controllers
 
 
 
-        
+
 
 
         [HttpGet("getAvailabilityList")]
@@ -169,6 +169,65 @@ namespace WebAPI_SAMPLE.Controllers
         {
             return Ok(await _comService.GetScheduleLst());
         }
+
+
+
+        #region Compliance
+        [HttpPost("addCompliance")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddCompliance([FromBody] ComplianceModel model)
+        {
+
+
+            model.CreatedOn = DateTime.Now;
+            return Ok(await service.AddCompliance(model));
+        }
+
+        [HttpGet("getComplianceList/{empId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ComplianceModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ComplianceModel>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetComplianceList(int empId)
+        {
+            return Ok(await service.GetComplianceList(empId));
+        }
+        #endregion
+
+
+
+
+
+
+        #region Address
+        [HttpPost("addAddress")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddAddress([FromBody] AddressModel model)
+        {
+            model.CreatedBy = 1;
+            model.CreatedOn = DateTime.Now;
+            return Ok(await service.AddEmpAddress(model));
+        }
+
+        [HttpGet("getAddress/{empId}")]
+        [ProducesResponseType(typeof(ServiceResponse<AddressModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<AddressModel>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetAddress(int empId)
+        {
+            return Ok(await service.GetEmpAddress(empId));
+        }
+
+        #endregion
+
+
+
+
+
+
+
+
+
+
 
 
     }
