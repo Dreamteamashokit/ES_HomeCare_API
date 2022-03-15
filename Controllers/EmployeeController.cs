@@ -223,10 +223,27 @@ namespace WebAPI_SAMPLE.Controllers
 
 
 
+        #region Rate
+        [HttpPost("addRate")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> SaveEmpRate([FromBody] SaveEmployeeRate model)
+        {
+            model.CreatedOn = DateTime.Now;
+            return Ok(await service.SaveEmpPayRate(model));
+        }
 
 
+        [HttpGet("getEmpRate/{empId}")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> getEmpRate(long empId)
+        {
 
+            return Ok(await service.GetEmpPayRate(empId, 0));
+        }
 
+        #endregion
 
 
 

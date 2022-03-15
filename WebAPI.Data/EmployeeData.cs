@@ -616,6 +616,113 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         }
 
 
+        public async Task<ServiceResponse<string>> SaveEmpPayRate(SaveEmployeeRate client)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+
+                    SqlCommand cmd = new SqlCommand("SP_SaveEmpPayRateProc", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@EmployeeId", client.EmpId);
+                    cmd.Parameters.AddWithValue("@ClientID", client.ClientId);
+                    cmd.Parameters.AddWithValue("@EffectiveDate", client.EffectiveDate);
+                    cmd.Parameters.AddWithValue("@EndDate", client.EndDate);
+                    cmd.Parameters.AddWithValue("@Description", client.Description);
+                    cmd.Parameters.AddWithValue("@Note", client.Note);
+                    cmd.Parameters.AddWithValue("@Hourly", client.Hourly);
+                    cmd.Parameters.AddWithValue("@LiveIn", client.Livein);
+                    cmd.Parameters.AddWithValue("@Visit", client.Visit);
+                    cmd.Parameters.AddWithValue("@OverHourly", client.OverHourly);
+                    cmd.Parameters.AddWithValue("@OverLiveIn", client.OverLivein);
+                    cmd.Parameters.AddWithValue("@OverVisit", client.OverVisit);
+                    cmd.Parameters.AddWithValue("@IncludedHour", client.OptionalHour);
+                    cmd.Parameters.AddWithValue("@AdditionalHour", client.OptionalAddHour);
+                    cmd.Parameters.AddWithValue("@Mileage", client.Mileage);
+                    cmd.Parameters.AddWithValue("@TravelTime", client.TravelTime);
+                    cmd.Parameters.AddWithValue("@Gas", client.Gas);
+                    cmd.Parameters.AddWithValue("@Extra", client.Extra);
+                    //cmd.Parameters.AddWithValue("@Casetype", client.ca);
+                    //cmd.Parameters.AddWithValue("@Result", client.EmgContact);
+                    cmd.Parameters.AddWithValue("@CreatedOn", client.CreatedOn);
+                    cmd.Parameters.AddWithValue("@createdBy", client.CreatedBy);
+
+                    con.Open();
+                    int value = cmd.ExecuteNonQuery();
+                    if (value > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "New Employee Created.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new employee creation.";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            finally
+            {
+
+            }
+            return sres;
+        }
+
+        public async Task<ServiceResponse<List<EmpRate>>> GetEmpPayRate(long EmpId, long ClientId)
+        {
+
+            ServiceResponse<List<EmpRate>> obj = new ServiceResponse<List<EmpRate>>();
+            List<EmpRate> emp = new List<EmpRate>();
+
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("SP_GetPayRateProc", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@EmployeeId", EmpId);
+                    cmd.Parameters.AddWithValue("@ClientID", ClientId);
+                    DataTable table = new DataTable();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(table);
+                    if (table.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < table.Rows.Count; i++)
+                        {
+                            emp.Add(new EmpRate
+                            {
+                                Discription = table.Rows[i]["Description"].ToString(),
+                                EffectiveDates = table.Rows[i]["EffectiveDate"].ToString(),
+                                OverTimeRate = table.Rows[i]["OverTime"].ToString(),
+                                Ragularrate = table.Rows[i]["Regulartime"].ToString()
+                            });
+
+                        }
+                        obj.Result = true;
+                    }
+                    obj.Data = emp;
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+            finally
+            {
+
+            }
+        }
 
 
 

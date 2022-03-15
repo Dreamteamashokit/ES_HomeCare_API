@@ -106,7 +106,15 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         }
 
 
+        public async Task<ServiceResponse<string>> SaveEmpPayRate(SaveEmployeeRate Emprate)
+        {
+            return await data.SaveEmpPayRate(Emprate);
+        }
 
+        public async Task<ServiceResponse<List<EmpRate>>> GetEmpPayRate(long EmpId, long ClientId)
+        {
+            return await data.GetEmpPayRate(EmpId, ClientId);
+        }
 
 
 
