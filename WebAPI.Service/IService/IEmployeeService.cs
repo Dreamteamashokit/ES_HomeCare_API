@@ -29,5 +29,9 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<List<EmpRate>>> GetEmpPayRate(long EmpId, long ClientId);
 
 
+        Task<ServiceResponse<string>> SaveEmpDeclinedCase(EmpDeclinedCase client);
+        Task<ServiceResponse<List<EmpDeclinedCase>>> GetEmpDeclinedcase(int EmpId);
+
+
     }
 }

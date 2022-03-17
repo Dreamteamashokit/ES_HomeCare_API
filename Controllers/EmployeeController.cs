@@ -245,6 +245,31 @@ namespace WebAPI_SAMPLE.Controllers
 
         #endregion
 
+        #region Declined Case
+
+        [HttpPost("addEmpDeclinedCase")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> SaveEmpDeclinedCase([FromBody] EmpDeclinedCase model)
+        {
+            model.CreatedOn = DateTime.Now;
+            return Ok(await service.SaveEmpDeclinedCase(model));
+        }
+
+
+        [HttpGet("getEmpDeclinedcase/{empId}")]
+        [ProducesResponseType(typeof(ServiceResponse<EmpDeclinedCase>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<EmpDeclinedCase>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetEmpDeclinedcase(int empId)
+        {
+
+            return Ok(await service.GetEmpDeclinedcase(empId));
+        }
+
+        #endregion
+
+
+
 
 
     }

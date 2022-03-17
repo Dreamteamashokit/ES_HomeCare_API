@@ -115,7 +115,15 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.GetEmpPayRate(EmpId, ClientId);
         }
+        public async Task<ServiceResponse<string>> SaveEmpDeclinedCase(EmpDeclinedCase Emprate)
+        {
+            return await data.SaveEmpDeclinedCase(Emprate);
+        }
 
+        public async Task<ServiceResponse<List<EmpDeclinedCase>>> GetEmpDeclinedcase(int EmpId)
+        {
+            return await data.GetEmpDeclinedcase(EmpId);
+        }
 
 
     }

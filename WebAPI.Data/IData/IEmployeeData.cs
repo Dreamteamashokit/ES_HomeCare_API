@@ -27,5 +27,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<IEnumerable<ComplianceModel>>> GetComplianceList(int empId);
         Task<ServiceResponse<string>> SaveEmpPayRate(SaveEmployeeRate Emprate);
         Task<ServiceResponse<List<EmpRate>>> GetEmpPayRate(long EmpId, long ClientId);
+
+        Task<ServiceResponse<string>> SaveEmpDeclinedCase(EmpDeclinedCase client);
+        Task<ServiceResponse<List<EmpDeclinedCase>>> GetEmpDeclinedcase(int EmpId);
+
     }
 }

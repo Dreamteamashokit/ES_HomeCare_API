@@ -729,6 +729,110 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
 
 
+        public async Task<ServiceResponse<string>> SaveEmpDeclinedCase(EmpDeclinedCase client)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+
+                    SqlCommand cmd = new SqlCommand("SP_SaveEmpDeclinedCaseProc", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@EmpId", client.EmpId);
+
+                    cmd.Parameters.AddWithValue("@ReportedDate", client.RepotedDate);
+                    cmd.Parameters.AddWithValue("@ClientID", client.clientId);
+                    cmd.Parameters.AddWithValue("@caseid", client.Casetypeid);
+                    cmd.Parameters.AddWithValue("@DeclinedReason", client.DeclineReason);
+                    cmd.Parameters.AddWithValue("@AssignmentStartDate", client.AssignmentStart);
+                    cmd.Parameters.AddWithValue("@Note", client.Note);
+                    cmd.Parameters.AddWithValue("@Day", client.Day);
+                    cmd.Parameters.AddWithValue("@Week", client.week);
+                    cmd.Parameters.AddWithValue("@CreatedOn", client.CreatedOn);
+                    cmd.Parameters.AddWithValue("@createdBy", client.CreatedBy);
+
+                    con.Open();
+                    int value = cmd.ExecuteNonQuery();
+                    if (value > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "New Employee Created.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new employee creation.";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            finally
+            {
+
+            }
+            return sres;
+        }
+
+        public async Task<ServiceResponse<List<EmpDeclinedCase>>> GetEmpDeclinedcase(int EmpId)
+        {
+
+            ServiceResponse<List<EmpDeclinedCase>> obj = new ServiceResponse<List<EmpDeclinedCase>>();
+            List<EmpDeclinedCase> emp = new List<EmpDeclinedCase>();
+
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("SP_GetDeclinedCaseProc", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@EmpId", EmpId);
+                 
+                    DataTable table = new DataTable();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(table);
+                    if (table.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < table.Rows.Count; i++)
+                        {
+                            emp.Add(new EmpDeclinedCase
+                            {
+                                RepotedDate = table.Rows[i]["ReportedDate"].ToString(),
+                                ClientName = table.Rows[i]["Name"].ToString(),
+                                CasetypeName = table.Rows[i]["CaseType"].ToString(),
+                                DeclineReason = table.Rows[i]["DeclinedReason"].ToString(),
+                                Day = Convert.ToInt16(table.Rows[i]["Day"].ToString()),
+                                week = Convert.ToInt16(table.Rows[i]["Week"].ToString()),
+                                AssignmentStart = table.Rows[i]["AssignmentStartDate"].ToString()
+                            });
+
+                        }
+                        obj.Result = true;
+                    }
+                    obj.Data = emp;
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+            finally
+            {
+
+            }
+        }
+
+
+
+
+
 
 
 
