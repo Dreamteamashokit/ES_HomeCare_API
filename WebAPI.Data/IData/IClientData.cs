@@ -1,4 +1,5 @@
 ﻿using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
 {
     public interface IClientData
     {
+        Task<ServiceResponse<string>> AddClient(ClientModel _model);
         Task<ServiceResponse<string>> savenewclient(Client client);
         Task<ServiceResponse<List<Client>>> GetClientList();
         Task<ServiceResponse<IEnumerable<ClientMeetings>>> GetClientMeetings(string startdate, string cID);

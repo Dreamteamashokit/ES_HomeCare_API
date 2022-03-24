@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Client;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI_SAMPLE.Model;
@@ -20,6 +21,36 @@ namespace WebAPI_SAMPLE.Controllers
         {
             this.service = service;
         }
+
+
+        [HttpPost("addClient")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddClient([FromBody] ClientModel model)
+        {
+            if (model.Nurse == 0)
+            {
+                model.Nurse = null;
+            }
+            model.IsDeleted = false;
+            model.TimeSlip = true;
+            model.IsHourly = true;
+
+            model.CreatedBy = 1;
+            model.CreatedOn = DateTime.Now;
+
+
+
+            return Ok(await service.AddClient(model));
+        }
+
+
+
+
+
+
+
+
 
         [HttpPost("savenewclientinfo")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]

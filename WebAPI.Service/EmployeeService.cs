@@ -17,11 +17,22 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             data = ldata;
         }
-
-        public async Task<ServiceResponse<string>> savenewemployee(Employee employee)
+        #region Employee
+        public async Task<ServiceResponse<string>> AddEmployee(EmployeeModel _model)
         {
-            return await data.savenewemployee(employee);
+            return await data.AddEmployee(_model);
         }
+
+        public async Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj()
+        {
+            return await data.GetEmployeeListObj();
+        }
+
+
+
+        #endregion
+
+
 
         public async Task<ServiceResponse<List<Employee>>> GetEmployeesList()
         {
