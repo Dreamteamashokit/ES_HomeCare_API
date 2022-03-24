@@ -3,6 +3,7 @@ using ES_HomeCare_API.Model;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,10 +21,11 @@ namespace ES_HomeCare_API.Controllers
     {
    
         private readonly ICommanService comSrv;
+        private IConfiguration configuration;
 
-        public CommonController( ICommanService _comSrv)
+        public CommonController( ICommanService _comSrv, IConfiguration _configuration)
         {
-          
+            configuration = _configuration;
             this.comSrv = _comSrv;
         }
 
@@ -62,8 +64,8 @@ namespace ES_HomeCare_API.Controllers
                    //you can add this path to a list and then return all dbPaths to the client if require
 
                     Stream fs = file.OpenReadStream();
-                    AmazonUploader uploader = new AmazonUploader();
-                    uploader.sendMyFileToS3(fs, "eshomecarewebapp", fileName);
+                    AmazonUploader uploader = new AmazonUploader(configuration);
+                    uploader.sendMyFileToS3(fs, fileName);
                 }
 
                 return Ok("All the files are successfully uploaded.");

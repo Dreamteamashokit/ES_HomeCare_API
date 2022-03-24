@@ -2,7 +2,9 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
+using Microsoft.Extensions.Configuration;
 using System;
+using System.Configuration;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -10,21 +12,36 @@ namespace ES_HomeCare_API.Helper
 {
     public class AmazonUploader
     {
-        public void sendMyFileToS3(System.IO.Stream localFilePath, string bucketName, string fileNameInS3)
+        public readonly string AccessKey = string.Empty;
+        public readonly string SceretKey = string.Empty;
+        public readonly string BucketName = string.Empty;
+        private IConfiguration configuration;
+        public AmazonUploader(IConfiguration _configuration)
+        {
+            configuration = _configuration;
+            AccessKey = configuration.GetConnectionString("AWSAccessKey").ToString();
+            SceretKey = configuration.GetConnectionString("AWSsceretKey").ToString();
+            BucketName = configuration.GetConnectionString("AWSBucketName").ToString();
+        }
+
+        //public  string AccessKey = ConfigurationManager.AppSettings["AWSAccessKey"];
+        //public  string SceretKey = ConfigurationManager.AppSettings["AWSsceretKey"];
+        //public string BucketName = ConfigurationManager.AppSettings["AWSBucketName"];
+        public void sendMyFileToS3(System.IO.Stream localFile, string fileNameInS3)
         {
 
             try
             {
 
-                IAmazonS3 client = new AmazonS3Client("AKIAVSTZJGNSR2UPYM6F", "d6jG9K7ZOIyycQzNX31V08EzXn8P4AvFIyx5AsWa", RegionEndpoint.USEast1);
+                IAmazonS3 client = new AmazonS3Client(AccessKey, SceretKey, RegionEndpoint.USEast1);
 
                 RunFolderCreationDemo(client, "Navneet");
                 TransferUtility utility = new TransferUtility(client);
                 TransferUtilityUploadRequest request = new TransferUtilityUploadRequest();
-                request.BucketName = bucketName;
+                request.BucketName = BucketName;
 
                 request.Key = fileNameInS3;
-                request.InputStream = localFilePath;
+                request.InputStream = localFile;
                 request.CannedACL = S3CannedACL.PublicReadWrite;
                 utility.Upload(request);
 
@@ -48,8 +65,8 @@ namespace ES_HomeCare_API.Helper
             {
 
                 PutObjectRequest folderRequest = new PutObjectRequest();
-                String delimiter = "/";
-                folderRequest.BucketName = "eshomecarewebapp";
+                String delimiter = "";
+                folderRequest.BucketName = BucketName;
                 String folderKey = string.Concat(FolderName, delimiter);
                 folderRequest.Key = folderKey;
                 folderRequest.InputStream = new MemoryStream(new byte[0]);
