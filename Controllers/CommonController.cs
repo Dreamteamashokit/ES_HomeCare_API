@@ -45,6 +45,8 @@ namespace ES_HomeCare_API.Controllers
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
         public IActionResult Upload()
         {
+
+
             try
             {
                 var files = Request.Form.Files;
