@@ -24,9 +24,7 @@ namespace ES_HomeCare_API.Helper
             BucketName = configuration.GetConnectionString("AWSBucketName").ToString();
         }
 
-        //public  string AccessKey = ConfigurationManager.AppSettings["AWSAccessKey"];
-        //public  string SceretKey = ConfigurationManager.AppSettings["AWSsceretKey"];
-        //public string BucketName = ConfigurationManager.AppSettings["AWSBucketName"];
+       
         public void sendMyFileToS3(System.IO.Stream localFile, string fileNameInS3)
         {
 
@@ -35,7 +33,7 @@ namespace ES_HomeCare_API.Helper
 
                 IAmazonS3 client = new AmazonS3Client(AccessKey, SceretKey, RegionEndpoint.USEast1);
 
-                RunFolderCreationDemo(client, "Navneet");
+               
                 TransferUtility utility = new TransferUtility(client);
                 TransferUtilityUploadRequest request = new TransferUtilityUploadRequest();
                 request.BucketName = BucketName;
@@ -59,23 +57,44 @@ namespace ES_HomeCare_API.Helper
 
 
 
-        public void RunFolderCreationDemo(IAmazonS3 s3Client, string FolderName)
+        public bool RunFolderCreationDemo(string FolderName)
         {
             try
             {
+                IAmazonS3 client = new AmazonS3Client(AccessKey, SceretKey, RegionEndpoint.USEast1);
 
                 PutObjectRequest folderRequest = new PutObjectRequest();
-                String delimiter = "";
+                String delimiter = "/";
                 folderRequest.BucketName = BucketName;
                 String folderKey = string.Concat(FolderName, delimiter);
                 folderRequest.Key = folderKey;
                 folderRequest.InputStream = new MemoryStream(new byte[0]);
-                Task<PutObjectResponse> folderResponse = s3Client.PutObjectAsync(folderRequest);
+                Task<PutObjectResponse> folderResponse = client.PutObjectAsync(folderRequest);
+                return true;
             }
-            catch (AmazonS3Exception e)
+            catch (AmazonS3Exception ec)
             {
-
+                return false;
             }
         }
+
+
+        //bool CheckFile(IAmazonS3 client, string FileName)
+        //{
+
+
+        //    GetObjectRequest request = new GetObjectRequest();
+        //    request.BucketName = BucketName;           
+        //    request.Key = FileName;
+        //    GetObjectResponse response = client.GetObject(request);
+
+        //    if (response.ContentLength == 0 && string.IsNullOrEmpty(response.ETag))
+        //    {
+        //        return false;
+        //    }
+        //    return true;
+
+
+        //}
     }
 }

@@ -13,5 +13,9 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetEmployeeLst();
         Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetScheduleLst();
         Task<ServiceResponse<IEnumerable<ItemList>>> GetMasterList(short typeId);
+        Task<ServiceResponse<string>> SaveFolder(FolderData model);
+        Task<ServiceResponse<IEnumerable<UploadFileRecord>>> GetFolderlist(int EmpId);
+
+        Task<ServiceResponse<string>> Savefile(UploadFileFolder model);
     }
 }
