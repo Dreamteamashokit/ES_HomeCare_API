@@ -24,7 +24,7 @@ namespace ES_HomeCare_API.Helper
             return dte;
         }
 
-
+    
         public static string TimeHelper(this TimeSpan timeSpan)
         {
             DateTime time = DateTime.Today + timeSpan;

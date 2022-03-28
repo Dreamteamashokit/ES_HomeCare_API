@@ -134,8 +134,15 @@ namespace ES_HomeCare_API.Controllers
             return Ok(await comSrv.GetEmployeesList());
         }
 
+        [HttpGet("getClientList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> getClientSelectList()
+        {
+            return Ok(await comSrv.GetClientList());
+        }
 
-
+    
 
     }
 }
