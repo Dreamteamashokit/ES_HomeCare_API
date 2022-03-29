@@ -37,4 +37,17 @@ namespace ES_HomeCare_API.Model
         public string FileName { get; set; }
        
     }
+
+    public class ItemObj
+    {
+        public int ItemId { get; set; }
+        public short MasterType { get; set; }
+        public string ItemName { get; set; }
+    }
+
+    public class SelectList
+    {
+        public string ItemCode { get; set; }
+        public string ItemName { get; set; }
+    }
 }
