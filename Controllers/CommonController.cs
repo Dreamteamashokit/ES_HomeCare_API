@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,12 +17,22 @@ namespace ES_HomeCare_API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class CommonController : ControllerBase
-    {   
+    {
         private readonly ICommanService comSrv;
-        public CommonController( ICommanService _comSrv)
-        {          
+        private IConfiguration configuration;
+
+        public CommonController(ICommanService _comSrv, IConfiguration _configuration)
+        {
+            configuration = _configuration;
             this.comSrv = _comSrv;
         }
+
+
+
+
+
+
+
         [HttpGet("getMaster/{typeId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
@@ -31,8 +40,6 @@ namespace ES_HomeCare_API.Controllers
         {
             return Ok(await comSrv.GetMasterList(typeId));
         }
-
-
 
         [HttpPost("addMasterType")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
@@ -67,16 +74,6 @@ namespace ES_HomeCare_API.Controllers
             }
         }
 
-
-
-
-
-
-
-
-
-
-
         [HttpGet("getMasterType")]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
@@ -101,34 +98,26 @@ namespace ES_HomeCare_API.Controllers
         public async Task<IActionResult> GetEmpTypeList()
         {
             return Ok(await comSrv.GetEmpTypeList());
-        }
-    {
-   
-        private readonly ICommanService comSrv;
-        private IConfiguration configuration;
+        }   
+      
 
         [HttpGet("getCountry")]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> getCountryList()
-        public CommonController( ICommanService _comSrv, IConfiguration _configuration)
+        public async Task<IActionResult> getCountryList()       
         {
             return Ok(await comSrv.GetCountry());
-        }
-
-
+        }        
+        
+        
         [HttpGet("getStateList/{country}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> getStateList(string country)
         {
             return Ok(await comSrv.GetState(country));
-            configuration = _configuration;
-            this.comSrv = _comSrv;
+         
         }
-
-
-
 
         [HttpGet("getEmployees/{type}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
@@ -154,9 +143,8 @@ namespace ES_HomeCare_API.Controllers
         {
             return Ok(await comSrv.GetClientList());
         }
-
-
-        [HttpPost("UploadFile"), DisableRequestSizeLimit]        
+        
+        [HttpPost("UploadFile"), DisableRequestSizeLimit]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UploadFile()
@@ -166,11 +154,11 @@ namespace ES_HomeCare_API.Controllers
                 var files = Request.Form.Files;
 
                 UploadFileFolder model = new UploadFileFolder();
-                model.folderid =Convert.ToInt32(Request.Form["folderid"]);
+                model.folderid = Convert.ToInt32(Request.Form["folderid"]);
                 model.Title = Request.Form["Title"].ToString();
                 model.CreatedBy = Convert.ToInt32(Request.Form["CreatedBy"]);
                 model.Search = Request.Form["Search"].ToString();
-                model.Description =Request.Form["Description"].ToString();                
+                model.Description = Request.Form["Description"].ToString();
                 string Foldername = Request.Form["Foldername"].ToString();
 
 
@@ -181,13 +169,13 @@ namespace ES_HomeCare_API.Controllers
 
                 foreach (var file in files)
                 {
-                    
-                    var fileName = Foldername+"/"+ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+
+                    var fileName = Foldername + "/" + ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
                     //you can add this path to a list and then return all dbPaths to the client if require
                     model.filename = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
                     Stream fs = file.OpenReadStream();
                     AmazonUploader uploader = new AmazonUploader(configuration);
-                    uploader.sendMyFileToS3(fs, fileName);                 
+                    uploader.sendMyFileToS3(fs, fileName);
 
                 }
 
@@ -198,8 +186,25 @@ namespace ES_HomeCare_API.Controllers
             {
                 return StatusCode(500, $"Internal server error: {ex}");
             }
-            
+
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         [HttpPost("SaveFolder")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
