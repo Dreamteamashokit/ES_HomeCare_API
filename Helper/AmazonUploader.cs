@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Configuration;
 using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace ES_HomeCare_API.Helper
@@ -84,7 +85,7 @@ namespace ES_HomeCare_API.Helper
 
 
         //    GetObjectRequest request = new GetObjectRequest();
-        //    request.BucketName = BucketName;           
+        //    request.BucketName = BucketName;
         //    request.Key = FileName;
         //    GetObjectResponse response = client.GetObject(request);
 
@@ -96,5 +97,41 @@ namespace ES_HomeCare_API.Helper
 
 
         //}
+
+
+        public async Task<byte[]> DownloadFileAsync(string file)
+        {
+            MemoryStream ms = null;
+
+            try
+            {
+                IAmazonS3 client = new AmazonS3Client(AccessKey, SceretKey, RegionEndpoint.USEast1);
+                GetObjectRequest getObjectRequest = new GetObjectRequest
+                {
+                    BucketName = BucketName,
+                    Key = file
+                };
+
+                using (var response = await client.GetObjectAsync(getObjectRequest))
+                {
+                    if (response.HttpStatusCode == HttpStatusCode.OK)
+                    {
+                        using (ms = new MemoryStream())
+                        {
+                            await response.ResponseStream.CopyToAsync(ms);
+                        }
+                    }
+                }
+
+                if (ms is null || ms.ToArray().Length < 1)
+                    throw new FileNotFoundException(string.Format("The document '{0}' is not found", file));
+
+                return ms.ToArray();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

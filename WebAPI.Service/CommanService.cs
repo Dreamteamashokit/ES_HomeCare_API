@@ -111,5 +111,82 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             return await data.Savefile(model);
         }
+
+        //public async Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetOfficeUserLst()
+        //{
+        //    return await data.GetOfficeUserLst();
+        //}
+
+        //public async Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetTypeStatusLst()
+        //{
+        //    return await data.GetTypeStatusLst();
+        //}
+
+
+        //public async Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetEmployeeLst()
+        //{
+        //    return await data.GetEmployeeLst();
+        //}
+        //public async Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetScheduleLst()
+        //{
+        //    return await data.GetScheduleLst();
+        //}
+
+
+        //public async Task<ServiceResponse<IEnumerable<ItemList>>> GetMasterList(short typeId)
+        //{
+        //    return await data.GetMasterList(typeId);
+        //}
+
+
+        public async Task<ServiceResponse<string>> CreateMasterType(string _item)
+        {
+            return await data.CreateMasterType(_item);
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetMasterTypeList()
+        {
+            return await data.GetMasterTypeList();
+        }
+        public async Task<ServiceResponse<string>> CreateMaster(ItemObj _item)
+        {
+            return await data.CreateMaster(_item);
+        }
+        public async Task<ServiceResponse<IEnumerable<ItemObj>>> GetSystemMaster()
+        {
+            return await data.GetSystemMaster();
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetEmpTypeList()
+        {
+            return await data.GetEmpTypeList();
+        }
+        public async Task<ServiceResponse<IEnumerable<SelectList>>> GetCountry()
+        {
+            return await data.GetCountry();
+        }
+        public async Task<ServiceResponse<IEnumerable<SelectList>>> GetState(string countryCode)
+        {
+            return await data.GetState(countryCode);
+        }
+
+
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetEmployees(string type)
+        {
+            return await data.GetEmployees(type);
+        }
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetEmployeesList()
+        {
+
+            return await data.GetEmployeesList();
+        }
+
+
+
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetClientList()
+        {
+            return await data.GetClientList();
+
+        }
     }
 }

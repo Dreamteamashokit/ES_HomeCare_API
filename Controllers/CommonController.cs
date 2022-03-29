@@ -223,6 +223,159 @@ namespace ES_HomeCare_API.Controllers
             return Ok(await comSrv.GetFolderlist(EmpId));
         }
 
+        [HttpGet("download/{documentName}")]
+        
+        public IActionResult GetDocumentFromS3(string documentName,string foldername)
+        {
+            try
+            {
+                documentName = foldername+"/"+ documentName;
+
+                AmazonUploader Download = new AmazonUploader(configuration);
+                var document = Download.DownloadFileAsync(documentName).Result;
+
+                return File(document, "application/octet-stream", documentName);
+            }
+            catch (Exception ex)
+            {
+                return Ok(null);
+            }
+          
+        }
+
+        private ServiceResponse<string> ValidateException(Exception ex)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            sres.Data = ex.Data.ToString();
+            sres.Message =ex.Message;
+            return sres;
+        }
+
+
+        //[HttpGet("getMaster/{typeId}")]
+        //[ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
+        //public async Task<IActionResult> GetEmpMeetingList(short typeId)
+        //{
+        //    return Ok(await comSrv.GetMasterList(typeId));
+        //}
+
+
+
+        [HttpPost("addMasterType")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateMasterType(string Name)
+        {
+            try
+            {
+                return Ok(await comSrv.CreateMasterType(Name));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        [HttpPost("addMaster")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateMaster([FromBody] ItemObj model)
+        {
+            try
+            {
+                return Ok(await comSrv.CreateMaster(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+        [HttpGet("getMasterType")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetMasterTypeList()
+        {
+            return Ok(await comSrv.GetMasterTypeList());
+        }
+
+
+        [HttpGet("getSystemMaster")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemObj>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemObj>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetSystemMaster()
+        {
+            return Ok(await comSrv.GetSystemMaster());
+        }
+
+
+        [HttpGet("getEmpTypeList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetEmpTypeList()
+        {
+            return Ok(await comSrv.GetEmpTypeList());
+        }
+
+        [HttpGet("getCountry")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> getCountryList()
+        {
+            return Ok(await comSrv.GetCountry());
+        }
+
+
+        [HttpGet("getStateList/{country}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> getStateList(string country)
+        {
+            return Ok(await comSrv.GetState(country));
+        }
+
+
+
+
+        [HttpGet("getEmployees/{type}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetEmployees(string type)
+        {
+            return Ok(await comSrv.GetEmployees(type));
+        }
+
+
+        [HttpGet("getEmpList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> getEmpSelectList()
+        {
+            return Ok(await comSrv.GetEmployeesList());
+        }
+
+        [HttpGet("getClientList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> getClientSelectList()
+        {
+            return Ok(await comSrv.GetClientList());
+        }
+
 
     }
 }
