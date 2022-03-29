@@ -3,6 +3,8 @@ using Dapper;
 using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.Model.Meeting;
 using ES_HomeCare_API.WebAPI.Data.IData;
+
+using ES_HomeCare_API.Helper;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -14,7 +16,7 @@ using WebAPI_SAMPLE.Model;
 
 namespace ES_HomeCare_API.WebAPI.Data
 {
-    public class MeetingData: IMeetingData
+    public class MeetingData : IMeetingData
     {
 
         private IConfiguration configuration;
@@ -22,7 +24,7 @@ namespace ES_HomeCare_API.WebAPI.Data
         {
             configuration = _configuration;
         }
-        
+
         public async Task<ServiceResponse<string>> AddMeeting(MeetingModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -78,13 +80,74 @@ namespace ES_HomeCare_API.WebAPI.Data
 
                 IEnumerable<EmpMeeting> cmeetings = (await connection.QueryAsync<EmpMeeting>(sql,
                        new { @EmpId = empId }));
-                
+
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
             }
             return obj;
         }
+
+
+        public int ClientId { get; set; }
+        public string FirstName { get; set; }
+        public string MiddleName { get; set; }
+        public string LastName { get; set; }
+        public string Contact { get; set; }
+        public IEnumerable<ClMeeting> Meetings { get; set; }
+
+
+        public async Task<ServiceResponse<IEnumerable<ClientMeeting>>> GetClientMeetingList()
+        {
+            ServiceResponse<IEnumerable<ClientMeeting>> obj = new ServiceResponse<IEnumerable<ClientMeeting>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "select x.ClientId,x.FirstName,x.MiddleName,x.LastName,x.Contact,z.EmpId,p.FirstName +' ' + ISNULL(p.MiddleName,' ')+' ' + p.LastName " +
+                    "as EmpName,y.MeetingId,y.MeetingDate,y.StartTime,y.EndTime from tblClient x Left Join tblMeeting y on x.ClientId=y.ClientId inner join" +
+                    " tblEmpClientMeeting z on y.MeetingId=z.MeetingId inner join tblEmployee p on z.EmpId=p.EmpId ;";
+
+                var result = (await connection.QueryAsync(sql));
+
+
+                //Using Query Syntax
+                var GroupByQS = from mom in result
+                                group mom by new { mom.ClientId, mom.FirstName, mom.MiddleName, mom.LastName, mom.Contact, } into momGroup
+                                orderby momGroup.Key descending
+                                select new ClientMeeting
+                                {
+                                    ClientId = momGroup.Key.ClientId,
+                                    FirstName = momGroup.Key.FirstName,
+                                    MiddleName = momGroup.Key.MiddleName,
+                                    LastName = momGroup.Key.LastName,
+                                    Contact = momGroup.Key.Contact,
+                                    Meetings = momGroup.Select(x => new ClMeeting
+                                    {
+                                        EmpId = x.EmpId,
+                                        EmpName = x.EmpName,
+                                        MeetingId = x.MeetingId,
+                                        MeetingDate = x.MeetingDate,
+                                        StartTime = ((TimeSpan)x.StartTime).TimeHelper(),
+                                        EndTime = ((TimeSpan)x.EndTime).TimeHelper(),
+                                    })
+                                };
+
+
+                obj.Data = GroupByQS;
+                obj.Result = GroupByQS.Any() ? true : false;
+                obj.Message = GroupByQS.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
+
+
+
+
+
+
+
+
+
+
 
 
     }

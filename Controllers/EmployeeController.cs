@@ -25,15 +25,40 @@ namespace WebAPI_SAMPLE.Controllers
             this.service = service;
             this._comService = Sev;
         }
+        #region Employee
 
-
-        [HttpPost("savenewemployeeinfo")]
+        [HttpPost("addEmployee")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> savenewemployeeinfo([FromBody] Employee employee)
+        public async Task<IActionResult> AddEmployee([FromBody] EmployeeModel model)
         {
-            return Ok(await service.savenewemployee(employee));
+            if (model.HRSupervisor == 0)
+            {
+                model.HRSupervisor = null;
+            }
+
+            model.CreatedBy = 1;
+            model.CreatedOn = DateTime.Now;
+            return Ok(await service.AddEmployee(model));
         }
+
+
+        [HttpGet("getEmployeeListObj")]
+        [ProducesResponseType(typeof(ServiceResponse<List<EmployeeList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<EmployeeList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetEmployeeListObj()
+        {
+            return Ok(await service.GetEmployeeListObj());
+        }
+
+        #endregion
+
+
+
+
+
+
+
 
         [HttpGet("getemployeelist")]
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]

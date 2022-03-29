@@ -36,6 +36,8 @@ namespace WebAPI_SAMPLE
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IAccountData, AccountData>();
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<ILoginData, LoginData>();
             services.AddScoped<IClientService, ClientService>();

@@ -10,7 +10,14 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
 {
     public interface IEmployeeData
     {
-        Task<ServiceResponse<string>> savenewemployee(Employee client);
+        #region Employee
+        Task<ServiceResponse<string>> AddEmployee(EmployeeModel _model);
+        Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj();
+
+
+        #endregion
+
+
         Task<ServiceResponse<List<Employee>>> GetEmployeesList();
         Task<ServiceResponse<string>> DeleteEmployee(int EmpId);
         Task<ServiceResponse<Employee>> GetEmployeeById(string EmpId);

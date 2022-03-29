@@ -12,6 +12,7 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
     {
         Task<ServiceResponse<string>> AddMeeting(MeetingModel _model);
         Task<ServiceResponse<IEnumerable<EmpMeeting>>> GetEmpMeetingList(int empId);
+        Task<ServiceResponse<IEnumerable<ClientMeeting>>> GetClientMeetingList();
 
     }
 }
