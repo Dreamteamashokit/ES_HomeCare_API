@@ -103,6 +103,34 @@ namespace ES_HomeCare_API.Controllers
             return Ok(await comSrv.GetFolderlist(EmpId));
         }
 
+        [HttpGet("download/{documentName}")]
+        
+        public IActionResult GetDocumentFromS3(string documentName,string foldername)
+        {
+            try
+            {
+                documentName = foldername+"/"+ documentName;
+
+                AmazonUploader Download = new AmazonUploader(configuration);
+                var document = Download.DownloadFileAsync(documentName).Result;
+
+                return File(document, "application/octet-stream", documentName);
+            }
+            catch (Exception ex)
+            {
+                return Ok(null);
+            }
+          
+        }
+
+        private ServiceResponse<string> ValidateException(Exception ex)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            sres.Data = ex.Data.ToString();
+            sres.Message =ex.Message;
+            return sres;
+        }
+
 
     }
 }

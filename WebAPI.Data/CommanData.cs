@@ -152,7 +152,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             ServiceResponse<IEnumerable<UploadFileRecord>> obj = new ServiceResponse<IEnumerable<UploadFileRecord>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select FolderId,FolderName,'' as FileName from tblFoldermaster where EmpId= @EmpId; ";
+                string sql = "select tbl.FolderId,FolderName,FileName from tblFoldermaster tbl left join tblEmpDocument ted on tbl.FolderId = ted.FolderId where EmpId = @EmpId or EmpId = 0;";
 
                 IEnumerable<UploadFileRecord> resData = (await connection.QueryAsync<UploadFileRecord>(sql,
              new { @EmpId = EmpId }));
