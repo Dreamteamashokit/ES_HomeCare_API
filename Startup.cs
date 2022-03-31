@@ -52,7 +52,10 @@ namespace WebAPI_SAMPLE
             services.AddScoped<ICommanService, CommanService>();
             services.AddScoped<IMeetingData, MeetingData>();
             services.AddScoped<IMeetingService, MeetingService>();
-            
+
+            services.AddScoped<IDocumentService, DocumentService>();
+            services.AddScoped<IDocumentData, DocumentData>();
+
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,
