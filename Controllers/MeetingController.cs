@@ -80,7 +80,8 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
-        [HttpGet("getMeetingDetail")]
+        
+        [HttpGet("getMeetingDetail/{meetingId}")]
         [ProducesResponseType(typeof(ServiceResponse<MeetingView>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<MeetingView>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetMeetingDetail(long meetingId)

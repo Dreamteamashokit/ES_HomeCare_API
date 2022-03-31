@@ -21,6 +21,8 @@ namespace ES_HomeCare_API.Model.Meeting
 
     public class EmpMeeting : BaseModel
     {
+
+        public long MeetingId { get; set; }
         public int EmpId { get; set; }
         public int ClientId { get; set; }
         public string EmpName { get; set; }

@@ -74,9 +74,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             ServiceResponse<IEnumerable<EmpMeeting>> obj = new ServiceResponse<IEnumerable<EmpMeeting>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select  IsNull(p.LastName,'')  +' '+ p.FirstName as EmpName,q.EmpId,r.*,IsNull(s.LastName,'')+' '+s.FirstName as ClientName " +
-                    " from tblEmployee p inner join tblEmpClientMeeting q on p.EmpId=q.EmpId inner join tblMeeting r on q.MeetingId=r.MeetingId inner join tblClient s on " +
-                    "r.ClientId=s.ClientId where q.EmpId=@EmpId";
+                string sql = "select  IsNull(p.LastName,'')  +' '+ p.FirstName as EmpName,q.EmpId,r.*,IsNull(s.LastName,'')+' '+s.FirstName as ClientName, r.MeetingId  from tblEmployee p inner join tblEmpClientMeeting q on p.EmpId=q.EmpId inner join tblMeeting r on q.MeetingId=r.MeetingId inner join tblClient s on r.ClientId=s.ClientId where q.EmpId=@EmpId";
 
                 IEnumerable<EmpMeeting> cmeetings = (await connection.QueryAsync<EmpMeeting>(sql,
                        new { @EmpId = empId }));

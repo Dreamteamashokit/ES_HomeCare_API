@@ -22,7 +22,7 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
-        [HttpGet("getDocumentlist")]
+        [HttpGet("getDocumentlist{empId}")]
         [ProducesResponseType(typeof(ServiceResponse<FolderView>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<FolderView>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetDocumentlist(int empId)
