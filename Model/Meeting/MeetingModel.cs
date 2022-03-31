@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ES_HomeCare_API.Model.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,6 +30,14 @@ namespace ES_HomeCare_API.Model.Meeting
         public TimeSpan EndTime { get; set; }
         public string MeetingNote { get; set; }
     }
+
+
+  
+
+
+
+
+
 
 
 }

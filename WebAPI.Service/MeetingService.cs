@@ -33,7 +33,12 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.GetClientMeetingList();
         }
 
-       
+        public async Task<ServiceResponse<MeetingView>> GetMeetingDetail(long meetingId)
+        {
+            return await data.GetMeetingDetail(meetingId);
+        }
+
+
 
     }
 }

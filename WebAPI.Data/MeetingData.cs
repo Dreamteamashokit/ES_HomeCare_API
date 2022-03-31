@@ -13,6 +13,9 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
+using ES_HomeCare_API.Model.Common;
+
+
 
 namespace ES_HomeCare_API.WebAPI.Data
 {
@@ -66,9 +69,6 @@ namespace ES_HomeCare_API.WebAPI.Data
             return sres;
         }
 
-
-
-
         public async Task<ServiceResponse<IEnumerable<EmpMeeting>>> GetEmpMeetingList(int empId)
         {
             ServiceResponse<IEnumerable<EmpMeeting>> obj = new ServiceResponse<IEnumerable<EmpMeeting>>();
@@ -87,15 +87,6 @@ namespace ES_HomeCare_API.WebAPI.Data
             }
             return obj;
         }
-
-
-        public int ClientId { get; set; }
-        public string FirstName { get; set; }
-        public string MiddleName { get; set; }
-        public string LastName { get; set; }
-        public string Contact { get; set; }
-        public IEnumerable<ClMeeting> Meetings { get; set; }
-
 
         public async Task<ServiceResponse<IEnumerable<ClientMeeting>>> GetClientMeetingList()
         {
@@ -140,14 +131,59 @@ namespace ES_HomeCare_API.WebAPI.Data
         }
 
 
+        public async Task<ServiceResponse<MeetingView>> GetMeetingDetail(long meetingId)
+        {
+            ServiceResponse<MeetingView> obj = new ServiceResponse<MeetingView>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "select p.*,q.Contact,q.FirstName as cltFName,q.MiddleName as cltMName,q.LastName as cltLName,r.EmpId,s.FirstName as empFName," +
+                    "s.MiddleName as empMName,s.LastName as empLName,s.CellPhone,t.Owner as empOwner,t.FlatNo as empFlatNo,t.Address as empAddress,t.City as empCity," +
+                    "t.Country as empCountry,t.State as empState,t.ZipCode as empZipCode from tblMeeting p inner join tblClient q on p.ClientId=q.ClientId " +
+                    "inner join tblEmpClientMeeting r on p.MeetingId=r.MeetingId inner join tblEmployee  s on r.EmpId=s.EmpId left join  tblAddress t " +
+                    "on s.EmpId=t.EmpId where p.MeetingId=@MeetingId";
 
+                var rsData = (await connection.QueryAsync(sql, new { @MeetingId = meetingId }));
+                MeetingView objResult = (from mom in rsData
+                                         select new MeetingView
+                                         {
+                                             MeetingId = mom.MeetingId,
+                                             MeetingDate = ((DateTime)mom.MeetingDate).ToString("dd-MMM-yy"),
+                                             StartTime = ((TimeSpan)mom.StartTime).TimeHelper(),
+                                             EndTime = ((TimeSpan)mom.EndTime).TimeHelper(),
+                                             Employee = new UserView()
+                                             {
 
+                                                 Id = mom.EmpId,
+                                                 FirstName = mom.empFName,
+                                                 MiddleName = mom.empMName,
+                                                 Lastname = mom.empLName,
+                                                 CellPhone = mom.CellPhone,
+                                                 Address = new AddressView()
+                                                 {
+                                                     LocationDetail = mom.empAddress,
+                                                     FlatNo = mom.empFlatNo,
+                                                     Country = mom.empCountry,
+                                                     State = mom.empState,
+                                                     City = mom.empCity,
+                                                     ZipCode = mom.empZipCode,
+                                                 },
+                                             },
+                                             Client = new UserView()
+                                             {
 
+                                                 Id = mom.ClientId,
+                                                 FirstName = mom.cltFName,
+                                                 MiddleName = mom.cltMName,
+                                                 Lastname = mom.cltLName,
+                                             },
+                                         }).FirstOrDefault();
 
-
-
-
-
+                obj.Data = objResult;
+                obj.Result = objResult != null ? true : false;
+                obj.Message = objResult != null ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
 
 
     }
