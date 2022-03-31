@@ -155,12 +155,12 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
 
-        [HttpGet("getEmpStatusList")]
+        [HttpGet("getEmpStatusList/{empId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> getEmpStatusList()
+        public async Task<IActionResult> getEmpStatusList(int empId)
         {
-            return Ok(await service.GetEmpStatusList());
+            return Ok(await service.GetEmpStatusList(empId));
         }
 
         [HttpGet("getOfficeUserList")]
