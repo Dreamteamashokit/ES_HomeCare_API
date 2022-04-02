@@ -1,4 +1,5 @@
 ﻿using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,12 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         public ClientService(IClientData ldata)
         {
             data = ldata;
+        }
+
+      
+        public async Task<ServiceResponse<string>> AddClient(ClientModel client)
+        {
+            return await data.AddClient(client);
         }
 
         public async Task<ServiceResponse<string>> savenewclient(Client client)

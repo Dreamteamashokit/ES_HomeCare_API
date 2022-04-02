@@ -28,6 +28,17 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             return await data.GetEmpMeetingList(empId);
         }
+        public async Task<ServiceResponse<IEnumerable<ClientMeeting>>> GetClientMeetingList()
+        {
+            return await data.GetClientMeetingList();
+        }
+
+        public async Task<ServiceResponse<MeetingView>> GetMeetingDetail(long meetingId)
+        {
+            return await data.GetMeetingDetail(meetingId);
+        }
+
+
 
     }
 }

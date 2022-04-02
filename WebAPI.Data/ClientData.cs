@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Client;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,50 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         {
             configuration = _configuration;
         }
+
+
+
+        public async Task<ServiceResponse<string>> AddClient(ClientModel _model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sqlQuery = "INSERT INTO tblClient (BillTo,FirstName,MiddleName,LastName,Email,Contact,EmgContact,Ethnicity,Gender,Coordinator,Nurse," +
+                        "MaritalStatus,OfChild,SSN,DOB,AltId,ID2,ID3,InsuranceID,WorkerName,WorkerContact,ReferredBy,IsHourly,TimeSlip,PriorityCode," +
+                        "ClientStatus,IsDeleted,CreatedOn,CreatedBy) VALUES (@BillTo,@FirstName,@MiddleName,@LastName,@Email,@Contact,@EmgContact," +
+                        "@Ethnicity,@Gender,@Coordinator,@Nurse,@MaritalStatus,@OfChild,@SSN,@DOB,@AltId,@ID2,@ID3,@InsuranceID,@WorkerName," +
+                        "@WorkerContact,@ReferredBy,@IsHourly,@TimeSlip,@PriorityCode,@ClientStatus,@IsDeleted,@CreatedOn,@CreatedBy)";
+
+
+                    int rowsAffected = cnn.Execute(sqlQuery, _model);
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new creation.";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+                return sres;
+            }
+            finally
+            {
+
+            }
+            return sres;
+        }
+
 
         public async Task<ServiceResponse<string>> savenewclient(Client client)
         {

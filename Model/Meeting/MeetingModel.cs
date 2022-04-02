@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ES_HomeCare_API.Model.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace ES_HomeCare_API.Model.Meeting
 
     public class EmpMeeting : BaseModel
     {
+
+        public long MeetingId { get; set; }
         public int EmpId { get; set; }
         public int ClientId { get; set; }
         public string EmpName { get; set; }
@@ -29,6 +32,14 @@ namespace ES_HomeCare_API.Model.Meeting
         public TimeSpan EndTime { get; set; }
         public string MeetingNote { get; set; }
     }
+
+
+  
+
+
+
+
+
 
 
 }

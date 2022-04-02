@@ -36,6 +36,8 @@ namespace WebAPI_SAMPLE
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IAccountData, AccountData>();
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<ILoginData, LoginData>();
             services.AddScoped<IClientService, ClientService>();
@@ -50,7 +52,10 @@ namespace WebAPI_SAMPLE
             services.AddScoped<ICommanService, CommanService>();
             services.AddScoped<IMeetingData, MeetingData>();
             services.AddScoped<IMeetingService, MeetingService>();
-            
+
+            services.AddScoped<IDocumentService, DocumentService>();
+            services.AddScoped<IDocumentData, DocumentData>();
+
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,
