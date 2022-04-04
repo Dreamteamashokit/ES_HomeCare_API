@@ -35,23 +35,18 @@ namespace ES_HomeCare_API.WebAPI.Data
                 {
                     string sqlQuery = "Insert Into tblMeeting (ClientId,MeetingDate,StartTime,EndTime,IsStatus,CreatedOn,CreatedBy)" +
                         " values(@ClientId,@MeetingDate,@StartTime,@EndTime,@IsStatus,@CreatedOn,@CreatedBy) select SCOPE_IDENTITY();";
-
                     _model.MeetingId = (int)(cnn.Query<int>(sqlQuery, _model).First());
-
                     int rowsAffected = cnn.Execute(@"INSERT Into tblEmpClientMeeting (MeetingId,EmpId) 
                     values(@MeetingId,@EmpId)",
                     _model.EmpList.Select(c => new { MeetingId = _model.MeetingId, EmpId = c }));
                     if (rowsAffected > 0)
                     {
-
-                        if (string.IsNullOrEmpty(_model.MeetingNote))
+                        if (!string.IsNullOrEmpty(_model.MeetingNote))
                         {
                             string addComment = "INSERT INTO tblMeetingPoint (MeetingId,MeetingPoint,CreatedOn,CreatedBy) VALUES (@MeetingId,@MeetingPoint,@CreatedOn,@CreatedBy)";
-                            var result = cnn.Execute(addComment, new { _model.MeetingId, _model.MeetingNote, _model.CreatedOn, _model.CreatedBy });
+                            var result = cnn.Execute(addComment, new { _model.MeetingId, MeetingPoint= _model.MeetingNote, _model.CreatedOn, _model.CreatedBy });
                             sres.Result = true;
-
                         }
-
                         sres.Result = true;
                         sres.Data = "Sucessfully  Created.";
                     }
@@ -75,9 +70,6 @@ namespace ES_HomeCare_API.WebAPI.Data
             return sres;
         }
 
-
-
-
         public async Task<ServiceResponse<IEnumerable<EmpMeeting>>> GetEmpMeetingList(int empId)
         {
             ServiceResponse<IEnumerable<EmpMeeting>> obj = new ServiceResponse<IEnumerable<EmpMeeting>>();
@@ -96,9 +88,6 @@ namespace ES_HomeCare_API.WebAPI.Data
             }
             return obj;
         }
-
-
-
 
         public async Task<ServiceResponse<IEnumerable<ClientMeeting>>> GetClientMeetingList()
         {
@@ -142,7 +131,6 @@ namespace ES_HomeCare_API.WebAPI.Data
             return obj;
         }
 
-
         public async Task<ServiceResponse<MeetingView>> GetMeetingDetail(long meetingId)
         {
             ServiceResponse<MeetingView> obj = new ServiceResponse<MeetingView>();
@@ -150,49 +138,53 @@ namespace ES_HomeCare_API.WebAPI.Data
             {
                 string sql = "select p.*,q.Contact,q.FirstName as cltFName,q.MiddleName as cltMName,q.LastName as cltLName,r.EmpId,s.FirstName as empFName," +
                     "s.MiddleName as empMName,s.LastName as empLName,s.CellPhone,t.Owner as empOwner,t.FlatNo as empFlatNo,t.Address as empAddress,t.City as empCity," +
-                    "t.Country as empCountry,t.State as empState,t.ZipCode as empZipCode from tblMeeting p inner join tblClient q on p.ClientId=q.ClientId " +
+                    "t.Country as empCountry,t.State as empState,t.ZipCode as empZipCode,u.MeetingPoint from tblMeeting p inner join tblClient q on p.ClientId=q.ClientId " +
                     "inner join tblEmpClientMeeting r on p.MeetingId=r.MeetingId inner join tblEmployee  s on r.EmpId=s.EmpId left join  tblAddress t " +
-                    "on s.EmpId=t.EmpId where p.MeetingId=@MeetingId";
+                    "on s.EmpId=t.EmpId Left Join tblMeetingPoint u on r.MeetingId=u.MeetingId where p.MeetingId=@MeetingId";
 
                 var rsData = (await connection.QueryAsync(sql, new { @MeetingId = meetingId }));
 
-
-
-
                 MeetingView objResult = (from mom in rsData
+
+                                         group mom by new { mom.MeetingId} into momGroup
+                                         orderby momGroup.Key descending
+
+
                                          select new MeetingView
                                          {
-                                             MeetingId = mom.MeetingId,
-                                             MeetingDate = ((DateTime)mom.MeetingDate).ToString("dd-MMM-yy"),
-                                             StartTime = ((TimeSpan)mom.StartTime).TimeHelper(),
-                                             EndTime = ((TimeSpan)mom.EndTime).TimeHelper(),
+                                             
+                                             MeetingId = momGroup.Key.MeetingId,
+                                             MeetingDate = ((DateTime)momGroup.FirstOrDefault().MeetingDate).ToString("dd-MMM-yy"),
+                                             StartTime = ((TimeSpan)momGroup.FirstOrDefault().StartTime).TimeHelper(),
+                                             EndTime = ((TimeSpan)momGroup.FirstOrDefault().EndTime).TimeHelper(),
                                              Employee = new UserView()
                                              {
 
-                                                 Id = mom.EmpId,
-                                                 FirstName = mom.empFName,
-                                                 MiddleName = mom.empMName,
-                                                 Lastname = mom.empLName,
-                                                 CellPhone = mom.CellPhone,
+                                                 Id = momGroup.FirstOrDefault().EmpId,
+                                                 FirstName = momGroup.FirstOrDefault().empFName,
+                                                 MiddleName = momGroup.FirstOrDefault().empMName,
+                                                 Lastname = momGroup.FirstOrDefault().empLName,
+                                                 CellPhone = momGroup.FirstOrDefault().CellPhone,
                                                  Address = new AddressView()
                                                  {
-                                                     LocationDetail = mom.empAddress,
-                                                     FlatNo = mom.empFlatNo,
-                                                     Country = mom.empCountry,
-                                                     State = mom.empState,
-                                                     City = mom.empCity,
-                                                     ZipCode = mom.empZipCode,
+                                                     LocationDetail = momGroup.FirstOrDefault().empAddress,
+                                                     FlatNo = momGroup.FirstOrDefault().empFlatNo,
+                                                     Country = momGroup.FirstOrDefault().empCountry,
+                                                     State = momGroup.FirstOrDefault().empState,
+                                                     City = momGroup.FirstOrDefault().empCity,
+                                                     ZipCode = momGroup.FirstOrDefault().empZipCode,
                                                  },
                                              },
                                              Client = new UserView()
                                              {
 
-                                                 Id = mom.ClientId,
-                                                 FirstName = mom.cltFName,
-                                                 MiddleName = mom.cltMName,
-                                                 Lastname = mom.cltLName,
+                                                 Id = momGroup.FirstOrDefault().ClientId,
+                                                 FirstName = momGroup.FirstOrDefault().cltFName,
+                                                 MiddleName = momGroup.FirstOrDefault().cltMName,
+                                                 Lastname = momGroup.FirstOrDefault().cltLName,
                                              },
-                                             IsStatus=mom.IsStatus
+                                             IsStatus= momGroup.FirstOrDefault().IsStatus,
+                                             Notes = momGroup.Select(x=>(string)x.MeetingPoint).ToList()
                                          }).FirstOrDefault();
 
                 obj.Data = objResult;
@@ -201,11 +193,6 @@ namespace ES_HomeCare_API.WebAPI.Data
             }
             return obj;
         }
-
-
-
-
-
 
         public async Task<ServiceResponse<string>> UpdateMeeting(MeetingModel _model)
         {
@@ -249,7 +236,6 @@ namespace ES_HomeCare_API.WebAPI.Data
             return sres;
         }
 
-
         public async Task<ServiceResponse<string>> PostNote(NotesModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -285,7 +271,6 @@ namespace ES_HomeCare_API.WebAPI.Data
             }
             return sres;
         }
-
 
         public async Task<ServiceResponse<string>> ChangeStatus(MeetingStatus _model)
         {
@@ -334,9 +319,6 @@ namespace ES_HomeCare_API.WebAPI.Data
             }
             return sres;
         }
-
-
-
 
     }
 }
