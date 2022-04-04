@@ -29,7 +29,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<IEnumerable<AttendanceModel>>> GetAttendanceList(int empId);
         Task<ServiceResponse<string>> SaveExitEmpStatus(StatusModel client);
         Task<ServiceResponse<IEnumerable<AvailabilityMaster>>> GetAvailabilityList();
-        Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList();
+        Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList(int empId);
         Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model);
         Task<ServiceResponse<IEnumerable<ComplianceModel>>> GetComplianceList(int empId);
         Task<ServiceResponse<string>> SaveEmpPayRate(SaveEmployeeRate Emprate);
@@ -37,6 +37,8 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
 
         Task<ServiceResponse<string>> SaveEmpDeclinedCase(EmpDeclinedCase client);
         Task<ServiceResponse<List<EmpDeclinedCase>>> GetEmpDeclinedcase(int EmpId);
+
+        
 
     }
 }

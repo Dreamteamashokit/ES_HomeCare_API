@@ -98,12 +98,12 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         }
 
 
-        public async Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList()
+        public async Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList(int empId)
         {
-            return await data.GetEmpStatusList();
+            return await data.GetEmpStatusList(empId);
         }
 
-
+      
 
 
         public async Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model)

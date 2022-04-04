@@ -533,14 +533,13 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         }
 
 
-        public async Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList()
+        public async Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList(int empId)
         {
             ServiceResponse<IEnumerable<AvailabilityStatus>> obj = new ServiceResponse<IEnumerable<AvailabilityStatus>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select Text as StatusType,EffectiveDate,ReturnDate,OKResume as Resume,ReHire as Rehire,Note " +
-                    "from dbo.tblEmpStatus ES inner join tblEmpStatusMaster ESM  on ES.TypeId = ESM.Id; ";
-                IEnumerable<AvailabilityStatus> cmeetings = (await connection.QueryAsync<AvailabilityStatus>(sql));
+                string sql = "select ItemName as StatusType,EffectiveDate,ReturnDate,OKResume as Resume,ReHire as Rehire,Note from tblEmpStatus ES inner join tblMaster ESM  on ES.TypeId = ESM.ItemId and ESM.MasterType = 5 where ES.EmployeeId = @EmployeeId ;";
+                IEnumerable<AvailabilityStatus> cmeetings = (await connection.QueryAsync<AvailabilityStatus>(sql, new { EmployeeId = empId }));
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
