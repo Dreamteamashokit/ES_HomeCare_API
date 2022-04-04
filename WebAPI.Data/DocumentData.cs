@@ -14,14 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
 using ES_HomeCare_API.Model.Common;
-
-
-
-
-
-
-
-
+using ES_HomeCare_API.Model;
 
 namespace ES_HomeCare_API.WebAPI.Data
 {
@@ -75,6 +68,153 @@ namespace ES_HomeCare_API.WebAPI.Data
 
         }
 
+
+        public async Task<ServiceResponse<string>> SaveFolder(FolderData model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            AmazonUploader uploader = new AmazonUploader(configuration);
+            bool CheckFolderExits = uploader.RunFolderCreationDemo(model.FolderName);
+            if (CheckFolderExits == true)
+            {
+
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sqlQuery = "Insert Into tblFolderMaster (EmpId,FolderName,CreatedOn,CreateBy) Values (@EmpId,@FolderName,@CreatedOn,@CreatedBy);";
+                    int rowsAffected = db.Execute(sqlQuery, new
+                    {
+                        EmpId = model.EmpId,
+                        FolderName = model.FolderName,
+                        CreatedOn = DateTime.Now,
+                        CreatedBy = model.CreatedBy
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Data = model.FolderName;
+                        sres.Message = " Data Save Sucessfully";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Data not save";
+                    }
+                }
+
+            }
+            else if (CheckFolderExits == false)
+            {
+
+                sres.Data = null;
+                sres.Message = "Folder not Created.";
+            }
+            return sres;
+
+        }
+
+
+
+        public async Task<ServiceResponse<IEnumerable<UploadFileRecord>>> GetFolderlist(int EmpId)
+        {
+            ServiceResponse<IEnumerable<UploadFileRecord>> obj = new ServiceResponse<IEnumerable<UploadFileRecord>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "select tbl.FolderId,FolderName,FileName from tblFoldermaster tbl left join tblEmpDocument ted on tbl.FolderId = ted.FolderId where EmpId = @EmpId or EmpId = 0;";
+
+                IEnumerable<UploadFileRecord> resData = (await connection.QueryAsync<UploadFileRecord>(sql,
+             new { @EmpId = EmpId }));
+
+                obj.Data = resData;
+                obj.Result = resData.Any() ? true : false;
+                obj.Message = resData.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+
+        }
+
+
+        public async Task<ServiceResponse<string>> Savefile(UploadFileFolder model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+
+
+
+            using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sqlQuery = "Insert Into tblEmpDocument (FolderId,FileName,FilePath,Title,SeachTag,Description,CreateOn,CreatedOn) Values (@FolderId,@FileName,@FilePath,@Title,@SeachTag,@Description,@CreateOn,@CreatedOn);";
+                int rowsAffected = db.Execute(sqlQuery, new
+                {
+                    FolderId = model.folderid,
+                    FileName = model.filename,
+                    FilePath = string.Empty,
+                    Title = model.Title,
+                    SeachTag = model.Search,
+                    Description = model.Description,
+                    CreateOn = model.CreatedBy,
+                    CreatedOn = DateTime.Now
+                });
+
+                if (rowsAffected > 0)
+                {
+
+                    sres.Message = " Data Save Sucessfully";
+                }
+                else
+                {
+                    sres.Data = null;
+                    sres.Message = "Data not save";
+                }
+            }
+
+
+
+            return sres;
+
+        }
+
+
+
+
+        public async Task<ServiceResponse<string>> DeleteFile(DeleteItem item)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("SP_DocumentProc", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@EmpId", item.EmpId);
+                    cmd.Parameters.AddWithValue("@DocumentId", item.DocumentId);
+                    cmd.Parameters.AddWithValue("@FolderId", item.FolderId);
+
+                    con.Open();
+                    int result = cmd.ExecuteNonQuery();
+                    if (result > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Record Deleted";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Deletion Failed.";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+                return sres;
+            }
+            finally
+            {
+
+            }
+
+            return sres;
+        }
 
     }
 }

@@ -22,6 +22,16 @@ namespace ES_HomeCare_API.Model.Document
 
     }
 
+    public class DeleteItem
+    {
+        public int RequestType { get; set; }
+        public int EmpId { get; set; }
+        public int FolderId { get; set; }
+        public int DocumentId { get; set; }
+        public string FolderName { get; set; }
+        public string FileName { get; set; }
+
+    }
 
 
 

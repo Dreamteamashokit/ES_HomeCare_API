@@ -88,22 +88,7 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.GetClientList();
 
         }
-        public async Task<ServiceResponse<string>> SaveFolder(FolderData model)
-        {
-
-            return await data.SaveFolder(model);
-        }
-
-        public async Task<ServiceResponse<IEnumerable<UploadFileRecord>>> GetFolderlist(int EmpId)
-        {
-            return await data.GetFolderlist(EmpId);
-        }
-        public async Task<ServiceResponse<string>> Savefile(UploadFileFolder model)
-        {
-            return await data.Savefile(model);
-        }
-
-
+    
 
     }
 }

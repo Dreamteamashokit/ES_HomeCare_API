@@ -26,9 +26,5 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
         Task<ServiceResponse<IEnumerable<ItemList>>> GetClientList();
 
 
-        Task<ServiceResponse<string>> SaveFolder(FolderData model);
-
-        Task<ServiceResponse<IEnumerable<UploadFileRecord>>> GetFolderlist(int EmpID);
-        Task<ServiceResponse<string>> Savefile(UploadFileFolder model);
     }
 }
