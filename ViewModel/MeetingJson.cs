@@ -15,5 +15,6 @@ namespace ES_HomeCare_API.ViewModel
         public string EndTime { get; set; }
         public string MeetingNote { get; set; }
 
+        public int UserId { get; set; }
     }
 }

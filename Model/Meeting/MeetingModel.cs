@@ -1,12 +1,11 @@
-﻿using ES_HomeCare_API.Model.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ES_HomeCare_API.Model.Meeting
 {
-    public class MeetingModel:BaseModel
+    public class MeetingModel : BaseModel
     {
         public int MeetingId { get; set; }
         public int ClientId { get; set; }
@@ -15,6 +14,14 @@ namespace ES_HomeCare_API.Model.Meeting
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
         public string MeetingNote { get; set; }
+        public short IsStatus { get; set; }
+
+    }
+
+    public class NotesModel : BaseModel
+    {
+        public long MeetingId { get; set; }
+        public string MeetingPoint { get; set; }
     }
 
 
@@ -30,16 +37,8 @@ namespace ES_HomeCare_API.Model.Meeting
         public DateTime MeetingDate { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
-        public string MeetingNote { get; set; }
+        public short IsStatus { get; set; }
     }
-
-
-  
-
-
-
-
-
 
 
 }

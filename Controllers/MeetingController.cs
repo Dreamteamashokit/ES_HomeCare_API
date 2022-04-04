@@ -1,4 +1,5 @@
 ﻿using ES_HomeCare_API.Helper;
+using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.Model.Meeting;
 using ES_HomeCare_API.ViewModel;
@@ -42,10 +43,9 @@ namespace ES_HomeCare_API.Controllers
                     StartTime = model.StartTime.ParseTime(),
                     EndTime = model.EndTime.ParseTime(),
                     EmpList = model.EmpList,
-                    CreatedBy = 1,
+                    IsStatus= (short)MeetingEnum.Active,
+                    CreatedBy = model.UserId,
                     CreatedOn = DateTime.Now
-
-
                 };
                 return Ok(await mtgSrv.AddMeeting(obj));
             }
@@ -53,17 +53,14 @@ namespace ES_HomeCare_API.Controllers
             {
                 throw ex;
             }
-
-
-
         }
 
 
 
 
         [HttpGet("getEmpMeeting/{empId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<EmpMeeting>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<EmpMeeting>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetEmpMeetingList(int empId)
         {
             return Ok(await mtgSrv.GetEmpMeetingList(empId));
@@ -80,7 +77,8 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
-        
+
+
         [HttpGet("getMeetingDetail/{meetingId}")]
         [ProducesResponseType(typeof(ServiceResponse<MeetingView>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<MeetingView>), StatusCodes.Status400BadRequest)]
@@ -91,7 +89,73 @@ namespace ES_HomeCare_API.Controllers
 
 
 
-        
+
+
+
+
+
+
+
+
+
+
+        [HttpPost("updateMeeting")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateMeeting([FromBody] MeetingJson model)
+        {
+            try
+            {
+                MeetingModel obj = new MeetingModel()
+                {
+                 
+                    ClientId = model.ClientId,
+                    StartTime = model.StartTime.ParseTime(),
+                    EndTime = model.EndTime.ParseTime(),
+                    CreatedBy = model.UserId,
+                    CreatedOn = DateTime.Now
+                };
+                return Ok(await mtgSrv.AddMeeting(obj));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        [HttpPost("addNote")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddNote([FromBody] NotesModel model)
+        {
+            try
+            {
+                model.CreatedOn = DateTime.Now;
+                return Ok(await mtgSrv.PostNote(model));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpPost("updateStatus")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateStatus([FromBody] MeetingStatus model)
+        {
+            try
+            {
+                model.CreatedOn = DateTime.Now;
+                return Ok(await mtgSrv.ChangeStatus(model));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
 
     }
 }

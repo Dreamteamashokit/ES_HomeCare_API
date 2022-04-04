@@ -30,8 +30,6 @@ namespace ES_HomeCare_API.Model.Meeting
         public DateTime MeetingDate { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
-        public string MeetingNote { get; set; }
-
         public int EmpId { get; set; }
         public string EmpName { get; set; }
 

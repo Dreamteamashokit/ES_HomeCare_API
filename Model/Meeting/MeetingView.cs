@@ -10,9 +10,9 @@ namespace ES_HomeCare_API.Model.Meeting
         public string MeetingDate { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
-        public string MeetingNote { get; set; }
         public UserView Employee { get; set; }
         public UserView Client { get; set; }
-        public List<string> Notes { get; set; }
+        public List<string> notes { get; set; }
+        public short IsStatus { get; set; }
     }
 }

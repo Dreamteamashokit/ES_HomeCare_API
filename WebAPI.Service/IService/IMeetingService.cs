@@ -14,5 +14,9 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<IEnumerable<EmpMeeting>>> GetEmpMeetingList(int empId);
         Task<ServiceResponse<IEnumerable<ClientMeeting>>> GetClientMeetingList();
         Task<ServiceResponse<MeetingView>> GetMeetingDetail(long meetingId);
+        Task<ServiceResponse<string>> UpdateMeeting(MeetingModel _model);
+        Task<ServiceResponse<string>> PostNote(NotesModel _model);
+        Task<ServiceResponse<string>> ChangeStatus(MeetingStatus _model);
+
     }
 }
