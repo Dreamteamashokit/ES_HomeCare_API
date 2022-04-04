@@ -17,12 +17,14 @@ namespace ES_HomeCare_API.Helper
         public readonly string SceretKey = string.Empty;
         public readonly string BucketName = string.Empty;
         private IConfiguration configuration;
+        IAmazonS3 client;
         public AmazonUploader(IConfiguration _configuration)
         {
             configuration = _configuration;
             AccessKey = configuration.GetConnectionString("AWSAccessKey").ToString();
             SceretKey = configuration.GetConnectionString("AWSsceretKey").ToString();
             BucketName = configuration.GetConnectionString("AWSBucketName").ToString();
+            client = new AmazonS3Client(AccessKey, SceretKey, RegionEndpoint.USEast1);
         }
 
        
@@ -32,7 +34,7 @@ namespace ES_HomeCare_API.Helper
             try
             {
 
-                IAmazonS3 client = new AmazonS3Client(AccessKey, SceretKey, RegionEndpoint.USEast1);
+             
 
                
                 TransferUtility utility = new TransferUtility(client);
@@ -62,7 +64,7 @@ namespace ES_HomeCare_API.Helper
         {
             try
             {
-                IAmazonS3 client = new AmazonS3Client(AccessKey, SceretKey, RegionEndpoint.USEast1);
+             
 
                 PutObjectRequest folderRequest = new PutObjectRequest();
                 String delimiter = "/";
@@ -130,6 +132,58 @@ namespace ES_HomeCare_API.Helper
             }
             catch (Exception)
             {
+                throw;
+            }
+        }
+
+
+        public async Task DeleteFile(string fileName)
+        {
+            try
+            {
+                DeleteObjectRequest request = new DeleteObjectRequest
+                {
+                    BucketName = BucketName,
+                    Key = fileName
+                };
+
+
+                await client.DeleteObjectAsync(request);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+           
+        }
+
+        public bool IsFileExists(string fileName)
+        {
+            try
+            {
+                GetObjectMetadataRequest request = new GetObjectMetadataRequest()
+                {
+                    BucketName = BucketName,
+                    Key = fileName
+                   
+                };
+
+                var response = client.GetObjectMetadataAsync(request).Result;
+                
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null && ex.InnerException is AmazonS3Exception awsEx)
+                {
+                    if (string.Equals(awsEx.ErrorCode, "NoSuchBucket"))
+                        return false;
+
+                    else if (string.Equals(awsEx.ErrorCode, "NotFound"))
+                        return false;
+                }
+
                 throw;
             }
         }

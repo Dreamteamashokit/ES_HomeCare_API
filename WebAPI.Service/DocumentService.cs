@@ -1,4 +1,5 @@
-﻿using ES_HomeCare_API.Model.Document;
+﻿using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Document;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using System.Collections.Generic;
@@ -21,5 +22,25 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             return await data.GetDocumentlist(empId);
         }
+
+        public async Task<ServiceResponse<string>> SaveFolder(FolderData model)
+        {
+
+            return await data.SaveFolder(model);
+        }
+
+        public async Task<ServiceResponse<IEnumerable<UploadFileRecord>>> GetFolderlist(int EmpId)
+        {
+            return await data.GetFolderlist(EmpId);
+        }
+        public async Task<ServiceResponse<string>> Savefile(UploadFileFolder model)
+        {
+            return await data.Savefile(model);
+        }
+        public async Task<ServiceResponse<string>> DeleteFile(DeleteItem item)
+        {
+            return await data.DeleteFile(item);
+        }
+
     }
 }
