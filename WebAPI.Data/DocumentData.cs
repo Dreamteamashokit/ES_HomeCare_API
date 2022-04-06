@@ -31,39 +31,51 @@ namespace ES_HomeCare_API.WebAPI.Data
         public async Task<ServiceResponse<IEnumerable<FolderView>>> GetDocumentlist(int empId)
         {
             ServiceResponse<IEnumerable<FolderView>> obj = new ServiceResponse<IEnumerable<FolderView>>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            try
             {
-                string sql = "select x.FolderId,x.FolderName,y.Documentid,y.FileName,y.FilePath,y.Title,y.Description,y.SeachTag from " +
-                    "tblFoldermaster x left join tblEmpDocument y on x.FolderId = y.FolderId where EmpId = @EmpId ;";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sql = "select x.FolderId,x.FolderName,y.Documentid,y.FileName,y.FilePath,y.Title,y.Description,y.SeachTag, y.createdon as CreatedOn," +
+                        "e.FirstName + ' ' + e.MiddleName + ' ' + e.LastName as CreatedByName from " +
+                        "tblFoldermaster x left join tblEmpDocument y on x.FolderId = y.FolderId left join tblEmployee e on y.CreateOn=e.EmpId where x.EmpId = @EmpId;";
 
-                var result = (await connection.QueryAsync(sql, new { @EmpId = empId }));
+                    var result = (await connection.QueryAsync(sql, new { @EmpId = empId }));
 
-           
 
-                //Using Query Syntax
-                var GroupByQS = from doc in result
-                                group doc by new { doc.FolderId, doc.FolderName, } into docGrp
-                                orderby docGrp.Key.FolderId descending
-                                select new FolderView
-                                {
-                                    FolderId = docGrp.Key.FolderId,
-                                    FolderName = docGrp.Key.FolderName,
 
-                                    DocumentList = docGrp.Select(x => new DocumentView
+                    //Using Query Syntax
+                    var GroupByQS = from doc in result
+                                    group doc by new { doc.FolderId, doc.FolderName, } into docGrp
+                                    orderby docGrp.Key.FolderId descending
+                                    select new FolderView
                                     {
-                                        DocumentId = x.Documentid,
-                                        Title = x.Title,
-                                        SearchTag = x.SearchTag,
-                                        Description = x.Description,
-                                        FileName = x.FileName,
-                                        FilePath = x.FilePath,
-                                    }).ToList()
-                                };
+                                        FolderId = docGrp.Key.FolderId,
+                                        FolderName = docGrp.Key.FolderName,
 
-                obj.Data = GroupByQS;
-                obj.Result = GroupByQS.Any() ? true : false;
-                obj.Message = GroupByQS.Any() ? "Data Found." : "No Data found.";
+                                        DocumentList = docGrp.Select(x => new DocumentView
+                                        {
+                                            DocumentId = x.Documentid,
+                                            Title = x.Title,
+                                            SearchTag = x.SearchTag,
+                                            Description = x.Description,
+                                            FileName = x.FileName,
+                                            FilePath = x.FilePath,
+                                            CreatedByName = string.IsNullOrEmpty(x.CreatedByName) ? "admin" : "",
+                                            CreatedOn = x.CreatedOn.ToString("dd/MM/yyyy")
+                                        }).ToList()
+                                    };
+
+                    obj.Data = GroupByQS;
+                    obj.Result = GroupByQS.Any() ? true : false;
+                    obj.Message = GroupByQS.Any() ? "Data Found." : "No Data found.";
+                }
             }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+           
             return obj;
 
         }
@@ -132,6 +144,10 @@ namespace ES_HomeCare_API.WebAPI.Data
         }
 
 
+      
+
+
+
         public async Task<ServiceResponse<string>> Savefile(UploadFileFolder model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -184,7 +200,11 @@ namespace ES_HomeCare_API.WebAPI.Data
                     SqlCommand cmd = new SqlCommand("SP_DocumentProc", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
+
+                    cmd.Parameters.AddWithValue("@EmpId", item.EmpId);                   
+
                     cmd.Parameters.AddWithValue("@EmpId", item.EmpId);
+
                     cmd.Parameters.AddWithValue("@DocumentId", item.DocumentId);
                     cmd.Parameters.AddWithValue("@FolderId", item.FolderId);
 
@@ -215,6 +235,7 @@ namespace ES_HomeCare_API.WebAPI.Data
 
             return sres;
         }
+
 
     }
 }

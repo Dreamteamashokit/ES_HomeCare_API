@@ -11,6 +11,7 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
 
         Task<ServiceResponse<IEnumerable<FolderView>>> GetDocumentlist(int empId);
 
+
         Task<ServiceResponse<string>> SaveFolder(FolderData model);
 
         Task<ServiceResponse<IEnumerable<UploadFileRecord>>> GetFolderlist(int EmpID);
@@ -18,3 +19,4 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
         Task<ServiceResponse<string>> DeleteFile(DeleteItem item);
     }
 }
+

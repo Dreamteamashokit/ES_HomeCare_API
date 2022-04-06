@@ -10,6 +10,12 @@ using System.Collections.Generic;
 
 using System.IO;
 using System.Linq;
+using System.Net;
+
+
+using System.IO;
+using System.Linq;
+
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
@@ -40,8 +46,6 @@ namespace ES_HomeCare_API.Controllers
         {
             return Ok(await docSrv.GetDocumentlist(empId));
         }
-
-
 
 
         [HttpPost("UploadFile"), DisableRequestSizeLimit]
@@ -138,7 +142,11 @@ namespace ES_HomeCare_API.Controllers
         [HttpDelete("DeletetDocumentFromS3")]
         [ProducesResponseType(typeof(ServiceResponse<FolderView>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<FolderView>), StatusCodes.Status400BadRequest)]
+
+       
+
         public async Task<IActionResult> DeletetDocumentFromS3(int DocumentId, string FileName, int FolderId, string FolderName, int empid)
+
         {
             //string DeleteFilename = string.IsNullOrEmpty(FileName) ? FolderName + "/" : FolderName + "/" + FileName;
             //AmazonUploader Download = new AmazonUploader(configuration);

@@ -19,7 +19,8 @@ namespace ES_HomeCare_API.Model.Document
         public string Description { get; set; }
         public string FileName { get; set; }
         public string FilePath { get; set; }
-
+        public string CreatedByName { get; set; }
+        public string CreatedOn { get; set; }
     }
 
     public class DeleteItem
@@ -32,6 +33,7 @@ namespace ES_HomeCare_API.Model.Document
         public string FileName { get; set; }
 
     }
+
 
 
 
