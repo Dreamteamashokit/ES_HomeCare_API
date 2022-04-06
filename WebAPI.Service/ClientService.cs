@@ -49,14 +49,14 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             return await data.scheduleclientmeeting(meeting);
         }
 
-        public async Task<ServiceResponse<string>> SaveClientStatus(ClientStatus _model)
-        {
-            return await data.SaveClientStatus(_model);
-        }
+        //public async Task<ServiceResponse<string>> SaveClientStatus(ClientStatus _model)
+        //{
+        //    return await data.SaveClientStatus(_model);
+        //}
 
-        public async Task<ServiceResponse<IEnumerable<ClientStatusLst>>> GetClientStatusList(int ClientId)
-        {
-            return await data.GetClientStatusList(ClientId); 
-        }
+        //public async Task<ServiceResponse<IEnumerable<ClientStatusLst>>> GetClientStatusList(int ClientId)
+        //{
+        //    return await data.GetClientStatusList(ClientId); 
+        //}
     }
 }

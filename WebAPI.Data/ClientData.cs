@@ -90,22 +90,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         public async Task<ServiceResponse<string>> savenewclient(Client client)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
