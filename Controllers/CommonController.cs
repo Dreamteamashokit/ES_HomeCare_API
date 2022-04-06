@@ -143,9 +143,13 @@ namespace ES_HomeCare_API.Controllers
         {
             return Ok(await comSrv.GetClientList());
         }
+<<<<<<< HEAD
         
         
 
+=======
+      
+>>>>>>> dad4c1170142d23b5de4648a36caa52f5948f010
 
 
 

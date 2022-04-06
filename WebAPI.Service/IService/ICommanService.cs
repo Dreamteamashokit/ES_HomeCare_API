@@ -28,8 +28,11 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<IEnumerable<ItemList>>> GetEmployeesList();
         Task<ServiceResponse<IEnumerable<ItemList>>> GetClientList();
 
+<<<<<<< HEAD
 
       
+=======
+>>>>>>> dad4c1170142d23b5de4648a36caa52f5948f010
   
 
     }

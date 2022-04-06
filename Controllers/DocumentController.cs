@@ -7,9 +7,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+<<<<<<< HEAD
 using System.IO;
 using System.Linq;
 using System.Net;
+=======
+
+using System.IO;
+using System.Linq;
+>>>>>>> dad4c1170142d23b5de4648a36caa52f5948f010
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
@@ -28,8 +34,9 @@ namespace ES_HomeCare_API.Controllers
         {
             configuration = _configuration;
             this.docSrv = _docSrv;
-      
+
         }
+
 
 
         [HttpGet("getDocumentlist/{empId}")]
@@ -41,6 +48,11 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> dad4c1170142d23b5de4648a36caa52f5948f010
         [HttpPost("UploadFile"), DisableRequestSizeLimit]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
@@ -135,7 +147,11 @@ namespace ES_HomeCare_API.Controllers
         [HttpDelete("DeletetDocumentFromS3")]
         [ProducesResponseType(typeof(ServiceResponse<FolderView>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<FolderView>), StatusCodes.Status400BadRequest)]
+<<<<<<< HEAD
         public async Task<IActionResult> DeletetDocumentFromS3(int DocumentId,string FileName,int FolderId,string FolderName,int empid)
+=======
+        public async Task<IActionResult> DeletetDocumentFromS3(int DocumentId, string FileName, int FolderId, string FolderName, int empid)
+>>>>>>> dad4c1170142d23b5de4648a36caa52f5948f010
         {
             //string DeleteFilename = string.IsNullOrEmpty(FileName) ? FolderName + "/" : FolderName + "/" + FileName;
             //AmazonUploader Download = new AmazonUploader(configuration);
@@ -150,5 +166,9 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> dad4c1170142d23b5de4648a36caa52f5948f010
     }
 }
