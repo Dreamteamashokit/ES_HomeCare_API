@@ -32,7 +32,7 @@ namespace WebAPI_SAMPLE.Controllers
             {
                 model.Nurse = null;
             }
- 
+
             model.TimeSlip = true;
             model.IsHourly = true;
             model.IsActive = 1;
@@ -52,7 +52,13 @@ namespace WebAPI_SAMPLE.Controllers
 
 
 
-
+        [HttpGet("getClientDetail/{userId}")]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<ClientModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<ClientModel>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetClientDetail(int userId)
+        {
+            return Ok(await service.GetClientDetail(userId));
+        }
 
 
         [HttpPost("savenewclientinfo")]
