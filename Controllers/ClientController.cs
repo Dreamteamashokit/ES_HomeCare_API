@@ -32,9 +32,12 @@ namespace WebAPI_SAMPLE.Controllers
             {
                 model.Nurse = null;
             }
-            model.IsDeleted = false;
+ 
             model.TimeSlip = true;
             model.IsHourly = true;
+            model.IsActive = 1;
+            model.UserName = model.Email;
+            model.UserPassword = model.SSN;
 
             model.CreatedBy = 1;
             model.CreatedOn = DateTime.Now;

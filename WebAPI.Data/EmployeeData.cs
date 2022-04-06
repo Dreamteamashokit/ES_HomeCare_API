@@ -337,7 +337,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         #endregion
 
 
-
         public async Task<ServiceResponse<string>> AddIncident(IncidentMode _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -516,7 +515,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return sres;
         }
 
-
         public async Task<ServiceResponse<IEnumerable<AvailabilityMaster>>> GetAvailabilityList()
         {
             ServiceResponse<IEnumerable<AvailabilityMaster>> obj = new ServiceResponse<IEnumerable<AvailabilityMaster>>();
@@ -532,7 +530,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
         }
 
-
         public async Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList(int empId)
         {
             ServiceResponse<IEnumerable<AvailabilityStatus>> obj = new ServiceResponse<IEnumerable<AvailabilityStatus>>();
@@ -547,9 +544,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return obj;
 
         }
-
-
-
 
         public async Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model)
         {
@@ -617,7 +611,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return obj;
 
         }
-
 
         public async Task<ServiceResponse<string>> SaveEmpPayRate(SaveEmployeeRate client)
         {
@@ -727,11 +720,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             }
         }
 
-
-
-
-
-
         public async Task<ServiceResponse<string>> SaveEmpDeclinedCase(EmpDeclinedCase client)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -831,15 +819,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             }
         }
-
-
-
-
-
-
-
-
-
 
 
     }

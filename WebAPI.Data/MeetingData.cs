@@ -130,8 +130,8 @@ namespace ES_HomeCare_API.WebAPI.Data
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 string sql = "select x.ClientId,x.FirstName,x.MiddleName,x.LastName,x.Contact,z.EmpId,p.FirstName +' ' + ISNULL(p.MiddleName,' ')+' ' + p.LastName " +
-                    "as EmpName,y.MeetingId,y.MeetingDate,y.StartTime,y.EndTime from tblClient x Left Join tblMeeting y on x.ClientId=y.ClientId and y.IsStatus<>0 inner join" +
-                    " tblEmpClientMeeting z on y.MeetingId=z.MeetingId inner join tblEmployee p on z.EmpId=p.EmpId ;";
+                    "as EmpName,y.MeetingId,y.MeetingDate,y.StartTime,y.EndTime from tblClient x Left Join tblMeeting y on x.ClientId=y.ClientId and y.IsStatus<>0 Left join" +
+                    " tblEmpClientMeeting z on y.MeetingId=z.MeetingId Left join tblEmployee p on z.EmpId=p.EmpId ;";
 
                 var result = (await connection.QueryAsync(sql));
 

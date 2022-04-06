@@ -30,11 +30,17 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = "INSERT INTO tblClient (BillTo,FirstName,MiddleName,LastName,Email,Contact,EmgContact,Ethnicity,Gender,Coordinator,Nurse," +
+                    string _query = "INSERT INTO tblUser (SSN,FirstName,MiddleName,LastName,DOB,Email,Gender,MaritalStatus," +
+                        "EmgContact,UserName,UserPassword,IsActive,CreatedOn,CreatedBy) VALUES (@SSN,@FirstName,@MiddleName,@LastName,@DOB,@Email,@Gender,@MaritalStatus,@EmgContact," +
+                        "@UserName,@UserPassword,@IsActive,@CreatedOn,@CreatedBy) select SCOPE_IDENTITY();";
+                    _model.UserId = (int)(cnn.Query<int>(_query, _model).First());
+
+
+                    string sqlQuery = "INSERT INTO tblClient (UserId,BillTo,FirstName,MiddleName,LastName,Email,Contact,EmgContact,Ethnicity,Gender,Coordinator,Nurse," +
                         "MaritalStatus,OfChild,SSN,DOB,AltId,ID2,ID3,InsuranceID,WorkerName,WorkerContact,ReferredBy,IsHourly,TimeSlip,PriorityCode," +
-                        "ClientStatus,IsDeleted,CreatedOn,CreatedBy) VALUES (@BillTo,@FirstName,@MiddleName,@LastName,@Email,@Contact,@EmgContact," +
+                        "IsActive,CreatedOn,CreatedBy) VALUES (@UserId,@BillTo,@FirstName,@MiddleName,@LastName,@Email,@Contact,@EmgContact," +
                         "@Ethnicity,@Gender,@Coordinator,@Nurse,@MaritalStatus,@OfChild,@SSN,@DOB,@AltId,@ID2,@ID3,@InsuranceID,@WorkerName," +
-                        "@WorkerContact,@ReferredBy,@IsHourly,@TimeSlip,@PriorityCode,@ClientStatus,@IsDeleted,@CreatedOn,@CreatedBy)";
+                        "@WorkerContact,@ReferredBy,@IsHourly,@TimeSlip,@PriorityCode,@IsActive,@CreatedOn,@CreatedBy)";
 
 
                     int rowsAffected = cnn.Execute(sqlQuery, _model);
