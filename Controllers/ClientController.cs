@@ -92,5 +92,22 @@ namespace WebAPI_SAMPLE.Controllers
         {
             return Ok(await service.scheduleclientmeeting(meeting));
         }
+
+        [HttpPost("addStatus")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> SaveClientStatus([FromBody] ClientStatus model)
+        {
+            model.CreatedOn = DateTime.Now;
+            return Ok(await service.SaveClientStatus(model));
+        }
+
+        [HttpGet("getClientStatusList/{clientId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> getEmpStatusList(int clientId)
+        {
+            return Ok(await service.GetClientStatusList(clientId));
+        }
     }
 }
