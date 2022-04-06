@@ -301,12 +301,74 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             }
             return sres;
         }
-    
-    
-    
-    
-    
-    
-    
+
+
+        public async Task<ServiceResponse<string>> SaveClientStatus(ClientStatus _model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sqlQuery = "insert into tblClientSatus(ActivityID,StatusDate,ReferralCode,note,clientId,OfficeUserId,ReferaalUserID,CreatedBy,Createdon"+
+                                       ",TextCheck, ScreenCheck, EmailCheck) values" +
+                        "(@ActivityID,@StatusDate,@ReferralCode,@note,@ClientId,@OfficeUserId,@ReferaalUserID,@CreatedBy,@CreatedOn,@Text,@Screen," +
+                        "@Email)";
+
+                    int rowsAffected = db.Execute(sqlQuery, new
+                    {
+                        ClientId = _model.clientId,
+                      Scheduling = _model.ActivityId,
+                        StatusDate = _model.Date,
+                        ReferralCode = _model.ReferralCode,
+                        note = _model.Note,
+                        OfficeUserId = _model.OfficeUserId,
+                        Text = _model.text,
+                        Screen = _model.screen,
+                        Email = _model.email,
+                        ReferaalUserID = _model.OfficeUserReferralID,                       
+                        CreatedOn = _model.CreatedOn,
+                        CreatedBy = _model.CreatedBy
+
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new creation.";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+
+            }
+
+            return sres;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ClientStatusLst>>> GetClientStatusList(int ClientId)
+        {
+            ServiceResponse<IEnumerable<ClientStatusLst>> obj = new ServiceResponse<IEnumerable<ClientStatusLst>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "select ItemName as StatusType,EffectiveDate,ReturnDate,OKResume as Resume,ReHire as Rehire,Note from tblEmpStatus ES inner join tblMaster ESM  on ES.TypeId = ESM.ItemId and ESM.MasterType = 5 where ES.EmployeeId = @ClientID ;";
+                IEnumerable<ClientStatusLst> cmeetings = (await connection.QueryAsync<ClientStatusLst>(sql, new { ClientID = ClientId }));
+                obj.Data = cmeetings;
+                obj.Result = cmeetings.Any() ? true : false;
+                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+
+        }
+
+
     }
 }
