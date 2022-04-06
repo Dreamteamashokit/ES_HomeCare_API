@@ -68,6 +68,28 @@ namespace ES_HomeCare_API.Controllers
 
 
 
+
+
+        [HttpGet("getUserMeeting/{userId}/{userTypeId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<EmpMeeting>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<EmpMeeting>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetUserMeetingList(int userId, short userTypeId)
+        {
+            return Ok(await mtgSrv.GetUserMeetingList(userId, userTypeId));
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
         [HttpGet("getClientMeetingList")]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientMeeting>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientMeeting>>), StatusCodes.Status400BadRequest)]

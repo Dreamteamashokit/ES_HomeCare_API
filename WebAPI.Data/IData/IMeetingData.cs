@@ -17,6 +17,8 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
         Task<ServiceResponse<string>> UpdateMeeting(MeetingModel _model);
         Task<ServiceResponse<string>> PostNote(NotesModel _model);
         Task<ServiceResponse<string>> ChangeStatus(MeetingStatus _model);
+        Task<ServiceResponse<IEnumerable<EmpMeeting>>> GetUserMeetingList(int _userId, short _userTypeId);
+
 
 
 

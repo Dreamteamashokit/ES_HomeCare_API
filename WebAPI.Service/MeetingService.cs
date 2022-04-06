@@ -57,6 +57,14 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.ChangeStatus(_model);
         }
 
+        public async Task<ServiceResponse<IEnumerable<EmpMeeting>>> GetUserMeetingList(int _userId, short _userTypeId)
+
+      
+        {
+            return await data.GetUserMeetingList(_userId, _userTypeId);
+        }
+
+        
 
 
     }
