@@ -313,12 +313,6 @@ namespace ES_HomeCare_API.WebAPI.Data
 
         }
       
-      
-<<<<<<< HEAD
-=======
-
-
->>>>>>> dad4c1170142d23b5de4648a36caa52f5948f010
 
 
 
