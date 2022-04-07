@@ -70,6 +70,24 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return sres;
         }
 
+        public async Task<ServiceResponse<ClientModel>> GetClientDetail(int clientId)
+        {
+            ServiceResponse<ClientModel> obj = new ServiceResponse<ClientModel>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "select y.*,x.AltId,x.ID2,x.ID3,x.InsuranceID,x.WorkerContact,x.WorkerName,x.ReferredBy,x.PriorityCode," +
+                    "x.TimeSlip,x.OfChild from tblClient x inner join tblUser y on x.UserId=y.UserId where x.UserId=@UserId; ";
+
+                var objResult = (await connection.QueryAsync<ClientModel>(sql,
+                       new { @UserId = clientId })).FirstOrDefault();
+
+                obj.Data = objResult;
+                obj.Result = objResult != null ? true : false;
+                obj.Message = objResult != null ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
+
 
         public async Task<ServiceResponse<string>> savenewclient(Client client)
         {
