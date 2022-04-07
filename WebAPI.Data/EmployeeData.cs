@@ -28,12 +28,21 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = "INSERT INTO tblEmployee(EmpKey, SSN, EmpType, FirstName, MiddleName, LastName, DOB, Email, CellPhone, DateOfHire, " +
+
+                    string _query = "INSERT INTO tblUser (SSN,FirstName,MiddleName,LastName,DOB,Email,Gender,MaritalStatus," +
+                        "EmgContact,UserName,UserPassword,IsActive,CreatedOn,CreatedBy) VALUES (@SSN,@FirstName,@MiddleName,@LastName,@DOB,@Email,@Gender,@MaritalStatus,@EmgContact," +
+                        "@UserName,@UserPassword,@IsActive,@CreatedOn,@CreatedBy) select SCOPE_IDENTITY();";
+                    _model.UserId = (int)(cnn.Query<int>(_query, _model).First());
+
+
+
+
+                    string sqlQuery = "INSERT INTO tblEmployee(UserId,EmpKey, SSN, EmpType, FirstName, MiddleName, LastName, DOB, Email, CellPhone, DateOfHire, " +
                         "HomePhone, DateOfFirstCase, Gender, HRSupervisor, Enthnicity, MaritalStatus, Dependents, City, Country, TaxState, ZipCode, " +
-                        "EmgContact, EmgPhone, Municipality, Notes, EmpStatus, IsDeleted, CreatedOn, CreatedBy) " +
-                        "VALUES(@EmpKey, @SSN, @EmpType, @FirstName, @MiddleName, @LastName, @DOB, @Email, @CellPhone, @DateOfHire, @HomePhone, " +
+                        "EmgContact, EmgPhone, Municipality, Notes, IsActive,  CreatedOn, CreatedBy) " +
+                        "VALUES(@UserId,@EmpKey, @SSN, @EmpType, @FirstName, @MiddleName, @LastName, @DOB, @Email, @CellPhone, @DateOfHire, @HomePhone, " +
                         "@DateOfFirstCase, @Gender, @HRSupervisor, @Enthnicity, @MaritalStatus, @Dependents, @City, @Country, @TaxState, @ZipCode," +
-                        "@EmgContact, @EmgPhone, @Municipality, @Notes, @EmpStatus, @IsDeleted, @CreatedOn, @CreatedBy)";
+                        "@EmgContact, @EmgPhone, @Municipality, @Notes, @IsActive, @CreatedOn, @CreatedBy)";
                                     
 
                     int rowsAffected = cnn.Execute(sqlQuery, _model);

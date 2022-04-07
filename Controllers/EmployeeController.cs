@@ -36,6 +36,7 @@ namespace WebAPI_SAMPLE.Controllers
             {
                 model.HRSupervisor = null;
             }
+            model.IsActive = 1;
 
             model.CreatedBy = 1;
             model.CreatedOn = DateTime.Now;
@@ -52,13 +53,6 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
         #endregion
-
-
-
-
-
-
-
 
         [HttpGet("getemployeelist")]
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]

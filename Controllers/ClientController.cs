@@ -32,24 +32,15 @@ namespace WebAPI_SAMPLE.Controllers
             {
                 model.Nurse = null;
             }
-
             model.TimeSlip = true;
             model.IsHourly = true;
             model.IsActive = 1;
             model.UserName = model.Email;
             model.UserPassword = model.SSN;
-
             model.CreatedBy = 1;
             model.CreatedOn = DateTime.Now;
-
-
-
             return Ok(await service.AddClient(model));
         }
-
-
-
-
 
 
         [HttpGet("getClientDetail/{userId}")]
