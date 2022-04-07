@@ -282,9 +282,10 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = "Insert Into tblAddress (EmpId,AddressType,Owner,FlatNo,Address,City,Country,State,ZipCode,CreatedOn,CreatedBy) Values (@EmpId,@AddressType,@Owner,@FlatNo,@Address,@City,@Country,@State,@ZipCode,@CreatedOn,@CreatedBy);";
+                    string sqlQuery = "Insert Into tblAddress (UserId,EmpId,AddressType,Owner,FlatNo,Address,City,Country,State,ZipCode,CreatedOn,CreatedBy) Values (@UserId,@EmpId,@AddressType,@Owner,@FlatNo,@Address,@City,@Country,@State,@ZipCode,@CreatedOn,@CreatedBy);";
                     int rowsAffected = db.Execute(sqlQuery, new
                     {
+                        UserId = _model.EmpId,
                         EmpId = _model.EmpId,
                         AddressType = _model.AddressType,
                         Owner = _model.Owner,
@@ -331,9 +332,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "SELECT * FROM tblAddress Where EmpId=@EmpId;";
+                string sql = "SELECT * FROM tblAddress Where UserId=@UserId;";
                 IEnumerable<AddressModel> cmeetings = (await connection.QueryAsync<AddressModel>(sql,
-                         new { @EmpId = empId }));
+                         new { @UserId = empId }));
                 obj.Data = cmeetings.FirstOrDefault();
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
