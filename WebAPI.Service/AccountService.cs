@@ -6,7 +6,7 @@ using WebAPI_SAMPLE.Model;
 
 namespace ES_HomeCare_API.WebAPI.Service
 {
-    public class AccountService: IAccountService
+    public class AccountService : IAccountService
     {
 
         private readonly IAccountData data;
@@ -14,12 +14,21 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             data = ldata;
         }
-        public async Task<ServiceResponse<UserModel>> LoginUser(LoginModel model)
+        public async Task<ServiceResponse<UserModel>> LogInUser(LoginModel model)
         {
-            return await data.LoginUser(model);
+            return await data.LogInUser(model);
         }
 
-        
-       
+
+
+
+        public async Task<ServiceResponse<string>> LogOutUser(int userId)
+        {
+
+            return await data.LogOutUser(userId);
+        }
+
+
+
     }
 }

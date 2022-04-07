@@ -18,21 +18,19 @@ namespace ES_HomeCare_API.Controllers
         public AccountController(IAccountService _accountSrv)
         {
             accountSrv = _accountSrv;
-        }
-
-   
+        }   
 
 
-        [HttpPost("Login")]
+        [HttpPost("logIn")]
         [ProducesResponseType(typeof(ServiceResponse<UserModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<UserModel>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Login(LoginModel model)
+        public async Task<IActionResult> LogIn(LoginModel model)
         {
             try
             {
 
                 model.IsActive = true;
-                return Ok(await accountSrv.LoginUser(model));
+                return Ok(await accountSrv.LogInUser(model));
 
             }
             catch (Exception ex)
@@ -41,10 +39,22 @@ namespace ES_HomeCare_API.Controllers
             }
         }
 
+        [HttpPost("logOut")]
+        [ProducesResponseType(typeof(ServiceResponse<UserModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<UserModel>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> LogOut(int UserId)
+        {
+            try
+            {
+          
+                return Ok(await accountSrv.LogOutUser(UserId));
 
-
-
-
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
 
     }

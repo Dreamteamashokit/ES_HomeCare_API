@@ -6,6 +6,8 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
 {
     public interface IAccountService
     {
-        Task<ServiceResponse<UserModel>> LoginUser(LoginModel model);
+        Task<ServiceResponse<UserModel>> LogInUser(LoginModel model);
+
+        Task<ServiceResponse<string>> LogOutUser(int userId);
     }
 }

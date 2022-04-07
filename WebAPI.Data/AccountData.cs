@@ -20,7 +20,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             configuration = _configuration;
         }
 
-        public async Task<ServiceResponse<UserModel>> LoginUser(LoginModel model)
+        public async Task<ServiceResponse<UserModel>> LogInUser(LoginModel model)
         {
             ServiceResponse<UserModel> obj = new ServiceResponse<UserModel>();
             try
@@ -48,26 +48,15 @@ namespace ES_HomeCare_API.WebAPI.Data
                         };
 
                         string sqlstr = "insert Into tblLogin(UserId,LogIn) Values(@UserId,@LogIn) select SCOPE_IDENTITY();";
-                        resObj.LoginInId = (long)(connection.Query<long>(sqlstr, new { @UserId=result.UserId, @LogIn= DateTime.Now }).First());
+                        resObj.LoginInId = (long)(connection.Query<long>(sqlstr, new { @UserId = result.UserId, @LogIn = DateTime.Now }).First());
 
                         obj.Data = resObj;
                         obj.Result = obj.Data.LoginInId > 0 ? true : false;
                         obj.Message = obj.Data.LoginInId > 0 ? "Data Found." : "No Data found.";
 
                     }
-
-                  
-
-
-
-
-
-
-
-
-
                 };
-         
+
                 return obj;
             }
             catch (Exception ex)
@@ -76,5 +65,45 @@ namespace ES_HomeCare_API.WebAPI.Data
                 return obj;
             }
         }
+
+
+        public async Task<ServiceResponse<string>> LogOutUser(int userId)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sqlQuery = "Update tblLogin Set LogOut=@LogOut Where UserId=@UserId; ";
+
+                    int rowsAffected = cnn.Execute(sqlQuery, new { @LogOut = DateTime.Now, @UserId = userId });
+                    if (rowsAffected > 0)
+                    {
+                        obj.Result = true;
+                        obj.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        obj.Data = null;
+                        obj.Message = "Failed new creation.";
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+            finally
+            {
+
+            }
+            return obj;
+        }
+
+
+
     }
 }
