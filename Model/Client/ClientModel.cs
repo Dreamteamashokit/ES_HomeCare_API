@@ -25,7 +25,13 @@ namespace ES_HomeCare_API.Model.Client
         public short PriorityCode { get; set; }
         public bool TimeSlip { get; set; }
         public bool IsHourly { get; set; }
- 
+
+        public string CoordinatorName { get; set; }
+        public string NurseName { get; set; }
+        public string GenderName { get; set; }
+        public string EthnicityName { get; set; }
+        public string MaritalStatusName { get; set; }
+
 
     }
 }

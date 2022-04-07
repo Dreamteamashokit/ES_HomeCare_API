@@ -77,10 +77,18 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             ServiceResponse<ClientModel> obj = new ServiceResponse<ClientModel>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select y.*,x.AltId,x.ID2,x.ID3,x.InsuranceID,x.WorkerContact,x.WorkerName,x.ReferredBy,x.PriorityCode," +
-                    "x.TimeSlip,x.OfChild from tblClient x inner join tblUser y on x.UserId=y.UserId where x.UserId=@UserId; ";
+                //string sql = "select y.*,x.AltId,x.ID2,x.ID3,x.InsuranceID,x.WorkerContact,x.WorkerName,x.ReferredBy,x.PriorityCode," +
+                //    "x.TimeSlip,x.OfChild from tblClient x inner join tblUser y on x.UserId=y.UserId where x.UserId=@UserId; ";
 
-                var objResult = (await connection.QueryAsync<ClientModel>(sql,
+
+                string sqlqry = "Select y.*,x.AltId,x.ID2,x.ID3,x.InsuranceID,x.WorkerContact,x.WorkerName,x.ReferredBy,x.PriorityCode,x.TimeSlip,x.OfChild," +
+                    "x.Coordinator,x.Nurse,(ISNULL(co.FirstName,'') + ' ' +   ISNULL(co.MiddleName,'') + ' ' + ISNULL(co.LastName,'') ) " +
+                    "CoordinatorName,(ISNULL(nu.FirstName,'') + ' ' +   ISNULL(nu.MiddleName,'') + ' ' + ISNULL(nu.LastName,'') ) NurseName ,ge.ItemName as GenderName," +
+                    "eth.ItemName as EthnicityName,ms.ItemName as MaritalStatusName from tblClient x inner join tblUser y on x.UserId=y.UserId Left join tblUser " +
+                    "co on x.Coordinator=co.UserId Left join tblUser nu on x.Nurse=nu.UserId Left join tblMaster ge on y.Gender=ge.MasterId Left join tblMaster " +
+                    "eth on x.Ethnicity=eth.MasterId Left join tblMaster ms on y.MaritalStatus=ms.MasterId Where  x.UserId=@UserId";
+
+                var objResult = (await connection.QueryAsync<ClientModel>(sqlqry,
                        new { @UserId = clientId })).FirstOrDefault();
 
                 obj.Data = objResult;
