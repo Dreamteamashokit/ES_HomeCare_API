@@ -275,7 +275,10 @@ namespace ES_HomeCare_API.WebAPI.Data
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 string sql = "select EmpId,LastName +' '+ FirstName+'(' +EmpKey+')' as EmpName from tblEmployee where EmpType=@EmpType; ";
-                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sql, new { @EmpType = type })).Select(x => new ItemList { ItemId = x.EmpId, ItemName = x.EmpName });
+
+
+                string sqlqry = "select x.UserId,x.LastName +' '+ x.FirstName+'(' +y.EmpKey+')' as EmpName from tblUser x inner join tblEmployee y on x.UserId=y.UserId where y.EmpType=@EmpType;";
+                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry, new { @EmpType = type })).Select(x => new ItemList { ItemId = x.UserId, ItemName = x.EmpName });
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
@@ -289,7 +292,9 @@ namespace ES_HomeCare_API.WebAPI.Data
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 string sql = "select EmpId,LastName +' '+ FirstName+'(' +EmpKey+')' as EmpName from tblEmployee; ";
-                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sql)).Select(x => new ItemList { ItemId = x.EmpId, ItemName = x.EmpName });
+
+                string sqlqry = "select x.UserId,x.LastName +' '+ x.FirstName+'(' +y.EmpKey+')' as EmpName from  tblUser x inner join tblEmployee y on x.UserId=y.UserId where x.IsActive=1;";
+                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry)).Select(x => new ItemList { ItemId = x.UserId, ItemName = x.EmpName });
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
@@ -304,7 +309,10 @@ namespace ES_HomeCare_API.WebAPI.Data
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 string sql = "select ClientId,LastName +' '+ FirstName as ClientName from tblClient; ";
-                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sql)).Select(x => new ItemList { ItemId = x.ClientId, ItemName = x.ClientName });
+                
+                string sqlqry = "select x.UserId,x.LastName +' '+ x.FirstName as ClientName from  tblUser x inner join tblClient y on x.UserId=y.UserId where x.IsActive=1;";
+                
+                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry)).Select(x => new ItemList { ItemId = x.UserId, ItemName = x.ClientName });
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
