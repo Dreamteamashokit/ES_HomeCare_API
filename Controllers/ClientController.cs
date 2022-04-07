@@ -53,8 +53,8 @@ namespace WebAPI_SAMPLE.Controllers
 
 
         [HttpGet("getClientDetail/{userId}")]
-        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<ClientModel>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<ClientModel>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<ClientModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<ClientModel>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetClientDetail(int userId)
         {
             return Ok(await service.GetClientDetail(userId));
