@@ -331,7 +331,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 {
                     string sqlQuery = "Insert Into tblClientSatus (ActivityID,StatusDate,ReferralCodeId," +
                         "note,clientId,OfficeUserId,ReferaalUserID,TextCheck,ScreenCheck,EmailCheck,Createdon,CreatedBy) " +
-                        "Values(@ActivityID,@StatusDate,@ReferralCodeId,@note,@OfficeUserId,@ReferaalUserID,@Text,@Screen," +
+                        "Values(@ActivityID,@StatusDate,@ReferralCodeId,@note,@clientId,@OfficeUserId,@ReferaalUserID,@Text,@Screen," +
                         "@Email,@CreatedOn,@CreatedBy)";
 
                     int rowsAffected = db.Execute(sqlQuery, new
@@ -376,14 +376,16 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         public async Task<ServiceResponse<IEnumerable<ClientStatusLst>>> GetClientStatusList(int ClientId)
         {
             ServiceResponse<IEnumerable<ClientStatusLst>> obj = new ServiceResponse<IEnumerable<ClientStatusLst>>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-            {
-                string sql = "select ItemName as StatusType,EffectiveDate,ReturnDate,OKResume as Resume,ReHire as Rehire,Note from tblEmpStatus ES inner join tblMaster ESM  on ES.TypeId = ESM.ItemId and ESM.MasterType = 5 where ES.EmployeeId = @ClientId ;";
-                IEnumerable<ClientStatusLst> cmeetings = (await connection.QueryAsync<ClientStatusLst>(sql, new { ClientId = ClientId }));
-                obj.Data = cmeetings;
-                obj.Result = cmeetings.Any() ? true : false;
-                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
-            }
+             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sql = "select tm.ItemName as ActivityText,StatusDate as Date,tmm.ItemName as ReferralCodeText,note as Note from tblClientSatus tcs left join tblMaster tm on tcs.ActivityID=tm.ItemId " +
+                                  "left join tblMaster tmm on tcs.ReferralCodeId = tmm.ItemId where tm.MasterType = 6 and tmm.MasterType = 7 and tcs.clientId=@ClientId";
+                    IEnumerable<ClientStatusLst> cmeetings = (await connection.QueryAsync<ClientStatusLst>(sql, new { ClientId = ClientId }));
+                    obj.Data = cmeetings;
+                    obj.Result = cmeetings.Any() ? true : false;
+                    obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
+                }           
+            
             return obj;
         }
 

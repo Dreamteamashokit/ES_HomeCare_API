@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ES_HomeCare_API.Model.Client
 {
-    public class ClientStatus
+    public class ClientStatus:BaseModel
     {
         public int ActivityId { get; set; }
         public string Date { get; set; }
@@ -16,8 +16,7 @@ namespace ES_HomeCare_API.Model.Client
         public bool text { get; set; }
         public bool screen { get; set; }
         public bool email { get; set; }
-        public int CreatedBy { get; set; }
-        public DateTime CreatedOn { get; set; }
+      
     }
 
     public class ClientStatusLst
