@@ -89,13 +89,6 @@ namespace ES_HomeCare_API.WebAPI.Data
             return obj;
         }
 
-
-
-
-
-
-
-
         public async Task<ServiceResponse<IEnumerable<EmpMeeting>>> GetUserMeetingList(int _userId, short _userTypeId)
         {
 
@@ -117,29 +110,22 @@ namespace ES_HomeCare_API.WebAPI.Data
 
         }
 
-
-
-
-
-
-
-
         public async Task<ServiceResponse<IEnumerable<ClientMeeting>>> GetClientMeetingList()
         {
             ServiceResponse<IEnumerable<ClientMeeting>> obj = new ServiceResponse<IEnumerable<ClientMeeting>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select x.ClientId,x.FirstName,x.MiddleName,x.LastName,x.Contact,z.EmpId,p.FirstName +' ' + ISNULL(p.MiddleName,' ')+' ' + p.LastName " +
-                    "as EmpName,y.MeetingId,y.MeetingDate,y.StartTime,y.EndTime from tblClient x Left Join tblMeeting y on x.ClientId=y.ClientId and y.IsStatus<>0 Left join" +
+                string sql = "select x.ClientId,x.FirstName,x.MiddleName,x.LastName,x.Contact,IsNUll(z.EmpId,0) as EmpId,p.FirstName +' ' + ISNULL(p.MiddleName,' ')+' ' + p.LastName " +
+                    "as EmpName,IsNUll(y.MeetingId,0) as MeetingId,y.MeetingDate,y.StartTime,y.EndTime from tblClient x Left Join tblMeeting y on x.ClientId=y.ClientId and y.IsStatus<>0 Left join" +
                     " tblEmpClientMeeting z on y.MeetingId=z.MeetingId Left join tblEmployee p on z.EmpId=p.EmpId ;";
 
-                var result = (await connection.QueryAsync(sql));
+                var result = (await connection.QueryAsync(sql)).ToList();
 
 
                 //Using Query Syntax
                 var GroupByQS = from mom in result
                                 group mom by new { mom.ClientId, mom.FirstName, mom.MiddleName, mom.LastName, mom.Contact, } into momGroup
-                                orderby momGroup.Key descending
+                                orderby momGroup.Key.ClientId descending
                                 select new ClientMeeting
                                 {
                                     ClientId = momGroup.Key.ClientId,
@@ -147,10 +133,10 @@ namespace ES_HomeCare_API.WebAPI.Data
                                     MiddleName = momGroup.Key.MiddleName,
                                     LastName = momGroup.Key.LastName,
                                     Contact = momGroup.Key.Contact,
-                                    Meetings = momGroup.Select(x => new ClMeeting
+                                    Meetings = momGroup.Where(x=>x.MeetingId!=0).Select(x => new ClMeeting
                                     {
                                         EmpId = x.EmpId,
-                                        EmpName = x.EmpName,
+                                        EmpName = x.EmpName!=null? x.EmpName :"",
                                         MeetingId = x.MeetingId,
                                         MeetingDate = x.MeetingDate,
                                         StartTime = ((TimeSpan)x.StartTime).TimeHelper(),

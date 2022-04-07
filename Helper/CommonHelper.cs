@@ -24,9 +24,13 @@ namespace ES_HomeCare_API.Helper
             return dte;
         }
 
-    
+
         public static string TimeHelper(this TimeSpan timeSpan)
         {
+            if (timeSpan == null)
+            {
+                timeSpan = TimeSpan.MinValue;
+            }
             DateTime time = DateTime.Today + timeSpan;
             return time.ToString("hh:mm tt");
         }

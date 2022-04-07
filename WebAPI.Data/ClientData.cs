@@ -89,6 +89,25 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         }
 
 
+        public async Task<ServiceResponse<ClientModel>> GetClientDetail(int clientId)
+        {
+            ServiceResponse<ClientModel> obj = new ServiceResponse<ClientModel>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "select y.*,x.AltId,x.ID2,x.ID3,x.InsuranceID,x.WorkerContact,x.WorkerName,x.ReferredBy,x.PriorityCode," +
+                    "x.TimeSlip,x.OfChild from tblClient x inner join tblUser y on x.UserId=y.UserId where x.UserId=@UserId; ";
+
+                var objResult = (await connection.QueryAsync<ClientModel>(sql,
+                       new { @UserId = clientId })).FirstOrDefault();
+
+                obj.Data = objResult;
+                obj.Result = objResult != null ? true : false;
+                obj.Message = objResult != null ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
+
+
         public async Task<ServiceResponse<string>> savenewclient(Client client)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -126,7 +145,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
                     cmd.Parameters.AddWithValue("@EmgPhone", client.EmgPhone);
                     cmd.Parameters.AddWithValue("@EmgEmail", client.EmgEmail);
-                   
+
 
                     con.Open();
                     int value = cmd.ExecuteNonQuery();
@@ -208,7 +227,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                             new { @StartDate = startdate, @ClientID = cID },
                             commandType: CommandType.StoredProcedure))
                             .GroupBy(x => new
-                            { 
+                            {
                                 x.ClientId,
                                 x.CellPhone,
                                 x.City,
@@ -321,71 +340,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         }
 
 
-        public async Task<ServiceResponse<string>> SaveClientStatus(ClientStatus _model)
-        {
-            ServiceResponse<string> sres = new ServiceResponse<string>();
-            try
-            {
-                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-                {
-                    string sqlQuery = "insert into tblClientSatus(ActivityID,StatusDate,ReferralCode,note,clientId,OfficeUserId,ReferaalUserID,CreatedBy,Createdon"+
-                                       ",TextCheck, ScreenCheck, EmailCheck) values" +
-                        "(@ActivityID,@StatusDate,@ReferralCode,@note,@ClientId,@OfficeUserId,@ReferaalUserID,@CreatedBy,@CreatedOn,@Text,@Screen," +
-                        "@Email)";
 
-                    int rowsAffected = db.Execute(sqlQuery, new
-                    {
-                        ClientId = _model.clientId,
-                      Scheduling = _model.ActivityId,
-                        StatusDate = _model.Date,
-                        ReferralCode = _model.ReferralCode,
-                        note = _model.Note,
-                        OfficeUserId = _model.OfficeUserId,
-                        Text = _model.text,
-                        Screen = _model.screen,
-                        Email = _model.email,
-                        ReferaalUserID = _model.OfficeUserReferralID,                       
-                        CreatedOn = _model.CreatedOn,
-                        CreatedBy = _model.CreatedBy
 
-                    });
 
-                    if (rowsAffected > 0)
-                    {
-                        sres.Result = true;
-                        sres.Data = "Sucessfully  Created.";
-                    }
-                    else
-                    {
-                        sres.Data = null;
-                        sres.Message = "Failed new creation.";
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-                sres.Message = ex.Message;
-
-            }
-
-            return sres;
-        }
-
-        public async Task<ServiceResponse<IEnumerable<ClientStatusLst>>> GetClientStatusList(int ClientId)
-        {
-            ServiceResponse<IEnumerable<ClientStatusLst>> obj = new ServiceResponse<IEnumerable<ClientStatusLst>>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-            {
-                string sql = "select ItemName as StatusType,EffectiveDate,ReturnDate,OKResume as Resume,ReHire as Rehire,Note from tblEmpStatus ES inner join tblMaster ESM  on ES.TypeId = ESM.ItemId and ESM.MasterType = 5 where ES.EmployeeId = @ClientID ;";
-                IEnumerable<ClientStatusLst> cmeetings = (await connection.QueryAsync<ClientStatusLst>(sql, new { ClientID = ClientId }));
-                obj.Data = cmeetings;
-                obj.Result = cmeetings.Any() ? true : false;
-                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
-            }
-            return obj;
-
-        }
 
 
     }
