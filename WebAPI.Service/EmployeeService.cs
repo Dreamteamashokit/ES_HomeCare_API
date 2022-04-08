@@ -28,26 +28,23 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             return await data.GetEmployeeListObj();
         }
 
+        public async Task<ServiceResponse<string>> DeleteEmployee(int UserId)
+        {
+            return await data.DeleteEmployee(UserId);
+        }
 
+        public async Task<ServiceResponse<Employee>> GetEmployeeById(int UserId)
+        {
+            return await data.GetEmployeeById(UserId);
+        }
 
         #endregion
 
 
 
-        public async Task<ServiceResponse<List<Employee>>> GetEmployeesList()
-        {
-            return await data.GetEmployeesList();
-        }
 
-        public async Task<ServiceResponse<string>> DeleteEmployee(int EmpId)
-        {
-            return await data.DeleteEmployee(EmpId);
-        }
 
-        public async Task<ServiceResponse<Employee>> GetEmployeeById(string EmpId)
-        {
-            return await data.GetEmployeeById(EmpId);
-        }
+
         #region Address
         public async Task<ServiceResponse<string>> AddEmpAddress(AddressModel _model)
         {

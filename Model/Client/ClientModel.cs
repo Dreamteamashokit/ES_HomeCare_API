@@ -11,10 +11,8 @@ namespace ES_HomeCare_API.Model.Client
         public int ClientId { get; set; }
         public string BillTo { get; set; }
         public string Contact { get; set; }
-        public int? Coordinator  { get; set; }
-        public int? Nurse { get; set; }
+        public int NurseId { get; set; }
         public short OfChild { get; set; }
-        public string EmgContact { get; set; }
         public string AltId { get; set; }
         public string ID2 { get; set; }
         public string ID3 { get; set; }
@@ -25,13 +23,10 @@ namespace ES_HomeCare_API.Model.Client
         public short PriorityCode { get; set; }
         public bool TimeSlip { get; set; }
         public bool IsHourly { get; set; }
-
         public string CoordinatorName { get; set; }
         public string NurseName { get; set; }
         public string GenderName { get; set; }
         public string EthnicityName { get; set; }
         public string MaritalStatusName { get; set; }
-
-
     }
 }

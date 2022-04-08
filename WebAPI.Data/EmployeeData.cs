@@ -29,21 +29,11 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
 
-                    string _query = "INSERT INTO tblUser (SSN,FirstName,MiddleName,LastName,DOB,Email,Gender,MaritalStatus," +
-                        "EmgContact,UserName,UserPassword,IsActive,CreatedOn,CreatedBy) VALUES (@SSN,@FirstName,@MiddleName,@LastName,@DOB,@Email,@Gender,@MaritalStatus,@EmgContact," +
-                        "@UserName,@UserPassword,@IsActive,@CreatedOn,@CreatedBy) select SCOPE_IDENTITY();";
+                    string _query = "INSERT INTO tblUser (UserKey,UserType,UserName,UserPassword,SSN,FirstName,MiddleName,LastName,DOB,Email,CellPhone,HomePhone,EmgPhone,EmgContact,Gender,MaritalStatus,Ethnicity,SupervisorId,IsActive,CreatedOn,CreatedBy) VALUES (@UserKey,@UserType,@UserName,@UserPassword,@SSN,@FirstName,@MiddleName,@LastName,@DOB,@Email,@CellPhone,@HomePhone,@EmgPhone,@EmgContact,@Gender,@MaritalStatus,@Ethnicity,@SupervisorId,@IsActive,@CreatedOn,@CreatedBy); select SCOPE_IDENTITY();";
                     _model.UserId = (int)(cnn.Query<int>(_query, _model).First());
 
+                    string sqlQuery = "INSERT INTO tblEmployee (UserId,EmpType,DateOfHire,DateOfFirstCase,Dependents,City,Country,TaxState,ZipCode,Municipality,Notes,IsActive,CreatedOn,CreatedBy) VALUES (@UserId,@EmpType,@DateOfHire,@DateOfFirstCase,@Dependents,@City,@Country,@TaxState,@ZipCode,@Municipality,@Notes,@IsActive,@CreatedOn,@CreatedBy)";
 
-
-
-                    string sqlQuery = "INSERT INTO tblEmployee(UserId,EmpKey, SSN, EmpType, FirstName, MiddleName, LastName, DOB, Email, CellPhone, DateOfHire, " +
-                        "HomePhone, DateOfFirstCase, Gender, HRSupervisor, Enthnicity, MaritalStatus, Dependents, City, Country, TaxState, ZipCode, " +
-                        "EmgContact, EmgPhone, Municipality, Notes, IsActive,  CreatedOn, CreatedBy) " +
-                        "VALUES(@UserId,@EmpKey, @SSN, @EmpType, @FirstName, @MiddleName, @LastName, @DOB, @Email, @CellPhone, @DateOfHire, @HomePhone, " +
-                        "@DateOfFirstCase, @Gender, @HRSupervisor, @Enthnicity, @MaritalStatus, @Dependents, @City, @Country, @TaxState, @ZipCode," +
-                        "@EmgContact, @EmgPhone, @Municipality, @Notes, @IsActive, @CreatedOn, @CreatedBy)";
-                                    
 
                     int rowsAffected = cnn.Execute(sqlQuery, _model);
 
@@ -72,14 +62,13 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return sres;
         }
 
-
         public async Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj()
         {
             ServiceResponse<IEnumerable<EmployeeList>> obj = new ServiceResponse<IEnumerable<EmployeeList>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 var procedure = "[EmpProc]";
-                var values = new { @flag = 1 };
+                var values = new { @flag = 1, @IsActive = 1 };
                 IEnumerable<EmployeeList> results = (await connection.QueryAsync<EmployeeList>(procedure,
         values, commandType: CommandType.StoredProcedure));
                 obj.Data = results;
@@ -89,107 +78,51 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return obj;
         }
 
-
-
-
-
-        #endregion
-
-        public async Task<ServiceResponse<List<Employee>>> GetEmployeesList()
+        public async Task<ServiceResponse<string>> DeleteEmployee(int UserId)
         {
-            ServiceResponse<List<Employee>> obj = new ServiceResponse<List<Employee>>();
-            List<Employee> emp = new List<Employee>();
+            ServiceResponse<string> obj = new ServiceResponse<string>();
             try
             {
-                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    SqlCommand cmd = new SqlCommand("SP_GET_EMPLOYEES", con);
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    DataTable table = new DataTable();
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    da.Fill(table);
-                    if (table.Rows.Count > 0)
+                    var procedure = "[EmpProc]";
+                    var values = new { @flag = 2, @IsActive = 0, @UserId= UserId };
+                    int rowsAffected = connection.Execute(procedure, values, commandType: CommandType.StoredProcedure);
+
+                    if (rowsAffected > 0)
                     {
-                        for (int i = 0; i < table.Rows.Count; i++)
-                        {
-                            emp.Add(new Employee
-                            {
-                                EmpID = Convert.ToInt32(table.Rows[i]["EmpId"].ToString()),
-                                EmpName = table.Rows[i]["EmpName"].ToString(),
-                                CellPhone = table.Rows[i]["CellPhone"].ToString(),
-                                HasEmail = table.Rows[i]["HasEmail"].ToString(),
-                                HasDOB = table.Rows[i]["HasDOB"].ToString(),
-                                IsActive = Convert.ToInt32(table.Rows[i]["IsActive"].ToString()),
-                                //EnteredDate = table.Rows[i]["CreatedOn"].ToString(),
-                                CState = table.Rows[i]["CState"].ToString()
-                            });
-                        }
                         obj.Result = true;
+                        obj.Data = "Employee Deleted";
                     }
-                    obj.Data = emp;
-                    return obj;
+                    else
+                    {
+                        obj.Data = null;
+                        obj.Message = "Deletion Failed.";
+                    }
+
                 }
+
             }
             catch (Exception ex)
             {
                 obj.Message = ex.Message;
                 return obj;
             }
-            finally
-            {
 
-            }
+
+            return obj;
         }
 
-        public async Task<ServiceResponse<string>> DeleteEmployee(int EmpId)
-        {
-            ServiceResponse<string> sres = new ServiceResponse<string>();
-            try
-            {
-                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-                {
-                    SqlCommand cmd = new SqlCommand("SP_DELETE_EMPLOYEE", con);
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                    cmd.Parameters.AddWithValue("@EMPID", EmpId);
-
-                    con.Open();
-                    int result = cmd.ExecuteNonQuery();
-                    if (result > 0)
-                    {
-                        sres.Result = true;
-                        sres.Data = "Employee Deleted";
-                    }
-                    else
-                    {
-                        sres.Data = null;
-                        sres.Message = "Deletion Failed.";
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-                sres.Message = ex.Message;
-                return sres;
-            }
-            finally
-            {
-
-            }
-
-            return sres;
-        }
-
-        public async Task<ServiceResponse<Employee>> GetEmployeeById(string EmpId)
+        public async Task<ServiceResponse<Employee>> GetEmployeeById(int UserId)
         {
             ServiceResponse<Employee> obj = new ServiceResponse<Employee>();
 
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "SELECT * FROM tblEmployee Where EmpId=@EmpId;";
+                string sql = "SELECT x.*,y.EmpType,y.DateOfHire,y.DateOfFirstCase,y.Dependents,y.City,y.Country,y.TaxState,y.ZipCode,y.Municipality,y.Notes FROM tblUser x inner join tblEmployee y on x.UserId=y.UserId Where x.UserId=@UserId;";
                 IEnumerable<Employee> cmeetings = (await connection.QueryAsync<Employee>(sql,
-                         new { @EmpId = EmpId }));
+                         new { @UserId = UserId }));
                 obj.Data = cmeetings.FirstOrDefault();
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
@@ -197,81 +130,11 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             }
             return obj;
 
-
-
-
-
-
-
-
-
-            //Employee emp = new Employee();
-            //try
-            //{
-            //    using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-            //    {
-            //        SqlCommand cmd = new SqlCommand("SP_GET_EmployeeInfoByID", con);
-            //        cmd.CommandType = System.Data.CommandType.StoredProcedure;
-            //        cmd.Parameters.AddWithValue("@EID", EmpId);
-            //        DataTable table = new DataTable();
-            //        SqlDataAdapter da = new SqlDataAdapter(cmd);
-            //        da.Fill(table);
-            //        if (table.Rows.Count > 0)
-            //        {
-            //            for (int i = 0; i < table.Rows.Count; i++)
-            //            {
-            //                emp.EmpID = Convert.ToInt32(table.Rows[i]["EmpId"].ToString());
-            //                emp.FirstName = table.Rows[i]["FirstName"].ToString();
-            //                emp.LastName = table.Rows[i]["LastName"].ToString();
-            //                emp.MiddleName = table.Rows[i]["MiddleName"].ToString();
-            //                emp.CellPhone = table.Rows[i]["CellPhone"].ToString();
-            //                emp.Email = table.Rows[i]["Email"].ToString();
-            //                emp.DOB = table.Rows[i]["DOB"].ToString();
-            //                emp.HomePhone = table.Rows[i]["HomePhone"].ToString();
-            //                emp.ExtEmpId = table.Rows[i]["ExtEmpId"].ToString();
-            //                emp.Country = table.Rows[i]["Country"].ToString();
-            //                emp.City = table.Rows[i]["City"].ToString();
-            //                emp.CState = table.Rows[i]["CState"].ToString();
-            //                emp.ZipCode = table.Rows[i]["ZipCode"].ToString();
-            //                emp.Gender = table.Rows[i]["Gender"].ToString();
-            //            }
-            //            obj.Result = true;
-            //        }
-            //        obj.Data = emp;
-            //        return obj;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    obj.Message = ex.Message;
-            //    return obj;
-            //}
-            //finally
-            //{
-
-            //}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
+
+        #endregion
+
+
 
         #region Address
 
@@ -793,7 +656,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     SqlCommand cmd = new SqlCommand("SP_GetDeclinedCaseProc", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@EmpId", EmpId);
-                 
+
                     DataTable table = new DataTable();
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     da.Fill(table);

@@ -27,12 +27,6 @@ namespace ES_HomeCare_API.Controllers
             this.comSrv = _comSrv;
         }
 
-
-
-
-
-
-
         [HttpGet("getMaster/{typeId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]

@@ -13,14 +13,14 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         #region Employee
         Task<ServiceResponse<string>> AddEmployee(EmployeeModel _model);
         Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj();
-
-
+        Task<ServiceResponse<string>> DeleteEmployee(int UserId);
+        Task<ServiceResponse<Employee>> GetEmployeeById(int UserId);
         #endregion
 
 
-        Task<ServiceResponse<List<Employee>>> GetEmployeesList();
-        Task<ServiceResponse<string>> DeleteEmployee(int EmpId);
-        Task<ServiceResponse<Employee>> GetEmployeeById(string EmpId);
+
+
+
         Task<ServiceResponse<string>> AddEmpAddress(AddressModel _model);
         Task<ServiceResponse<AddressModel>> GetEmpAddress(int empId);
         Task<ServiceResponse<string>> AddIncident(IncidentMode _model);

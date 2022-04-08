@@ -32,12 +32,8 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddEmployee([FromBody] EmployeeModel model)
         {
-            if (model.HRSupervisor == 0)
-            {
-                model.HRSupervisor = null;
-            }
+            
             model.IsActive = 1;
-
             model.CreatedBy = 1;
             model.CreatedOn = DateTime.Now;
             return Ok(await service.AddEmployee(model));
@@ -52,17 +48,10 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.GetEmployeeListObj());
         }
 
-        #endregion
+      
+     
 
-        [HttpGet("getemployeelist")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> getemployeelist()
-        {
-            return Ok(await service.GetEmployeesList());
-        }
-
-        [HttpGet("deleteemployee/{empId}")]
+        [HttpGet("deleteEmployee/{empId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> deleteemployee(int empId)
@@ -70,13 +59,15 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.DeleteEmployee(empId));
         }
 
-        [HttpGet("getemployeebyId/{empId}")]
+        [HttpGet("getEmployeebyId/{empId}")]
         [ProducesResponseType(typeof(ServiceResponse<Employee>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<Employee>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> getemployeebyId(string empId)
+        public async Task<IActionResult> GetEmployeeById(int empId)
         {
             return Ok(await service.GetEmployeeById(empId));
         }
+
+        #endregion
 
         #region Incident
         [HttpPost("addIncident")]

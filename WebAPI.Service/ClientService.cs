@@ -28,27 +28,6 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.GetClientDetail(clientId);
         }
-
-        public async Task<ServiceResponse<string>> savenewclient(Client client)
-        {
-            return await data.savenewclient(client);
-        }
-
-        public async Task<ServiceResponse<List<Client>>> GetClientList()
-        {
-            return await data.GetClientList();
-        }
-
-        public async Task<ServiceResponse<IEnumerable<ClientMeetings>>> GetClientMeetings(string startdate, string cID)
-        {
-            return await data.GetClientMeetings(startdate, cID);
-        }
-
-        public async Task<ServiceResponse<string>> scheduleclientmeeting(MeetingDetails meeting)
-        {
-            return await data.scheduleclientmeeting(meeting);
-        }
-
         public async Task<ServiceResponse<string>> SaveClientStatus(ClientStatus _model)
         {
             return await data.SaveClientStatus(_model);
