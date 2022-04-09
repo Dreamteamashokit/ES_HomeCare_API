@@ -38,12 +38,12 @@ namespace ES_HomeCare_API.Controllers
         [HttpPost("addMasterType")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateMasterType(string  Name)
+        public async Task<IActionResult> CreateMasterType(string Name)
         {
             try
             {
                 return Ok(await comSrv.CreateMasterType(Name));
-            
+
             }
             catch (Exception ex)
             {
@@ -92,25 +92,25 @@ namespace ES_HomeCare_API.Controllers
         public async Task<IActionResult> GetEmpTypeList()
         {
             return Ok(await comSrv.GetEmpTypeList());
-        }   
-      
+        }
+
 
         [HttpGet("getCountry")]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> getCountryList()       
+        public async Task<IActionResult> getCountryList()
         {
             return Ok(await comSrv.GetCountry());
-        }        
-        
-        
+        }
+
+
         [HttpGet("getStateList/{country}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> getStateList(string country)
         {
             return Ok(await comSrv.GetState(country));
-         
+
         }
 
         [HttpGet("getEmployees/{type}")]
@@ -137,23 +137,6 @@ namespace ES_HomeCare_API.Controllers
         {
             return Ok(await comSrv.GetClientList());
         }
-
-
-
-
-
-
-
-
-
-
-
-
-   
-
-
-      
-
 
     }
 }

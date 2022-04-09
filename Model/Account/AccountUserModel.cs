@@ -2,7 +2,6 @@
 {
     public class AccountUserModel: BaseModel
     {
-        public int UserId { get; set; }
         public string UserKey { get; set; }
         public short UserType { get; set; }
         public string UserName { get; set; }

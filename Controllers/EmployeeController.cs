@@ -73,10 +73,8 @@ namespace WebAPI_SAMPLE.Controllers
         [HttpPost("addIncident")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddIncident([FromBody] IncidentMode model)
+        public async Task<IActionResult> AddIncident([FromBody] IncidentModel model)
         {
-
-
             model.CreatedOn = DateTime.Now;
             return Ok(await service.AddIncident(model));
         }
@@ -89,9 +87,6 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.GetIncidentList(empId));
         }
         #endregion
-
-
-
 
         #region Attendance
         [HttpPost("addAttendance")]
@@ -114,11 +109,6 @@ namespace WebAPI_SAMPLE.Controllers
         }
         #endregion
 
-
-
-
-
-
         [HttpGet("getAvailabilityList")]
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
@@ -126,9 +116,6 @@ namespace WebAPI_SAMPLE.Controllers
         {
             return Ok(await service.GetAvailabilityList());
         }
-
-
-
 
         [HttpPost("addStatus")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
@@ -148,38 +135,7 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.GetEmpStatusList(empId));
         }
 
-        [HttpGet("getOfficeUserList")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetOfficeUserLst()
-        {
-            return Ok(await _comService.GetOfficeUserLst());
-        }
-
-        [HttpGet("getTypeStatusList")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetTypeStatusLst()
-        {
-            return Ok(await _comService.GetTypeStatusLst());
-        }
-
-        [HttpGet("getEmployeeStatusList")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetStatusEmployeeLst()
-        {
-            return Ok(await _comService.GetEmployeeLst());
-        }
-
-        [HttpGet("getScheduleLst")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetScheduleLst()
-        {
-            return Ok(await _comService.GetScheduleLst());
-        }
-
+        
 
 
         #region Compliance
@@ -237,7 +193,7 @@ namespace WebAPI_SAMPLE.Controllers
         [HttpPost("addRate")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SaveEmpRate([FromBody] SaveEmployeeRate model)
+        public async Task<IActionResult> SaveEmpRate([FromBody] EmployeeRateModel model)
         {
             model.CreatedOn = DateTime.Now;
             return Ok(await service.SaveEmpPayRate(model));
@@ -245,8 +201,8 @@ namespace WebAPI_SAMPLE.Controllers
 
 
         [HttpGet("getEmpRate/{empId}")]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<EmpRate>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<EmpRate>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> getEmpRate(long empId)
         {
 

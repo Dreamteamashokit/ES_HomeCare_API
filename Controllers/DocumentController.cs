@@ -7,15 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-
 using System.IO;
 using System.Linq;
-using System.Net;
-
-
-using System.IO;
-using System.Linq;
-
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
@@ -58,7 +51,7 @@ namespace ES_HomeCare_API.Controllers
                 var files = Request.Form.Files;
 
                 UploadFileFolder model = new UploadFileFolder();
-                model.folderid = Convert.ToInt32(Request.Form["folderid"]);
+                model.FolderId = Convert.ToInt32(Request.Form["folderid"]);
                 model.Title = Request.Form["Title"].ToString();
                 model.CreatedBy = Convert.ToInt32(Request.Form["CreatedBy"]);
                 model.Search = Request.Form["Search"].ToString();
@@ -76,7 +69,7 @@ namespace ES_HomeCare_API.Controllers
 
                     var fileName = Foldername + "/" + ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
                     //you can add this path to a list and then return all dbPaths to the client if require
-                    model.filename = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    model.FileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
                     Stream fs = file.OpenReadStream();
                     AmazonUploader uploader = new AmazonUploader(configuration);
                     uploader.sendMyFileToS3(fs, fileName);

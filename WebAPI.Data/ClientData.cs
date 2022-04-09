@@ -100,12 +100,12 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                         StatusDate = _model.Date,
                         ReferralCodeId = _model.ReferralCode,
                         note = _model.Note,
-                        clientId = _model.clientId,
+                        clientId = _model.ClientId,
                         OfficeUserId = _model.OfficeUserId,
                         ReferaalUserID = _model.OfficeUserReferralID,
-                        Text = _model.text,
-                        Screen = _model.screen,
-                        Email = _model.email,                       
+                        Text = _model.Text,
+                        Screen = _model.Screen,
+                        Email = _model.Email,                       
                         CreatedOn = _model.CreatedOn,
                         CreatedBy = _model.CreatedBy
 

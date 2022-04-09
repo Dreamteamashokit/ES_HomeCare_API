@@ -2,7 +2,7 @@
 
 namespace ES_HomeCare_API.Model.Employee
 {
-    public class IncidentMode : BaseModel
+    public class IncidentModel : BaseModel
     {
         public int IncidentId { get; set; }
         public int EmpId { get; set; }

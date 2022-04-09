@@ -148,8 +148,8 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     string sqlQuery = "Insert Into tblAddress (UserId,EmpId,AddressType,Owner,FlatNo,Address,City,Country,State,ZipCode,CreatedOn,CreatedBy) Values (@UserId,@EmpId,@AddressType,@Owner,@FlatNo,@Address,@City,@Country,@State,@ZipCode,@CreatedOn,@CreatedBy);";
                     int rowsAffected = db.Execute(sqlQuery, new
                     {
-                        UserId = _model.EmpId,
-                        EmpId = _model.EmpId,
+                        UserId = _model.UserId,
+                        EmpId = _model.UserId,
                         AddressType = _model.AddressType,
                         Owner = _model.Owner,
                         FlatNo = _model.FlatNo,
@@ -191,8 +191,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         {
             ServiceResponse<AddressModel> obj = new ServiceResponse<AddressModel>();
 
-
-
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 string sql = "SELECT * FROM tblAddress Where UserId=@UserId;";
@@ -210,7 +208,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         #endregion
 
 
-        public async Task<ServiceResponse<string>> AddIncident(IncidentMode _model)
+        public async Task<ServiceResponse<string>> AddIncident(IncidentModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
             try
@@ -253,15 +251,15 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return sres;
         }
 
-        public async Task<ServiceResponse<IEnumerable<IncidentMode>>> GetIncidentList(int empId)
+        public async Task<ServiceResponse<IEnumerable<IncidentModel>>> GetIncidentList(int empId)
         {
-            ServiceResponse<IEnumerable<IncidentMode>> obj = new ServiceResponse<IEnumerable<IncidentMode>>();
+            ServiceResponse<IEnumerable<IncidentModel>> obj = new ServiceResponse<IEnumerable<IncidentModel>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
 
                 string sql = "SELECT * FROM tblIncident Where EmpId=@EmpId;";
 
-                IEnumerable<IncidentMode> cmeetings = (await connection.QueryAsync<IncidentMode>(sql,
+                IEnumerable<IncidentModel> cmeetings = (await connection.QueryAsync<IncidentModel>(sql,
                          new { EmpId = empId }));
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
@@ -282,7 +280,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     string sqlQuery = "Insert Into tblAttendance (EmpId,Reason,StartDate,EndDate,Notes,CreatedOn,CreatedBy) Values (@EmpId,@Reason,@StartDate,@EndDate,@Notes,@CreatedOn,@CreatedBy);";
                     int rowsAffected = db.Execute(sqlQuery, new
                     {
-                        EmpId = _model.EmpId,
+                        EmpId = _model.UserId,
                         Reason = _model.Reason,
                         StartDate = _model.StartDate,
                         EndDate = _model.EndDate,
@@ -429,7 +427,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
                     int rowsAffected = db.Execute(sqlQuery, new
                     {
-                        EmpId = _model.EmpId,
+                        EmpId = _model.UserId,
                         DueDate = Convert.ToDateTime(_model.DueDate),
                         CompletedOn = Convert.ToDateTime(_model.CompletedOn),
                         Category = _model.Category,
@@ -485,7 +483,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
         }
 
-        public async Task<ServiceResponse<string>> SaveEmpPayRate(SaveEmployeeRate client)
+        public async Task<ServiceResponse<string>> SaveEmpPayRate(EmployeeRateModel client)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
             try
@@ -604,16 +602,16 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
                     SqlCommand cmd = new SqlCommand("SP_SaveEmpDeclinedCaseProc", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@EmpId", client.EmpId);
+                    cmd.Parameters.AddWithValue("@EmpId", client.UserId);
 
                     cmd.Parameters.AddWithValue("@ReportedDate", client.RepotedDate);
-                    cmd.Parameters.AddWithValue("@ClientID", client.clientId);
+                    cmd.Parameters.AddWithValue("@ClientID", client.ClientId);
                     cmd.Parameters.AddWithValue("@caseid", client.Casetypeid);
                     cmd.Parameters.AddWithValue("@DeclinedReason", client.DeclineReason);
                     cmd.Parameters.AddWithValue("@AssignmentStartDate", client.AssignmentStart);
                     cmd.Parameters.AddWithValue("@Note", client.Note);
                     cmd.Parameters.AddWithValue("@Day", client.Day);
-                    cmd.Parameters.AddWithValue("@Week", client.week);
+                    cmd.Parameters.AddWithValue("@Week", client.Week);
                     cmd.Parameters.AddWithValue("@CreatedOn", client.CreatedOn);
                     cmd.Parameters.AddWithValue("@createdBy", client.CreatedBy);
 
@@ -671,7 +669,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                                 CasetypeName = table.Rows[i]["CaseType"].ToString(),
                                 DeclineReason = table.Rows[i]["DeclinedReason"].ToString(),
                                 Day = Convert.ToInt16(table.Rows[i]["Day"].ToString()),
-                                week = Convert.ToInt16(table.Rows[i]["Week"].ToString()),
+                                Week = Convert.ToInt16(table.Rows[i]["Week"].ToString()),
                                 AssignmentStart = table.Rows[i]["AssignmentStartDate"].ToString()
                             });
 
