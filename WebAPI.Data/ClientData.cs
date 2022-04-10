@@ -150,6 +150,70 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         }
 
 
+        public async Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model)
+        {
+            ServiceResponse<List<Medicationcs>> obj = new ServiceResponse<List<Medicationcs>>();
+            List<Medicationcs> clientsMedicationcs = new List<Medicationcs>();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("Sp_SaveClientMedication", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@MedicationID", Model.MedicationID);
+                    cmd.Parameters.AddWithValue("@StartDate", Model.StartDate);
+                    cmd.Parameters.AddWithValue("@EndDate", Model.EndDate);
+                    cmd.Parameters.AddWithValue("@MedicationText", Model.MedicationText);
+                    cmd.Parameters.AddWithValue("@NDCText", Model.NDCText);
+                    cmd.Parameters.AddWithValue("@StrengthText", Model.StrengthText);
+                    cmd.Parameters.AddWithValue("@DosageText", Model.DosageText);
+                    cmd.Parameters.AddWithValue("@FrequencyText", Model.FrequencyText);
+                    cmd.Parameters.AddWithValue("@RouteText", Model.RouteText);
+                    cmd.Parameters.AddWithValue("@TabsText", Model.TabsText);
+                    cmd.Parameters.AddWithValue("@PrescriberText", Model.PrescriberText);
+                    cmd.Parameters.AddWithValue("@ClassificationText", Model.ClassificationText);
+                    cmd.Parameters.AddWithValue("@InstructionsText", Model.Instructionscheck);
+                    cmd.Parameters.AddWithValue("@Reminderscheck", Model.Reminderscheck);
+                    cmd.Parameters.AddWithValue("@Instructionscheck", Model.Instructionscheck);
+                    cmd.Parameters.AddWithValue("@administrationcheck", Model.administrationcheck);
+                    cmd.Parameters.AddWithValue("@selfadministercheck", Model.selfadministercheck);
+                    cmd.Parameters.AddWithValue("@ClientId", Model.ClientID);
+                    cmd.Parameters.AddWithValue("@CreatedOn", Model.createdOn);
+                    cmd.Parameters.AddWithValue("@CreatedBy", Model.CreatedBy);
+                    DataTable table = new DataTable();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(table);
+                    if (table.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < table.Rows.Count; i++)
+                        {
+                            clientsMedicationcs.Add(new Medicationcs
+                            {
+                                MedicationID = Convert.ToInt32(table.Rows[i]["MedicationID"].ToString()),
+                                StartDate = Convert.ToDateTime(table.Rows[i]["StartDate"].ToString()),
+                                EndDate = Convert.ToDateTime(table.Rows[i]["EndDate"].ToString()),
+                                MedicationText = string.IsNullOrEmpty(table.Rows[i]["MedicationText"].ToString()) ? table.Rows[i]["NDCText"].ToString() : table.Rows[i]["MedicationText"].ToString(),
+                                StrengthText = table.Rows[i]["StrengthText"].ToString(),
+                                FrequencyText = table.Rows[i]["FrequencyText"].ToString(),
+                                DosageText = table.Rows[i]["DosageText"].ToString(),
+                                RouteText = string.IsNullOrEmpty(table.Rows[i]["RouteText"].ToString()) ? table.Rows[i]["InstructionsText"].ToString() : table.Rows[i]["RouteText"].ToString(),
+                            });
+                        }
+                        obj.Result = true;
+                    }
+                    obj.Data = clientsMedicationcs;
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+            finally
+            {
 
+            }
+        }
     }
 }

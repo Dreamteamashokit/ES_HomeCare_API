@@ -14,5 +14,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<ClientModel>> GetClientDetail(int clientId);
         Task<ServiceResponse<string>> SaveClientStatus(ClientStatus _model);
         Task<ServiceResponse<IEnumerable<ClientStatusLst>>> GetClientStatusList(int ClientId);
+
+        Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model);
     }
 }

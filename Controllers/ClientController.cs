@@ -65,5 +65,14 @@ namespace WebAPI_SAMPLE.Controllers
         {
             return Ok(await service.GetClientStatusList(clientId));
         }
+
+
+        [HttpPost("ClientMedicationcs")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ClientMedicationcs(Medicationcs model)
+        {
+            return Ok(await service.ClientMedicationcs(model));
+        }
     }
 }
