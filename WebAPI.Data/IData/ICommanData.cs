@@ -1,4 +1,5 @@
 ﻿using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Client;
 using ES_HomeCare_API.Model.Employee;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
 {
     public interface ICommanData
     {
-        
+
         Task<ServiceResponse<IEnumerable<ItemList>>> GetMasterList(short typeId);
         Task<ServiceResponse<string>> CreateMasterType(string _item);
         Task<ServiceResponse<IEnumerable<ItemList>>> GetMasterTypeList();
@@ -20,10 +21,13 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
         Task<ServiceResponse<IEnumerable<ItemList>>> GetEmployees(string type);
         Task<ServiceResponse<IEnumerable<ItemList>>> GetEmployeesList();
         Task<ServiceResponse<IEnumerable<ItemList>>> GetClientList();
+
+        Task<ServiceResponse<string>> CreateTask(TaskModel _model);
+        Task<ServiceResponse<IEnumerable<TaskModel>>> GetTaskList();
     }
 
 
 
-    
+
 
 }

@@ -1,5 +1,6 @@
 ﻿using ES_HomeCare_API.Helper;
 using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Client;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -137,6 +138,41 @@ namespace ES_HomeCare_API.Controllers
         {
             return Ok(await comSrv.GetClientList());
         }
+
+
+        [HttpPost("createTask")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateTask([FromBody] TaskModel model)
+        {
+            try
+            {
+                return Ok(await comSrv.CreateTask(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet("getTaskList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<TaskModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<TaskModel>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetTaskList()
+        {
+            return Ok(await comSrv.GetTaskList());
+        }
+
+
+
+
+
+
+
+
+
+
 
     }
 }

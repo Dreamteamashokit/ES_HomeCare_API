@@ -18,7 +18,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             data = ldata;
         }
 
-      
+
         public async Task<ServiceResponse<string>> AddClient(ClientModel client)
         {
             return await data.AddClient(client);
@@ -42,5 +42,24 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.ClientMedicationcs(Model);
         }
+
+
+
+        public async Task<ServiceResponse<string>> CreateServiceTask(IList<ServiceTaskModel> _list)
+        {
+            return await data.CreateServiceTask(_list);
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ServiceTaskView>>> GetServiceTaskList(int userId)
+        {
+            return await data.GetServiceTaskList(userId);
+        }
+
+
+
+
+
+
+
     }
 }
