@@ -16,6 +16,6 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<string>> SaveClientStatus(ClientStatus _model);
         Task<ServiceResponse<IEnumerable<ClientStatusLst>>> GetClientStatusList(int ClientId);
 
-        Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model);
+        Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model,int Flag);
     }
 }

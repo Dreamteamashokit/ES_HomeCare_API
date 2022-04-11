@@ -38,9 +38,9 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             return await data.GetClientStatusList(ClientId);
         }
 
-        public async Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model)
+        public async Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model, int Flag)
         {
-            return await data.ClientMedicationcs(Model);
+            return await data.ClientMedicationcs(Model,Flag);
         }
     }
 }

@@ -29,8 +29,21 @@ namespace ES_HomeCare_API.Model
         [Description("Cancelled")]
         Cancelled = 2,
         [Description("Cancelled By Client")]
-        CancelledByClient = 3,
-       
+        CancelledByClient = 3,       
+
+    }
+
+    public enum SqlQueryType
+    {
+
+        [Description("Insert")]
+        Create = 0,
+        [Description("Update")]
+        Modify = 1,
+        [Description("Delete")]
+        Delete = 2,
+        [Description("select")]
+        select = 3,
 
     }
 }

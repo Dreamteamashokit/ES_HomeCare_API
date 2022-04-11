@@ -72,7 +72,20 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ClientMedicationcs(Medicationcs model)
         {
-            return Ok(await service.ClientMedicationcs(model));
+            int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Insert"));
+            return Ok(await service.ClientMedicationcs(model, Flag));
+        }
+
+        [HttpGet("GetClientMedicationcs/{CilentId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetClientMedicationcs(int CilentId)
+        {
+            Medicationcs model = new Medicationcs();
+            model.ClientID = CilentId;
+
+            int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "select"));
+            return Ok(await service.ClientMedicationcs(model,Flag));
         }
     }
 }
