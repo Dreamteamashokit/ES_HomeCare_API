@@ -37,13 +37,13 @@ namespace ES_HomeCare_API.Model
     {
 
         [Description("Insert")]
-        Create = 0,
+        Create = 1,
         [Description("Update")]
-        Modify = 1,
+        Modify = 2,
         [Description("Delete")]
-        Delete = 2,
+        Delete = 3,
         [Description("select")]
-        select = 3,
+        select = 4,
 
     }
 }

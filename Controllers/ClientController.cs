@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ES_HomeCare_API.Helper;
 using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Client;
 using Microsoft.AspNetCore.Http;
@@ -72,11 +73,19 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ClientMedicationcs(Medicationcs model)
         {
+            try
+            {
+                model.createdOn = DateTime.Now.ToString("dd-mm-yyyy");
+                int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Create"));
+                return Ok(await service.ClientMedicationcs(model, Flag));
+            }
+            catch (Exception ex)
+            {
 
+                throw;
+            }
 
-
-            int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Insert"));
-            return Ok(await service.ClientMedicationcs(model, Flag));
+           
         }
 
         [HttpGet("GetClientMedicationcs/{CilentId}")]
@@ -85,8 +94,7 @@ namespace WebAPI_SAMPLE.Controllers
         public async Task<IActionResult> GetClientMedicationcs(int CilentId)
         {
             Medicationcs model = new Medicationcs();
-            model.ClientID = CilentId;
-
+            model.ClientID = CilentId;      
             int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "select"));
             return Ok(await service.ClientMedicationcs(model,Flag));
         }
@@ -114,6 +122,18 @@ namespace WebAPI_SAMPLE.Controllers
         public async Task<IActionResult> GetServiceTaskList(int UserId)
         {
             return Ok(await service.GetServiceTaskList(UserId));
+        }
+
+        [HttpDelete("deleteMedicationData")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteMedicationData(int MedicationId,int UserId)
+        {
+            Medicationcs model = new Medicationcs();
+            model.MedicationID = MedicationId;
+            model.ClientID = UserId;
+            int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Delete"));
+            return Ok(await service.ClientMedicationcs(model, Flag));
         }
 
 

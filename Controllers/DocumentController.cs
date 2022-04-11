@@ -135,9 +135,6 @@ namespace ES_HomeCare_API.Controllers
         [HttpDelete("DeletetDocumentFromS3")]
         [ProducesResponseType(typeof(ServiceResponse<FolderView>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<FolderView>), StatusCodes.Status400BadRequest)]
-
-       
-
         public async Task<IActionResult> DeletetDocumentFromS3(int DocumentId, string FileName, int FolderId, string FolderName, int empid)
 
         {
