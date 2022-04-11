@@ -21,8 +21,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             configuration = _configuration;
         }
 
-
-
         public async Task<ServiceResponse<string>> AddClient(ClientModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -63,13 +61,13 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             }
             return sres;
         }
-        
+
         public async Task<ServiceResponse<ClientModel>> GetClientDetail(int clientId)
         {
             ServiceResponse<ClientModel> obj = new ServiceResponse<ClientModel>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                
+
                 string sqlqry = "Select y.*,x.AltId,x.ID2,x.ID3,x.InsuranceID,x.WorkerContact,x.WorkerName,x.ReferredBy,x.PriorityCode,x.TimeSlip,x.OfChild,x.Nurse,y.SupervisorId,(ISNULL(co.FirstName,'') + ' ' +   ISNULL(co.MiddleName,'') + ' ' + ISNULL(co.LastName,'') ) as CoordinatorName,(ISNULL(nu.FirstName,'') + ' ' +   ISNULL(nu.MiddleName,'') + ' ' + ISNULL(nu.LastName,'') ) NurseName ,ge.ItemName as GenderName,eth.ItemName as EthnicityName,ms.ItemName as MaritalStatusName from tblClient x inner join tblUser y on x.UserId=y.UserId Left join tblUser co on y.SupervisorId=co.UserId Left join tblUser nu on x.Nurse=nu.UserId Left join tblMaster ge on y.Gender=ge.MasterId Left join tblMaster eth on y.Ethnicity=eth.MasterId Left join tblMaster ms on y.MaritalStatus=ms.MasterId Where  x.UserId=@UserId;";
 
                 var objResult = (await connection.QueryAsync<ClientModel>(sqlqry,
@@ -105,7 +103,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                         ReferaalUserID = _model.OfficeUserReferralID,
                         Text = _model.Text,
                         Screen = _model.Screen,
-                        Email = _model.Email,                       
+                        Email = _model.Email,
                         CreatedOn = _model.CreatedOn,
                         CreatedBy = _model.CreatedBy
 
@@ -136,16 +134,16 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         public async Task<ServiceResponse<IEnumerable<ClientStatusLst>>> GetClientStatusList(int ClientId)
         {
             ServiceResponse<IEnumerable<ClientStatusLst>> obj = new ServiceResponse<IEnumerable<ClientStatusLst>>();
-             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-                {
-                    string sql = "select tm.ItemName as ActivityText,StatusDate as Date,tmm.ItemName as ReferralCodeText,note as Note from tblClientSatus tcs left join tblMaster tm on tcs.ActivityID=tm.ItemId " +
-                                  "left join tblMaster tmm on tcs.ReferralCodeId = tmm.ItemId where tm.MasterType = 6 and tmm.MasterType = 7 and tcs.clientId=@ClientId";
-                    IEnumerable<ClientStatusLst> cmeetings = (await connection.QueryAsync<ClientStatusLst>(sql, new { ClientId = ClientId }));
-                    obj.Data = cmeetings;
-                    obj.Result = cmeetings.Any() ? true : false;
-                    obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
-                }           
-            
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "select tm.ItemName as ActivityText,StatusDate as Date,tmm.ItemName as ReferralCodeText,note as Note from tblClientSatus tcs left join tblMaster tm on tcs.ActivityID=tm.ItemId " +
+                              "left join tblMaster tmm on tcs.ReferralCodeId = tmm.ItemId where tm.MasterType = 6 and tmm.MasterType = 7 and tcs.clientId=@ClientId";
+                IEnumerable<ClientStatusLst> cmeetings = (await connection.QueryAsync<ClientStatusLst>(sql, new { ClientId = ClientId }));
+                obj.Data = cmeetings;
+                obj.Result = cmeetings.Any() ? true : false;
+                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
+            }
+
             return obj;
         }
 
@@ -219,6 +217,65 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         }
 
 
-       
+        public async Task<ServiceResponse<string>> CreateServiceTask(IList<ServiceTaskModel> _list)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string Query = "INSERT INTO tblServiceTask (UserId,TaskId,Frequency,ServiceNote,IsActive,CreatedOn,CreatedBy) VALUES (@UserId,@TaskId,@Frequency,@ServiceNote,@IsActive,@CreatedOn,@CreatedBy);";
+
+                    int rowsAffected = await cnn.ExecuteAsync(Query, _list.Select(_model =>
+                    new
+                    {
+                        @UserId = _model.UserId,
+                        @TaskId = _model.TaskId,
+                        @Frequency = _model.Frequency,
+                        @ServiceNote = _model.ServiceNote,
+                        @IsActive = _model.IsActive,
+                        @CreatedOn = _model.CreatedOn,
+                        @CreatedBy = _model.CreatedBy,
+                    }));
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new creation.";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+                return sres;
+            }
+
+            return sres;
+        }
+
+
+        public async Task<ServiceResponse<IEnumerable<ServiceTaskView>>> GetServiceTaskList(int userId)
+        {
+            ServiceResponse<IEnumerable<ServiceTaskView>> obj = new ServiceResponse<IEnumerable<ServiceTaskView>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+
+                string sqlqry = "Select x.TaskSrvId,y.TaskCode,y.TaskName,x.Frequency,x.ServiceNote,x.UserId from tblServiceTask x inner join tblTaskMaster y on x.TaskId=y.TaskId Where  x.UserId=@UserId;";
+
+                IEnumerable<ServiceTaskView> objResult = (await connection.QueryAsync<ServiceTaskView>(sqlqry,new { @UserId = userId }));
+
+                obj.Data = objResult;
+                obj.Result = objResult != null ? true : false;
+                obj.Message = objResult != null ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
     }
 }

@@ -28,5 +28,6 @@ namespace ES_HomeCare_API.Model.Client
         public string GenderName { get; set; }
         public string EthnicityName { get; set; }
         public string MaritalStatusName { get; set; }
+
     }
 }

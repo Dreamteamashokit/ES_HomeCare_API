@@ -28,7 +28,7 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddClient([FromBody] ClientModel model)
         {
-         
+
             model.TimeSlip = true;
             model.IsHourly = true;
             model.IsActive = 1;
@@ -47,7 +47,7 @@ namespace WebAPI_SAMPLE.Controllers
         {
             return Ok(await service.GetClientDetail(userId));
         }
-    
+
 
         [HttpPost("addStatus")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
@@ -90,5 +90,41 @@ namespace WebAPI_SAMPLE.Controllers
             int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "select"));
             return Ok(await service.ClientMedicationcs(model,Flag));
         }
+
+
+        [HttpPost("createServiceTask")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateServiceTask([FromBody] IList<ServiceTaskModel> model)
+        {
+            try
+            {
+                return Ok(await service.CreateServiceTask(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet("getServiceTaskList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ServiceTaskView>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ServiceTaskView>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetServiceTaskList(int UserId)
+        {
+            return Ok(await service.GetServiceTaskList(UserId));
+        }
+
+
+
+
+
+
+
+
+
+
+
     }
 }

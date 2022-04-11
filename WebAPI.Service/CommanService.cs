@@ -1,4 +1,5 @@
 ﻿using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Client;
 using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using ES_HomeCare_API.WebAPI.Service.IService;
@@ -15,7 +16,7 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             data = ldata;
         }
-        
+
 
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetMasterList(short typeId)
         {
@@ -62,6 +63,20 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.GetClientList();
 
         }
+
+        public async Task<ServiceResponse<string>> CreateTask(TaskModel _model)
+        {
+            return await data.CreateTask(_model);
+
+        }
+
+        public async Task<ServiceResponse<IEnumerable<TaskModel>>> GetTaskList()
+        {
+            return await data.GetTaskList();
+
+        }
+
+
 
 
     }
