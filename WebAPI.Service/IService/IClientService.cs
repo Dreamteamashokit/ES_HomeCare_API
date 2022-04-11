@@ -15,7 +15,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<ClientModel>> GetClientDetail(int clientId);
         Task<ServiceResponse<string>> SaveClientStatus(ClientStatus _model);
         Task<ServiceResponse<IEnumerable<ClientStatusLst>>> GetClientStatusList(int ClientId);
-        Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model);
+  
 
         Task<ServiceResponse<string>> CreateServiceTask(IList<ServiceTaskModel> _list);
         Task<ServiceResponse<IEnumerable<ServiceTaskView>>> GetServiceTaskList(int userId);
