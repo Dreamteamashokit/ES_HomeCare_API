@@ -72,6 +72,9 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ClientMedicationcs(Medicationcs model)
         {
+
+
+
             int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Insert"));
             return Ok(await service.ClientMedicationcs(model, Flag));
         }
