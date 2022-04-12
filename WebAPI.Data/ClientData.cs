@@ -159,10 +159,11 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 {
                     SqlCommand cmd = new SqlCommand("Sp_SaveClientMedication", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                   
                     cmd.Parameters.AddWithValue("@flag", Flag);
                     cmd.Parameters.AddWithValue("@MedicationID", Model.MedicationID);
-                    cmd.Parameters.AddWithValue("@StartDate", Model.StartDate);
-                    cmd.Parameters.AddWithValue("@EndDate", Model.EndDate);
+                    cmd.Parameters.AddWithValue("@StartDate",Model.StartDate.ToString("dd-mm-yyyy")=="01-00-0001"?DateTime.Now.Date: Model.StartDate.Date);
+                    cmd.Parameters.AddWithValue("@EndDate", Model.EndDate.ToString("dd-mm-yyyy") == "01-00-0001" ? DateTime.Now.Date : Model.EndDate.Date);
                     cmd.Parameters.AddWithValue("@Medication", Model.MedicationText);
                     cmd.Parameters.AddWithValue("@NDC", Model.NDCText);
                     cmd.Parameters.AddWithValue("@Strength", Model.StrengthText);
@@ -178,7 +179,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     cmd.Parameters.AddWithValue("@Isadministrationcheck", Model.administrationcheck);
                     cmd.Parameters.AddWithValue("@Isselfadministercheck", Model.selfadministercheck);
                     cmd.Parameters.AddWithValue("@UserId", Model.ClientID);
-                    cmd.Parameters.AddWithValue("@CreatedOn", Model.createdOn);
+                    cmd.Parameters.AddWithValue("@CreatedOn",Model.createdOn.Date);
                     cmd.Parameters.AddWithValue("@CreatedBy", Model.CreatedBy);
                     cmd.Parameters.AddWithValue("@IsActive", Model.IsActive);
                     DataTable table = new DataTable();
@@ -191,14 +192,14 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                             clientsMedicationcs.Add(new Medicationcs
                             {
                                 MedicationID = Convert.ToInt32(table.Rows[i]["MedicationID"].ToString()),
-                                StartDate = table.Rows[i]["StartDate"].ToString(),
-                                EndDate = table.Rows[i]["EndDate"].ToString(),
+                                StartDate =Convert.ToDateTime(table.Rows[i]["StartDate"]),
+                                EndDate = Convert.ToDateTime(table.Rows[i]["EndDate"]),
                                 MedicationText = string.IsNullOrEmpty(table.Rows[i]["Medication"].ToString()) ? table.Rows[i]["NDC"].ToString() : table.Rows[i]["Medication"].ToString(),
                                 StrengthText = table.Rows[i]["Strength"].ToString(),
                                 FrequencyText = table.Rows[i]["Frequency"].ToString(),
                                 DosageText = table.Rows[i]["Dosage"].ToString(),
                                 RouteText = string.IsNullOrEmpty(table.Rows[i]["Route"].ToString()) ? table.Rows[i]["Instructions"].ToString() : table.Rows[i]["Route"].ToString(),
-                            });
+                            }) ;
                         }
                         obj.Result = true;
                     }

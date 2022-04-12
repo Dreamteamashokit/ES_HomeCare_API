@@ -5,8 +5,8 @@ namespace ES_HomeCare_API.Model.Client
     public class Medicationcs
     {
         public int MedicationID { get; set; }
-        public string StartDate { get; set; }
-        public string EndDate { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public string MedicationText { get; set; }
         public string NDCText { get; set; }
         public string StrengthText { get; set; }
@@ -26,7 +26,7 @@ namespace ES_HomeCare_API.Model.Client
       
         public int ClientID { get; set; }
         public int CreatedBy { get; set; }
-        public string createdOn { get; set; }
+        public DateTime createdOn { get; set; }
         public bool IsActive { get; set; }
     }
 

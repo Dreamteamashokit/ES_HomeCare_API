@@ -75,7 +75,7 @@ namespace WebAPI_SAMPLE.Controllers
         {
             try
             {
-                model.createdOn = DateTime.Now.ToString("dd-mm-yyyy");
+                model.createdOn = DateTime.Now.Date;
                 int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Create"));
                 return Ok(await service.ClientMedicationcs(model, Flag));
             }
@@ -94,6 +94,8 @@ namespace WebAPI_SAMPLE.Controllers
         public async Task<IActionResult> GetClientMedicationcs(int CilentId)
         {
             Medicationcs model = new Medicationcs();
+            model.ClientID = CilentId;
+            model.createdOn = DateTime.Now.Date;
             model.ClientID = CilentId;
             int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "select"));
             return Ok(await service.ClientMedicationcs(model, Flag));
