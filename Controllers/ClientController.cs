@@ -85,7 +85,7 @@ namespace WebAPI_SAMPLE.Controllers
                 throw;
             }
 
-           
+
         }
 
         [HttpGet("GetClientMedicationcs/{CilentId}")]
@@ -94,9 +94,9 @@ namespace WebAPI_SAMPLE.Controllers
         public async Task<IActionResult> GetClientMedicationcs(int CilentId)
         {
             Medicationcs model = new Medicationcs();
-            model.ClientID = CilentId;      
+            model.ClientID = CilentId;
             int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "select"));
-            return Ok(await service.ClientMedicationcs(model,Flag));
+            return Ok(await service.ClientMedicationcs(model, Flag));
         }
 
 
@@ -107,6 +107,19 @@ namespace WebAPI_SAMPLE.Controllers
         {
             try
             {
+
+                foreach (var item in model)
+                {
+
+
+
+                    item.IsActive = 1;
+                    item.CreatedBy = 1;
+                    item.CreatedOn = DateTime.Now;
+                }
+
+
+
                 return Ok(await service.CreateServiceTask(model));
 
             }
@@ -116,7 +129,7 @@ namespace WebAPI_SAMPLE.Controllers
             }
         }
 
-        [HttpGet("getServiceTaskList")]
+        [HttpGet("getServiceTaskList/{UserId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ServiceTaskView>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ServiceTaskView>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetServiceTaskList(int UserId)
@@ -127,7 +140,7 @@ namespace WebAPI_SAMPLE.Controllers
         [HttpDelete("deleteMedicationData")]
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteMedicationData(int MedicationId,int UserId)
+        public async Task<IActionResult> DeleteMedicationData(int MedicationId, int UserId)
         {
             Medicationcs model = new Medicationcs();
             model.MedicationID = MedicationId;
