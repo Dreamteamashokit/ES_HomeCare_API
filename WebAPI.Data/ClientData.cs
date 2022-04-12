@@ -225,6 +225,26 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
+
+
+            //MERGE INTO tblServiceTask AS TARGET
+            //USING(
+            //VALUES
+            //(@UserId, @TaskId, @Frequency, @ServiceNote, @IsActive, @CreatedOn, @CreatedBy)
+            //) AS SOURCE(UserId, TaskId, Frequency, ServiceNote, IsActive, CreatedOn, CreatedBy)
+            //ON SOURCE.UserId = TARGET.UserId and SOURCE.TaskId = TARGET.TaskId
+            //WHEN MATCHED THEN
+            //UPDATE SET Frequency = @Frequency, ServiceNote = @ServiceNote
+            //WHEN NOT MATCHED THEN
+            //INSERT(UserId, TaskId, Frequency, ServiceNote, IsActive, CreatedOn, CreatedBy)
+            //VALUES(SOURCE.UserId, SOURCE.TaskId, SOURCE.Frequency, SOURCE.ServiceNote, SOURCE.IsActive, SOURCE.CreatedOn, SOURCE.CreatedBy);
+
+
+
+
+
+
+
                     string Query = "INSERT INTO tblServiceTask (UserId,TaskId,Frequency,ServiceNote,IsActive,CreatedOn,CreatedBy) VALUES (@UserId,@TaskId,@Frequency,@ServiceNote,@IsActive,@CreatedOn,@CreatedBy);";
 
                     int rowsAffected = await cnn.ExecuteAsync(Query, _list.Select(_model =>
@@ -285,6 +305,21 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             ServiceResponse<string> obj = new ServiceResponse<string>();
             try
             {
+
+
+//                IF NOT EXISTS(SELECT 0 FROM tblServiceTask Where TaskId = @TaskId and UserId = @UserId)
+//BEGIN
+//INSERT INTO tblServiceTask(UserId, TaskId, Frequency, ServiceNote, IsActive, CreatedOn, CreatedBy)
+//VALUES(@UserId, @TaskId, @Frequency, @ServiceNote, @IsActive, @CreatedOn, @CreatedBy);
+//                END
+//                ElSE
+//BEGIN
+//Update tblServiceTask Set Frequency = Frequency, @ServiceNote = @ServiceNote Where TaskId = @TaskId and UserId = @UserId
+//END
+
+
+
+
 
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
