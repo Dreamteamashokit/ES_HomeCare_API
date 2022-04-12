@@ -268,7 +268,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
 
-                string sqlqry = "Select x.TaskSrvId,y.TaskCode,y.TaskName,x.Frequency,x.ServiceNote,x.UserId from tblServiceTask x inner join tblTaskMaster y on x.TaskId=y.TaskId Where  x.UserId=@UserId;";
+                string sqlqry = "Select x.TaskSrvId,y.TaskCode,y.TaskName,x.Frequency,x.ServiceNote,x.UserId from tblServiceTask x inner join tblTaskMaster y on x.TaskId=y.TaskId Where  x.UserId=@UserId and x.IsActive=1;";
 
                 IEnumerable<ServiceTaskView> objResult = (await connection.QueryAsync<ServiceTaskView>(sqlqry,new { @UserId = userId }));
 
@@ -278,5 +278,93 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             }
             return obj;
         }
+
+
+        public async Task<ServiceResponse<string>> DeleteService(int SrvId)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var sqlqry = "Update tblServiceTask Set IsActive=@IsActive Where TaskSrvId=@SrvId";
+                    
+                    int rowsAffected = connection.Execute(sqlqry, new { @IsActive = 0, @SrvId = SrvId });
+
+                    if (rowsAffected > 0)
+                    {
+                        obj.Result = true;
+                        obj.Data = "Deleted Successfully";
+                    }
+                    else
+                    {
+                        obj.Data = null;
+                        obj.Message = "Deletion Failed.";
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+
+
+            return obj;
+        }
+
+
+        public async Task<ServiceResponse<string>> UpdateService(ServiceTaskModel item)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var sqlqry = "Update tblServiceTask Set TaskId=@TaskId,Frequency=@Frequency,ServiceNote=@ServiceNote Where TaskSrvId=@TaskSrvId";
+
+                    int rowsAffected = connection.Execute(sqlqry, new
+                    {
+                        @TaskSrvId = item.TaskSrvId,
+                        @TaskId = item.TaskId,
+                        @Frequency = item.Frequency,
+                        @ServiceNote = item.ServiceNote,
+                
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        obj.Result = true;
+                        obj.Data = "Updated Successfully";
+                    }
+                    else
+                    {
+                        obj.Data = null;
+                        obj.Message = "Updation Failed.";
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+
+
+            return obj;
+        }
+
+
+        
+
+
+
+
     }
 }

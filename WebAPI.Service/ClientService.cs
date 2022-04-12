@@ -56,6 +56,22 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         }
 
 
+        public async Task<ServiceResponse<string>> UpdateService(ServiceTaskModel item)
+        {
+            return await data.UpdateService(item);
+        }
+
+
+        public async Task<ServiceResponse<string>> DeleteService(int SrvId)
+        {
+            return await data.DeleteService(SrvId);
+        }
+
+
+        
+       
+
+
 
 
 

@@ -100,6 +100,20 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
 
+
+        [HttpDelete("deleteMedicationData")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteMedicationData(int MedicationId, int UserId)
+        {
+            Medicationcs model = new Medicationcs();
+            model.MedicationID = MedicationId;
+            model.ClientID = UserId;
+            int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Delete"));
+            return Ok(await service.ClientMedicationcs(model, Flag));
+        }
+
+
         [HttpPost("createServiceTask")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
@@ -137,17 +151,60 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.GetServiceTaskList(UserId));
         }
 
-        [HttpDelete("deleteMedicationData")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteMedicationData(int MedicationId, int UserId)
+
+
+
+
+
+        [HttpPost("updateService")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateService([FromBody] ServiceTaskModel model)
         {
-            Medicationcs model = new Medicationcs();
-            model.MedicationID = MedicationId;
-            model.ClientID = UserId;
-            int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Delete"));
-            return Ok(await service.ClientMedicationcs(model, Flag));
+            try
+            {
+
+            
+
+                return Ok(await service.UpdateService(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
+   
+
+        [HttpPost("deleteService/{TaskSrvId}")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteService(int TaskSrvId)
+        {
+            try
+            {
+
+                return Ok(await service.DeleteService(TaskSrvId));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
