@@ -85,7 +85,7 @@ namespace WebAPI_SAMPLE.Controllers
                 throw;
             }
 
-           
+
         }
 
         [HttpGet("GetClientMedicationcs/{CilentId}")]
@@ -96,8 +96,23 @@ namespace WebAPI_SAMPLE.Controllers
             Medicationcs model = new Medicationcs();
             model.ClientID = CilentId;
             model.createdOn = DateTime.Now.Date;
+            model.ClientID = CilentId;
             int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "select"));
-            return Ok(await service.ClientMedicationcs(model,Flag));
+            return Ok(await service.ClientMedicationcs(model, Flag));
+        }
+
+
+
+        [HttpDelete("deleteMedicationData")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteMedicationData(int MedicationId, int UserId)
+        {
+            Medicationcs model = new Medicationcs();
+            model.MedicationID = MedicationId;
+            model.ClientID = UserId;
+            int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Delete"));
+            return Ok(await service.ClientMedicationcs(model, Flag));
         }
 
 
@@ -108,6 +123,19 @@ namespace WebAPI_SAMPLE.Controllers
         {
             try
             {
+
+                foreach (var item in model)
+                {
+
+
+
+                    item.IsActive = 1;
+                    item.CreatedBy = 1;
+                    item.CreatedOn = DateTime.Now;
+                }
+
+
+
                 return Ok(await service.CreateServiceTask(model));
 
             }
@@ -117,7 +145,7 @@ namespace WebAPI_SAMPLE.Controllers
             }
         }
 
-        [HttpGet("getServiceTaskList")]
+        [HttpGet("getServiceTaskList/{UserId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ServiceTaskView>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ServiceTaskView>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetServiceTaskList(int UserId)
@@ -125,18 +153,60 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.GetServiceTaskList(UserId));
         }
 
-        [HttpDelete("deleteMedicationData")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteMedicationData(int MedicationId,int UserId)
+
+
+
+
+
+        [HttpPost("updateService")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateService([FromBody] ServiceTaskModel model)
         {
-            Medicationcs model = new Medicationcs();
-            model.MedicationID = MedicationId;
-            model.ClientID = UserId;
-            model.createdOn = DateTime.Now.Date;
-            int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Delete"));
-            return Ok(await service.ClientMedicationcs(model, Flag));
+            try
+            {
+
+            
+
+                return Ok(await service.UpdateService(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
+   
+
+        [HttpPost("deleteService/{TaskSrvId}")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteService(int TaskSrvId)
+        {
+            try
+            {
+
+                return Ok(await service.DeleteService(TaskSrvId));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

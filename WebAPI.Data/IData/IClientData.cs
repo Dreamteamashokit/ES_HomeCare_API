@@ -14,10 +14,12 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<ClientModel>> GetClientDetail(int clientId);
         Task<ServiceResponse<string>> SaveClientStatus(ClientStatus _model);
         Task<ServiceResponse<IEnumerable<ClientStatusLst>>> GetClientStatusList(int ClientId);
-      
+        Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model, int Flag);
 
         Task<ServiceResponse<string>> CreateServiceTask(IList<ServiceTaskModel> _list);
         Task<ServiceResponse<IEnumerable<ServiceTaskView>>> GetServiceTaskList(int userId);
-        Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model, int Flag);
+        Task<ServiceResponse<string>> UpdateService(ServiceTaskModel item);
+        Task<ServiceResponse<string>> DeleteService(int SrvId);
+     
     }
 }

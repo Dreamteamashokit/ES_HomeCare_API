@@ -147,6 +147,12 @@ namespace ES_HomeCare_API.Controllers
         {
             try
             {
+
+
+           
+                model.IsActive = 1;   
+                model.CreatedBy = 1;
+                model.CreatedOn = DateTime.Now;
                 return Ok(await comSrv.CreateTask(model));
 
             }
