@@ -227,26 +227,12 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
 
-
-            //MERGE INTO tblServiceTask AS TARGET
-            //USING(
-            //VALUES
-            //(@UserId, @TaskId, @Frequency, @ServiceNote, @IsActive, @CreatedOn, @CreatedBy)
-            //) AS SOURCE(UserId, TaskId, Frequency, ServiceNote, IsActive, CreatedOn, CreatedBy)
-            //ON SOURCE.UserId = TARGET.UserId and SOURCE.TaskId = TARGET.TaskId
-            //WHEN MATCHED THEN
-            //UPDATE SET Frequency = @Frequency, ServiceNote = @ServiceNote
-            //WHEN NOT MATCHED THEN
-            //INSERT(UserId, TaskId, Frequency, ServiceNote, IsActive, CreatedOn, CreatedBy)
-            //VALUES(SOURCE.UserId, SOURCE.TaskId, SOURCE.Frequency, SOURCE.ServiceNote, SOURCE.IsActive, SOURCE.CreatedOn, SOURCE.CreatedBy);
+                    string sQuery = "INSERT INTO tblServiceTask (UserId,TaskId,Frequency,ServiceNote,IsActive,CreatedOn,CreatedBy) VALUES (@UserId,@TaskId,@Frequency,@ServiceNote,@IsActive,@CreatedOn,@CreatedBy);";
 
 
+                    string Query = "MERGE INTO tblServiceTask AS TARGET USING( VALUES (@UserId, @TaskId, @Frequency, @ServiceNote, @IsActive, @CreatedOn, @CreatedBy) ) AS SOURCE(UserId, TaskId, Frequency, ServiceNote, IsActive, CreatedOn, CreatedBy) ON SOURCE.UserId = TARGET.UserId and SOURCE.TaskId = TARGET.TaskId WHEN MATCHED THEN UPDATE SET Frequency = @Frequency, ServiceNote = @ServiceNote,IsActive=@IsActive WHEN NOT MATCHED THEN INSERT(UserId, TaskId, Frequency, ServiceNote, IsActive, CreatedOn, CreatedBy) VALUES(SOURCE.UserId, SOURCE.TaskId, SOURCE.Frequency, SOURCE.ServiceNote, SOURCE.IsActive, SOURCE.CreatedOn, SOURCE.CreatedBy); ";
 
 
-
-
-
-                    string Query = "INSERT INTO tblServiceTask (UserId,TaskId,Frequency,ServiceNote,IsActive,CreatedOn,CreatedBy) VALUES (@UserId,@TaskId,@Frequency,@ServiceNote,@IsActive,@CreatedOn,@CreatedBy);";
 
                     int rowsAffected = await cnn.ExecuteAsync(Query, _list.Select(_model =>
                     new
@@ -307,26 +293,11 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             try
             {
 
-
-//                IF NOT EXISTS(SELECT 0 FROM tblServiceTask Where TaskId = @TaskId and UserId = @UserId)
-//BEGIN
-//INSERT INTO tblServiceTask(UserId, TaskId, Frequency, ServiceNote, IsActive, CreatedOn, CreatedBy)
-//VALUES(@UserId, @TaskId, @Frequency, @ServiceNote, @IsActive, @CreatedOn, @CreatedBy);
-//                END
-//                ElSE
-//BEGIN
-//Update tblServiceTask Set Frequency = Frequency, @ServiceNote = @ServiceNote Where TaskId = @TaskId and UserId = @UserId
-//END
-
-
-
-
-
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
                     var sqlqry = "Update tblServiceTask Set IsActive=@IsActive Where TaskSrvId=@SrvId";
                     
-                    int rowsAffected = connection.Execute(sqlqry, new { @IsActive = 0, @SrvId = SrvId });
+                    int rowsAffected = await connection.ExecuteAsync(sqlqry, new { @IsActive = 0, @SrvId = SrvId });
 
                     if (rowsAffected > 0)
                     {
@@ -363,7 +334,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 {
                     var sqlqry = "Update tblServiceTask Set TaskId=@TaskId,Frequency=@Frequency,ServiceNote=@ServiceNote Where TaskSrvId=@TaskSrvId";
 
-                    int rowsAffected = connection.Execute(sqlqry, new
+                    int rowsAffected =await connection.ExecuteAsync(sqlqry, new
                     {
                         @TaskSrvId = item.TaskSrvId,
                         @TaskId = item.TaskId,

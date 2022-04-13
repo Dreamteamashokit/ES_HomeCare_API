@@ -152,11 +152,6 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.GetServiceTaskList(UserId));
         }
 
-
-
-
-
-
         [HttpPost("updateService")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
@@ -205,7 +200,7 @@ namespace WebAPI_SAMPLE.Controllers
             {
                 EmployeeDecline obj = new EmployeeDecline()
                 {
-                    ReportedDate = model.ReportedDate.ParseDate(),
+                    ReportedDate = model.ReportedDate.ParseDateTime(),
                     EmpId = model.EmpId,
                     CaseType = model.CaseType,
                     Reason = model.Reason,
