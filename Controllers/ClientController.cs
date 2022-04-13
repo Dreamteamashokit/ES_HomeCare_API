@@ -84,8 +84,6 @@ namespace WebAPI_SAMPLE.Controllers
 
                 throw;
             }
-
-
         }
 
         [HttpGet("GetClientMedicationcs/{CilentId}")]
@@ -167,8 +165,6 @@ namespace WebAPI_SAMPLE.Controllers
             try
             {
 
-            
-
                 return Ok(await service.UpdateService(model));
 
             }
@@ -177,7 +173,7 @@ namespace WebAPI_SAMPLE.Controllers
                 throw ex;
             }
         }
-   
+
 
         [HttpDelete("deleteService/{TaskSrvId}")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
@@ -197,6 +193,94 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
 
+
+
+
+
+
+
+
+
+
+
+
+        [HttpPost("createEmpDeclined")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateEmpDeclined([FromBody] EmployeeDeclineJson model)
+        {
+            try
+            {
+                EmployeeDecline obj = new EmployeeDecline()
+                {
+                    ReportedDate = model.ReportedDate.ParseDate(),
+                    EmpId = model.EmpId,
+                    CaseType = model.CaseType,
+                    Reason = model.Reason,
+                    StartDate = model.StartDate.ParseDate(),
+                    Notes = model.Notes,
+                    UserId= model.UserId,
+                    CreatedBy = model.CreatedBy,
+
+                };
+
+                obj.IsActive = 1;
+                obj.CreatedOn = DateTime.Now;
+
+                return Ok(await service.CreateEmpDeclined(obj));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+        [HttpGet("getEmpDeclined/{UserId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<EmployeeDeclineView>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<EmployeeDeclineView>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetEmpDeclined(int UserId)
+        {
+            return Ok(await service.GetEmpDeclined(UserId));
+        }
+
+
+
+        [HttpPost("updateEmpDeclined")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateEmpDeclined([FromBody] EmployeeDecline model)
+        {
+            try
+            {
+
+                return Ok(await service.UpdateEmpDeclined(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpDelete("deleteEmpDeclined")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteEmpDeclined(int declinedId)
+        {
+            try
+            {
+
+                return Ok(await service.DeleteEmpDeclined(declinedId));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
 
 

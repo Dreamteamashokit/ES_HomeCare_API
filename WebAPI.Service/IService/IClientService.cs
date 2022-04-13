@@ -22,6 +22,12 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<string>> UpdateService(ServiceTaskModel item);
         Task<ServiceResponse<string>> DeleteService(int SrvId);
 
-        
+
+        Task<ServiceResponse<string>> CreateEmpDeclined(EmployeeDecline _model);
+        Task<ServiceResponse<IEnumerable<EmployeeDeclineView>>> GetEmpDeclined(int userId);
+        Task<ServiceResponse<string>> UpdateEmpDeclined(EmployeeDecline item);
+        Task<ServiceResponse<string>> DeleteEmpDeclined(int declinedId);
+
+
     }
 }

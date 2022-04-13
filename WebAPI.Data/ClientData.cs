@@ -395,11 +395,124 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             return obj;
         }
+              
+
+        public async Task<ServiceResponse<string>> CreateEmpDeclined(EmployeeDecline _model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {    
+                    string Query = "INSERT INTO tblEmpDeclined (ReportedDate,UserId,EmpId,CaseType,Reason,StartDate,Notes,IsActive,CreatedOn,CreatedBy) VALUES (@ReportedDate,@UserId,@EmpId,@CaseType,@Reason,@StartDate,@Notes,@IsActive,@CreatedOn,@CreatedBy);";
+
+                    int rowsAffected = await connection.ExecuteAsync(Query, _model);
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new creation.";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+                return sres;
+            }
+
+            return sres;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<EmployeeDeclineView>>> GetEmpDeclined(int userId)
+        {
+            ServiceResponse<IEnumerable<EmployeeDeclineView>> obj = new ServiceResponse<IEnumerable<EmployeeDeclineView>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+
+                string sqlqry = " Select x.*,(ISNULL(y.FirstName,'') + ' ' +   ISNULL(y.MiddleName,'') + ' ' + ISNULL(y.LastName,'') ) EmpName  from tblEmpDeclined x inner join tblUser y on x.EmpId=y.UserId Where  x.UserId=@UserId and x.IsActive=1;";
+
+                IEnumerable<EmployeeDeclineView> objResult = (await connection.QueryAsync<EmployeeDeclineView>(sqlqry, new { @UserId = userId }));
+
+                obj.Data = objResult;
+                obj.Result = objResult != null ? true : false;
+                obj.Message = objResult != null ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
+
+        public async Task<ServiceResponse<string>> UpdateEmpDeclined(EmployeeDecline item)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var sqlqry = "Update tblEmpDeclined Set ReportedDate=@ReportedDate,EmpId=@EmpId,StartDate=@StartDate,Reason=@Reason,Notes=@Notes Where DeclinedId=@DeclinedId";
+
+                    int rowsAffected = await connection.ExecuteAsync(sqlqry, item);
+
+                    if (rowsAffected > 0)
+                    {
+                        obj.Result = true;
+                        obj.Data = "Updated Successfully";
+                    }
+                    else
+                    {
+                        obj.Data = null;
+                        obj.Message = "Updation Failed.";
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
 
 
-        
+            return obj;
+        }
 
+        public async Task<ServiceResponse<string>> DeleteEmpDeclined(int declinedId)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var sqlqry = "Update tblEmpDeclined Set IsActive=@IsActive Where DeclinedId=@DeclinedId";
 
+                    int rowsAffected = await connection.ExecuteAsync(sqlqry, new { @IsActive = 0, @DeclinedId = declinedId });
+
+                    if (rowsAffected > 0)
+                    {
+                        obj.Result = true;
+                        obj.Data = "Deleted Successfully";
+                    }
+                    else
+                    {
+                        obj.Data = null;
+                        obj.Message = "Deletion Failed.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+            return obj;
+        }
 
 
     }
