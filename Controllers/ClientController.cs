@@ -175,7 +175,7 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
 
-        [HttpDelete("deleteService/{TaskSrvId}")]
+        [HttpDelete("deleteService")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteService(int TaskSrvId)
@@ -191,14 +191,6 @@ namespace WebAPI_SAMPLE.Controllers
                 throw ex;
             }
         }
-
-
-
-
-
-
-
-
 
 
 
