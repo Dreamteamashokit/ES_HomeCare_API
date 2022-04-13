@@ -111,6 +111,7 @@ namespace WebAPI_SAMPLE.Controllers
             Medicationcs model = new Medicationcs();
             model.MedicationID = MedicationId;
             model.ClientID = UserId;
+            model.createdOn = DateTime.Now.Date;
             int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Delete"));
             return Ok(await service.ClientMedicationcs(model, Flag));
         }
