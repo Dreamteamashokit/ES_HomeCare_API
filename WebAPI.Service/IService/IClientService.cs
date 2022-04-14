@@ -21,7 +21,9 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<IEnumerable<ServiceTaskView>>> GetServiceTaskList(int userId);
         Task<ServiceResponse<string>> UpdateService(ServiceTaskModel item);
         Task<ServiceResponse<string>> DeleteService(int SrvId);
+        Task<ServiceResponse<IEnumerable<ClientEmrgencyInfo>>> ClienEmergencyInfo(ClientEmrgencyInfo Model);
 
-        
+
+
     }
 }

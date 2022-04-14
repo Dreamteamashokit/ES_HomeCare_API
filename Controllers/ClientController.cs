@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using ES_HomeCare_API.Helper;
@@ -199,8 +200,52 @@ namespace WebAPI_SAMPLE.Controllers
 
 
 
+        [HttpPost("ClientEmergencyInfo")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ClientEmergencyInfo(ClientEmrgencyInfo model)
+        {
+            try
+            {
+                model.CreatedOn = DateTime.Now.Date;              
+                return Ok(await service.ClienEmergencyInfo(model));
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
 
 
+        }
+
+        [HttpGet("getClientEmergencyInfo/{UserId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> getClientEmergencyInfo(int UserId)
+        {
+            try
+            {
+                ClientEmrgencyInfo model = new ClientEmrgencyInfo();
+                model.UserId = UserId;
+                model.CreatedOn = DateTime.Now.Date;
+                model.LicenseExpires = DateTime.Now.Date;
+               
+                string stringValue = Enum.GetName(typeof(EmergencyInfoType), 1);
+
+               
+                return Ok(await service.ClienEmergencyInfo(model));
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+
+        }
+
+       
 
 
 

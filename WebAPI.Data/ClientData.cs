@@ -397,7 +397,83 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         }
 
 
-        
+        public async Task<ServiceResponse<IEnumerable<ClientEmrgencyInfo>>> ClienEmergencyInfo(ClientEmrgencyInfo Model)
+        {
+            ServiceResponse<IEnumerable<ClientEmrgencyInfo>> obj = new ServiceResponse<IEnumerable<ClientEmrgencyInfo>>();
+            List<ClientEmrgencyInfo> clientsEmrgencyInfo = new List<ClientEmrgencyInfo>();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("Sp_ClientEmergencyInfo", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                   
+                    cmd.Parameters.AddWithValue("@type", Model.type);
+                    cmd.Parameters.AddWithValue("@UserId",Model.UserId);
+                    cmd.Parameters.AddWithValue("@FirstName",Model.FirstName);
+                    cmd.Parameters.AddWithValue("@LastName", Model.LastName);
+                    cmd.Parameters.AddWithValue("@Relationship", Model.Relationship);
+                    cmd.Parameters.AddWithValue("@Phone", Model.Phone);
+                    cmd.Parameters.AddWithValue("@Email", Model.Email);
+                    cmd.Parameters.AddWithValue("@Title", Model.Title);
+                    cmd.Parameters.AddWithValue("@License", Model.License);
+                    cmd.Parameters.AddWithValue("@LicenseEx", Model.LicenseExpires.Date);
+                    cmd.Parameters.AddWithValue("@NPI", Model.NPINumber);
+                    cmd.Parameters.AddWithValue("@Fax", Model.Fax);
+                    cmd.Parameters.AddWithValue("@address", Model.Address);
+                    cmd.Parameters.AddWithValue("@State", Model.State);
+                    cmd.Parameters.AddWithValue("@city", Model.City);
+                    cmd.Parameters.AddWithValue("@ZipCode", Model.Zip);
+                    cmd.Parameters.AddWithValue("@IsActive", Model.IsActive);                  
+                    cmd.Parameters.AddWithValue("@CreatedOn", Model.CreatedOn.Date);
+                    cmd.Parameters.AddWithValue("@CreatedBy", Model.CreatedBy);
+                    cmd.Parameters.AddWithValue("@ID", Model.Id);
+                    DataTable table = new DataTable();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(table);
+                    if (table.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < table.Rows.Count; i++)
+                        {
+                            clientsEmrgencyInfo.Add(new ClientEmrgencyInfo
+                            {
+                                UserId = Model.UserId,
+                                type = Convert.ToInt32(table.Rows[i]["type"].ToString())==1? "Primary Contact" : "Emergency Contact",
+                            Title = table.Rows[i]["Title"].ToString(),
+                                FirstName = table.Rows[i]["FirstName"].ToString(),
+                                LastName = table.Rows[i]["LastName"].ToString(),
+                                License = table.Rows[i]["License"].ToString(),
+                                LicenseExpires = string.IsNullOrEmpty(table.Rows[i]["LicenseExpires"].ToString()) ? DateTime.Now.Date : Convert.ToDateTime(table.Rows[i]["LicenseExpires"].ToString()),
+                                NPINumber = table.Rows[i]["NPINumber"].ToString(),
+                                Email = table.Rows[i]["Email"].ToString(),
+                                Phone = table.Rows[i]["Phone"].ToString(),
+                                Fax = table.Rows[i]["Fax"].ToString(),
+                                Address = table.Rows[i]["Address"].ToString(),
+                                State = table.Rows[i]["State"].ToString(),
+                                City = table.Rows[i]["City"].ToString(),
+                                Zip = table.Rows[i]["ZipCode"].ToString(),
+                                IsActive = Convert.ToBoolean(table.Rows[i]["IsActive"]),
+                                Id = Convert.ToInt16(table.Rows[i]["Id"]),
+                                Edit = true
+                            });
+                        }
+                        obj.Result = true;
+                    }
+                    obj.Data = clientsEmrgencyInfo;
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+            finally
+            {
+
+            }
+        }
 
 
 
