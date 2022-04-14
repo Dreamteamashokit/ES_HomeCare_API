@@ -152,15 +152,13 @@ namespace ES_HomeCare_API.WebAPI.Data
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
 
-
-
             using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 string sqlQuery = "Insert Into tblEmpDocument (FolderId,FileName,FilePath,Title,SeachTag,Description,CreateOn,CreatedOn) Values (@FolderId,@FileName,@FilePath,@Title,@SeachTag,@Description,@CreateOn,@CreatedOn);";
                 int rowsAffected = db.Execute(sqlQuery, new
                 {
-                    FolderId = model.folderid,
-                    FileName = model.filename,
+                    FolderId = model.FolderId,
+                    FileName = model.FileName,
                     FilePath = string.Empty,
                     Title = model.Title,
                     SeachTag = model.Search,

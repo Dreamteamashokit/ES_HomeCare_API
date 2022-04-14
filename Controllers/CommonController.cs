@@ -1,5 +1,6 @@
 ﻿using ES_HomeCare_API.Helper;
 using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Client;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,12 +28,6 @@ namespace ES_HomeCare_API.Controllers
             this.comSrv = _comSrv;
         }
 
-
-
-
-
-
-
         [HttpGet("getMaster/{typeId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
@@ -44,12 +39,12 @@ namespace ES_HomeCare_API.Controllers
         [HttpPost("addMasterType")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateMasterType(string  Name)
+        public async Task<IActionResult> CreateMasterType(string Name)
         {
             try
             {
                 return Ok(await comSrv.CreateMasterType(Name));
-            
+
             }
             catch (Exception ex)
             {
@@ -98,25 +93,25 @@ namespace ES_HomeCare_API.Controllers
         public async Task<IActionResult> GetEmpTypeList()
         {
             return Ok(await comSrv.GetEmpTypeList());
-        }   
-      
+        }
+
 
         [HttpGet("getCountry")]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> getCountryList()       
+        public async Task<IActionResult> getCountryList()
         {
             return Ok(await comSrv.GetCountry());
-        }        
-        
-        
+        }
+
+
         [HttpGet("getStateList/{country}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> getStateList(string country)
         {
             return Ok(await comSrv.GetState(country));
-         
+
         }
 
         [HttpGet("getEmployees/{type}")]
@@ -145,6 +140,35 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
+        [HttpPost("createTask")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateTask([FromBody] TaskModel model)
+        {
+            try
+            {
+
+
+           
+                model.IsActive = 1;   
+                model.CreatedBy = 1;
+                model.CreatedOn = DateTime.Now;
+                return Ok(await comSrv.CreateTask(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet("getTaskList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<TaskModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<TaskModel>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetTaskList()
+        {
+            return Ok(await comSrv.GetTaskList());
+        }
 
 
 
@@ -154,11 +178,6 @@ namespace ES_HomeCare_API.Controllers
 
 
 
-
-   
-
-
-      
 
 
     }

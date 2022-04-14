@@ -18,7 +18,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             data = ldata;
         }
 
-      
+
         public async Task<ServiceResponse<string>> AddClient(ClientModel client)
         {
             return await data.AddClient(client);
@@ -28,27 +28,6 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.GetClientDetail(clientId);
         }
-
-        public async Task<ServiceResponse<string>> savenewclient(Client client)
-        {
-            return await data.savenewclient(client);
-        }
-
-        public async Task<ServiceResponse<List<Client>>> GetClientList()
-        {
-            return await data.GetClientList();
-        }
-
-        public async Task<ServiceResponse<IEnumerable<ClientMeetings>>> GetClientMeetings(string startdate, string cID)
-        {
-            return await data.GetClientMeetings(startdate, cID);
-        }
-
-        public async Task<ServiceResponse<string>> scheduleclientmeeting(MeetingDetails meeting)
-        {
-            return await data.scheduleclientmeeting(meeting);
-        }
-
         public async Task<ServiceResponse<string>> SaveClientStatus(ClientStatus _model)
         {
             return await data.SaveClientStatus(_model);
@@ -58,5 +37,62 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.GetClientStatusList(ClientId);
         }
+
+        public async Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model, int Flag)
+        {
+            return await data.ClientMedicationcs(Model,Flag);
+        }
+
+
+
+        public async Task<ServiceResponse<string>> CreateServiceTask(IList<ServiceTaskModel> _list)
+        {
+            return await data.CreateServiceTask(_list);
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ServiceTaskView>>> GetServiceTaskList(int userId)
+        {
+            return await data.GetServiceTaskList(userId);
+        }
+
+
+        public async Task<ServiceResponse<string>> UpdateService(ServiceTaskModel item)
+        {
+            return await data.UpdateService(item);
+        }
+
+
+        public async Task<ServiceResponse<string>> DeleteService(int SrvId)
+        {
+            return await data.DeleteService(SrvId);
+        }
+
+
+        public async Task<ServiceResponse<string>> CreateEmpDeclined(EmployeeDecline _model)
+        {
+            return await data.CreateEmpDeclined(_model);
+        }
+        public async Task<ServiceResponse<IEnumerable<EmployeeDeclineView>>> GetEmpDeclined(int userId)
+        {
+            return await data.GetEmpDeclined(userId);
+        }
+        public async Task<ServiceResponse<string>> UpdateEmpDeclined(EmployeeDecline item)
+        {
+            return await data.UpdateEmpDeclined(item);
+        }
+        public async Task<ServiceResponse<string>> DeleteEmpDeclined(int declinedId)
+        {
+            return await data.DeleteEmpDeclined(declinedId);
+        }
+
+
+
+
+
+
+
+
+
+
     }
 }

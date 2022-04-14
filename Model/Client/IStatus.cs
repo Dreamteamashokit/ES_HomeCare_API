@@ -11,11 +11,10 @@ namespace ES_HomeCare_API.Model.Client
         public string Note { get; set; }
         public int OfficeUserId { get; set; }
         public int OfficeUserReferralID { get; set; }
-
-        public int clientId{ get; set; }
-        public bool text { get; set; }
-        public bool screen { get; set; }
-        public bool email { get; set; }
+        public int ClientId{ get; set; }
+        public bool Text { get; set; }
+        public bool Screen { get; set; }
+        public bool Email { get; set; }
       
     }
 

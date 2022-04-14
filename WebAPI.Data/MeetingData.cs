@@ -75,12 +75,10 @@ namespace ES_HomeCare_API.WebAPI.Data
             ServiceResponse<IEnumerable<EmpMeeting>> obj = new ServiceResponse<IEnumerable<EmpMeeting>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select  IsNull(p.LastName,'')  +' '+ p.FirstName as EmpName,q.EmpId,r.*,IsNull(s.LastName,'')+' '+s.FirstName as ClientName " +
-                    " from tblEmployee p inner join tblEmpClientMeeting q on p.EmpId=q.EmpId inner join tblMeeting r on q.MeetingId=r.MeetingId inner join tblClient s on " +
-                    "r.ClientId=s.ClientId where q.EmpId=@EmpId and r.IsStatus<>0";
+                string sql = "select  IsNull(p.LastName,'')  +' '+ p.FirstName as EmpName,q.EmpId,r.*,IsNull(s.LastName,'')+' '+s.FirstName as ClientName from tblUser p inner join tblEmpClientMeeting q on p.UserId=q.EmpId inner join tblMeeting r on q.MeetingId=r.MeetingId inner join tblUser s on r.ClientId=s.UserId where q.EmpId=@UserId and r.IsStatus<>0";
 
                 IEnumerable<EmpMeeting> cmeetings = (await connection.QueryAsync<EmpMeeting>(sql,
-                       new { @EmpId = empId }));
+                       new { @UserId = empId }));
 
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
@@ -95,12 +93,10 @@ namespace ES_HomeCare_API.WebAPI.Data
             ServiceResponse<IEnumerable<EmpMeeting>> obj = new ServiceResponse<IEnumerable<EmpMeeting>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select  IsNull(p.LastName,'')  +' '+ p.FirstName as EmpName,q.EmpId,r.*,IsNull(s.LastName,'')+' '+s.FirstName as ClientName " +
-                    "from tblEmployee p inner join tblEmpClientMeeting q on p.EmpId=q.EmpId inner join tblMeeting r on q.MeetingId=r.MeetingId " +
-                    "inner join tblClient s on r.ClientId=s.ClientId where r.IsStatus<>0 and r.ClientId=@UserId ";
+                string sql = "select IsNull(p.LastName,'')  +' '+ p.FirstName as EmpName,q.EmpId,r.*,IsNull(s.LastName,'')+' '+s.FirstName as ClientName from tblUser p inner join tblEmpClientMeeting q on p.UserId=q.EmpId inner join tblMeeting r on q.MeetingId=r.MeetingId inner join tblUser s on r.ClientId=s.UserId where r.IsStatus<>0 and r.ClientId=@UserId;";
 
                 IEnumerable<EmpMeeting> cmeetings = (await connection.QueryAsync<EmpMeeting>(sql,
-                       new { UserId = _userId }));
+                       new { @UserId = _userId }));
 
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
@@ -115,16 +111,14 @@ namespace ES_HomeCare_API.WebAPI.Data
             ServiceResponse<IEnumerable<ClientMeeting>> obj = new ServiceResponse<IEnumerable<ClientMeeting>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select x.ClientId,x.FirstName,x.MiddleName,x.LastName,x.Contact,IsNUll(z.EmpId,0) as EmpId,p.FirstName +' ' + ISNULL(p.MiddleName,' ')+' ' + p.LastName " +
-                    "as EmpName,IsNUll(y.MeetingId,0) as MeetingId,y.MeetingDate,y.StartTime,y.EndTime from tblClient x Left Join tblMeeting y on x.ClientId=y.ClientId and y.IsStatus<>0 Left join" +
-                    " tblEmpClientMeeting z on y.MeetingId=z.MeetingId Left join tblEmployee p on z.EmpId=p.EmpId ;";
+                string sql = "select x.UserId as ClientId,x.FirstName,x.MiddleName,x.LastName,x.CellPhone,IsNUll(z.EmpId,0) as EmpId,p.FirstName +' ' + ISNULL(p.MiddleName,' ')+' ' + p.LastName as EmpName,IsNUll(y.MeetingId,0) as MeetingId,y.MeetingDate,y.StartTime,y.EndTime from tblUser x Left Join tblMeeting y on x.UserId=y.ClientId and y.IsStatus<>0 Left join tblEmpClientMeeting z on y.MeetingId=z.MeetingId Left join tblUser p on z.EmpId=p.UserId;";
 
                 var result = (await connection.QueryAsync(sql)).ToList();
 
 
                 //Using Query Syntax
                 var GroupByQS = from mom in result
-                                group mom by new { mom.ClientId, mom.FirstName, mom.MiddleName, mom.LastName, mom.Contact, } into momGroup
+                                group mom by new { mom.ClientId, mom.FirstName, mom.MiddleName, mom.LastName, mom.CellPhone, } into momGroup
                                 orderby momGroup.Key.ClientId descending
                                 select new ClientMeeting
                                 {
@@ -132,7 +126,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                                     FirstName = momGroup.Key.FirstName,
                                     MiddleName = momGroup.Key.MiddleName,
                                     LastName = momGroup.Key.LastName,
-                                    Contact = momGroup.Key.Contact,
+                                    Contact = momGroup.Key.CellPhone,
                                     Meetings = momGroup.Where(x=>x.MeetingId!=0).Select(x => new ClMeeting
                                     {
                                         EmpId = x.EmpId,
@@ -157,11 +151,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             ServiceResponse<MeetingView> obj = new ServiceResponse<MeetingView>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select p.*,q.Contact,q.FirstName as cltFName,q.MiddleName as cltMName,q.LastName as cltLName,r.EmpId,s.FirstName as empFName," +
-                    "s.MiddleName as empMName,s.LastName as empLName,s.CellPhone,t.Owner as empOwner,t.FlatNo as empFlatNo,t.Address as empAddress,t.City as empCity," +
-                    "t.Country as empCountry,t.State as empState,t.ZipCode as empZipCode,u.MeetingPoint from tblMeeting p inner join tblClient q on p.ClientId=q.ClientId " +
-                    "inner join tblEmpClientMeeting r on p.MeetingId=r.MeetingId inner join tblEmployee  s on r.EmpId=s.EmpId left join  tblAddress t " +
-                    "on s.EmpId=t.EmpId Left Join tblMeetingPoint u on r.MeetingId=u.MeetingId where p.MeetingId=@MeetingId";
+                string sql = "select p.*,q.CellPhone,q.FirstName as cltFName,q.MiddleName as cltMName,q.LastName as cltLName,r.EmpId,s.FirstName as empFName,s.MiddleName as empMName,s.LastName as empLName,s.CellPhone,t.Owner as empOwner,t.FlatNo as empFlatNo,t.Address as empAddress,t.City as empCity,t.Country as empCountry,t.State as empState,t.ZipCode as empZipCode,u.MeetingPoint from tblMeeting p inner join tblUser q on p.ClientId=q.UserId inner join tblEmpClientMeeting r on p.MeetingId=r.MeetingId inner join tblUser  s on r.EmpId=s.UserId left join  tblAddress t on s.UserId=t.EmpId Left Join tblMeetingPoint u on r.MeetingId=u.MeetingId where p.MeetingId=@MeetingId;";
 
                 var rsData = (await connection.QueryAsync(sql, new { @MeetingId = meetingId }));
 

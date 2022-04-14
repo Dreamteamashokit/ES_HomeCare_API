@@ -5,7 +5,6 @@ namespace ES_HomeCare_API.Model.Employee
     public class AddressModel:BaseModel
     {       
         public int AddressId { get; set; }
-        public int EmpId { get; set; }
         public int AddressType { get; set; }
         public string Owner { get; set; }
         public string FlatNo { get; set; }

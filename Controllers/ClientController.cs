@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ES_HomeCare_API.Helper;
 using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Client;
 using Microsoft.AspNetCore.Http;
@@ -28,10 +29,7 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddClient([FromBody] ClientModel model)
         {
-            if (model.Nurse == 0)
-            {
-                model.Nurse = null;
-            }
+
             model.TimeSlip = true;
             model.IsHourly = true;
             model.IsActive = 1;
@@ -52,38 +50,6 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
 
-        [HttpPost("savenewclientinfo")]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> saveuserfeedback([FromBody] Client client)
-        {
-            return Ok(await service.savenewclient(client));
-        }
-
-        [HttpGet("getclientlist")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Client>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Client>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> getclientlist()
-        {
-            return Ok(await service.GetClientList());
-        }
-
-        [HttpGet("getclientmeetings/{startdate}/{clientId}")]
-        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<ClientMeetings>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<ClientMeetings>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> getclientmeetings(string startdate, string clientId)
-        {
-            return Ok(await service.GetClientMeetings(startdate, clientId));
-        }
-
-        [HttpPost("scheduleclientmeeting")]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> scheduleclientmeeting([FromBody] MeetingDetails meeting)
-        {
-            return Ok(await service.scheduleclientmeeting(meeting));
-        }
-
         [HttpPost("addStatus")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
@@ -100,5 +66,229 @@ namespace WebAPI_SAMPLE.Controllers
         {
             return Ok(await service.GetClientStatusList(clientId));
         }
+
+
+        [HttpPost("ClientMedicationcs")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ClientMedicationcs(Medicationcs model)
+        {
+            try
+            {
+                model.createdOn = DateTime.Now.Date;
+                int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Create"));
+                return Ok(await service.ClientMedicationcs(model, Flag));
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        [HttpGet("GetClientMedicationcs/{CilentId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetClientMedicationcs(int CilentId)
+        {
+            Medicationcs model = new Medicationcs();
+            model.ClientID = CilentId;
+            model.createdOn = DateTime.Now.Date;
+            model.ClientID = CilentId;
+            int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "select"));
+            return Ok(await service.ClientMedicationcs(model, Flag));
+        }
+
+
+
+        [HttpDelete("deleteMedicationData")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteMedicationData(int MedicationId, int UserId)
+        {
+            Medicationcs model = new Medicationcs();
+            model.MedicationID = MedicationId;
+            model.ClientID = UserId;
+            model.createdOn = DateTime.Now.Date;
+            int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Delete"));
+            return Ok(await service.ClientMedicationcs(model, Flag));
+        }
+
+
+        [HttpPost("createServiceTask")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateServiceTask([FromBody] IList<ServiceTaskModel> model)
+        {
+            try
+            {
+
+                foreach (var item in model)
+                {
+
+
+
+                    item.IsActive = 1;
+                    item.CreatedBy = 1;
+                    item.CreatedOn = DateTime.Now;
+                }
+
+
+
+                return Ok(await service.CreateServiceTask(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet("getServiceTaskList/{UserId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ServiceTaskView>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ServiceTaskView>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetServiceTaskList(int UserId)
+        {
+            return Ok(await service.GetServiceTaskList(UserId));
+        }
+
+        [HttpPost("updateService")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateService([FromBody] ServiceTaskModel model)
+        {
+            try
+            {
+
+                return Ok(await service.UpdateService(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        [HttpDelete("deleteService")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteService(int TaskSrvId)
+        {
+            try
+            {
+
+                return Ok(await service.DeleteService(TaskSrvId));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+
+
+        [HttpPost("createEmpDeclined")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateEmpDeclined([FromBody] EmployeeDeclineJson model)
+        {
+            try
+            {
+                EmployeeDecline obj = new EmployeeDecline()
+                {
+                    ReportedDate = model.ReportedDate.ParseDateTime(),
+                    EmpId = model.EmpId,
+                    CaseType = model.CaseType,
+                    Reason = model.Reason,
+                    StartDate = model.StartDate.ParseDate(),
+                    Notes = model.Notes,
+                    UserId= model.UserId,
+                    CreatedBy = model.CreatedBy,
+
+                };
+
+                obj.IsActive = 1;
+                obj.CreatedOn = DateTime.Now;
+
+                return Ok(await service.CreateEmpDeclined(obj));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+        [HttpGet("getEmpDeclined/{UserId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<EmployeeDeclineView>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<EmployeeDeclineView>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetEmpDeclined(int UserId)
+        {
+            return Ok(await service.GetEmpDeclined(UserId));
+        }
+
+
+
+        [HttpPost("updateEmpDeclined")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateEmpDeclined([FromBody] EmployeeDecline model)
+        {
+            try
+            {
+
+                return Ok(await service.UpdateEmpDeclined(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpDelete("deleteEmpDeclined")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteEmpDeclined(int declinedId)
+        {
+            try
+            {
+
+                return Ok(await service.DeleteEmpDeclined(declinedId));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

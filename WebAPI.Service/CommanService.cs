@@ -1,4 +1,5 @@
 ﻿using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Client;
 using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using ES_HomeCare_API.WebAPI.Service.IService;
@@ -15,38 +16,16 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             data = ldata;
         }
-        public async Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetOfficeUserLst()
-        {
-            return await data.GetOfficeUserLst();
-        }
-
-        public async Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetTypeStatusLst()
-        {
-            return await data.GetTypeStatusLst();
-        }
-
-
-        public async Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetEmployeeLst()
-        {
-            return await data.GetEmployeeLst();
-        }
-        public async Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetScheduleLst()
-        {
-            return await data.GetScheduleLst();
-        }
 
 
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetMasterList(short typeId)
         {
             return await data.GetMasterList(typeId);
         }
-
-
         public async Task<ServiceResponse<string>> CreateMasterType(string _item)
         {
             return await data.CreateMasterType(_item);
         }
-
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetMasterTypeList()
         {
             return await data.GetMasterTypeList();
@@ -59,7 +38,6 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             return await data.GetSystemMaster();
         }
-
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetEmpTypeList()
         {
             return await data.GetEmpTypeList();
@@ -72,15 +50,12 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             return await data.GetState(countryCode);
         }
-
-
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetEmployees(string type)
         {
             return await data.GetEmployees(type);
         }
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetEmployeesList()
         {
-
             return await data.GetEmployeesList();
         }
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetClientList()
@@ -88,6 +63,20 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.GetClientList();
 
         }
+
+        public async Task<ServiceResponse<string>> CreateTask(TaskModel _model)
+        {
+            return await data.CreateTask(_model);
+
+        }
+
+        public async Task<ServiceResponse<IEnumerable<TaskModel>>> GetTaskList()
+        {
+            return await data.GetTaskList();
+
+        }
+
+
 
 
     }

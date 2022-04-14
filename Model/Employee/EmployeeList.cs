@@ -9,14 +9,14 @@ namespace ES_HomeCare_API.Model.Employee
     {
 
         public int EmpId { get; set; }
+        public string EmpKey { get; set; }
         public string EmpName { get; set; }
         public string CellPhone { get; set; }
         public string EmpType { get; set; }
         public short TypeId { get; set; }
         public string SSN { get; set; }
         public string TaxState { get; set; }
-        public string EmpKey { get; set; }
-        public short EmpStatus { get; set; }
+        public short IsActive { get; set; }
         public bool HasDOB { get; set; }
         public bool HasEmail { get; set; }
         public int ManagerId { get; set; }        

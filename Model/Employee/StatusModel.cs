@@ -29,9 +29,9 @@
         public string StatusType { get; set; }
     }
 
-    public class EmpStatusSelectlst
-    {
-        public long Id { get; set; }
-        public string Text { get; set; }
-    }
+    //public class EmpStatusSelectlst
+    //{
+    //    public long Id { get; set; }
+    //    public string Text { get; set; }
+    //}
 }

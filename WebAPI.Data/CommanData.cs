@@ -11,7 +11,7 @@ using ES_HomeCare_API.Model;
 using System.Data;
 using System;
 using ES_HomeCare_API.Helper;
-
+using ES_HomeCare_API.Model.Client;
 
 namespace ES_HomeCare_API.WebAPI.Data
 {
@@ -21,86 +21,6 @@ namespace ES_HomeCare_API.WebAPI.Data
         public CommanData(IConfiguration _configuration)
         {
             configuration = _configuration;
-        }
-
-
-
-        public async Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetOfficeUserLst()
-        {
-            ServiceResponse<IEnumerable<EmpStatusSelectlst>> obj = new ServiceResponse<IEnumerable<EmpStatusSelectlst>>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-            {
-                string sql = "select *  from dbo.tblOfficeUserMaster; ";
-                IEnumerable<EmpStatusSelectlst> cmeetings = (await connection.QueryAsync<EmpStatusSelectlst>(sql));
-                obj.Data = cmeetings;
-                obj.Result = cmeetings.Any() ? true : false;
-                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
-            }
-            return obj;
-
-        }
-
-        public async Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetTypeStatusLst()
-        {
-            ServiceResponse<IEnumerable<EmpStatusSelectlst>> obj = new ServiceResponse<IEnumerable<EmpStatusSelectlst>>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-            {
-                string sql = "select *  from dbo.tblEmpStatusMaster; ";
-                IEnumerable<EmpStatusSelectlst> cmeetings = (await connection.QueryAsync<EmpStatusSelectlst>(sql));
-                obj.Data = cmeetings;
-                obj.Result = cmeetings.Any() ? true : false;
-                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
-            }
-            return obj;
-
-        }
-
-        public async Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetEmployeeLst()
-        {
-            ServiceResponse<IEnumerable<EmpStatusSelectlst>> obj = new ServiceResponse<IEnumerable<EmpStatusSelectlst>>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-            {
-                string sql = "SELECT EmpId,(FirstName + ' ' + MiddleName + ' ' + LastName) as Text FROM tblEmployee; ";
-                IEnumerable<EmpStatusSelectlst> cmeetings = (await connection.QueryAsync<EmpStatusSelectlst>(sql));
-                obj.Data = cmeetings;
-                obj.Result = cmeetings.Any() ? true : false;
-                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
-            }
-            return obj;
-
-        }
-
-        public async Task<ServiceResponse<IEnumerable<EmpStatusSelectlst>>> GetScheduleLst()
-        {
-            ServiceResponse<IEnumerable<EmpStatusSelectlst>> obj = new ServiceResponse<IEnumerable<EmpStatusSelectlst>>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-            {
-                string sql = "select * from tblEmpStatusScheduling; ";
-                IEnumerable<EmpStatusSelectlst> cmeetings = (await connection.QueryAsync<EmpStatusSelectlst>(sql));
-                obj.Data = cmeetings;
-                obj.Result = cmeetings.Any() ? true : false;
-                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
-            }
-            return obj;
-
-        }
-
-        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetMasterList(short typeId)
-        {
-            ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-            {
-                string sql = "select x.ItemId, x.ItemName from tblMaster x where x.MasterType= @TypeId and x.IsActive= 1; ";
-
-                IEnumerable<ItemList> resData = (await connection.QueryAsync<ItemList>(sql,
-       new { @TypeId = typeId }));
-
-                obj.Data = resData;
-                obj.Result = resData.Any() ? true : false;
-                obj.Message = resData.Any() ? "Data Found." : "No Data found.";
-            }
-            return obj;
-
         }
 
         public async Task<ServiceResponse<string>> CreateMasterType(string _item)
@@ -138,24 +58,6 @@ namespace ES_HomeCare_API.WebAPI.Data
 
             return sres;
         }
-
-        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetMasterTypeList()
-        {
-            ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-            {
-                string sql = "select x.MasterITyped, x.MasterName from tblMasterType x; ";
-
-                IEnumerable<ItemList> resData = (await connection.QueryAsync(sql)).Select(x => new ItemList { ItemId = x.MasterITyped, ItemName = x.MasterName });
-
-                obj.Data = resData;
-                obj.Result = resData.Any() ? true : false;
-                obj.Message = resData.Any() ? "Data Found." : "No Data found.";
-            }
-            return obj;
-
-        }
-
 
         public async Task<ServiceResponse<string>> CreateMaster(ItemObj _model)
         {
@@ -198,6 +100,41 @@ namespace ES_HomeCare_API.WebAPI.Data
 
             return sres;
         }
+       
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetMasterTypeList()
+        {
+            ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "select x.MasterITyped, x.MasterName from tblMasterType x; ";
+
+                IEnumerable<ItemList> resData = (await connection.QueryAsync(sql)).Select(x => new ItemList { ItemId = x.MasterITyped, ItemName = x.MasterName });
+
+                obj.Data = resData;
+                obj.Result = resData.Any() ? true : false;
+                obj.Message = resData.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetMasterList(short typeId)
+        {
+            ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "select x.ItemId, x.ItemName from tblMaster x where x.MasterType= @TypeId and x.IsActive= 1; ";
+
+                IEnumerable<ItemList> resData = (await connection.QueryAsync<ItemList>(sql,
+       new { @TypeId = typeId }));
+
+                obj.Data = resData;
+                obj.Result = resData.Any() ? true : false;
+                obj.Message = resData.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+
+        }
 
         public async Task<ServiceResponse<IEnumerable<ItemObj>>> GetSystemMaster()
         {
@@ -215,7 +152,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             return obj;
 
         }
-
+                
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetEmpTypeList()
         {
             ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
@@ -233,9 +170,6 @@ namespace ES_HomeCare_API.WebAPI.Data
 
         }
 
-
-
-
         public async Task<ServiceResponse<IEnumerable<SelectList>>> GetCountry()
         {
             ServiceResponse<IEnumerable<SelectList>> obj = new ServiceResponse<IEnumerable<SelectList>>();
@@ -250,7 +184,6 @@ namespace ES_HomeCare_API.WebAPI.Data
             return obj;
 
         }
-
 
         public async Task<ServiceResponse<IEnumerable<SelectList>>> GetState(string CountryCode)
         {
@@ -267,17 +200,12 @@ namespace ES_HomeCare_API.WebAPI.Data
 
         }
 
-
-
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetEmployees(string type)
         {
             ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select EmpId,LastName +' '+ FirstName+'(' +EmpKey+')' as EmpName from tblEmployee where EmpType=@EmpType; ";
-
-
-                string sqlqry = "select x.UserId,x.LastName +' '+ x.FirstName+'(' +y.EmpKey+')' as EmpName from tblUser x inner join tblEmployee y on x.UserId=y.UserId where y.EmpType=@EmpType;";
+                string sqlqry = "Select x.UserId,x.LastName +' '+ x.FirstName+'(' + ISNULL(x.UserKey,'0-0-0')+')' as EmpName from tblUser x inner join tblEmployee y on x.UserId=y.UserId where y.EmpType=@EmpType;";
                 IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry, new { @EmpType = type })).Select(x => new ItemList { ItemId = x.UserId, ItemName = x.EmpName });
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
@@ -286,14 +214,15 @@ namespace ES_HomeCare_API.WebAPI.Data
             return obj;
 
         }
+        
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetEmployeesList()
         {
             ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select EmpId,LastName +' '+ FirstName+'(' +EmpKey+')' as EmpName from tblEmployee; ";
+          
 
-                string sqlqry = "select x.UserId,x.LastName +' '+ x.FirstName+'(' +y.EmpKey+')' as EmpName from  tblUser x inner join tblEmployee y on x.UserId=y.UserId where x.IsActive=1;";
+                string sqlqry = "select x.UserId,x.LastName +' '+ x.FirstName+'(' +ISNULL(x.UserKey,'0-0-0')+')' as EmpName from  tblUser x inner join tblEmployee y on x.UserId=y.UserId where x.IsActive=1;";
                 IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry)).Select(x => new ItemList { ItemId = x.UserId, ItemName = x.EmpName });
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
@@ -302,15 +231,12 @@ namespace ES_HomeCare_API.WebAPI.Data
             return obj;
         }
 
-
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetClientList()
         {
             ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select ClientId,LastName +' '+ FirstName as ClientName from tblClient; ";
-                
-                string sqlqry = "select x.UserId,x.LastName +' '+ x.FirstName as ClientName from  tblUser x inner join tblClient y on x.UserId=y.UserId where x.IsActive=1;";
+                string sqlqry = "select x.UserId,x.LastName +' '+ x.FirstName+'(' +ISNULL(x.UserKey,'1-1-1')+')' as ClientName from  tblUser x inner join tblClient y on x.UserId=y.UserId where x.IsActive=1;";
                 
                 IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry)).Select(x => new ItemList { ItemId = x.UserId, ItemName = x.ClientName });
                 obj.Data = cmeetings;
@@ -320,13 +246,64 @@ namespace ES_HomeCare_API.WebAPI.Data
             return obj;
 
         }
-      
+
+        public async Task<ServiceResponse<string>> CreateTask(TaskModel _model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string Query = "INSERT INTO tblTaskMaster (TaskCode,TaskName,TaskDetail,IsActive,CreatedOn,CreatedBy) VALUES (@TaskCode,@TaskName,@TaskDetail,@IsActive,@CreatedOn,@CreatedBy);";
 
 
+                    int rowsAffected = cnn.Execute(Query, new
+                    {
+                        @TaskCode = _model.TaskCode,
+                        @TaskName = _model.TaskName,
+                        @TaskDetail = _model.TaskDetail,
+                        @IsActive = _model.IsActive,
+                        @CreatedOn = _model.CreatedOn,
+                        @CreatedBy = _model.CreatedBy,
+                    });
 
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new creation.";
+                    }
+                }
 
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+                return sres;
+            }
 
-       
+            return sres;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<TaskModel>>> GetTaskList()
+        {
+            ServiceResponse<IEnumerable<TaskModel>> obj = new ServiceResponse<IEnumerable<TaskModel>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+
+                string sqlqry = "select * from tblTaskMaster; ";
+                IEnumerable<TaskModel> objResult = (await connection.QueryAsync<TaskModel>(sqlqry));
+
+                obj.Data = objResult;
+                obj.Result = objResult != null ? true : false;
+                obj.Message = objResult != null ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
 
 
 
