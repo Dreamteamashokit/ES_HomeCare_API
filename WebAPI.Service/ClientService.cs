@@ -72,6 +72,23 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             return await data.ClienEmergencyInfo(Model);
         }
 
+        public async Task<ServiceResponse<string>> CreateEmpDeclined(EmployeeDecline _model)
+        {
+            return await data.CreateEmpDeclined(_model);
+        }
+        public async Task<ServiceResponse<IEnumerable<EmployeeDeclineView>>> GetEmpDeclined(int userId)
+        {
+            return await data.GetEmpDeclined(userId);
+        }
+        public async Task<ServiceResponse<string>> UpdateEmpDeclined(EmployeeDecline item)
+        {
+            return await data.UpdateEmpDeclined(item);
+        }
+        public async Task<ServiceResponse<string>> DeleteEmpDeclined(int declinedId)
+        {
+            return await data.DeleteEmpDeclined(declinedId);
+        }
+
 
 
 

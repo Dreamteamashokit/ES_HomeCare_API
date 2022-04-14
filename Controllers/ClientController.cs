@@ -74,17 +74,12 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ClientMedicationcs(Medicationcs model)
         {
-            try
-            {
+           
+            
                 model.createdOn = DateTime.Now.Date;
                 int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Create"));
                 return Ok(await service.ClientMedicationcs(model, Flag));
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
+           
         }
 
         [HttpGet("GetClientMedicationcs/{CilentId}")]
@@ -196,16 +191,11 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ClientEmergencyInfo(ClientEmrgencyInfo model)
         {
-            try
-            {
-                model.CreatedOn = DateTime.Now.Date;              
+           
+                model.CreatedOn = DateTime.Now.Date;
                 return Ok(await service.ClienEmergencyInfo(model));
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
+            
+        }
 
         [HttpPost("createEmpDeclined")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
@@ -222,7 +212,7 @@ namespace WebAPI_SAMPLE.Controllers
                     Reason = model.Reason,
                     StartDate = model.StartDate.ParseDate(),
                     Notes = model.Notes,
-                    UserId= model.UserId,
+                    UserId = model.UserId,
                     CreatedBy = model.CreatedBy,
 
                 };
@@ -288,52 +278,27 @@ namespace WebAPI_SAMPLE.Controllers
 
 
 
-        }
+
 
         [HttpGet("getClientEmergencyInfo/{UserId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> getClientEmergencyInfo(int UserId)
         {
-            try
-            {
+           
                 ClientEmrgencyInfo model = new ClientEmrgencyInfo();
                 model.UserId = UserId;
                 model.CreatedOn = DateTime.Now.Date;
                 model.LicenseExpires = DateTime.Now.Date;
-               
+
                 string stringValue = Enum.GetName(typeof(EmergencyInfoType), 1);
 
-               
-                return Ok(await service.ClienEmergencyInfo(model));
-            }
-            catch (Exception ex)
-            {
 
-                throw;
-            }
+                return Ok(await service.ClienEmergencyInfo(model));
+           
 
 
         }
-
-       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
-}
+    }
+
