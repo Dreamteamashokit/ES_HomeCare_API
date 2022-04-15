@@ -29,5 +29,9 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<string>> UpdateEmpDeclined(EmployeeDecline item);
         Task<ServiceResponse<string>> DeleteEmpDeclined(int declinedId);
 
+        Task<ServiceResponse<string>> SaveClientContactLog(ClientContactLog _model);
+       
+
+        Task<ServiceResponse<IEnumerable<ClientContactLog>>> GetClientContactLogs(int ClientId);
     }
 }

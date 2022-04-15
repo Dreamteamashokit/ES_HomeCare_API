@@ -560,7 +560,80 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return obj;
         }
 
+        public async Task<ServiceResponse<string>> SaveClientContactLog(ClientContactLog _model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sqlQuery = "Insert Into tblContactLog (UserId,OfficeUserId,EmpId,Reason,CallDateTime,ScheduleDate,FollowUpDate,Issue, " +
+                        "ActionTaken,Notes,IsFollowUp,IsSchedule,IsActive,CreatedOn,CreatedBy) " +
+                        "Values(@UserId,@OfficeUserId,@EmpId,@Reason,@CallDateTime,@ScheduleDate,@FollowUpDate,@Issue,@ActionTaken," +
+                        "@Notes,@IsFollowUp,@IsSchedule,@IsActive,@CreatedOn,@CreatedBy)";
 
+                    int rowsAffected = db.Execute(sqlQuery, new
+                    {
+                        UserId = _model.UserId,
+                        OfficeUserId = _model.OfficeUserId,
+                        EmpId = _model.EmpId,
+                        Reason = _model.Reason,
+                        CallDateTime = _model.CallDateTime,
+                        ScheduleDate = _model.ScheduleDate,
+                        FollowUpDate = _model.FollowUpDate,
+                        Issue = _model.Issue,
+                        ActionTaken = _model.ActionTaken,
+                        Notes = _model.Notes,
+                        IsFollowUp = _model.IsFollowUp,
+                        IsSchedule = _model.IsSchedule,
+                        IsActive = _model.IsActive,
+                        CreatedOn = _model.CreatedOn,
+                        CreatedBy = _model.CreatedBy
+
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new creation.";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+
+            }
+
+            return sres;
+        }
+
+
+
+        public async Task<ServiceResponse<IEnumerable<ClientContactLog>>> GetClientContactLogs(int ClientId)
+        {
+            ServiceResponse<IEnumerable<ClientContactLog>> obj = new ServiceResponse<IEnumerable<ClientContactLog>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "select ContactlogId,UserId,OfficeUserId,EmpId,Reason, " +
+                            " CallDateTime,ScheduleDate,FollowUpDate,Issue,ActionTaken,Notes,IsFollowUp,IsSchedule,  " +
+                            " IsActive,CreatedOn,CreatedBy from tblContactLog(nolock) " +
+                            " where UserId = " + ClientId;
+
+                IEnumerable<ClientContactLog> clogs = (await connection.QueryAsync<ClientContactLog>(sql, new { UserId = ClientId }));
+                obj.Data = clogs;
+                obj.Result = clogs.Any() ? true : false;
+                obj.Message = clogs.Any() ? "Data Found." : "No Data found.";
+            }
+
+            return obj;
+        }
     }
 
 
