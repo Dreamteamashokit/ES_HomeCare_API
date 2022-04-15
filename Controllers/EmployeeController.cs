@@ -170,7 +170,7 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddAddress([FromBody] AddressModel model)
         {
-            model.CreatedBy = 1;
+            
             model.CreatedOn = DateTime.Now;
             return Ok(await service.AddEmpAddress(model));
         }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ES_HomeCare_API.Model.Employee
 {
-       public class EmployeeRateModel
+       public class EmployeeRateModel:BaseModel
     {
         public string EffectiveDate { get; set; }
         public string EndDate { get; set; }
@@ -27,8 +27,7 @@ namespace ES_HomeCare_API.Model.Employee
         public int PayerId { get; set; }
         public int ClientId { get; set; }
         public int EmpId { get; set; }
-        public long CreatedBy { get; set; }
-        public DateTime CreatedOn { get; set; }
+       
     }
 
     public class EmpRate
