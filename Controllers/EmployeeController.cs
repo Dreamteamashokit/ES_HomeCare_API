@@ -52,16 +52,16 @@ namespace WebAPI_SAMPLE.Controllers
      
 
         [HttpGet("deleteEmployee/{empId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> deleteemployee(int empId)
         {
             return Ok(await service.DeleteEmployee(empId));
         }
 
         [HttpGet("getEmployeebyId/{empId}")]
-        [ProducesResponseType(typeof(ServiceResponse<Employee>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<Employee>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<EmployeeModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<EmployeeModel>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetEmployeeById(int empId)
         {
             return Ok(await service.GetEmployeeById(empId));
@@ -80,8 +80,8 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
         [HttpGet("getIncidentList/{empId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<IncidentModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<IncidentModel>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetIncidentList(int empId)
         {
             return Ok(await service.GetIncidentList(empId));
@@ -101,8 +101,8 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
         [HttpGet("getAttendanceList/{empId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<AttendanceModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<AttendanceModel>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAttendanceList(int empId)
         {
             return Ok(await service.GetAttendanceList(empId));
@@ -110,8 +110,8 @@ namespace WebAPI_SAMPLE.Controllers
         #endregion
 
         [HttpGet("getAvailabilityList")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<AvailabilityMaster>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<AvailabilityMaster>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAvailabilityList()
         {
             return Ok(await service.GetAvailabilityList());
@@ -128,8 +128,8 @@ namespace WebAPI_SAMPLE.Controllers
 
 
         [HttpGet("getEmpStatusList/{empId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<AvailabilityStatus>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<AvailabilityStatus>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> getEmpStatusList(int empId)
         {
             return Ok(await service.GetEmpStatusList(empId));
