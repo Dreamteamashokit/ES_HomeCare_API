@@ -86,13 +86,14 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         }
 
 
+        public async Task<ServiceResponse<string>> SaveClientContactLog(ClientContactLog _model)
+        {
+            return await data.SaveClientContactLog(_model);
+        }        
 
-
-
-
-
-
-
-
+        public async Task<ServiceResponse<IEnumerable<ClientContactLog>>> GetClientContactLogs(int ClientId)
+        {
+            return await data.GetClientContactLogs(ClientId);
+        }
     }
 }

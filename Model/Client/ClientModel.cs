@@ -30,4 +30,20 @@ namespace ES_HomeCare_API.Model.Client
         public string MaritalStatusName { get; set; }
 
     }
+
+    public class ClientContactLog : BaseModel
+    {
+        public int ContactlogId { get; set; }       
+        public int OfficeUserId { get; set; }
+        public int EmpId { get; set; }
+        public string Reason { get; set; }
+        public DateTime CallDateTime { get; set; }
+        public DateTime ScheduleDate { get; set; }
+        public DateTime FollowUpDate { get; set; }
+        public string Issue { get; set; }
+        public string ActionTaken { get; set; }
+        public string Notes { get; set; }
+        public Boolean IsFollowUp { get; set; }
+        public Boolean IsSchedule { get; set; }        
+    }
 }

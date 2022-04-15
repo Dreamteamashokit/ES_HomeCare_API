@@ -270,25 +270,22 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
 
+        [HttpPost("addClientContactLog")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> SaveClientContactLog([FromBody] ClientContactLog model)
+        {
+            model.CreatedOn = DateTime.Now;
+            return Ok(await service.SaveClientContactLog(model));
+        }        
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        [HttpGet("GetClientContactLogs/{clientId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetClientContactLogs(int clientId)
+        {
+            return Ok(await service.GetClientContactLogs(clientId));
+        }
 
     }
 }
