@@ -20,135 +20,32 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         {
             configuration = _configuration;
         }
-
-        public async Task<ServiceResponse<string>> savenewemployee(Employee client)
+        #region Employee
+        public async Task<ServiceResponse<string>> AddEmployee(EmployeeModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
             try
             {
-                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    SqlCommand cmd = new SqlCommand("SP_SAVE_Employee", con);
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@FirstName", client.FirstName);
-                    cmd.Parameters.AddWithValue("@MiddleName", client.MiddleName);
-                    cmd.Parameters.AddWithValue("@LastName", client.LastName);
-                    cmd.Parameters.AddWithValue("@CellPhone", client.CellPhone);
-                    cmd.Parameters.AddWithValue("@HomePhone", client.HomePhone);
-                    cmd.Parameters.AddWithValue("@Email", client.Email);
-                    cmd.Parameters.AddWithValue("@DateOfHire", client.DateOfHire);
-                    cmd.Parameters.AddWithValue("@DateOfFirstCase", client.DateOfFirstCase);
-                    cmd.Parameters.AddWithValue("@DOB", client.DOB);
-                    cmd.Parameters.AddWithValue("@SSN", client.SSN);
-                    cmd.Parameters.AddWithValue("@ExtEmpId", client.ExtEmpId);
-                    cmd.Parameters.AddWithValue("@Gender", client.Gender);
-                    cmd.Parameters.AddWithValue("@HRSupervisor", client.HrSupervisor);
-                    cmd.Parameters.AddWithValue("@Enthnicity", client.Enthnicity);
-                    cmd.Parameters.AddWithValue("@MaritalStatus", client.MaritalStatus);
-                    cmd.Parameters.AddWithValue("@City", client.City);
-                    cmd.Parameters.AddWithValue("@Country", client.Country);
-                    cmd.Parameters.AddWithValue("@CState", client.CState);
-                    cmd.Parameters.AddWithValue("@ZipCode", client.ZipCode);
-                    cmd.Parameters.AddWithValue("@EmgContact", client.EmgContact);
-                    cmd.Parameters.AddWithValue("@EmgPhone", client.EmgPhone);
-                    cmd.Parameters.AddWithValue("@IsActive", client.IsActive);
+                    string _query = "INSERT INTO tblUser (UserKey,UserType,UserName,UserPassword,SSN,FirstName,MiddleName,LastName,DOB,Email,CellPhone,HomePhone,EmgPhone,EmgContact,Gender,MaritalStatus,Ethnicity,SupervisorId,IsActive,CreatedOn,CreatedBy) VALUES (@UserKey,@UserType,@UserName,@UserPassword,@SSN,@FirstName,@MiddleName,@LastName,@DOB,@Email,@CellPhone,@HomePhone,@EmgPhone,@EmgContact,@Gender,@MaritalStatus,@Ethnicity,@SupervisorId,@IsActive,@CreatedOn,@CreatedBy); select SCOPE_IDENTITY();";
+                    _model.UserId = (int)(cnn.Query<int>(_query, _model).First());
 
-                    con.Open();
-                    int value = cmd.ExecuteNonQuery();
-                    if (value > 0)
+                    string sqlQuery = "INSERT INTO tblEmployee (UserId,EmpType,DateOfHire,DateOfFirstCase,Dependents,City,Country,TaxState,ZipCode,Municipality,Notes,IsActive,CreatedOn,CreatedBy) VALUES (@UserId,@EmpType,@DateOfHire,@DateOfFirstCase,@Dependents,@City,@Country,@TaxState,@ZipCode,@Municipality,@Notes,@IsActive,@CreatedOn,@CreatedBy)";
+
+
+                    int rowsAffected = cnn.Execute(sqlQuery, _model);
+
+                    if (rowsAffected > 0)
                     {
                         sres.Result = true;
-                        sres.Data = "New Employee Created.";
+                        sres.Data = "Sucessfully  Created.";
                     }
                     else
                     {
                         sres.Data = null;
-                        sres.Message = "Failed new employee creation.";
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-            finally
-            {
-
-            }
-            return sres;
-        }
-
-        public async Task<ServiceResponse<List<Employee>>> GetEmployeesList()
-        {
-            ServiceResponse<List<Employee>> obj = new ServiceResponse<List<Employee>>();
-            List<Employee> emp = new List<Employee>();
-            try
-            {
-                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-                {
-                    SqlCommand cmd = new SqlCommand("SP_GET_EMPLOYEES", con);
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    DataTable table = new DataTable();
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    da.Fill(table);
-                    if (table.Rows.Count > 0)
-                    {
-                        for (int i = 0; i < table.Rows.Count; i++)
-                        {
-                            emp.Add(new Employee
-                            {
-                                EmpID = Convert.ToInt32(table.Rows[i]["EmpId"].ToString()),
-                                EmpName = table.Rows[i]["EmpName"].ToString(),
-                                CellPhone = table.Rows[i]["CellPhone"].ToString(),
-                                HasEmail = table.Rows[i]["HasEmail"].ToString(),
-                                HasDOB = table.Rows[i]["HasDOB"].ToString(),
-                                IsActive = Convert.ToInt32(table.Rows[i]["IsActive"].ToString()),
-                                //EnteredDate = table.Rows[i]["CreatedOn"].ToString(),
-                                CState = table.Rows[i]["CState"].ToString()
-                            });
-                        }
-                        obj.Result = true;
-                    }
-                    obj.Data = emp;
-                    return obj;
-                }
-            }
-            catch (Exception ex)
-            {
-                obj.Message = ex.Message;
-                return obj;
-            }
-            finally
-            {
-
-            }
-        }
-
-        public async Task<ServiceResponse<string>> DeleteEmployee(int EmpId)
-        {
-            ServiceResponse<string> sres = new ServiceResponse<string>();
-            try
-            {
-                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-                {
-                    SqlCommand cmd = new SqlCommand("SP_DELETE_EMPLOYEE", con);
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                    cmd.Parameters.AddWithValue("@EMPID", EmpId);
-
-                    con.Open();
-                    int result = cmd.ExecuteNonQuery();
-                    if (result > 0)
-                    {
-                        sres.Result = true;
-                        sres.Data = "Employee Deleted";
-                    }
-                    else
-                    {
-                        sres.Data = null;
-                        sres.Message = "Deletion Failed.";
+                        sres.Message = "Failed new creation.";
                     }
                 }
 
@@ -162,19 +59,70 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
 
             }
-
             return sres;
         }
 
-        public async Task<ServiceResponse<Employee>> GetEmployeeById(string EmpId)
+        public async Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj()
         {
-            ServiceResponse<Employee> obj = new ServiceResponse<Employee>();
+            ServiceResponse<IEnumerable<EmployeeList>> obj = new ServiceResponse<IEnumerable<EmployeeList>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                var procedure = "[EmpProc]";
+                var values = new { @flag = 1, @IsActive = 1 };
+                IEnumerable<EmployeeList> results = (await connection.QueryAsync<EmployeeList>(procedure,
+        values, commandType: CommandType.StoredProcedure));
+                obj.Data = results;
+                obj.Result = results.Any() ? true : false;
+                obj.Message = results.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
+
+        public async Task<ServiceResponse<string>> DeleteEmployee(int UserId)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var procedure = "[EmpProc]";
+                    var values = new { @flag = 2, @IsActive = 0, @UserId= UserId };
+                    int rowsAffected = connection.Execute(procedure, values, commandType: CommandType.StoredProcedure);
+
+                    if (rowsAffected > 0)
+                    {
+                        obj.Result = true;
+                        obj.Data = "Employee Deleted";
+                    }
+                    else
+                    {
+                        obj.Data = null;
+                        obj.Message = "Deletion Failed.";
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+
+
+            return obj;
+        }
+
+        public async Task<ServiceResponse<EmployeeModel>> GetEmployeeById(int UserId)
+        {
+            ServiceResponse<EmployeeModel> obj = new ServiceResponse<EmployeeModel>();
 
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "SELECT * FROM tblEmployee Where EmpId=@EmpId;";
-                IEnumerable<Employee> cmeetings = (await connection.QueryAsync<Employee>(sql,
-                         new { @EmpId = EmpId }));
+                string sql = "SELECT x.*,y.EmpType,y.DateOfHire,y.DateOfFirstCase,y.Dependents,y.City,y.Country,y.TaxState,y.ZipCode,y.Municipality,y.Notes FROM tblUser x inner join tblEmployee y on x.UserId=y.UserId Where x.UserId=@UserId;";
+                IEnumerable<EmployeeModel> cmeetings = (await connection.QueryAsync<EmployeeModel>(sql,
+                         new { @UserId = UserId }));
                 obj.Data = cmeetings.FirstOrDefault();
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
@@ -182,81 +130,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             }
             return obj;
 
-
-
-
-
-
-
-
-
-            //Employee emp = new Employee();
-            //try
-            //{
-            //    using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-            //    {
-            //        SqlCommand cmd = new SqlCommand("SP_GET_EmployeeInfoByID", con);
-            //        cmd.CommandType = System.Data.CommandType.StoredProcedure;
-            //        cmd.Parameters.AddWithValue("@EID", EmpId);
-            //        DataTable table = new DataTable();
-            //        SqlDataAdapter da = new SqlDataAdapter(cmd);
-            //        da.Fill(table);
-            //        if (table.Rows.Count > 0)
-            //        {
-            //            for (int i = 0; i < table.Rows.Count; i++)
-            //            {
-            //                emp.EmpID = Convert.ToInt32(table.Rows[i]["EmpId"].ToString());
-            //                emp.FirstName = table.Rows[i]["FirstName"].ToString();
-            //                emp.LastName = table.Rows[i]["LastName"].ToString();
-            //                emp.MiddleName = table.Rows[i]["MiddleName"].ToString();
-            //                emp.CellPhone = table.Rows[i]["CellPhone"].ToString();
-            //                emp.Email = table.Rows[i]["Email"].ToString();
-            //                emp.DOB = table.Rows[i]["DOB"].ToString();
-            //                emp.HomePhone = table.Rows[i]["HomePhone"].ToString();
-            //                emp.ExtEmpId = table.Rows[i]["ExtEmpId"].ToString();
-            //                emp.Country = table.Rows[i]["Country"].ToString();
-            //                emp.City = table.Rows[i]["City"].ToString();
-            //                emp.CState = table.Rows[i]["CState"].ToString();
-            //                emp.ZipCode = table.Rows[i]["ZipCode"].ToString();
-            //                emp.Gender = table.Rows[i]["Gender"].ToString();
-            //            }
-            //            obj.Result = true;
-            //        }
-            //        obj.Data = emp;
-            //        return obj;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    obj.Message = ex.Message;
-            //    return obj;
-            //}
-            //finally
-            //{
-
-            //}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
+
+        #endregion
 
 
 
@@ -269,10 +145,11 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = "Insert Into tblAddress (EmpId,AddressType,Owner,FlatNo,Address,City,Country,State,ZipCode,CreatedOn,CreatedBy) Values (@EmpId,@AddressType,@Owner,@FlatNo,@Address,@City,@Country,@State,@ZipCode,@CreatedOn,@CreatedBy);";
+                    string sqlQuery = "Insert Into tblAddress (UserId,EmpId,AddressType,Owner,FlatNo,Address,City,Country,State,ZipCode,CreatedOn,CreatedBy) Values (@UserId,@EmpId,@AddressType,@Owner,@FlatNo,@Address,@City,@Country,@State,@ZipCode,@CreatedOn,@CreatedBy);";
                     int rowsAffected = db.Execute(sqlQuery, new
                     {
-                        EmpId = _model.EmpId,
+                        UserId = _model.UserId,
+                        EmpId = _model.UserId,
                         AddressType = _model.AddressType,
                         Owner = _model.Owner,
                         FlatNo = _model.FlatNo,
@@ -314,13 +191,11 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         {
             ServiceResponse<AddressModel> obj = new ServiceResponse<AddressModel>();
 
-
-
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "SELECT * FROM tblAddress Where EmpId=@EmpId;";
+                string sql = "SELECT * FROM tblAddress Where UserId=@UserId;";
                 IEnumerable<AddressModel> cmeetings = (await connection.QueryAsync<AddressModel>(sql,
-                         new { @EmpId = empId }));
+                         new { @UserId = empId }));
                 obj.Data = cmeetings.FirstOrDefault();
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
@@ -333,8 +208,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         #endregion
 
 
-
-        public async Task<ServiceResponse<string>> AddIncident(IncidentMode _model)
+        public async Task<ServiceResponse<string>> AddIncident(IncidentModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
             try
@@ -377,15 +251,15 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return sres;
         }
 
-        public async Task<ServiceResponse<IEnumerable<IncidentMode>>> GetIncidentList(int empId)
+        public async Task<ServiceResponse<IEnumerable<IncidentModel>>> GetIncidentList(int empId)
         {
-            ServiceResponse<IEnumerable<IncidentMode>> obj = new ServiceResponse<IEnumerable<IncidentMode>>();
+            ServiceResponse<IEnumerable<IncidentModel>> obj = new ServiceResponse<IEnumerable<IncidentModel>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
 
                 string sql = "SELECT * FROM tblIncident Where EmpId=@EmpId;";
 
-                IEnumerable<IncidentMode> cmeetings = (await connection.QueryAsync<IncidentMode>(sql,
+                IEnumerable<IncidentModel> cmeetings = (await connection.QueryAsync<IncidentModel>(sql,
                          new { EmpId = empId }));
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
@@ -406,7 +280,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     string sqlQuery = "Insert Into tblAttendance (EmpId,Reason,StartDate,EndDate,Notes,CreatedOn,CreatedBy) Values (@EmpId,@Reason,@StartDate,@EndDate,@Notes,@CreatedOn,@CreatedBy);";
                     int rowsAffected = db.Execute(sqlQuery, new
                     {
-                        EmpId = _model.EmpId,
+                        EmpId = _model.UserId,
                         Reason = _model.Reason,
                         StartDate = _model.StartDate,
                         EndDate = _model.EndDate,
@@ -512,7 +386,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return sres;
         }
 
-
         public async Task<ServiceResponse<IEnumerable<AvailabilityMaster>>> GetAvailabilityList()
         {
             ServiceResponse<IEnumerable<AvailabilityMaster>> obj = new ServiceResponse<IEnumerable<AvailabilityMaster>>();
@@ -528,15 +401,13 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
         }
 
-
-        public async Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList()
+        public async Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList(int empId)
         {
             ServiceResponse<IEnumerable<AvailabilityStatus>> obj = new ServiceResponse<IEnumerable<AvailabilityStatus>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select Text as StatusType,EffectiveDate,ReturnDate,OKResume as Resume,ReHire as Rehire,Note " +
-                    "from dbo.tblEmpStatus ES inner join tblEmpStatusMaster ESM  on ES.TypeId = ESM.Id; ";
-                IEnumerable<AvailabilityStatus> cmeetings = (await connection.QueryAsync<AvailabilityStatus>(sql));
+                string sql = "select ItemName as StatusType,EffectiveDate,ReturnDate,OKResume as Resume,ReHire as Rehire,Note from tblEmpStatus ES inner join tblMaster ESM  on ES.TypeId = ESM.ItemId and ESM.MasterType = 5 where ES.EmployeeId = @EmployeeId ;";
+                IEnumerable<AvailabilityStatus> cmeetings = (await connection.QueryAsync<AvailabilityStatus>(sql, new { EmployeeId = empId }));
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
@@ -544,9 +415,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return obj;
 
         }
-
-
-
 
         public async Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model)
         {
@@ -559,7 +427,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
                     int rowsAffected = db.Execute(sqlQuery, new
                     {
-                        EmpId = _model.EmpId,
+                        EmpId = _model.UserId,
                         DueDate = Convert.ToDateTime(_model.DueDate),
                         CompletedOn = Convert.ToDateTime(_model.CompletedOn),
                         Category = _model.Category,
@@ -615,8 +483,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
         }
 
-
-        public async Task<ServiceResponse<string>> SaveEmpPayRate(SaveEmployeeRate client)
+        public async Task<ServiceResponse<string>> SaveEmpPayRate(EmployeeRateModel client)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
             try
@@ -724,11 +591,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             }
         }
 
-
-
-
-
-
         public async Task<ServiceResponse<string>> SaveEmpDeclinedCase(EmpDeclinedCase client)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -740,16 +602,16 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
                     SqlCommand cmd = new SqlCommand("SP_SaveEmpDeclinedCaseProc", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@EmpId", client.EmpId);
+                    cmd.Parameters.AddWithValue("@EmpId", client.UserId);
 
                     cmd.Parameters.AddWithValue("@ReportedDate", client.RepotedDate);
-                    cmd.Parameters.AddWithValue("@ClientID", client.clientId);
+                    cmd.Parameters.AddWithValue("@ClientID", client.ClientId);
                     cmd.Parameters.AddWithValue("@caseid", client.Casetypeid);
                     cmd.Parameters.AddWithValue("@DeclinedReason", client.DeclineReason);
                     cmd.Parameters.AddWithValue("@AssignmentStartDate", client.AssignmentStart);
                     cmd.Parameters.AddWithValue("@Note", client.Note);
                     cmd.Parameters.AddWithValue("@Day", client.Day);
-                    cmd.Parameters.AddWithValue("@Week", client.week);
+                    cmd.Parameters.AddWithValue("@Week", client.Week);
                     cmd.Parameters.AddWithValue("@CreatedOn", client.CreatedOn);
                     cmd.Parameters.AddWithValue("@createdBy", client.CreatedBy);
 
@@ -792,7 +654,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     SqlCommand cmd = new SqlCommand("SP_GetDeclinedCaseProc", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@EmpId", EmpId);
-                 
+
                     DataTable table = new DataTable();
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     da.Fill(table);
@@ -807,7 +669,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                                 CasetypeName = table.Rows[i]["CaseType"].ToString(),
                                 DeclineReason = table.Rows[i]["DeclinedReason"].ToString(),
                                 Day = Convert.ToInt16(table.Rows[i]["Day"].ToString()),
-                                week = Convert.ToInt16(table.Rows[i]["Week"].ToString()),
+                                Week = Convert.ToInt16(table.Rows[i]["Week"].ToString()),
                                 AssignmentStart = table.Rows[i]["AssignmentStartDate"].ToString()
                             });
 
@@ -828,15 +690,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             }
         }
-
-
-
-
-
-
-
-
-
 
 
     }

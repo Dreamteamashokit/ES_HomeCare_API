@@ -25,8 +25,21 @@ namespace ES_HomeCare_API.Helper
         }
 
 
+        public static DateTime ParseDateTime(this string dateStr)
+        {
+
+            string dateTimeStr = dateStr;
+            DateTime dte = DateTime.ParseExact(dateTimeStr.Trim(), "dd-MM-yyyy, hh:mm:ss tt", CultureInfo.InvariantCulture);
+            return dte;
+        }
+        
+
         public static string TimeHelper(this TimeSpan timeSpan)
         {
+            if (timeSpan == null)
+            {
+                timeSpan = TimeSpan.MinValue;
+            }
             DateTime time = DateTime.Today + timeSpan;
             return time.ToString("hh:mm tt");
         }

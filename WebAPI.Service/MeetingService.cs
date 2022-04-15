@@ -10,7 +10,7 @@ using WebAPI_SAMPLE.Model;
 
 namespace ES_HomeCare_API.WebAPI.Service
 {
-    public class MeetingService: IMeetingService
+    public class MeetingService : IMeetingService
     {
         private readonly IMeetingData data;
         public MeetingService(IMeetingData ldata)
@@ -28,6 +28,44 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             return await data.GetEmpMeetingList(empId);
         }
+        public async Task<ServiceResponse<IEnumerable<ClientMeeting>>> GetClientMeetingList()
+        {
+            return await data.GetClientMeetingList();
+        }
+
+
+        public async Task<ServiceResponse<MeetingView>> GetMeetingDetail(long meetingId)
+
+        {
+            return await data.GetMeetingDetail(meetingId);
+        }
+
+
+
+        public async Task<ServiceResponse<string>> UpdateMeeting(MeetingModel _model)
+        {
+            return await data.UpdateMeeting(_model);
+        }
+
+        public async Task<ServiceResponse<string>> PostNote(NotesModel _model)
+        {
+            return await data.PostNote(_model);
+        }
+
+        public async Task<ServiceResponse<string>> ChangeStatus(MeetingStatus _model)
+        {
+            return await data.ChangeStatus(_model);
+        }
+
+        public async Task<ServiceResponse<IEnumerable<EmpMeeting>>> GetUserMeetingList(int _userId, short _userTypeId)
+
+      
+        {
+            return await data.GetUserMeetingList(_userId, _userTypeId);
+        }
+
+        
+
 
     }
 }

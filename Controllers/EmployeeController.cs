@@ -25,63 +25,68 @@ namespace WebAPI_SAMPLE.Controllers
             this.service = service;
             this._comService = Sev;
         }
+        #region Employee
 
-
-        [HttpPost("savenewemployeeinfo")]
+        [HttpPost("addEmployee")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> savenewemployeeinfo([FromBody] Employee employee)
+        public async Task<IActionResult> AddEmployee([FromBody] EmployeeModel model)
         {
-            return Ok(await service.savenewemployee(employee));
+            
+            model.IsActive = 1;
+            model.CreatedBy = 1;
+            model.CreatedOn = DateTime.Now;
+            return Ok(await service.AddEmployee(model));
         }
 
-        [HttpGet("getemployeelist")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> getemployeelist()
+
+        [HttpGet("getEmployeeListObj")]
+        [ProducesResponseType(typeof(ServiceResponse<List<EmployeeList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<EmployeeList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetEmployeeListObj()
         {
-            return Ok(await service.GetEmployeesList());
+            return Ok(await service.GetEmployeeListObj());
         }
 
-        [HttpGet("deleteemployee/{empId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+      
+     
+
+        [HttpGet("deleteEmployee/{empId}")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> deleteemployee(int empId)
         {
             return Ok(await service.DeleteEmployee(empId));
         }
 
-        [HttpGet("getemployeebyId/{empId}")]
-        [ProducesResponseType(typeof(ServiceResponse<Employee>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<Employee>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> getemployeebyId(string empId)
+        [HttpGet("getEmployeebyId/{empId}")]
+        [ProducesResponseType(typeof(ServiceResponse<EmployeeModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<EmployeeModel>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetEmployeeById(int empId)
         {
             return Ok(await service.GetEmployeeById(empId));
         }
+
+        #endregion
 
         #region Incident
         [HttpPost("addIncident")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddIncident([FromBody] IncidentMode model)
+        public async Task<IActionResult> AddIncident([FromBody] IncidentModel model)
         {
-
-
             model.CreatedOn = DateTime.Now;
             return Ok(await service.AddIncident(model));
         }
 
         [HttpGet("getIncidentList/{empId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<IncidentModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<IncidentModel>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetIncidentList(int empId)
         {
             return Ok(await service.GetIncidentList(empId));
         }
         #endregion
-
-
-
 
         #region Attendance
         [HttpPost("addAttendance")]
@@ -96,29 +101,21 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
         [HttpGet("getAttendanceList/{empId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<AttendanceModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<AttendanceModel>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAttendanceList(int empId)
         {
             return Ok(await service.GetAttendanceList(empId));
         }
         #endregion
 
-
-
-
-
-
         [HttpGet("getAvailabilityList")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<AvailabilityMaster>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<AvailabilityMaster>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAvailabilityList()
         {
             return Ok(await service.GetAvailabilityList());
         }
-
-
-
 
         [HttpPost("addStatus")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
@@ -130,46 +127,15 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
 
-        [HttpGet("getEmpStatusList")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> getEmpStatusList()
+        [HttpGet("getEmpStatusList/{empId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<AvailabilityStatus>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<AvailabilityStatus>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> getEmpStatusList(int empId)
         {
-            return Ok(await service.GetEmpStatusList());
+            return Ok(await service.GetEmpStatusList(empId));
         }
 
-        [HttpGet("getOfficeUserList")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetOfficeUserLst()
-        {
-            return Ok(await _comService.GetOfficeUserLst());
-        }
-
-        [HttpGet("getTypeStatusList")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetTypeStatusLst()
-        {
-            return Ok(await _comService.GetTypeStatusLst());
-        }
-
-        [HttpGet("getEmployeeStatusList")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetStatusEmployeeLst()
-        {
-            return Ok(await _comService.GetEmployeeLst());
-        }
-
-        [HttpGet("getScheduleLst")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetScheduleLst()
-        {
-            return Ok(await _comService.GetScheduleLst());
-        }
-
+        
 
 
         #region Compliance
@@ -227,7 +193,7 @@ namespace WebAPI_SAMPLE.Controllers
         [HttpPost("addRate")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SaveEmpRate([FromBody] SaveEmployeeRate model)
+        public async Task<IActionResult> SaveEmpRate([FromBody] EmployeeRateModel model)
         {
             model.CreatedOn = DateTime.Now;
             return Ok(await service.SaveEmpPayRate(model));
@@ -235,8 +201,8 @@ namespace WebAPI_SAMPLE.Controllers
 
 
         [HttpGet("getEmpRate/{empId}")]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<EmpRate>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<EmpRate>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> getEmpRate(long empId)
         {
 

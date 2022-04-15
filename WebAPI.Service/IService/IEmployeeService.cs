@@ -10,22 +10,27 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
 {
     public interface IEmployeeService
     {
-        Task<ServiceResponse<string>> savenewemployee(Employee employee);
-        Task<ServiceResponse<List<Employee>>> GetEmployeesList();
-        Task<ServiceResponse<string>> DeleteEmployee(int EmpId);
-        Task<ServiceResponse<Employee>> GetEmployeeById(string EmpId);
+        #region Employee
+        Task<ServiceResponse<string>> AddEmployee(EmployeeModel _model);
+        Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj();
+        Task<ServiceResponse<string>> DeleteEmployee(int UserId);
+        Task<ServiceResponse<EmployeeModel>> GetEmployeeById(int UserId);
+
+        #endregion
+
+
         Task<ServiceResponse<string>> AddEmpAddress(AddressModel _model);
         Task<ServiceResponse<AddressModel>> GetEmpAddress(int empId);
-        Task<ServiceResponse<string>> AddIncident(IncidentMode _model);
-        Task<ServiceResponse<IEnumerable<IncidentMode>>> GetIncidentList(int empId);
+        Task<ServiceResponse<string>> AddIncident(IncidentModel _model);
+        Task<ServiceResponse<IEnumerable<IncidentModel>>> GetIncidentList(int empId);
         Task<ServiceResponse<string>> AddAttendance(AttendanceModel _model);
         Task<ServiceResponse<IEnumerable<AttendanceModel>>> GetAttendanceList(int empId);               
         Task<ServiceResponse<string>> SaveExitEmpStatus(StatusModel EmpId);
         Task<ServiceResponse<IEnumerable<AvailabilityMaster>>> GetAvailabilityList();
-        Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList();
+        Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList(int empId);
         Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model);
         Task<ServiceResponse<IEnumerable<ComplianceModel>>> GetComplianceList(int empId);
-        Task<ServiceResponse<string>> SaveEmpPayRate(SaveEmployeeRate Emprate);
+        Task<ServiceResponse<string>> SaveEmpPayRate(EmployeeRateModel Emprate);
         Task<ServiceResponse<List<EmpRate>>> GetEmpPayRate(long EmpId, long ClientId);
 
 

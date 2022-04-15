@@ -17,26 +17,34 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             data = ldata;
         }
-
-        public async Task<ServiceResponse<string>> savenewemployee(Employee employee)
+        #region Employee
+        public async Task<ServiceResponse<string>> AddEmployee(EmployeeModel _model)
         {
-            return await data.savenewemployee(employee);
+            return await data.AddEmployee(_model);
         }
 
-        public async Task<ServiceResponse<List<Employee>>> GetEmployeesList()
+        public async Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj()
         {
-            return await data.GetEmployeesList();
+            return await data.GetEmployeeListObj();
         }
 
-        public async Task<ServiceResponse<string>> DeleteEmployee(int EmpId)
+        public async Task<ServiceResponse<string>> DeleteEmployee(int UserId)
         {
-            return await data.DeleteEmployee(EmpId);
+            return await data.DeleteEmployee(UserId);
         }
 
-        public async Task<ServiceResponse<Employee>> GetEmployeeById(string EmpId)
+        public async Task<ServiceResponse<EmployeeModel>> GetEmployeeById(int UserId)
         {
-            return await data.GetEmployeeById(EmpId);
+            return await data.GetEmployeeById(UserId);
         }
+
+        #endregion
+
+
+
+
+
+
         #region Address
         public async Task<ServiceResponse<string>> AddEmpAddress(AddressModel _model)
         {
@@ -47,13 +55,13 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             return await data.GetEmpAddress(empId);
         }
         #endregion
-        public async Task<ServiceResponse<string>> AddIncident(IncidentMode _model)
+        public async Task<ServiceResponse<string>> AddIncident(IncidentModel _model)
         {
             return await data.AddIncident(_model);
         }
 
 
-        public async Task<ServiceResponse<IEnumerable<IncidentMode>>> GetIncidentList(int empId)
+        public async Task<ServiceResponse<IEnumerable<IncidentModel>>> GetIncidentList(int empId)
         {
             return await data.GetIncidentList(empId);
         }
@@ -87,12 +95,12 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         }
 
 
-        public async Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList()
+        public async Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList(int empId)
         {
-            return await data.GetEmpStatusList();
+            return await data.GetEmpStatusList(empId);
         }
 
-
+      
 
 
         public async Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model)
@@ -106,7 +114,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         }
 
 
-        public async Task<ServiceResponse<string>> SaveEmpPayRate(SaveEmployeeRate Emprate)
+        public async Task<ServiceResponse<string>> SaveEmpPayRate(EmployeeRateModel Emprate)
         {
             return await data.SaveEmpPayRate(Emprate);
         }
