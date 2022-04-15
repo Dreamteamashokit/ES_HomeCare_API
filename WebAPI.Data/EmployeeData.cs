@@ -62,13 +62,13 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return sres;
         }
 
-        public async Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj()
+        public async Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj(int userId)
         {
             ServiceResponse<IEnumerable<EmployeeList>> obj = new ServiceResponse<IEnumerable<EmployeeList>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 var procedure = "[EmpProc]";
-                var values = new { @flag = 1, @IsActive = 1 };
+                var values = new { @flag = 1, @IsActive = 1,@UserId= userId };
                 IEnumerable<EmployeeList> results = (await connection.QueryAsync<EmployeeList>(procedure,
         values, commandType: CommandType.StoredProcedure));
                 obj.Data = results;

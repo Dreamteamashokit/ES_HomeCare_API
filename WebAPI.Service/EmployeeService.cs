@@ -23,9 +23,9 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             return await data.AddEmployee(_model);
         }
 
-        public async Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj()
+        public async Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj(int userId)
         {
-            return await data.GetEmployeeListObj();
+            return await data.GetEmployeeListObj(userId);
         }
 
         public async Task<ServiceResponse<string>> DeleteEmployee(int UserId)
