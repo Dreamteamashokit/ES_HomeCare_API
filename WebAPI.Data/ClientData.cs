@@ -148,7 +148,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return obj;
         }
 
-
         public async Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model, int Flag)
         {
             ServiceResponse<List<Medicationcs>> obj = new ServiceResponse<List<Medicationcs>>();
@@ -217,7 +216,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             }
         }
-
 
         public async Task<ServiceResponse<string>> CreateServiceTask(IList<ServiceTaskModel> _list)
         {
@@ -496,7 +494,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                             {
                                 UserId = Model.UserId,
                                 type = Convert.ToInt32(table.Rows[i]["type"].ToString())==1? "Primary Contact" : "Emergency Contact",
-                            Title = table.Rows[i]["Title"].ToString(),
+                                Title = table.Rows[i]["Title"].ToString(),
                                 FirstName = table.Rows[i]["FirstName"].ToString(),
                                 LastName = table.Rows[i]["LastName"].ToString(),
                                 License = table.Rows[i]["License"].ToString(),

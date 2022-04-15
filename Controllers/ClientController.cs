@@ -184,19 +184,6 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
 
-
-
-        [HttpPost("ClientEmergencyInfo")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ClientEmergencyInfo(ClientEmrgencyInfo model)
-        {
-           
-                model.CreatedOn = DateTime.Now.Date;
-                return Ok(await service.ClienEmergencyInfo(model));
-            
-        }
-
         [HttpPost("createEmpDeclined")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
@@ -278,6 +265,16 @@ namespace WebAPI_SAMPLE.Controllers
 
 
 
+        [HttpPost("ClientEmergencyInfo")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ClientEmergencyInfo(ClientEmrgencyInfo model)
+        {
+
+            model.CreatedOn = DateTime.Now.Date;
+            return Ok(await service.ClienEmergencyInfo(model));
+
+        }
 
 
         [HttpGet("getClientEmergencyInfo/{UserId}")]
