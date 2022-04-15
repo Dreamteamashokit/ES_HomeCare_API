@@ -145,11 +145,10 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = "Insert Into tblAddress (UserId,EmpId,AddressType,Owner,FlatNo,Address,City,Country,State,ZipCode,CreatedOn,CreatedBy) Values (@UserId,@EmpId,@AddressType,@Owner,@FlatNo,@Address,@City,@Country,@State,@ZipCode,@CreatedOn,@CreatedBy);";
+                    string sqlQuery = "Insert Into tblAddress (UserId,AddressType,Owner,FlatNo,Address,City,Country,State,ZipCode,CreatedOn,CreatedBy) Values (@UserId,@AddressType,@Owner,@FlatNo,@Address,@City,@Country,@State,@ZipCode,@CreatedOn,@CreatedBy);";
                     int rowsAffected = db.Execute(sqlQuery, new
                     {
-                        UserId = _model.UserId,
-                        EmpId = _model.UserId,
+                        UserId = _model.UserId,                       
                         AddressType = _model.AddressType,
                         Owner = _model.Owner,
                         FlatNo = _model.FlatNo,
@@ -277,10 +276,10 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = "Insert Into tblAttendance (EmpId,Reason,StartDate,EndDate,Notes,CreatedOn,CreatedBy) Values (@EmpId,@Reason,@StartDate,@EndDate,@Notes,@CreatedOn,@CreatedBy);";
+                    string sqlQuery = "Insert Into tblAttendance (EmpId,Reason,StartDate,EndDate,Notes,CreatedOn,CreatedBy) Values (@UserId,@Reason,@StartDate,@EndDate,@Notes,@CreatedOn,@CreatedBy);";
                     int rowsAffected = db.Execute(sqlQuery, new
                     {
-                        EmpId = _model.UserId,
+                        UserId = _model.UserId,
                         Reason = _model.Reason,
                         StartDate = _model.StartDate,
                         EndDate = _model.EndDate,
@@ -342,12 +341,12 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 {
                     string sqlQuery = "Insert Into tblEmpStatus (EmployeeId,TypeId,ScheduleId," +
                         "OfficeUserID,Note,OKResume,ReHire,TextCheck,ScreenCheck,EmailCheck,EffectiveDate,ReturnDate,CreatedOn,CreatedBy) " +
-                        "Values(@EmpId,@TypeStatusID,@Scheduling,@OfficeUserId,@Note,@Resume,@Rehire,@Text,@Screen," +
+                        "Values(@UserId,@TypeStatusID,@Scheduling,@OfficeUserId,@Note,@Resume,@Rehire,@Text,@Screen," +
                         "@Email,@EffectiveDate,@ReturnDate,@CreatedOn,@CreatedBy)";
 
                     int rowsAffected = db.Execute(sqlQuery, new
                     {
-                        EmpId = _model.EmployeeId,
+                        UserId = _model.UserId,
                         TypeStatusId = _model.TypeStatusId,
                         Scheduling = _model.Scheduling,
                         OfficeUserId = _model.OfficeUserId,
@@ -423,11 +422,11 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = "Insert Into tblCompliance (EmpId,DueDate,CompletedOn,Category,Code,Result,Nurse,Notes,CreatedOn,CreatedBy) Values (@EmpId,@DueDate,@CompletedOn,@Category,@Code,@Result,@Nurse,@Notes,@CreatedOn,@CreatedBy);";
+                    string sqlQuery = "Insert Into tblCompliance (EmpId,DueDate,CompletedOn,Category,Code,Result,Nurse,Notes,CreatedOn,CreatedBy) Values (@UserId,@DueDate,@CompletedOn,@Category,@Code,@Result,@Nurse,@Notes,@CreatedOn,@CreatedBy);";
 
                     int rowsAffected = db.Execute(sqlQuery, new
                     {
-                        EmpId = _model.UserId,
+                        UserId = _model.UserId,
                         DueDate = Convert.ToDateTime(_model.DueDate),
                         CompletedOn = Convert.ToDateTime(_model.CompletedOn),
                         Category = _model.Category,
@@ -495,7 +494,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     SqlCommand cmd = new SqlCommand("SP_SaveEmpPayRateProc", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@EmployeeId", client.EmpId);
+                    cmd.Parameters.AddWithValue("@EmployeeId", client.UserId);
                     cmd.Parameters.AddWithValue("@ClientID", client.ClientId);
                     cmd.Parameters.AddWithValue("@EffectiveDate", client.EffectiveDate);
                     cmd.Parameters.AddWithValue("@EndDate", client.EndDate);
