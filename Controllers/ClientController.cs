@@ -61,8 +61,8 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
         [HttpGet("getClientStatusList/{clientId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientStatus>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientStatus>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> getEmpStatusList(int clientId)
         {
             return Ok(await service.GetClientStatusList(clientId));
@@ -70,8 +70,8 @@ namespace WebAPI_SAMPLE.Controllers
 
 
         [HttpPost("ClientMedicationcs")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Medicationcs>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Medicationcs>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ClientMedicationcs(Medicationcs model)
         {
            
@@ -83,8 +83,8 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
         [HttpGet("GetClientMedicationcs/{CilentId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Medicationcs>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Medicationcs>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetClientMedicationcs(int CilentId)
         {
             Medicationcs model = new Medicationcs();
@@ -98,8 +98,8 @@ namespace WebAPI_SAMPLE.Controllers
 
 
         [HttpDelete("deleteMedicationData")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteMedicationData(int MedicationId, int UserId)
         {
             Medicationcs model = new Medicationcs();
@@ -266,8 +266,8 @@ namespace WebAPI_SAMPLE.Controllers
 
 
         [HttpPost("ClientEmergencyInfo")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientEmrgencyInfo>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientEmrgencyInfo>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ClientEmergencyInfo(ClientEmrgencyInfo model)
         {
 
@@ -278,8 +278,8 @@ namespace WebAPI_SAMPLE.Controllers
 
 
         [HttpGet("getClientEmergencyInfo/{UserId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientEmrgencyInfo>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientEmrgencyInfo>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> getClientEmergencyInfo(int UserId)
         {
            

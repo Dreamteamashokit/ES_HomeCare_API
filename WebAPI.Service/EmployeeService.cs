@@ -33,7 +33,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             return await data.DeleteEmployee(UserId);
         }
 
-        public async Task<ServiceResponse<Employee>> GetEmployeeById(int UserId)
+        public async Task<ServiceResponse<EmployeeModel>> GetEmployeeById(int UserId)
         {
             return await data.GetEmployeeById(UserId);
         }

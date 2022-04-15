@@ -114,14 +114,14 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return obj;
         }
 
-        public async Task<ServiceResponse<Employee>> GetEmployeeById(int UserId)
+        public async Task<ServiceResponse<EmployeeModel>> GetEmployeeById(int UserId)
         {
-            ServiceResponse<Employee> obj = new ServiceResponse<Employee>();
+            ServiceResponse<EmployeeModel> obj = new ServiceResponse<EmployeeModel>();
 
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 string sql = "SELECT x.*,y.EmpType,y.DateOfHire,y.DateOfFirstCase,y.Dependents,y.City,y.Country,y.TaxState,y.ZipCode,y.Municipality,y.Notes FROM tblUser x inner join tblEmployee y on x.UserId=y.UserId Where x.UserId=@UserId;";
-                IEnumerable<Employee> cmeetings = (await connection.QueryAsync<Employee>(sql,
+                IEnumerable<EmployeeModel> cmeetings = (await connection.QueryAsync<EmployeeModel>(sql,
                          new { @UserId = UserId }));
                 obj.Data = cmeetings.FirstOrDefault();
                 obj.Result = cmeetings.Any() ? true : false;
