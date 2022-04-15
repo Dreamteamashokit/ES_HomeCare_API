@@ -461,7 +461,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    SqlCommand cmd = new SqlCommand("Sp_ClientEmergencyInfo", con);
+                    SqlCommand cmd = new SqlCommand("EmergencyInfoProc", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                    
