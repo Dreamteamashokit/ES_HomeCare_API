@@ -148,7 +148,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return obj;
         }
 
-
         public async Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model, int Flag)
         {
             ServiceResponse<List<Medicationcs>> obj = new ServiceResponse<List<Medicationcs>>();
@@ -159,10 +158,10 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 {
                     SqlCommand cmd = new SqlCommand("Sp_SaveClientMedication", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                   
+
                     cmd.Parameters.AddWithValue("@flag", Flag);
                     cmd.Parameters.AddWithValue("@MedicationID", Model.MedicationID);
-                    cmd.Parameters.AddWithValue("@StartDate",Model.StartDate.ToString("dd-mm-yyyy")=="01-00-0001"?DateTime.Now.Date: Model.StartDate.Date);
+                    cmd.Parameters.AddWithValue("@StartDate", Model.StartDate.ToString("dd-mm-yyyy") == "01-00-0001" ? DateTime.Now.Date : Model.StartDate.Date);
                     cmd.Parameters.AddWithValue("@EndDate", Model.EndDate.ToString("dd-mm-yyyy") == "01-00-0001" ? DateTime.Now.Date : Model.EndDate.Date);
                     cmd.Parameters.AddWithValue("@Medication", Model.MedicationText);
                     cmd.Parameters.AddWithValue("@NDC", Model.NDCText);
@@ -179,7 +178,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     cmd.Parameters.AddWithValue("@Isadministrationcheck", Model.administrationcheck);
                     cmd.Parameters.AddWithValue("@Isselfadministercheck", Model.selfadministercheck);
                     cmd.Parameters.AddWithValue("@UserId", Model.ClientID);
-                    cmd.Parameters.AddWithValue("@CreatedOn",Model.createdOn.Date);
+                    cmd.Parameters.AddWithValue("@CreatedOn", Model.createdOn.Date);
                     cmd.Parameters.AddWithValue("@CreatedBy", Model.CreatedBy);
                     cmd.Parameters.AddWithValue("@IsActive", Model.IsActive);
                     DataTable table = new DataTable();
@@ -192,14 +191,14 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                             clientsMedicationcs.Add(new Medicationcs
                             {
                                 MedicationID = Convert.ToInt32(table.Rows[i]["MedicationID"].ToString()),
-                                StartDate =Convert.ToDateTime(table.Rows[i]["StartDate"]),
+                                StartDate = Convert.ToDateTime(table.Rows[i]["StartDate"]),
                                 EndDate = Convert.ToDateTime(table.Rows[i]["EndDate"]),
                                 MedicationText = string.IsNullOrEmpty(table.Rows[i]["Medication"].ToString()) ? table.Rows[i]["NDC"].ToString() : table.Rows[i]["Medication"].ToString(),
                                 StrengthText = table.Rows[i]["Strength"].ToString(),
                                 FrequencyText = table.Rows[i]["Frequency"].ToString(),
                                 DosageText = table.Rows[i]["Dosage"].ToString(),
                                 RouteText = string.IsNullOrEmpty(table.Rows[i]["Route"].ToString()) ? table.Rows[i]["Instructions"].ToString() : table.Rows[i]["Route"].ToString(),
-                            }) ;
+                            });
                         }
                         obj.Result = true;
                     }
@@ -217,7 +216,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             }
         }
-
 
         public async Task<ServiceResponse<string>> CreateServiceTask(IList<ServiceTaskModel> _list)
         {
@@ -277,7 +275,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
                 string sqlqry = "Select x.TaskSrvId,y.TaskCode,y.TaskName,x.Frequency,x.ServiceNote,x.UserId from tblServiceTask x inner join tblTaskMaster y on x.TaskId=y.TaskId Where  x.UserId=@UserId and x.IsActive=1;";
 
-                IEnumerable<ServiceTaskView> objResult = (await connection.QueryAsync<ServiceTaskView>(sqlqry,new { @UserId = userId }));
+                IEnumerable<ServiceTaskView> objResult = (await connection.QueryAsync<ServiceTaskView>(sqlqry, new { @UserId = userId }));
 
                 obj.Data = objResult;
                 obj.Result = objResult != null ? true : false;
@@ -296,7 +294,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
                     var sqlqry = "Update tblServiceTask Set IsActive=@IsActive Where TaskSrvId=@SrvId";
-                    
+
                     int rowsAffected = await connection.ExecuteAsync(sqlqry, new { @IsActive = 0, @SrvId = SrvId });
 
                     if (rowsAffected > 0)
@@ -334,13 +332,13 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 {
                     var sqlqry = "Update tblServiceTask Set TaskId=@TaskId,Frequency=@Frequency,ServiceNote=@ServiceNote Where TaskSrvId=@TaskSrvId";
 
-                    int rowsAffected =await connection.ExecuteAsync(sqlqry, new
+                    int rowsAffected = await connection.ExecuteAsync(sqlqry, new
                     {
                         @TaskSrvId = item.TaskSrvId,
                         @TaskId = item.TaskId,
                         @Frequency = item.Frequency,
                         @ServiceNote = item.ServiceNote,
-                
+
                     });
 
                     if (rowsAffected > 0)
@@ -366,7 +364,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             return obj;
         }
-              
+
 
         public async Task<ServiceResponse<string>> CreateEmpDeclined(EmployeeDecline _model)
         {
@@ -374,7 +372,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             try
             {
                 using (IDbConnection connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-                {    
+                {
                     string Query = "INSERT INTO tblEmpDeclined (ReportedDate,UserId,EmpId,CaseType,Reason,StartDate,Notes,IsActive,CreatedOn,CreatedBy) VALUES (@ReportedDate,@UserId,@EmpId,@CaseType,@Reason,@StartDate,@Notes,@IsActive,@CreatedOn,@CreatedBy);";
 
                     int rowsAffected = await connection.ExecuteAsync(Query, _model);
@@ -442,16 +440,93 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     }
 
                 }
-
+                return obj;
             }
             catch (Exception ex)
             {
                 obj.Message = ex.Message;
                 return obj;
             }
+        }
+    
 
 
-            return obj;
+        public async Task<ServiceResponse<IEnumerable<ClientEmrgencyInfo>>> ClienEmergencyInfo(ClientEmrgencyInfo Model)
+        {
+            ServiceResponse<IEnumerable<ClientEmrgencyInfo>> obj = new ServiceResponse<IEnumerable<ClientEmrgencyInfo>>();
+            List<ClientEmrgencyInfo> clientsEmrgencyInfo = new List<ClientEmrgencyInfo>();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("EmergencyInfoProc", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                   
+                    cmd.Parameters.AddWithValue("@type", Model.type);
+                    cmd.Parameters.AddWithValue("@UserId",Model.UserId);
+                    cmd.Parameters.AddWithValue("@FirstName",Model.FirstName);
+                    cmd.Parameters.AddWithValue("@LastName", Model.LastName);
+                    cmd.Parameters.AddWithValue("@Relationship", Model.Relationship);
+                    cmd.Parameters.AddWithValue("@Phone", Model.Phone);
+                    cmd.Parameters.AddWithValue("@Email", Model.Email);
+                    cmd.Parameters.AddWithValue("@Title", Model.Title);
+                    cmd.Parameters.AddWithValue("@License", Model.License);
+                    cmd.Parameters.AddWithValue("@LicenseEx", Model.LicenseExpires.Date);
+                    cmd.Parameters.AddWithValue("@NPI", Model.NPINumber);
+                    cmd.Parameters.AddWithValue("@Fax", Model.Fax);
+                    cmd.Parameters.AddWithValue("@address", Model.Address);
+                    cmd.Parameters.AddWithValue("@State", Model.State);
+                    cmd.Parameters.AddWithValue("@city", Model.City);
+                    cmd.Parameters.AddWithValue("@ZipCode", Model.Zip);
+                    cmd.Parameters.AddWithValue("@IsActive", Model.IsActive);                  
+                    cmd.Parameters.AddWithValue("@CreatedOn", Model.CreatedOn.Date);
+                    cmd.Parameters.AddWithValue("@CreatedBy", Model.CreatedBy);
+                    cmd.Parameters.AddWithValue("@ID", Model.Id);
+                    DataTable table = new DataTable();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(table);
+                    if (table.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < table.Rows.Count; i++)
+                        {
+                            clientsEmrgencyInfo.Add(new ClientEmrgencyInfo
+                            {
+                                UserId = Model.UserId,
+                                type = Convert.ToInt32(table.Rows[i]["type"].ToString())==1? "Primary Contact" : "Emergency Contact",
+                                Title = table.Rows[i]["Title"].ToString(),
+                                FirstName = table.Rows[i]["FirstName"].ToString(),
+                                LastName = table.Rows[i]["LastName"].ToString(),
+                                License = table.Rows[i]["License"].ToString(),
+                                LicenseExpires = string.IsNullOrEmpty(table.Rows[i]["LicenseExpires"].ToString()) ? DateTime.Now.Date : Convert.ToDateTime(table.Rows[i]["LicenseExpires"].ToString()),
+                                NPINumber = table.Rows[i]["NPINumber"].ToString(),
+                                Email = table.Rows[i]["Email"].ToString(),
+                                Phone = table.Rows[i]["Phone"].ToString(),
+                                Fax = table.Rows[i]["Fax"].ToString(),
+                                Address = table.Rows[i]["Address"].ToString(),
+                                State = table.Rows[i]["State"].ToString(),
+                                City = table.Rows[i]["City"].ToString(),
+                                Zip = table.Rows[i]["ZipCode"].ToString(),
+                                IsActive = Convert.ToBoolean(table.Rows[i]["IsActive"]),
+                                Id = Convert.ToInt16(table.Rows[i]["Id"]),
+                                Edit = true
+                            });
+                        }
+                        obj.Result = true;
+                    }
+                    obj.Data = clientsEmrgencyInfo;
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+            finally
+            {
+
+            }
         }
 
         public async Task<ServiceResponse<string>> DeleteEmpDeclined(int declinedId)
@@ -487,4 +562,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
 
     }
+
+
 }

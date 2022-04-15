@@ -67,6 +67,10 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             return await data.DeleteService(SrvId);
         }
 
+        public async Task<ServiceResponse<IEnumerable<ClientEmrgencyInfo>>> ClienEmergencyInfo(ClientEmrgencyInfo Model)
+        {
+            return await data.ClienEmergencyInfo(Model);
+        }
 
         public async Task<ServiceResponse<string>> CreateEmpDeclined(EmployeeDecline _model)
         {
@@ -84,6 +88,8 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.DeleteEmpDeclined(declinedId);
         }
+
+
 
 
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -44,6 +45,21 @@ namespace ES_HomeCare_API.Model
         Delete = 3,
         [Description("select")]
         select = 4,
+
+    }
+
+
+    public enum EmergencyInfoType
+    {
+
+        [Display(Name = "Primary Contact")]
+        Primary = 1,
+        [Display(Name = "Emergency Contact")]
+        EmergencyInfo = 2,
+        [Display(Name = "Physician")]
+        Physician = 3,
+        [Display(Name = "other")]
+        other = 4,
 
     }
 }
