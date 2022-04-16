@@ -280,8 +280,8 @@ namespace WebAPI_SAMPLE.Controllers
         }        
 
         [HttpGet("GetClientContactLogs/{clientId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientContactLog>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientContactLog>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetClientContactLogs(int clientId)
         {
             return Ok(await service.GetClientContactLogs(clientId));
@@ -289,8 +289,8 @@ namespace WebAPI_SAMPLE.Controllers
         
 
         [HttpGet("getClientContactLogDetails/{contactlogId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientContactLog>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientContactLog>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> getClientContactLogDetails(int contactlogId)
         {
             return Ok(await service.getClientContactLogDetails(contactlogId));
