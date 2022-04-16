@@ -286,10 +286,6 @@ namespace WebAPI_SAMPLE.Controllers
                 ClientEmrgencyInfo model = new ClientEmrgencyInfo();
                 model.UserId = UserId;
                 model.CreatedOn = DateTime.Now.Date;
-                model.LicenseExpires = DateTime.Now.Date;
-
-                string stringValue = Enum.GetName(typeof(EmergencyInfoType), 1);
-
 
                 return Ok(await service.ClienEmergencyInfo(model));
            
