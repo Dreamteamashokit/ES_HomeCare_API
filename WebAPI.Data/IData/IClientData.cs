@@ -25,7 +25,10 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<IEnumerable<EmployeeDeclineView>>> GetEmpDeclined(int userId);
         Task<ServiceResponse<string>> UpdateEmpDeclined(EmployeeDecline item);
         Task<ServiceResponse<string>> DeleteEmpDeclined(int declinedId);
-        Task<ServiceResponse<string>> SaveClientContactLog(ClientContactLog _model);       
+        Task<ServiceResponse<string>> SaveClientContactLog(ClientContactLog _model);
         Task<ServiceResponse<IEnumerable<ClientContactLog>>> GetClientContactLogs(int ClientId);
+        Task<ServiceResponse<IEnumerable<ClientContactLog>>> getClientContactLogDetails(int contactLogId);
+        Task<ServiceResponse<string>> UpdateClientContactLog(ClientContactLog item);
+        Task<ServiceResponse<string>> DeleteClientContactLog(int contactLogId);
     }
 }

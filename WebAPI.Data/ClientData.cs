@@ -624,13 +624,121 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 string sql = "select ContactlogId,UserId,OfficeUserId,EmpId,Reason, " +
                             " CallDateTime,ScheduleDate,FollowUpDate,Issue,ActionTaken,Notes,IsFollowUp,IsSchedule,  " +
                             " IsActive,CreatedOn,CreatedBy from tblContactLog(nolock) " +
-                            " where UserId = " + ClientId;
+                            " where IsActive=1 and  UserId = " + ClientId;
 
                 IEnumerable<ClientContactLog> clogs = (await connection.QueryAsync<ClientContactLog>(sql, new { UserId = ClientId }));
                 obj.Data = clogs;
                 obj.Result = clogs.Any() ? true : false;
                 obj.Message = clogs.Any() ? "Data Found." : "No Data found.";
             }
+
+            return obj;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ClientContactLog>>> getClientContactLogDetails(int contactLogId)
+        {
+            ServiceResponse<IEnumerable<ClientContactLog>> obj = new ServiceResponse<IEnumerable<ClientContactLog>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "select ContactlogId,UserId,OfficeUserId,EmpId,Reason, " +
+                            " CallDateTime,ScheduleDate,FollowUpDate,Issue,ActionTaken,Notes,IsFollowUp,IsSchedule,  " +
+                            " IsActive,CreatedOn,CreatedBy from tblContactLog(nolock) " +
+                            " where ContactlogId = " + contactLogId;
+
+                IEnumerable<ClientContactLog> clogs = (await connection.QueryAsync<ClientContactLog>(sql, new { ContactlogId = contactLogId }));
+                obj.Data = clogs;
+                obj.Result = clogs.Any() ? true : false;
+                obj.Message = clogs.Any() ? "Data Found." : "No Data found.";
+            }
+
+            return obj;
+        }
+
+        public async Task<ServiceResponse<string>> UpdateClientContactLog(ClientContactLog item)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var sqlqry = "update tblContactLog set EmpId=@EmpId, Reason=@Reason, CallDateTime=@CallDateTime , " +
+                          " ScheduleDate = @ScheduleDate,FollowUpDate = @FollowUpDate,Issue = @Issue , " +
+                          " ActionTaken = @ActionTaken,Notes = @Notes,IsFollowUp = @IsFollowUp,IsSchedule = @IsSchedule " +
+                          " where ContactlogId  =" + item.ContactlogId;
+
+                    int rowsAffected = await connection.ExecuteAsync(sqlqry, new
+                    {
+                        @UserId = item.UserId,
+                        @OfficeUserId = item.OfficeUserId,
+                        @EmpId = item.EmpId,
+                        @Reason = item.Reason,
+                        @CallDateTime = item.CallDateTime,
+                        @ScheduleDate = item.ScheduleDate,
+                        @FollowUpDate = item.FollowUpDate,
+                        @Issue = item.Issue,
+                        @ActionTaken = item.ActionTaken,
+                        @Notes = item.Notes,
+                        @IsFollowUp = item.IsFollowUp,
+                        @IsSchedule = item.IsSchedule
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        obj.Result = true;
+                        obj.Data = "Updated Successfully";
+                    }
+                    else
+                    {
+                        obj.Data = null;
+                        obj.Message = "Updation Failed.";
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+
+
+            return obj;
+        }
+
+        public async Task<ServiceResponse<string>> DeleteClientContactLog(int contactLogId)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var sqlqry = "Update tblContactLog Set IsActive=@IsActive Where ContactlogId=@ContactlogId";
+
+                    int rowsAffected = await connection.ExecuteAsync(sqlqry, new { @IsActive = 0, @ContactlogId = contactLogId });
+
+                    if (rowsAffected > 0)
+                    {
+                        obj.Result = true;
+                        obj.Data = "Deleted Successfully";
+                    }
+                    else
+                    {
+                        obj.Data = null;
+                        obj.Message = "Deletion Failed.";
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+
 
             return obj;
         }
