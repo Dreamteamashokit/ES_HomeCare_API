@@ -667,5 +667,66 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             return obj;
         }
+
+
+        public async Task<ServiceResponse<List<ClientNote>>> ClientNoteOperation(ClientNote Model, int Flag)
+        {
+            ServiceResponse<List<ClientNote>> obj = new ServiceResponse<List<ClientNote>>();
+            List<ClientNote> clientsnotes = new List<ClientNote>();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("SP_ClientNotesOperation", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@flag", Flag);
+                    cmd.Parameters.AddWithValue("@UserId", Model.UserId);
+                    cmd.Parameters.AddWithValue("@NotesTypeId", Model.NotesTypeId);
+                    cmd.Parameters.AddWithValue("@Notes", Model.Notes);
+                    cmd.Parameters.AddWithValue("@OfficeUserId", Model.OfficeUserId);
+                    cmd.Parameters.AddWithValue("@EmpId", Model.EmpId);
+                    cmd.Parameters.AddWithValue("@NotifyTypeId", Model.NotifyTypeId);
+                    cmd.Parameters.AddWithValue("@IsActive", Model.IsActive);
+                    cmd.Parameters.AddWithValue("@CreatedOn", Model.CreatedOn);
+                    cmd.Parameters.AddWithValue("@CreatedBy", Model.CreatedBy);                    
+                    cmd.Parameters.AddWithValue("@NotesId", Model.NotesId);
+                    DataTable table = new DataTable();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(table);
+                    if (table.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < table.Rows.Count; i++)
+                        {
+                            clientsnotes.Add(new ClientNote
+                            {
+                                NotesId = Convert.ToInt32(table.Rows[i]["NotesId"].ToString()),
+                                UserId = Convert.ToInt32(table.Rows[i]["UserId"]),
+                                NotesTypeId = Convert.ToInt32(table.Rows[i]["NotesTypeId"]),
+                                Notes = table.Rows[i]["Notes"].ToString(),
+                                OfficeUserId = Convert.ToInt32(table.Rows[i]["OfficeUserId"].ToString()),
+                                EmpId = Convert.ToInt32(table.Rows[i]["EmpId"].ToString()),
+                                NotifyTypeId = Convert.ToInt16(table.Rows[i]["NotifyTypeId"].ToString()),
+                                IsActive = Convert.ToInt16(table.Rows[i]["IsActive"].ToString()),
+                                CreatedOn=Convert.ToDateTime(table.Rows[i]["CreatedOn"].ToString()),
+                                CreatedBy=Convert.ToInt32(table.Rows[i]["CreatedBy"].ToString())
+                            });
+                        }
+                        obj.Result = true;
+                    }
+                    obj.Data = clientsnotes;
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+            finally
+            {
+
+            }
+        }
     }
 }

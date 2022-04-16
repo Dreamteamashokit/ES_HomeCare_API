@@ -76,7 +76,11 @@ namespace ES_HomeCare_API.WebAPI.Service
 
         }
 
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetNoteTypeList()
+        {
+            return await data.GetNoteTypeList();
 
+        }
 
 
     }

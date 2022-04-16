@@ -30,5 +30,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<IEnumerable<ClientContactLog>>> getClientContactLogDetails(int contactLogId);
         Task<ServiceResponse<string>> UpdateClientContactLog(ClientContactLog item);
         Task<ServiceResponse<string>> DeleteClientContactLog(int contactLogId);
+
+        Task<ServiceResponse<List<ClientNote>>> ClientNoteOperation(ClientNote Model, int Flag);
     }
 }
