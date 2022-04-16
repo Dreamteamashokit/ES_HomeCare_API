@@ -19,13 +19,16 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<string>> CreateServiceTask(IList<ServiceTaskModel> _list);
         Task<ServiceResponse<IEnumerable<ServiceTaskView>>> GetServiceTaskList(int userId);
         Task<ServiceResponse<string>> UpdateService(ServiceTaskModel item);
-        Task<ServiceResponse<string>> DeleteService(int SrvId);       
+        Task<ServiceResponse<string>> DeleteService(int SrvId);
 
         Task<ServiceResponse<string>> CreateEmpDeclined(EmployeeDecline _model);
         Task<ServiceResponse<IEnumerable<EmployeeDeclineView>>> GetEmpDeclined(int userId);
         Task<ServiceResponse<string>> UpdateEmpDeclined(EmployeeDecline item);
         Task<ServiceResponse<string>> DeleteEmpDeclined(int declinedId);
-        Task<ServiceResponse<string>> SaveClientContactLog(ClientContactLog _model);       
+        Task<ServiceResponse<string>> SaveClientContactLog(ClientContactLog _model);
         Task<ServiceResponse<IEnumerable<ClientContactLog>>> GetClientContactLogs(int ClientId);
+        Task<ServiceResponse<IEnumerable<ClientContactLog>>> getClientContactLogDetails(int contactLogId);
+        Task<ServiceResponse<string>> UpdateClientContactLog(ClientContactLog item);
+        Task<ServiceResponse<string>> DeleteClientContactLog(int contactLogId);
     }
 }

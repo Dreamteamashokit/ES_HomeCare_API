@@ -286,6 +286,49 @@ namespace WebAPI_SAMPLE.Controllers
         {
             return Ok(await service.GetClientContactLogs(clientId));
         }
+        
+
+        [HttpGet("getClientContactLogDetails/{contactlogId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<Employee>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> getClientContactLogDetails(int contactlogId)
+        {
+            return Ok(await service.getClientContactLogDetails(contactlogId));
+        }
+
+        [HttpPost("updateClientContactLog")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> updateClientContactLog([FromBody] ClientContactLog model)
+        {
+            try
+            {
+                return Ok(await service.UpdateClientContactLog(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpDelete("deleteClientContactLog")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> deleteClientContactLog(int contactLogId)
+        {
+            try
+            {
+
+                return Ok(await service.DeleteClientContactLog(contactLogId));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
 
     }
 }

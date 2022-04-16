@@ -40,7 +40,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service
 
         public async Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model, int Flag)
         {
-            return await data.ClientMedicationcs(Model,Flag);
+            return await data.ClientMedicationcs(Model, Flag);
         }
 
 
@@ -89,11 +89,26 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         public async Task<ServiceResponse<string>> SaveClientContactLog(ClientContactLog _model)
         {
             return await data.SaveClientContactLog(_model);
-        }        
+        }
 
         public async Task<ServiceResponse<IEnumerable<ClientContactLog>>> GetClientContactLogs(int ClientId)
         {
             return await data.GetClientContactLogs(ClientId);
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ClientContactLog>>> getClientContactLogDetails(int contactLogId)
+        {
+            return await data.getClientContactLogDetails(contactLogId);
+        }
+
+        public async Task<ServiceResponse<string>> UpdateClientContactLog(ClientContactLog item)
+        {
+            return await data.UpdateClientContactLog(item);
+        }
+
+        public async Task<ServiceResponse<string>> DeleteClientContactLog(int contactLogId)
+        {
+            return await data.DeleteClientContactLog(contactLogId);
         }
     }
 }
