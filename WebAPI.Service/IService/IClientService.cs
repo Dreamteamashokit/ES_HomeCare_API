@@ -16,14 +16,11 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<string>> SaveClientStatus(ClientStatus _model);
         Task<ServiceResponse<IEnumerable<ClientStatusLst>>> GetClientStatusList(int ClientId);
         Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model, int Flag);
-
         Task<ServiceResponse<string>> CreateServiceTask(IList<ServiceTaskModel> _list);
         Task<ServiceResponse<IEnumerable<ServiceTaskView>>> GetServiceTaskList(int userId);
         Task<ServiceResponse<string>> UpdateService(ServiceTaskModel item);
         Task<ServiceResponse<string>> DeleteService(int SrvId);
         Task<ServiceResponse<IEnumerable<ClientEmrgencyInfo>>> ClienEmergencyInfo(ClientEmrgencyInfo Model);
-
-
         Task<ServiceResponse<string>> CreateEmpDeclined(EmployeeDecline _model);
         Task<ServiceResponse<IEnumerable<EmployeeDeclineView>>> GetEmpDeclined(int userId);
         Task<ServiceResponse<string>> UpdateEmpDeclined(EmployeeDecline item);
@@ -33,5 +30,14 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<IEnumerable<ClientContactLog>>> getClientContactLogDetails(int contactLogId);
         Task<ServiceResponse<string>> UpdateClientContactLog(ClientContactLog item);
         Task<ServiceResponse<string>> DeleteClientContactLog(int contactLogId);
+        Task<ServiceResponse<string>> AddOtherInfo(OtherInfoModel _model);
+        Task<ServiceResponse<string>> UpdateOtherInfo(OtherInfoModel item);
+        Task<ServiceResponse<OtherInfoModel>> GetOtherInfo(int UserId);
+
+
+        Task<ServiceResponse<string>> AddDiagnosis(DiagnosisModel _model);
+        Task<ServiceResponse<string>> UpdateDiagnosis(DiagnosisModel item);
+        Task<ServiceResponse<IEnumerable<DiagnosisModel>>> GetDiagnosisModel(int UserId);
+        Task<ServiceResponse<string>> DeleteDiagnosis(int DiagnosisId);
     }
 }

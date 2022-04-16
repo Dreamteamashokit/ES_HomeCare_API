@@ -114,5 +114,39 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.DeleteClientContactLog(contactLogId);
         }
+        public async Task<ServiceResponse<string>> AddOtherInfo(OtherInfoModel _model)
+        {
+            return await data.AddOtherInfo(_model);
+        }
+        public async Task<ServiceResponse<string>> UpdateOtherInfo(OtherInfoModel item)
+        {
+            return await data.UpdateOtherInfo(item);
+        }
+        public async Task<ServiceResponse<OtherInfoModel>> GetOtherInfo(int UserId)
+        {
+            return await data.GetOtherInfo(UserId);
+        }
+
+
+        public async Task<ServiceResponse<string>> AddDiagnosis(DiagnosisModel _model)
+        {
+            return await data.AddDiagnosis(_model);
+        }
+
+        public async Task<ServiceResponse<string>> UpdateDiagnosis(DiagnosisModel item)
+        {
+            return await data.UpdateDiagnosis(item);
+        }
+        public async Task<ServiceResponse<IEnumerable<DiagnosisModel>>> GetDiagnosisModel(int UserId)
+        {
+            return await data.GetDiagnosisModel(UserId);
+        }
+        public async Task<ServiceResponse<string>> DeleteDiagnosis(int DiagnosisId)
+        {
+            return await data.DeleteDiagnosis(DiagnosisId);
+        }
+
+
+
     }
 }

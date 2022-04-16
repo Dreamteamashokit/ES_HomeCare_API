@@ -1,5 +1,6 @@
 ﻿using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Client;
+using ES_HomeCare_API.Model.Common;
 using ES_HomeCare_API.Model.Employee;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,5 +23,7 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<IEnumerable<ItemList>>> GetClientList();
         Task<ServiceResponse<string>> CreateTask(TaskModel _model);
         Task<ServiceResponse<IEnumerable<TaskModel>>> GetTaskList();
+        Task<ServiceResponse<string>> CreateDiagnosis(DiagnosisItem _model);
+        Task<ServiceResponse<IEnumerable<DiagnosisItem>>> GetDiagnosis();
     }
 }

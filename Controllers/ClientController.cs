@@ -354,8 +354,130 @@ namespace WebAPI_SAMPLE.Controllers
 
 
         }
-    
-    
+
+
+
+
+
+
+        [HttpPost("addOtherInfo")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddOtherInfo([FromBody] OtherInfoModel model)
+        {
+            try
+            {
+                return Ok(await service.AddOtherInfo(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpPost("updateOtherInfo")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateOtherInfo([FromBody] OtherInfoModel model)
+        {
+            try
+            {
+                return Ok(await service.UpdateOtherInfo(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+        [HttpGet("getOtherInfo/{UserId}")]
+        [ProducesResponseType(typeof(ServiceResponse<OtherInfoModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<OtherInfoModel>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetOtherInfo(int UserId)
+        {            
+            return Ok(await service.GetOtherInfo(UserId));
+
+        }   
+   
+
+        [HttpPost("addDiagnosis")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddDiagnosis([FromBody] DiagnosisModel model)
+        {
+            try
+            {
+                return Ok(await service.AddDiagnosis(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        [HttpPost("updateDiagnosis")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateDiagnosis([FromBody] DiagnosisModel model)
+        {
+            try
+            {
+                return Ok(await service.UpdateDiagnosis(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        [HttpPost("deleteDiagnosis")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteDiagnosis(int DiagnosisId)
+        {
+            try
+            {
+                return Ok(await service.DeleteDiagnosis(DiagnosisId));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+             
+
+        [HttpGet("getDiagnosisModel/{UserId}")]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<DiagnosisModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<DiagnosisModel>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetDiagnosisModel(int UserId)
+        {
+            return Ok(await service.GetDiagnosisModel(UserId));
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
-    }
+}
 

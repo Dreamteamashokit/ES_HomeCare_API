@@ -1,6 +1,7 @@
 ﻿using ES_HomeCare_API.Helper;
 using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Client;
+using ES_HomeCare_API.Model.Common;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -146,8 +147,8 @@ namespace ES_HomeCare_API.Controllers
         public async Task<IActionResult> CreateTask([FromBody] TaskModel model)
         {
             try
-            {           
-                model.IsActive = 1;   
+            {
+                model.IsActive = 1;
                 model.CreatedBy = 1;
                 model.CreatedOn = DateTime.Now;
                 return Ok(await comSrv.CreateTask(model));
@@ -172,6 +173,32 @@ namespace ES_HomeCare_API.Controllers
 
 
 
+
+        [HttpPost("createDiagnosis")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateDiagnosis([FromBody] DiagnosisItem model)
+        {
+            try
+            {
+                model.IsActive = (int)Status.Active;
+                model.CreatedOn = DateTime.Now;
+                return Ok(await comSrv.CreateDiagnosis(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet("GetDiagnosis")]
+        [ProducesResponseType(typeof(ServiceResponse<List<DiagnosisItem>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<DiagnosisItem>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetDiagnosis()
+        {
+            return Ok(await comSrv.GetDiagnosis());
+        }
 
 
 
