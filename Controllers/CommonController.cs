@@ -146,10 +146,7 @@ namespace ES_HomeCare_API.Controllers
         public async Task<IActionResult> CreateTask([FromBody] TaskModel model)
         {
             try
-            {
-
-
-           
+            {           
                 model.IsActive = 1;   
                 model.CreatedBy = 1;
                 model.CreatedOn = DateTime.Now;
