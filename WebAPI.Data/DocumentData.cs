@@ -37,7 +37,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                 {
                     string sql = "select x.FolderId,x.FolderName,y.Documentid,y.FileName,y.FilePath,y.Title,y.Description,y.SeachTag, y.createdon as CreatedOn," +
                         "e.FirstName + ' ' + e.MiddleName + ' ' + e.LastName as CreatedByName from " +
-                        "tblFoldermaster x left join tblEmpDocument y on x.FolderId = y.FolderId left join tblEmployee e on y.CreateOn=e.EmpId where x.EmpId = @EmpId;";
+                        "tblFoldermaster x left join tblEmpDocument y on x.FolderId = y.FolderId left join tblUser e on y.CreateOn=e.UserId where x.EmpId = @EmpId;";
 
                     var result = (await connection.QueryAsync(sql, new { @EmpId = empId }));
 
@@ -54,14 +54,14 @@ namespace ES_HomeCare_API.WebAPI.Data
 
                                         DocumentList = docGrp.Select(x => new DocumentView
                                         {
-                                            DocumentId = x.Documentid,
-                                            Title = x.Title,
-                                            SearchTag = x.SearchTag,
-                                            Description = x.Description,
-                                            FileName = x.FileName,
-                                            FilePath = x.FilePath,
+                                            DocumentId = x.Documentid==null?0:x.Documentid,
+                                            Title = string.IsNullOrEmpty(x.Title) ? string.Empty : x.Title,
+                                            SearchTag = string.IsNullOrEmpty(x.SearchTag) ? string.Empty : x.SearchTag,
+                                            Description = string.IsNullOrEmpty(x.Description) ? string.Empty : x.Description,
+                                            FileName = string.IsNullOrEmpty(x.FileName) ? string.Empty : x.FileName,
+                                            FilePath = string.IsNullOrEmpty(x.FilePath) ? string.Empty : x.FilePath,
                                             CreatedByName = string.IsNullOrEmpty(x.CreatedByName) ? "admin" : "",
-                                            CreatedOn = x.CreatedOn.ToString("dd/MM/yyyy")
+                                            CreatedOn = string.IsNullOrEmpty(x.CreatedOn) ?string.Empty: x.CreatedOn
                                         }).ToList()
                                     };
 
