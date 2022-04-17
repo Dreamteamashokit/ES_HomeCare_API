@@ -500,7 +500,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                             clientsEmrgencyInfo.Add(new ClientEmrgencyInfo
                             {
                                 UserId = Model.UserId,
-                                typeName = Convert.ToInt32(table.Rows[i]["type"].ToString()) == 1 ? "Primary Contact" : Convert.ToInt32(table.Rows[i]["type"].ToString()) == 2 ? "Emergency Contact" : "Physician",
+                                typeName = Convert.ToInt32(table.Rows[i]["type"].ToString()) == 1 ? "Primary Contact" : Convert.ToInt32(table.Rows[i]["type"].ToString()) == 2 ? "Emergency Contact" : Convert.ToInt32(table.Rows[i]["type"].ToString()) == 3? "Physician":"Other",
                                 TypeId = Convert.ToInt32(table.Rows[i]["type"].ToString()),
                                 Title = table.Rows[i]["Title"] == null ? String.Empty : table.Rows[i]["Title"].ToString(),
                                 FirstName = table.Rows[i]["FirstName"] == null ? String.Empty : table.Rows[i]["FirstName"].ToString(),
