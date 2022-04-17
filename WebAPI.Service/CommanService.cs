@@ -79,19 +79,7 @@ namespace ES_HomeCare_API.WebAPI.Service
 
 
 
-        public async Task<ServiceResponse<string>> CreateDiagnosis(DiagnosisItem _model)
-        {
-            return await data.CreateDiagnosis(_model);
-
-        }
-
-        public async Task<ServiceResponse<IEnumerable<DiagnosisItem>>> GetDiagnosis()
-
-        {
-            return await data.GetDiagnosis();
-
-        }
-
+      
 
 
 

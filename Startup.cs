@@ -51,6 +51,16 @@ namespace WebAPI_SAMPLE
             services.AddScoped<IDocumentService, DocumentService>();
             services.AddScoped<IDocumentData, DocumentData>();
 
+            services.AddScoped<IMasterService, MasterService>();
+            services.AddScoped<IMasterData, MasterData>();
+
+
+            
+
+
+
+
+
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,
