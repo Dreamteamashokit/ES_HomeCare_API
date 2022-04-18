@@ -45,7 +45,7 @@ namespace ES_HomeCare_API.Controllers
             }
         }
 
-        [HttpGet("GetDiagnosis")]
+        [HttpGet("getDiagnosis")]
         [ProducesResponseType(typeof(ServiceResponse<List<DiagnosisItem>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<DiagnosisItem>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetDiagnosis()
