@@ -266,7 +266,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return sres;
         }
 
-
         public async Task<ServiceResponse<IEnumerable<ServiceTaskView>>> GetServiceTaskList(int userId)
         {
             ServiceResponse<IEnumerable<ServiceTaskView>> obj = new ServiceResponse<IEnumerable<ServiceTaskView>>();
@@ -283,7 +282,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             }
             return obj;
         }
-
 
         public async Task<ServiceResponse<string>> DeleteService(int SrvId)
         {
@@ -320,8 +318,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             return obj;
         }
-
-
+        
         public async Task<ServiceResponse<string>> UpdateService(ServiceTaskModel item)
         {
             ServiceResponse<string> obj = new ServiceResponse<string>();
@@ -364,7 +361,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             return obj;
         }
-
 
         public async Task<ServiceResponse<string>> CreateEmpDeclined(EmployeeDecline _model)
         {
@@ -448,8 +444,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 return obj;
             }
         }
-
-
 
         public async Task<ServiceResponse<IEnumerable<ClientEmrgencyInfo>>> ClienEmergencyInfo(ClientEmrgencyInfo Model)
         {
@@ -614,8 +608,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return sres;
         }
 
-
-
         public async Task<ServiceResponse<IEnumerable<ClientContactLog>>> GetClientContactLogs(int ClientId)
         {
             ServiceResponse<IEnumerable<ClientContactLog>> obj = new ServiceResponse<IEnumerable<ClientContactLog>>();
@@ -742,7 +734,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             return obj;
         }
-                
 
         public async Task<ServiceResponse<string>> AddOtherInfo(OtherInfoModel _model)
         {
@@ -824,6 +815,8 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 string sql = "Select CASA3, ContactId, InsuranceGrp, IsMedications, IsDialysis, IsOxygen, IsAids, IsCourtOrdered, FlowRate, ReunionLocations, ShelterName, TalCode, Shelter, Facility, Room, ServiceRequestDate, CareDate, DischargeDate, Notes, Allergies from tblOthers(nolock) Where UserId = @UserId";
 
                 var objResult = (await connection.QueryAsync<OtherInfoModel>(sql, new { UserId = UserId })).FirstOrDefault();
+
+                objResult.EntityId = objResult.OtherId;
                 obj.Data = objResult;
                 obj.Result = objResult != null ? true : false;
                 obj.Message = objResult != null ? "Data Found." : "No Data found.";
@@ -831,7 +824,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             return obj;
         }
-
 
         public async Task<ServiceResponse<string>> AddDiagnosis(DiagnosisModel _model)
         {
@@ -912,7 +904,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 string sql = "select x.DiagnosisId,x.DxId,x.OrderNo,x.IsPrimary,y.DxCodes,y.Description,(ISNULL(z.FirstName,'') + ' ' +   ISNULL(z.MiddleName,'') + ' ' + ISNULL(z.LastName,'') ) AddedBy, CONVERT(DATE, x.CreatedOn) CreatedOn from tblDiagnosis x Inner Join  tblDiagnosisMaster y on x.DxId=y.DxId Inner Join  tblUser z on x.CreatedBy=z.UserId Where x.IsActive=@IsActive and x.UserId=@UserId;";
 
-                var objResult = (await connection.QueryAsync<DiagnosisView>(sql, new { IsActive=1,UserId = UserId }));
+                var objResult = (await connection.QueryAsync<DiagnosisView>(sql, new { IsActive = 1, UserId = UserId }));
                 obj.Data = objResult;
                 obj.Result = objResult != null ? true : false;
                 obj.Message = objResult != null ? "Data Found." : "No Data found.";

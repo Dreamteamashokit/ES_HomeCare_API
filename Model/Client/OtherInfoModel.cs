@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 namespace ES_HomeCare_API.Model.Client
 {
 
- 
-    public class OtherInfoModel :BaseModel
+
+    public class OtherInfoModel : BaseModel
     {
+
+
+        public int OtherId { get; set; }
         public string CASA3 { get; set; }
         public string ContactId { get; set; }
         public string InsuranceGrp { get; set; }
