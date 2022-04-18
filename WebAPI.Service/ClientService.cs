@@ -146,9 +146,6 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             return await data.DeleteDiagnosis(DiagnosisId);
         }
 
-
-
-
         public async Task<ServiceResponse<List<ClientNote>>> ClientNoteOperation(ClientNote Model, int Flag)
         {
             return await data.ClientNoteOperation(Model, Flag);

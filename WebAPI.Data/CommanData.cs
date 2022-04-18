@@ -320,7 +320,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
             }
             return obj;
-
+        }
 
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetDiagnosisList()
         {
@@ -347,8 +347,7 @@ namespace ES_HomeCare_API.WebAPI.Data
 
 
 
+
     }
 }
-        }
-    }
-}
+

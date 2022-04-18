@@ -795,8 +795,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             }
         }
-    }
-}
+
 
         public async Task<ServiceResponse<string>> AddOtherInfo(OtherInfoModel _model)
         {

@@ -74,12 +74,12 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<List<Medicationcs>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ClientMedicationcs(Medicationcs model)
         {
-           
-            
-                model.createdOn = DateTime.Now.Date;
-                int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Create"));
-                return Ok(await service.ClientMedicationcs(model, Flag));
-           
+
+
+            model.createdOn = DateTime.Now.Date;
+            int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Create"));
+            return Ok(await service.ClientMedicationcs(model, Flag));
+
         }
 
         [HttpGet("GetClientMedicationcs/{CilentId}")]
@@ -270,7 +270,7 @@ namespace WebAPI_SAMPLE.Controllers
         {
             model.CreatedOn = DateTime.Now;
             return Ok(await service.SaveClientContactLog(model));
-        }        
+        }
 
         [HttpGet("GetClientContactLogs/{clientId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientContactLog>>), StatusCodes.Status200OK)]
@@ -279,7 +279,7 @@ namespace WebAPI_SAMPLE.Controllers
         {
             return Ok(await service.GetClientContactLogs(clientId));
         }
-        
+
 
         [HttpGet("getClientContactLogDetails/{contactlogId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientContactLog>>), StatusCodes.Status200OK)]
@@ -342,17 +342,17 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<List<ClientEmrgencyInfo>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> getClientEmergencyInfo(int UserId)
         {
-           
-                ClientEmrgencyInfo model = new ClientEmrgencyInfo();
-                model.UserId = UserId;
-                model.CreatedOn = DateTime.Now.Date;
-                model.LicenseExpires = DateTime.Now.Date;
 
-                string stringValue = Enum.GetName(typeof(EmergencyInfoType), 1);
+            ClientEmrgencyInfo model = new ClientEmrgencyInfo();
+            model.UserId = UserId;
+            model.CreatedOn = DateTime.Now.Date;
+            model.LicenseExpires = DateTime.Now.Date;
+
+            string stringValue = Enum.GetName(typeof(EmergencyInfoType), 1);
 
 
-                return Ok(await service.ClienEmergencyInfo(model));
-           
+            return Ok(await service.ClienEmergencyInfo(model));
+
 
 
         }
@@ -400,11 +400,11 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<OtherInfoModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<OtherInfoModel>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetOtherInfo(int UserId)
-        {            
+        {
             return Ok(await service.GetOtherInfo(UserId));
 
-        }   
-   
+        }
+
 
         [HttpPost("addDiagnosis")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
@@ -545,7 +545,10 @@ namespace WebAPI_SAMPLE.Controllers
                 throw;
             }
         }
-    }
+
+
+
+
         [HttpGet("getDiagnosisModel/{UserId}")]
         [ProducesResponseType(typeof(ServiceResponse<IEnumerable<DiagnosisView>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<IEnumerable<DiagnosisView>>), StatusCodes.Status400BadRequest)]
