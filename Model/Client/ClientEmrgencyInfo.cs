@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 
 namespace ES_HomeCare_API.Model.Client
-{   
+{
+    
    
 
     public class ClientEmrgencyInfo
     {
         public int Id { get; set; }
-        public string type { get; set; }
+        public int TypeId { get; set; }
+        public string typeName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Title { get; set; }
@@ -17,7 +19,7 @@ namespace ES_HomeCare_API.Model.Client
         public string Relationship { get; set; }
         public string City { get; set; }
         public string License { get; set; }
-        public DateTime LicenseExpires { get; set; }
+        public string LicenseExpires { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Fax { get; set; }
@@ -26,7 +28,7 @@ namespace ES_HomeCare_API.Model.Client
         public int UserId { get; set; }
         public bool Edit { get; set; }
 
-        public bool IsActive { get; set; }
+        public int IsActive { get; set; }
 
         public DateTime CreatedOn { get; set; }
         public int CreatedBy { get; set; }

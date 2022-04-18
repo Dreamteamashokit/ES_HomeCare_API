@@ -342,14 +342,10 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<List<ClientEmrgencyInfo>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> getClientEmergencyInfo(int UserId)
         {
-
-            ClientEmrgencyInfo model = new ClientEmrgencyInfo();
-            model.UserId = UserId;
-            model.CreatedOn = DateTime.Now.Date;
-            model.LicenseExpires = DateTime.Now.Date;
-
-            string stringValue = Enum.GetName(typeof(EmergencyInfoType), 1);
-
+           
+                ClientEmrgencyInfo model = new ClientEmrgencyInfo();
+                model.UserId = UserId;
+                model.CreatedOn = DateTime.Now.Date;
 
             return Ok(await service.ClienEmergencyInfo(model));
 

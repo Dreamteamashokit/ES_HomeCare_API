@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
@@ -444,6 +445,8 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 return obj;
             }
         }
+    
+
 
         public async Task<ServiceResponse<IEnumerable<ClientEmrgencyInfo>>> ClienEmergencyInfo(ClientEmrgencyInfo Model)
         {
@@ -451,13 +454,19 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             List<ClientEmrgencyInfo> clientsEmrgencyInfo = new List<ClientEmrgencyInfo>();
             try
             {
+                CultureInfo culture = new CultureInfo("en-US");
+                DateTime tempDate = DateTime.Now;
+                if (!string.IsNullOrEmpty(Model.LicenseExpires))
+                {
+                    tempDate = Convert.ToDateTime(Model.LicenseExpires, culture);
+                }
                 using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
                     SqlCommand cmd = new SqlCommand("EmergencyInfoProc", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
 
-                    cmd.Parameters.AddWithValue("@type", Model.type);
+                    cmd.Parameters.AddWithValue("@type", Model.TypeId);
                     cmd.Parameters.AddWithValue("@UserId", Model.UserId);
                     cmd.Parameters.AddWithValue("@FirstName", Model.FirstName);
                     cmd.Parameters.AddWithValue("@LastName", Model.LastName);
@@ -466,7 +475,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     cmd.Parameters.AddWithValue("@Email", Model.Email);
                     cmd.Parameters.AddWithValue("@Title", Model.Title);
                     cmd.Parameters.AddWithValue("@License", Model.License);
-                    cmd.Parameters.AddWithValue("@LicenseEx", Model.LicenseExpires.Date);
+                    cmd.Parameters.AddWithValue("@LicenseEx", tempDate.Date);
                     cmd.Parameters.AddWithValue("@NPI", Model.NPINumber);
                     cmd.Parameters.AddWithValue("@Fax", Model.Fax);
                     cmd.Parameters.AddWithValue("@address", Model.Address);
@@ -487,24 +496,26 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                             clientsEmrgencyInfo.Add(new ClientEmrgencyInfo
                             {
                                 UserId = Model.UserId,
-                                type = Convert.ToInt32(table.Rows[i]["type"].ToString()) == 1 ? "Primary Contact" : "Emergency Contact",
-                                Title = table.Rows[i]["Title"].ToString(),
-                                FirstName = table.Rows[i]["FirstName"].ToString(),
-                                LastName = table.Rows[i]["LastName"].ToString(),
-                                License = table.Rows[i]["License"].ToString(),
-                                LicenseExpires = string.IsNullOrEmpty(table.Rows[i]["LicenseExpires"].ToString()) ? DateTime.Now.Date : Convert.ToDateTime(table.Rows[i]["LicenseExpires"].ToString()),
-                                NPINumber = table.Rows[i]["NPINumber"].ToString(),
-                                Email = table.Rows[i]["Email"].ToString(),
-                                Phone = table.Rows[i]["Phone"].ToString(),
-                                Fax = table.Rows[i]["Fax"].ToString(),
-                                Address = table.Rows[i]["Address"].ToString(),
-                                State = table.Rows[i]["State"].ToString(),
-                                City = table.Rows[i]["City"].ToString(),
-                                Zip = table.Rows[i]["ZipCode"].ToString(),
-                                IsActive = Convert.ToBoolean(table.Rows[i]["IsActive"]),
-                                Id = Convert.ToInt16(table.Rows[i]["Id"]),
-                                Edit = true
-                            });
+                                typeName = Convert.ToInt32(table.Rows[i]["type"].ToString()) == 1 ? "Primary Contact" : Convert.ToInt32(table.Rows[i]["type"].ToString()) == 2 ? "Emergency Contact" : Convert.ToInt32(table.Rows[i]["type"].ToString()) == 3? "Physician":"Other",
+                                TypeId = Convert.ToInt32(table.Rows[i]["type"].ToString()),
+                                Title = table.Rows[i]["Title"] == null ? String.Empty : table.Rows[i]["Title"].ToString(),
+                                FirstName = table.Rows[i]["FirstName"] == null ? String.Empty : table.Rows[i]["FirstName"].ToString(),
+                                LastName = table.Rows[i]["LastName"] == null ? String.Empty : table.Rows[i]["LastName"].ToString(),
+                                License = table.Rows[i]["License"] == null ? String.Empty : table.Rows[i]["License"].ToString(),
+                                LicenseExpires = table.Rows[i]["LicenseExpires"].ToString(),
+                                NPINumber = table.Rows[i]["NPINumber"] == null ? String.Empty : table.Rows[i]["NPINumber"].ToString(),
+                                Email = table.Rows[i]["Email"] == null ? String.Empty : table.Rows[i]["Email"].ToString(),
+                                Phone = table.Rows[i]["Phone"] == null ? String.Empty : table.Rows[i]["Phone"].ToString(),
+                                Fax = table.Rows[i]["Fax"] == null ? String.Empty : table.Rows[i]["Fax"].ToString(),
+                                Address = table.Rows[i]["Address"] == null ? String.Empty : table.Rows[i]["Address"].ToString(),
+                                State = table.Rows[i]["State"] == null ? String.Empty : table.Rows[i]["State"].ToString(),
+                                City = table.Rows[i]["City"] == null ? String.Empty : table.Rows[i]["City"].ToString(),
+                                Zip = table.Rows[i]["ZipCode"] == null ? String.Empty : table.Rows[i]["ZipCode"].ToString(),
+                                IsActive = table.Rows[i]["IsActive"] == null ? 1 : Convert.ToInt16(table.Rows[i]["IsActive"]),
+                                Id = table.Rows[i]["Id"] == null ? 0 : Convert.ToInt16(table.Rows[i]["Id"]),
+                                Relationship = table.Rows[i]["Relationship"].ToString()
+
+                            }); ;
                         }
                         obj.Result = true;
                     }
