@@ -39,5 +39,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<string>> UpdateDiagnosis(DiagnosisModel item);
         Task<ServiceResponse<IEnumerable<DiagnosisView>>> GetDiagnosisModel(int UserId);
         Task<ServiceResponse<string>> DeleteDiagnosis(int DiagnosisId);
+
+        Task<ServiceResponse<List<ClientNote>>> ClientNoteOperation(ClientNote Model, int Flag);
     }
 }

@@ -29,6 +29,8 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<IEnumerable<ClientContactLog>>> getClientContactLogDetails(int contactLogId);
         Task<ServiceResponse<string>> UpdateClientContactLog(ClientContactLog item);
         Task<ServiceResponse<string>> DeleteClientContactLog(int contactLogId);
+
+        Task<ServiceResponse<List<ClientNote>>> ClientNoteOperation(ClientNote Model, int Flag);
         Task<ServiceResponse<string>> AddOtherInfo(OtherInfoModel _model);
         Task<ServiceResponse<string>> UpdateOtherInfo(OtherInfoModel item);
         Task<ServiceResponse<OtherInfoModel>> GetOtherInfo(int UserId);

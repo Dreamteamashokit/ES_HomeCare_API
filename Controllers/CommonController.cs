@@ -169,6 +169,13 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
+        [HttpGet("getNoteTypeSelectList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> getNoteTypeSelectList()
+        {
+            return Ok(await comSrv.GetNoteTypeList());
+        }
 
         [HttpGet("getDiagnosisList")]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]

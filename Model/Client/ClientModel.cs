@@ -46,4 +46,14 @@ namespace ES_HomeCare_API.Model.Client
         public Boolean IsFollowUp { get; set; }
         public Boolean IsSchedule { get; set; }        
     }
+
+    public class ClientNote:BaseModel
+    {
+        public int NotesId { get; set; }        
+        public int NotesTypeId { get; set; }
+        public string Notes { get; set; }
+        public int OfficeUserId { get; set; }
+        public int EmpId { get; set; }
+        public short NotifyTypeId { get; set; }
+    }
 }

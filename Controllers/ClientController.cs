@@ -282,6 +282,8 @@ namespace WebAPI_SAMPLE.Controllers
         
 
         [HttpGet("getClientContactLogDetails/{contactlogId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientContactLog>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientContactLog>>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ServiceResponse<ClientContactLog>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<ClientContactLog>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> getClientContactLogDetails(int contactlogId)
@@ -458,8 +460,92 @@ namespace WebAPI_SAMPLE.Controllers
                 throw ex;
             }
         }
-             
 
+        [HttpPost("AddClientNote")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientNote>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientNote>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ClientNotes(ClientNote model)
+        {
+            try
+            {
+                model.CreatedOn = DateTime.Now.Date;
+                int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Create"));
+                return Ok(await service.ClientNoteOperation(model, Flag));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("UpdateClientNote")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientNote>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientNote>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateClientNotes(ClientNote model)
+        {
+            try
+            {
+                model.CreatedOn = DateTime.Now.Date;
+                int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Modify"));
+                return Ok(await service.ClientNoteOperation(model, Flag));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("DeleteClientNote")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientNote>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientNote>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteClientNotes(ClientNote model)
+        {
+            try
+            {
+                model.CreatedOn = DateTime.Now.Date;
+                int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Delete"));
+                return Ok(await service.ClientNoteOperation(model, Flag));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("GetClientNoteList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientNote>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientNote>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetClientNoteList(ClientNote model)
+        {
+            try
+            {
+                model.CreatedOn = DateTime.Now.Date;
+                int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "select"));
+                return Ok(await service.ClientNoteOperation(model, Flag));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("GetClientNote")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientNote>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientNote>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetClientNote(ClientNote model)
+        {
+            try
+            {
+                model.CreatedOn = DateTime.Now.Date;
+                int Flag = 5;
+                return Ok(await service.ClientNoteOperation(model, Flag));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+    }
         [HttpGet("getDiagnosisModel/{UserId}")]
         [ProducesResponseType(typeof(ServiceResponse<IEnumerable<DiagnosisView>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<IEnumerable<DiagnosisView>>), StatusCodes.Status400BadRequest)]

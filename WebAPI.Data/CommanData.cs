@@ -307,6 +307,19 @@ namespace ES_HomeCare_API.WebAPI.Data
         }
 
 
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetNoteTypeList()
+        {
+            ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sqlqry = "select  NotesTypeId , Description from tblNotesType(nolock) where IsActive=1;";
+
+                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry)).Select(x => new ItemList { ItemId = x.NotesTypeId, ItemName = x.Description });
+                obj.Data = cmeetings;
+                obj.Result = cmeetings.Any() ? true : false;
+                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
 
 
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetDiagnosisList()
@@ -334,5 +347,8 @@ namespace ES_HomeCare_API.WebAPI.Data
 
 
 
+    }
+}
+        }
     }
 }

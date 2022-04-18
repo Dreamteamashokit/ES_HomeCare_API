@@ -26,5 +26,6 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
 
         Task<ServiceResponse<IEnumerable<ItemList>>> GetDiagnosisList();
 
+        Task<ServiceResponse<IEnumerable<ItemList>>> GetNoteTypeList();
     }
 }
