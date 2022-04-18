@@ -309,7 +309,22 @@ namespace ES_HomeCare_API.WebAPI.Data
 
 
 
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetDiagnosisList()
+        {
+            ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
 
+
+                string sqlqry = "select * from tblDiagnosisMaster;";
+                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry)).Select(x => new ItemList { ItemId = x.DxId, ItemName = x.Description });
+                obj.Data = cmeetings;
+                obj.Result = cmeetings.Any() ? true : false;
+                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+
+        }
 
 
 

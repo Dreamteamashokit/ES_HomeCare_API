@@ -411,6 +411,10 @@ namespace WebAPI_SAMPLE.Controllers
         {
             try
             {
+
+                model.CreatedOn = DateTime.Now;
+
+
                 return Ok(await service.AddDiagnosis(model));
 
             }
@@ -428,6 +432,7 @@ namespace WebAPI_SAMPLE.Controllers
         {
             try
             {
+                model.CreatedOn = DateTime.Now;
                 return Ok(await service.UpdateDiagnosis(model));
 
             }
@@ -438,14 +443,14 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
 
-        [HttpPost("deleteDiagnosis")]
+        [HttpDelete("deleteDiagnosis")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteDiagnosis(int DiagnosisId)
+        public async Task<IActionResult> DeleteDiagnosis(int diagnosisId)
         {
             try
             {
-                return Ok(await service.DeleteDiagnosis(DiagnosisId));
+                return Ok(await service.DeleteDiagnosis(diagnosisId));
 
             }
             catch (Exception ex)
@@ -456,8 +461,8 @@ namespace WebAPI_SAMPLE.Controllers
              
 
         [HttpGet("getDiagnosisModel/{UserId}")]
-        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<DiagnosisModel>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<DiagnosisModel>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<DiagnosisView>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<DiagnosisView>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetDiagnosisModel(int UserId)
         {
             return Ok(await service.GetDiagnosisModel(UserId));

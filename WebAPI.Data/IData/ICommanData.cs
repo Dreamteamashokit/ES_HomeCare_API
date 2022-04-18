@@ -25,8 +25,8 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
 
         Task<ServiceResponse<string>> CreateTask(TaskModel _model);
         Task<ServiceResponse<IEnumerable<TaskModel>>> GetTaskList();
+        Task<ServiceResponse<IEnumerable<ItemList>>> GetDiagnosisList();
 
-    
     }
 
 

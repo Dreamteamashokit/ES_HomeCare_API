@@ -840,7 +840,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = "INSERT INTO tblDiagnosis (UserId,DxId,@OrderNo,IsPrimary,IsActive,CreatedBy,CreatedOn) VALUES (@UserId,@DxId,@OrderNo,@IsPrimary,@IsActive,@CreatedBy,@CreatedOn); ";
+                    string sqlQuery = "INSERT INTO tblDiagnosis(UserId,DxId,OrderNo,IsPrimary,IsActive,CreatedBy,CreatedOn) VALUES(@UserId,@DxId,@OrderNo,@IsPrimary,@IsActive,@CreatedBy,@CreatedOn);";
 
                     int rowsAffected = cnn.Execute(sqlQuery, _model);
 
@@ -877,7 +877,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    var sqlqry = "Update tblDiagnosis Set DxId=@DxId,OrderNo=@@OrderNo,IsPrimary=@IsPrimary Where DiagnosisId=@DiagnosisId;";
+                    var sqlqry = "Update tblDiagnosis Set DxId=@DxId,OrderNo=@OrderNo,IsPrimary=@IsPrimary Where DiagnosisId=@EntityId;";
 
                     int rowsAffected = await connection.ExecuteAsync(sqlqry, item);
 
@@ -905,14 +905,14 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return obj;
         }
 
-        public async Task<ServiceResponse<IEnumerable<DiagnosisModel>>> GetDiagnosisModel(int UserId)
+        public async Task<ServiceResponse<IEnumerable<DiagnosisView>>> GetDiagnosisModel(int UserId)
         {
-            ServiceResponse<IEnumerable<DiagnosisModel>> obj = new ServiceResponse<IEnumerable<DiagnosisModel>>();
+            ServiceResponse<IEnumerable<DiagnosisView>> obj = new ServiceResponse<IEnumerable<DiagnosisView>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "Select x.*,y.DxCodes,y.Description from tblDiagnosis x Inner Join tblDiagnosisMaster y on x.DxId=y.DxId Where UserId=@UserId";
+                string sql = "select x.DiagnosisId,x.DxId,x.OrderNo,x.IsPrimary,y.DxCodes,y.Description,(ISNULL(z.FirstName,'') + ' ' +   ISNULL(z.MiddleName,'') + ' ' + ISNULL(z.LastName,'') ) AddedBy, CONVERT(DATE, x.CreatedOn) CreatedOn from tblDiagnosis x Inner Join  tblDiagnosisMaster y on x.DxId=y.DxId Inner Join  tblUser z on x.CreatedBy=z.UserId Where x.IsActive=@IsActive and x.UserId=@UserId;";
 
-                var objResult = (await connection.QueryAsync<DiagnosisModel>(sql, new { UserId = UserId }));
+                var objResult = (await connection.QueryAsync<DiagnosisView>(sql, new { IsActive=1,UserId = UserId }));
                 obj.Data = objResult;
                 obj.Result = objResult != null ? true : false;
                 obj.Message = objResult != null ? "Data Found." : "No Data found.";
@@ -931,7 +931,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 {
                     var sqlqry = "Update tblDiagnosis Set IsActive=@IsActive Where DiagnosisId=@DiagnosisId";
 
-                    int rowsAffected = await connection.ExecuteAsync(sqlqry, new { @IsActive = 0, @ContactlogId = DiagnosisId });
+                    int rowsAffected = await connection.ExecuteAsync(sqlqry, new { @IsActive = 0, @DiagnosisId = DiagnosisId });
 
                     if (rowsAffected > 0)
                     {

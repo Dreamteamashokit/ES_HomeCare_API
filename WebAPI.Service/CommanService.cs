@@ -78,8 +78,18 @@ namespace ES_HomeCare_API.WebAPI.Service
         }
 
 
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetDiagnosisList()
+        {
+            return await data.GetDiagnosisList();
 
-      
+        }
+
+
+        
+
+
+
+
 
 
 

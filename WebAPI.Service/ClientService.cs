@@ -137,7 +137,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.UpdateDiagnosis(item);
         }
-        public async Task<ServiceResponse<IEnumerable<DiagnosisModel>>> GetDiagnosisModel(int UserId)
+        public async Task<ServiceResponse<IEnumerable<DiagnosisView>>> GetDiagnosisModel(int UserId)
         {
             return await data.GetDiagnosisModel(UserId);
         }
