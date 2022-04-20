@@ -41,5 +41,6 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<string>> DeleteDiagnosis(int DiagnosisId);
 
         Task<ServiceResponse<List<ClientNote>>> ClientNoteOperation(ClientNote Model, int Flag);
+        Task<ServiceResponse<List<ClientCommunityMaster>>> ClientCommunityOperation(ClientCommunityMaster Model, int Flag);
     }
 }

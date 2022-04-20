@@ -33,7 +33,7 @@ namespace ES_HomeCare_API.Model.Client
 
     public class ClientContactLog : BaseModel
     {
-        public int ContactlogId { get; set; }       
+        public int ContactlogId { get; set; }
         public int OfficeUserId { get; set; }
         public int EmpId { get; set; }
         public string Reason { get; set; }
@@ -44,16 +44,30 @@ namespace ES_HomeCare_API.Model.Client
         public string ActionTaken { get; set; }
         public string Notes { get; set; }
         public Boolean IsFollowUp { get; set; }
-        public Boolean IsSchedule { get; set; }        
+        public Boolean IsSchedule { get; set; }
     }
 
-    public class ClientNote:BaseModel
+    public class ClientNote : BaseModel
     {
-        public int NotesId { get; set; }        
+        public int NotesId { get; set; }
         public int NotesTypeId { get; set; }
         public string Notes { get; set; }
         public int OfficeUserId { get; set; }
         public int EmpId { get; set; }
         public short NotifyTypeId { get; set; }
     }
+
+    public class ClientCommunityMaster:BaseModel
+    {
+        public int CommunityId { get; set; }       
+        public string CommunityName { get; set; }
+        public string CommunityAddress { get; set; }
+        public string CommunityFloor { get; set; }
+        public string County { get; set; }
+        public string State { get; set; }
+        public string City { get; set; }
+        public string Contact { get; set; }
+        public string Email { get; set; }
+        public string Notes { get; set; }
+    }  
 }

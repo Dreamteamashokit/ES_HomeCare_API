@@ -1027,3 +1027,74 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
 
 }
+            }
+        }
+
+        public async Task<ServiceResponse<List<ClientCommunityMaster>>> ClientCommunityOperation(ClientCommunityMaster Model, int Flag)
+        {
+            ServiceResponse<List<ClientCommunityMaster>> obj = new ServiceResponse<List<ClientCommunityMaster>>();
+            List<ClientCommunityMaster> clientscommunity = new List<ClientCommunityMaster>();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("SP_ClientCommunityOperation", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@flag", Flag);
+                    cmd.Parameters.AddWithValue("@UserId", Model.UserId);
+                    cmd.Parameters.AddWithValue("@CommunityName", Model.CommunityName);
+                    cmd.Parameters.AddWithValue("@CommunityAddress", Model.CommunityAddress);
+                    cmd.Parameters.AddWithValue("@CommunityFloor", Model.CommunityFloor);
+                    cmd.Parameters.AddWithValue("@County", Model.County);
+                    cmd.Parameters.AddWithValue("@State", Model.State);
+                    cmd.Parameters.AddWithValue("@City", Model.City);
+                    cmd.Parameters.AddWithValue("@Contact", Model.Contact);
+                    cmd.Parameters.AddWithValue("@Email", Model.Email);
+                    cmd.Parameters.AddWithValue("@Notes", Model.Notes);
+                    cmd.Parameters.AddWithValue("@IsActive", Model.IsActive);
+                    cmd.Parameters.AddWithValue("@CreatedOn", Model.CreatedOn);
+                    cmd.Parameters.AddWithValue("@CreatedBy", Model.CreatedBy);
+                    cmd.Parameters.AddWithValue("@CommunityId", Model.CommunityId);
+                    DataTable table = new DataTable();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(table);
+                    if (table.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < table.Rows.Count; i++)
+                        {
+                            clientscommunity.Add(new ClientCommunityMaster
+                            {
+                                CommunityId = Convert.ToInt32(table.Rows[i]["CommunityId"].ToString()),
+                                CommunityName = table.Rows[i]["CommunityName"].ToString(),
+                                CommunityAddress = table.Rows[i]["CommunityAddress"].ToString(),
+                                CommunityFloor = table.Rows[i]["CommunityFloor"].ToString(),
+                                County = table.Rows[i]["County"].ToString(),
+                                State = table.Rows[i]["State"].ToString(),
+                                City = table.Rows[i]["City"].ToString(),
+                                Contact = table.Rows[i]["Contact"].ToString(),
+                                Email = table.Rows[i]["Email"].ToString(),
+                                Notes = table.Rows[i]["Notes"].ToString(),
+                                IsActive = Convert.ToInt16(table.Rows[i]["IsActive"].ToString()),
+                                CreatedOn = Convert.ToDateTime(table.Rows[i]["CreatedOn"].ToString()),
+                                CreatedBy = Convert.ToInt32(table.Rows[i]["CreatedBy"].ToString())
+                            });
+                        }
+                        obj.Result = true;
+                    }
+                    obj.Data = clientscommunity;
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+            finally
+            {
+
+            }
+        }
+    }
+}

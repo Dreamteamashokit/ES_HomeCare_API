@@ -150,5 +150,10 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.ClientNoteOperation(Model, Flag);
         }
+
+        public async Task<ServiceResponse<List<ClientCommunityMaster>>> ClientCommunityOperation(ClientCommunityMaster Model, int Flag)
+        {
+            return await data.ClientCommunityOperation(Model, Flag);
+        }
     }
 }

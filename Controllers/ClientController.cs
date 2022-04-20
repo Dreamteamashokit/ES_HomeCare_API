@@ -554,20 +554,38 @@ namespace WebAPI_SAMPLE.Controllers
 
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        [HttpPost("AddClientCommunity")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientCommunityMaster>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientCommunityMaster>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ClientCommunity(ClientCommunityMaster model)
+        {
+            try
+            {
+                model.CreatedOn = DateTime.Now.Date;
+                int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Create"));
+                return Ok(await service.ClientCommunityOperation(model, Flag));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        [HttpPost("GetClientCommunityList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientCommunityMaster>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientCommunityMaster>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetClientCommunityList(ClientCommunityMaster model)
+        {
+            try
+            {
+                model.CreatedOn = DateTime.Now.Date;
+                int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "select"));
+                return Ok(await service.ClientCommunityOperation(model, Flag));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }
 

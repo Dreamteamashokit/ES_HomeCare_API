@@ -31,6 +31,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<string>> DeleteClientContactLog(int contactLogId);
 
         Task<ServiceResponse<List<ClientNote>>> ClientNoteOperation(ClientNote Model, int Flag);
+        Task<ServiceResponse<List<ClientCommunityMaster>>> ClientCommunityOperation(ClientCommunityMaster Model, int Flag);
         Task<ServiceResponse<string>> AddOtherInfo(OtherInfoModel _model);
         Task<ServiceResponse<string>> UpdateOtherInfo(OtherInfoModel item);
         Task<ServiceResponse<OtherInfoModel>> GetOtherInfo(int UserId);
