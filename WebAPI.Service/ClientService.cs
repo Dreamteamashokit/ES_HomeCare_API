@@ -2,6 +2,7 @@
 using ES_HomeCare_API.Model.Client;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
@@ -89,10 +90,35 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             return await data.DeleteEmpDeclined(declinedId);
         }
 
+        public async Task<ServiceResponse<IEnumerable<ProvisionInfo>>> ClienProvisionInfo(IEnumerable<ProvisionInfo> Model, int UserId = 0)
+        {
+
+
+
+            DataTable dt = CreateTable();
+            if (Model!=null)
+            {
+                foreach (ProvisionInfo item in Model)
+                {
+                    dt.Rows.Add(item.ProvisionId, item.Value, UserId);
+                }
+            }
+            
+            return await data.ClienProvisionInfo(dt,UserId);
+        }
 
         public async Task<ServiceResponse<string>> SaveClientContactLog(ClientContactLog _model)
         {
             return await data.SaveClientContactLog(_model);
+        }
+
+        DataTable CreateTable()
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("ProvisionId", typeof(Int32));
+            dt.Columns.Add("ProvisionValue", typeof(string));
+            dt.Columns.Add("UserId", typeof(Int32));
+            return dt;
         }
 
         public async Task<ServiceResponse<IEnumerable<ClientContactLog>>> GetClientContactLogs(int ClientId)
