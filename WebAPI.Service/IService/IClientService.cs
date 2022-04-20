@@ -28,6 +28,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<IEnumerable<EmployeeDeclineView>>> GetEmpDeclined(int userId);
         Task<ServiceResponse<string>> UpdateEmpDeclined(EmployeeDecline item);
         Task<ServiceResponse<string>> DeleteEmpDeclined(int declinedId);
+        Task<ServiceResponse<IEnumerable<ProvisionInfo>>> ClienProvisionInfo(IEnumerable<ProvisionInfo> model, int UserId = 0);
 
     }
 }

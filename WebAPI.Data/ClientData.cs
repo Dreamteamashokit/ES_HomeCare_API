@@ -570,6 +570,53 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         }
 
 
+
+
+        public async Task<ServiceResponse<IEnumerable<ProvisionInfo>>> ClienProvisionInfo(DataTable dt,int UserId=0)
+        {
+            ServiceResponse<IEnumerable<ProvisionInfo>> obj = new ServiceResponse<IEnumerable<ProvisionInfo>>();
+            List<ProvisionInfo> clientsEmrgencyInfo = new List<ProvisionInfo>();
+            try
+            {
+               
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("ProvisionInfoProc", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Provision", dt);
+                    cmd.Parameters.AddWithValue("@UserId", UserId);
+                    DataTable table = new DataTable();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(table);
+                    if (table.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < table.Rows.Count; i++)
+                        {
+                            clientsEmrgencyInfo.Add(new ProvisionInfo
+                            {
+                               ProvisionId = Convert.ToInt32(table.Rows[i]["ProvisionId"].ToString()),
+                               ProvisionType = Convert.ToInt32(table.Rows[i]["ProvisionType"].ToString()),
+                               Desctiption= table.Rows[i]["Description"].ToString()
+                            }); ;
+                        }
+                        obj.Result = true;
+                    }
+                    obj.Data = clientsEmrgencyInfo;
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+            finally
+            {
+
+            }
+        }
+
+
     }
 
 

@@ -2,6 +2,7 @@
 using ES_HomeCare_API.Model.Client;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
@@ -25,6 +26,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<IEnumerable<EmployeeDeclineView>>> GetEmpDeclined(int userId);
         Task<ServiceResponse<string>> UpdateEmpDeclined(EmployeeDecline item);
         Task<ServiceResponse<string>> DeleteEmpDeclined(int declinedId);
+        Task<ServiceResponse<IEnumerable<ProvisionInfo>>> ClienProvisionInfo(DataTable dt, int UserId = 0);
 
     }
 }

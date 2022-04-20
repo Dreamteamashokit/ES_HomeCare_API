@@ -292,6 +292,20 @@ namespace WebAPI_SAMPLE.Controllers
 
 
         }
+
+        [HttpGet("ProvisionInfo/{UserId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientEmrgencyInfo>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientEmrgencyInfo>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ProvisionInfo(int UserId)
+        {
+
+         
+
+            return Ok(await service.ClienProvisionInfo(null,UserId));
+
+
+
+        }
     }
     }
 
