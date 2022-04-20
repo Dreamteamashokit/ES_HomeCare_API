@@ -1023,12 +1023,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         }
 
 
-    }
-
-
-}
-            }
-        }
 
         public async Task<ServiceResponse<List<ClientCommunityMaster>>> ClientCommunityOperation(ClientCommunityMaster Model, int Flag)
         {
@@ -1096,5 +1090,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             }
         }
+    
+    
+    
+    
     }
 }
