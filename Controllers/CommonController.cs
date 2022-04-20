@@ -1,6 +1,7 @@
 ﻿using ES_HomeCare_API.Helper;
 using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Client;
+using ES_HomeCare_API.Model.Common;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -147,10 +148,7 @@ namespace ES_HomeCare_API.Controllers
         {
             try
             {
-
-
-           
-                model.IsActive = 1;   
+                model.IsActive = 1;
                 model.CreatedBy = 1;
                 model.CreatedOn = DateTime.Now;
                 return Ok(await comSrv.CreateTask(model));
@@ -171,12 +169,21 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
+        [HttpGet("getNoteTypeSelectList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> getNoteTypeSelectList()
+        {
+            return Ok(await comSrv.GetNoteTypeList());
+        }
 
-
-
-
-
-
+        [HttpGet("getDiagnosisList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetDiagnosisList()
+        {
+            return Ok(await comSrv.GetDiagnosisList());
+        }
 
 
 

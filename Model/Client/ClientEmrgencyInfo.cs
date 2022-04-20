@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace ES_HomeCare_API.Model.Client
 {
-
-
+    
+   
 
     public class ClientEmrgencyInfo
     {

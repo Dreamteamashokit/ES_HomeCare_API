@@ -12,6 +12,7 @@ using System.Data;
 using System;
 using ES_HomeCare_API.Helper;
 using ES_HomeCare_API.Model.Client;
+using ES_HomeCare_API.Model.Common;
 
 namespace ES_HomeCare_API.WebAPI.Data
 {
@@ -100,7 +101,7 @@ namespace ES_HomeCare_API.WebAPI.Data
 
             return sres;
         }
-       
+
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetMasterTypeList()
         {
             ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
@@ -152,7 +153,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             return obj;
 
         }
-                
+
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetEmpTypeList()
         {
             ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
@@ -214,13 +215,13 @@ namespace ES_HomeCare_API.WebAPI.Data
             return obj;
 
         }
-        
+
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetEmployeesList()
         {
             ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-          
+
 
                 string sqlqry = "select x.UserId,x.LastName +' '+ x.FirstName+'(' +ISNULL(x.UserKey,'0-0-0')+')' as EmpName from  tblUser x inner join tblEmployee y on x.UserId=y.UserId where x.IsActive=1;";
                 IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry)).Select(x => new ItemList { ItemId = x.UserId, ItemName = x.EmpName });
@@ -237,7 +238,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 string sqlqry = "select x.UserId,x.LastName +' '+ x.FirstName+'(' +ISNULL(x.UserKey,'1-1-1')+')' as ClientName from  tblUser x inner join tblClient y on x.UserId=y.UserId where x.IsActive=1;";
-                
+
                 IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry)).Select(x => new ItemList { ItemId = x.UserId, ItemName = x.ClientName });
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
@@ -306,6 +307,47 @@ namespace ES_HomeCare_API.WebAPI.Data
         }
 
 
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetNoteTypeList()
+        {
+            ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sqlqry = "select  NotesTypeId , Description from tblNotesType(nolock) where IsActive=1;";
+
+                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry)).Select(x => new ItemList { ItemId = x.NotesTypeId, ItemName = x.Description });
+                obj.Data = cmeetings;
+                obj.Result = cmeetings.Any() ? true : false;
+                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetDiagnosisList()
+        {
+            ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+
+
+                string sqlqry = "select * from tblDiagnosisMaster;";
+                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry)).Select(x => new ItemList { ItemId = x.DxId, ItemName = x.Description });
+                obj.Data = cmeetings;
+                obj.Result = cmeetings.Any() ? true : false;
+                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+
+        }
+
+
+
+
+
+
+
+
+
 
     }
 }
+

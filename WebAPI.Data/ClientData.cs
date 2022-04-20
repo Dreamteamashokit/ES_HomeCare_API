@@ -267,7 +267,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return sres;
         }
 
-
         public async Task<ServiceResponse<IEnumerable<ServiceTaskView>>> GetServiceTaskList(int userId)
         {
             ServiceResponse<IEnumerable<ServiceTaskView>> obj = new ServiceResponse<IEnumerable<ServiceTaskView>>();
@@ -284,7 +283,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             }
             return obj;
         }
-
 
         public async Task<ServiceResponse<string>> DeleteService(int SrvId)
         {
@@ -321,8 +319,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             return obj;
         }
-
-
+        
         public async Task<ServiceResponse<string>> UpdateService(ServiceTaskModel item)
         {
             ServiceResponse<string> obj = new ServiceResponse<string>();
@@ -365,7 +362,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             return obj;
         }
-
 
         public async Task<ServiceResponse<string>> CreateEmpDeclined(EmployeeDecline _model)
         {
@@ -449,7 +445,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 return obj;
             }
         }
-
+    
 
 
         public async Task<ServiceResponse<IEnumerable<ClientEmrgencyInfo>>> ClienEmergencyInfo(ClientEmrgencyInfo Model)
@@ -566,6 +562,463 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 obj.Message = ex.Message;
                 return obj;
             }
+            return obj;
+        }
+
+        public async Task<ServiceResponse<string>> SaveClientContactLog(ClientContactLog _model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sqlQuery = "Insert Into tblContactLog (UserId,OfficeUserId,EmpId,Reason,CallDateTime,ScheduleDate,FollowUpDate,Issue, " +
+                        "ActionTaken,Notes,IsFollowUp,IsSchedule,IsActive,CreatedOn,CreatedBy) " +
+                        "Values(@UserId,@OfficeUserId,@EmpId,@Reason,@CallDateTime,@ScheduleDate,@FollowUpDate,@Issue,@ActionTaken," +
+                        "@Notes,@IsFollowUp,@IsSchedule,@IsActive,@CreatedOn,@CreatedBy)";
+
+                    int rowsAffected = db.Execute(sqlQuery, new
+                    {
+                        UserId = _model.UserId,
+                        OfficeUserId = _model.OfficeUserId,
+                        EmpId = _model.EmpId,
+                        Reason = _model.Reason,
+                        CallDateTime = _model.CallDateTime,
+                        ScheduleDate = _model.ScheduleDate,
+                        FollowUpDate = _model.FollowUpDate,
+                        Issue = _model.Issue,
+                        ActionTaken = _model.ActionTaken,
+                        Notes = _model.Notes,
+                        IsFollowUp = _model.IsFollowUp,
+                        IsSchedule = _model.IsSchedule,
+                        IsActive = _model.IsActive,
+                        CreatedOn = _model.CreatedOn,
+                        CreatedBy = _model.CreatedBy
+
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new creation.";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+
+            }
+
+            return sres;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ClientContactLog>>> GetClientContactLogs(int ClientId)
+        {
+            ServiceResponse<IEnumerable<ClientContactLog>> obj = new ServiceResponse<IEnumerable<ClientContactLog>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "select ContactlogId,UserId,OfficeUserId,EmpId,Reason, " +
+                            " CallDateTime,ScheduleDate,FollowUpDate,Issue,ActionTaken,Notes,IsFollowUp,IsSchedule,  " +
+                            " IsActive,CreatedOn,CreatedBy from tblContactLog(nolock) " +
+                            " where IsActive=1 and  UserId = " + ClientId;
+
+                IEnumerable<ClientContactLog> clogs = (await connection.QueryAsync<ClientContactLog>(sql, new { UserId = ClientId }));
+                obj.Data = clogs;
+                obj.Result = clogs.Any() ? true : false;
+                obj.Message = clogs.Any() ? "Data Found." : "No Data found.";
+            }
+
+            return obj;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ClientContactLog>>> getClientContactLogDetails(int contactLogId)
+        {
+            ServiceResponse<IEnumerable<ClientContactLog>> obj = new ServiceResponse<IEnumerable<ClientContactLog>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "select ContactlogId,UserId,OfficeUserId,EmpId,Reason, " +
+                            " CallDateTime,ScheduleDate,FollowUpDate,Issue,ActionTaken,Notes,IsFollowUp,IsSchedule,  " +
+                            " IsActive,CreatedOn,CreatedBy from tblContactLog(nolock) " +
+                            " where ContactlogId = " + contactLogId;
+
+                IEnumerable<ClientContactLog> clogs = (await connection.QueryAsync<ClientContactLog>(sql, new { ContactlogId = contactLogId }));
+                obj.Data = clogs;
+                obj.Result = clogs.Any() ? true : false;
+                obj.Message = clogs.Any() ? "Data Found." : "No Data found.";
+            }
+
+            return obj;
+        }
+
+        public async Task<ServiceResponse<string>> UpdateClientContactLog(ClientContactLog item)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var sqlqry = "update tblContactLog set EmpId=@EmpId, Reason=@Reason, CallDateTime=@CallDateTime , " +
+                          " ScheduleDate = @ScheduleDate,FollowUpDate = @FollowUpDate,Issue = @Issue , " +
+                          " ActionTaken = @ActionTaken,Notes = @Notes,IsFollowUp = @IsFollowUp,IsSchedule = @IsSchedule " +
+                          " where ContactlogId  =" + item.ContactlogId;
+
+                    int rowsAffected = await connection.ExecuteAsync(sqlqry, new
+                    {
+                        @UserId = item.UserId,
+                        @OfficeUserId = item.OfficeUserId,
+                        @EmpId = item.EmpId,
+                        @Reason = item.Reason,
+                        @CallDateTime = item.CallDateTime,
+                        @ScheduleDate = item.ScheduleDate,
+                        @FollowUpDate = item.FollowUpDate,
+                        @Issue = item.Issue,
+                        @ActionTaken = item.ActionTaken,
+                        @Notes = item.Notes,
+                        @IsFollowUp = item.IsFollowUp,
+                        @IsSchedule = item.IsSchedule
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        obj.Result = true;
+                        obj.Data = "Updated Successfully";
+                    }
+                    else
+                    {
+                        obj.Data = null;
+                        obj.Message = "Updation Failed.";
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+
+
+            return obj;
+        }
+
+        public async Task<ServiceResponse<string>> DeleteClientContactLog(int contactLogId)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var sqlqry = "Update tblContactLog Set IsActive=@IsActive Where ContactlogId=@ContactlogId";
+
+                    int rowsAffected = await connection.ExecuteAsync(sqlqry, new { @IsActive = 0, @ContactlogId = contactLogId });
+
+                    if (rowsAffected > 0)
+                    {
+                        obj.Result = true;
+                        obj.Data = "Deleted Successfully";
+                    }
+                    else
+                    {
+                        obj.Data = null;
+                        obj.Message = "Deletion Failed.";
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+
+
+            return obj;
+        }
+
+
+        public async Task<ServiceResponse<List<ClientNote>>> ClientNoteOperation(ClientNote Model, int Flag)
+        {
+            ServiceResponse<List<ClientNote>> obj = new ServiceResponse<List<ClientNote>>();
+            List<ClientNote> clientsnotes = new List<ClientNote>();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("SP_ClientNotesOperation", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@flag", Flag);
+                    cmd.Parameters.AddWithValue("@UserId", Model.UserId);
+                    cmd.Parameters.AddWithValue("@NotesTypeId", Model.NotesTypeId);
+                    cmd.Parameters.AddWithValue("@Notes", Model.Notes);
+                    cmd.Parameters.AddWithValue("@OfficeUserId", Model.OfficeUserId);
+                    cmd.Parameters.AddWithValue("@EmpId", Model.EmpId);
+                    cmd.Parameters.AddWithValue("@NotifyTypeId", Model.NotifyTypeId);
+                    cmd.Parameters.AddWithValue("@IsActive", Model.IsActive);
+                    cmd.Parameters.AddWithValue("@CreatedOn", Model.CreatedOn);
+                    cmd.Parameters.AddWithValue("@CreatedBy", Model.CreatedBy);                    
+                    cmd.Parameters.AddWithValue("@NotesId", Model.NotesId);
+                    DataTable table = new DataTable();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(table);
+                    if (table.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < table.Rows.Count; i++)
+                        {
+                            clientsnotes.Add(new ClientNote
+                            {
+                                NotesId = Convert.ToInt32(table.Rows[i]["NotesId"].ToString()),
+                                UserId = Convert.ToInt32(table.Rows[i]["UserId"]),
+                                NotesTypeId = Convert.ToInt32(table.Rows[i]["NotesTypeId"]),
+                                Notes = table.Rows[i]["Notes"].ToString(),
+                                OfficeUserId = Convert.ToInt32(table.Rows[i]["OfficeUserId"].ToString()),
+                                EmpId = Convert.ToInt32(table.Rows[i]["EmpId"].ToString()),
+                                NotifyTypeId = Convert.ToInt16(table.Rows[i]["NotifyTypeId"].ToString()),
+                                IsActive = Convert.ToInt16(table.Rows[i]["IsActive"].ToString()),
+                                CreatedOn=Convert.ToDateTime(table.Rows[i]["CreatedOn"].ToString()),
+                                CreatedBy=Convert.ToInt32(table.Rows[i]["CreatedBy"].ToString())
+                            });
+                        }
+                        obj.Result = true;
+                    }
+                    obj.Data = clientsnotes;
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+            finally
+            {
+
+            }
+        }
+
+
+        public async Task<ServiceResponse<string>> AddOtherInfo(OtherInfoModel _model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sqlQuery = "INSERT INTO tblOthers (UserId,CASA3,ContactId,InsuranceGrp,IsMedications,IsDialysis,IsOxygen,IsAids,IsCourtOrdered,FlowRate,ReunionLocations,ShelterName,TalCode,Shelter,Facility,Room,ServiceRequestDate,CareDate,DischargeDate,Notes,Allergies,CreatedBy,CreatedOn) VALUES (UserId,@CASA3,@ContactId,@InsuranceGrp,@IsMedications,@IsDialysis,@IsOxygen,@IsAids,@IsCourtOrdered,@FlowRate,@ReunionLocations,@ShelterName,@TalCode,@Shelter,@Facility,@Room,@ServiceRequestDate,@CareDate,@DischargeDate,@Notes,@Allergies,@CreatedBy,@CreatedOn); ";
+
+                    int rowsAffected = cnn.Execute(sqlQuery, _model);
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new creation.";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+                return sres;
+            }
+            finally
+            {
+
+            }
+            return sres;
+        }
+
+        public async Task<ServiceResponse<string>> UpdateOtherInfo(OtherInfoModel item)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var sqlqry = "UPDATE tblOthers SET CASA3=@CASA3,ContactId=@ContactId,InsuranceGrp=@InsuranceGrp,IsMedications=@IsMedications,IsDialysis=@IsDialysis,IsOxygen=@IsOxygen,IsAids=@IsAids,IsCourtOrdered=@IsCourtOrdered,FlowRate=@FlowRate,ReunionLocations=@ReunionLocations,ShelterName=@ShelterName,TalCode=@TalCode,Shelter=@Shelter,Facility=@Facility,Room=@Room,ServiceRequestDate=@ServiceRequestDate,CareDate=@CareDate,DischargeDate=@DischargeDate,Notes=@Notes,Allergies=@Allergies Where UserId=@UserId";
+
+                    int rowsAffected = await connection.ExecuteAsync(sqlqry, item);
+
+                    if (rowsAffected > 0)
+                    {
+                        obj.Result = true;
+                        obj.Data = "Updated Successfully";
+                    }
+                    else
+                    {
+                        obj.Data = null;
+                        obj.Message = "Updation Failed.";
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+
+
+            return obj;
+        }
+
+        public async Task<ServiceResponse<OtherInfoModel>> GetOtherInfo(int UserId)
+        {
+            ServiceResponse<OtherInfoModel> obj = new ServiceResponse<OtherInfoModel>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "Select CASA3, ContactId, InsuranceGrp, IsMedications, IsDialysis, IsOxygen, IsAids, IsCourtOrdered, FlowRate, ReunionLocations, ShelterName, TalCode, Shelter, Facility, Room, ServiceRequestDate, CareDate, DischargeDate, Notes, Allergies from tblOthers(nolock) Where UserId = @UserId";
+
+                var objResult = (await connection.QueryAsync<OtherInfoModel>(sql, new { UserId = UserId })).FirstOrDefault();
+
+                objResult.EntityId = objResult.OtherId;
+                obj.Data = objResult;
+                obj.Result = objResult != null ? true : false;
+                obj.Message = objResult != null ? "Data Found." : "No Data found.";
+            }
+
+            return obj;
+        }
+
+        public async Task<ServiceResponse<string>> AddDiagnosis(DiagnosisModel _model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sqlQuery = "INSERT INTO tblDiagnosis(UserId,DxId,OrderNo,IsPrimary,IsActive,CreatedBy,CreatedOn) VALUES(@UserId,@DxId,@OrderNo,@IsPrimary,@IsActive,@CreatedBy,@CreatedOn);";
+
+                    int rowsAffected = cnn.Execute(sqlQuery, _model);
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new creation.";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+                return sres;
+            }
+            finally
+            {
+
+            }
+            return sres;
+        }
+
+        public async Task<ServiceResponse<string>> UpdateDiagnosis(DiagnosisModel item)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var sqlqry = "Update tblDiagnosis Set DxId=@DxId,OrderNo=@OrderNo,IsPrimary=@IsPrimary Where DiagnosisId=@EntityId;";
+
+                    int rowsAffected = await connection.ExecuteAsync(sqlqry, item);
+
+                    if (rowsAffected > 0)
+                    {
+                        obj.Result = true;
+                        obj.Data = "Updated Successfully";
+                    }
+                    else
+                    {
+                        obj.Data = null;
+                        obj.Message = "Updation Failed.";
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+
+
+            return obj;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<DiagnosisView>>> GetDiagnosisModel(int UserId)
+        {
+            ServiceResponse<IEnumerable<DiagnosisView>> obj = new ServiceResponse<IEnumerable<DiagnosisView>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "select x.DiagnosisId,x.DxId,x.OrderNo,x.IsPrimary,y.DxCodes,y.Description,(ISNULL(z.FirstName,'') + ' ' +   ISNULL(z.MiddleName,'') + ' ' + ISNULL(z.LastName,'') ) AddedBy, CONVERT(DATE, x.CreatedOn) CreatedOn from tblDiagnosis x Inner Join  tblDiagnosisMaster y on x.DxId=y.DxId Inner Join  tblUser z on x.CreatedBy=z.UserId Where x.IsActive=@IsActive and x.UserId=@UserId;";
+
+                var objResult = (await connection.QueryAsync<DiagnosisView>(sql, new { IsActive = 1, UserId = UserId }));
+                obj.Data = objResult;
+                obj.Result = objResult != null ? true : false;
+                obj.Message = objResult != null ? "Data Found." : "No Data found.";
+            }
+
+            return obj;
+        }
+
+        public async Task<ServiceResponse<string>> DeleteDiagnosis(int DiagnosisId)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var sqlqry = "Update tblDiagnosis Set IsActive=@IsActive Where DiagnosisId=@DiagnosisId";
+
+                    int rowsAffected = await connection.ExecuteAsync(sqlqry, new { @IsActive = 0, @DiagnosisId = DiagnosisId });
+
+                    if (rowsAffected > 0)
+                    {
+                        obj.Result = true;
+                        obj.Data = "Deleted Successfully";
+                    }
+                    else
+                    {
+                        obj.Data = null;
+                        obj.Message = "Deletion Failed.";
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+
+
             return obj;
         }
 

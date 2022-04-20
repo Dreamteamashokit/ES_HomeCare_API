@@ -12,7 +12,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
     {
         #region Employee
         Task<ServiceResponse<string>> AddEmployee(EmployeeModel _model);
-        Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj();
+        Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj(int userId);
         Task<ServiceResponse<string>> DeleteEmployee(int UserId);
         Task<ServiceResponse<EmployeeModel>> GetEmployeeById(int UserId);
         #endregion

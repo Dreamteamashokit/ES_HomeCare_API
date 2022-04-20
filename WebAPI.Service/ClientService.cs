@@ -41,7 +41,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service
 
         public async Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model, int Flag)
         {
-            return await data.ClientMedicationcs(Model,Flag);
+            return await data.ClientMedicationcs(Model, Flag);
         }
 
 
@@ -107,6 +107,10 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             return await data.ClienProvisionInfo(dt,UserId);
         }
 
+        public async Task<ServiceResponse<string>> SaveClientContactLog(ClientContactLog _model)
+        {
+            return await data.SaveClientContactLog(_model);
+        }
 
         DataTable CreateTable()
         {
@@ -117,14 +121,60 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             return dt;
         }
 
+        public async Task<ServiceResponse<IEnumerable<ClientContactLog>>> GetClientContactLogs(int ClientId)
+        {
+            return await data.GetClientContactLogs(ClientId);
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ClientContactLog>>> getClientContactLogDetails(int contactLogId)
+        {
+            return await data.getClientContactLogDetails(contactLogId);
+        }
+
+        public async Task<ServiceResponse<string>> UpdateClientContactLog(ClientContactLog item)
+        {
+            return await data.UpdateClientContactLog(item);
+        }
+
+        public async Task<ServiceResponse<string>> DeleteClientContactLog(int contactLogId)
+        {
+            return await data.DeleteClientContactLog(contactLogId);
+        }
+        public async Task<ServiceResponse<string>> AddOtherInfo(OtherInfoModel _model)
+        {
+            return await data.AddOtherInfo(_model);
+        }
+        public async Task<ServiceResponse<string>> UpdateOtherInfo(OtherInfoModel item)
+        {
+            return await data.UpdateOtherInfo(item);
+        }
+        public async Task<ServiceResponse<OtherInfoModel>> GetOtherInfo(int UserId)
+        {
+            return await data.GetOtherInfo(UserId);
+        }
 
 
+        public async Task<ServiceResponse<string>> AddDiagnosis(DiagnosisModel _model)
+        {
+            return await data.AddDiagnosis(_model);
+        }
 
+        public async Task<ServiceResponse<string>> UpdateDiagnosis(DiagnosisModel item)
+        {
+            return await data.UpdateDiagnosis(item);
+        }
+        public async Task<ServiceResponse<IEnumerable<DiagnosisView>>> GetDiagnosisModel(int UserId)
+        {
+            return await data.GetDiagnosisModel(UserId);
+        }
+        public async Task<ServiceResponse<string>> DeleteDiagnosis(int DiagnosisId)
+        {
+            return await data.DeleteDiagnosis(DiagnosisId);
+        }
 
-
-
-
-
-
+        public async Task<ServiceResponse<List<ClientNote>>> ClientNoteOperation(ClientNote Model, int Flag)
+        {
+            return await data.ClientNoteOperation(Model, Flag);
+        }
     }
 }

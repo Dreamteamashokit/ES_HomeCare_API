@@ -1,5 +1,6 @@
 ﻿using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Client;
+using ES_HomeCare_API.Model.Common;
 using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using ES_HomeCare_API.WebAPI.Service.IService;
@@ -75,6 +76,30 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.GetTaskList();
 
         }
+
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetNoteTypeList()
+        {
+            return await data.GetNoteTypeList();
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetDiagnosisList()
+        {
+            return await data.GetDiagnosisList();
+
+        }
+
+
+        
+
+
+
+
+
+
+
+
+
+
 
 
 

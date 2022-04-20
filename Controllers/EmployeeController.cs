@@ -40,12 +40,12 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
 
-        [HttpGet("getEmployeeListObj")]
+        [HttpGet("getEmployeeListObj/{userId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<EmployeeList>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<EmployeeList>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetEmployeeListObj()
+        public async Task<IActionResult> GetEmployeeListObj(int userId)
         {
-            return Ok(await service.GetEmployeeListObj());
+            return Ok(await service.GetEmployeeListObj(userId));
         }
 
       
@@ -170,7 +170,7 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddAddress([FromBody] AddressModel model)
         {
-            model.CreatedBy = 1;
+            
             model.CreatedOn = DateTime.Now;
             return Ok(await service.AddEmpAddress(model));
         }
