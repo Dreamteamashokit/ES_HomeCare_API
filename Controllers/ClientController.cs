@@ -365,6 +365,8 @@ namespace WebAPI_SAMPLE.Controllers
         {
             try
             {
+
+                model.CreatedOn = DateTime.Now.Date;
                 return Ok(await service.AddOtherInfo(model));
 
             }
@@ -554,6 +556,7 @@ namespace WebAPI_SAMPLE.Controllers
 
         }
 
+
         [HttpPost("AddClientCommunity")]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientCommunityMaster>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientCommunityMaster>>), StatusCodes.Status400BadRequest)]
@@ -570,6 +573,8 @@ namespace WebAPI_SAMPLE.Controllers
                 throw;
             }
         }
+
+
         [HttpPost("GetClientCommunityList")]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientCommunityMaster>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientCommunityMaster>>), StatusCodes.Status400BadRequest)]
@@ -586,6 +591,8 @@ namespace WebAPI_SAMPLE.Controllers
                 throw;
             }
         }
+
+
         [HttpGet("ProvisionInfo/{UserId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientEmrgencyInfo>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientEmrgencyInfo>>), StatusCodes.Status400BadRequest)]
@@ -603,6 +610,7 @@ namespace WebAPI_SAMPLE.Controllers
 
             return Ok(await service.ClienProvisionInfo(model, 0));
         }
+
     }
 }
 
