@@ -889,7 +889,13 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
                 var objResult = (await connection.QueryAsync<OtherInfoModel>(sql, new { UserId = UserId })).FirstOrDefault();
 
-                objResult.EntityId = objResult.OtherId;
+
+                if(objResult != null)
+                {
+                    objResult.EntityId = objResult.OtherId;
+                }
+
+              
                 obj.Data = objResult;
                 obj.Result = objResult != null ? true : false;
                 obj.Message = objResult != null ? "Data Found." : "No Data found.";
