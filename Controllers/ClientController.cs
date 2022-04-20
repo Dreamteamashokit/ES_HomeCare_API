@@ -563,7 +563,7 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.ClienProvisionInfo(null,UserId));
         }
 
-        [HttpPost("ProvisionInfo")]
+        [HttpPost("SaveProvisionInfo")]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientEmrgencyInfo>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientEmrgencyInfo>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SaveProvisionInfo(IEnumerable<ProvisionInfo> model)
