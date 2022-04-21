@@ -319,7 +319,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             return obj;
         }
-        
+
         public async Task<ServiceResponse<string>> UpdateService(ServiceTaskModel item)
         {
             ServiceResponse<string> obj = new ServiceResponse<string>();
@@ -445,7 +445,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 return obj;
             }
         }
-    
+
 
 
         public async Task<ServiceResponse<IEnumerable<ClientEmrgencyInfo>>> ClienEmergencyInfo(ClientEmrgencyInfo Model)
@@ -496,7 +496,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                             clientsEmrgencyInfo.Add(new ClientEmrgencyInfo
                             {
                                 UserId = Model.UserId,
-                                typeName = Convert.ToInt32(table.Rows[i]["type"].ToString()) == 1 ? "Primary Contact" : Convert.ToInt32(table.Rows[i]["type"].ToString()) == 2 ? "Emergency Contact" : Convert.ToInt32(table.Rows[i]["type"].ToString()) == 3? "Physician":"Other",
+                                typeName = Convert.ToInt32(table.Rows[i]["type"].ToString()) == 1 ? "Primary Contact" : Convert.ToInt32(table.Rows[i]["type"].ToString()) == 2 ? "Emergency Contact" : Convert.ToInt32(table.Rows[i]["type"].ToString()) == 3 ? "Physician" : "Other",
                                 TypeId = Convert.ToInt32(table.Rows[i]["type"].ToString()),
                                 Title = table.Rows[i]["Title"] == null ? String.Empty : table.Rows[i]["Title"].ToString(),
                                 FirstName = table.Rows[i]["FirstName"] == null ? String.Empty : table.Rows[i]["FirstName"].ToString(),
@@ -767,7 +767,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     cmd.Parameters.AddWithValue("@NotifyTypeId", Model.NotifyTypeId);
                     cmd.Parameters.AddWithValue("@IsActive", Model.IsActive);
                     cmd.Parameters.AddWithValue("@CreatedOn", Model.CreatedOn);
-                    cmd.Parameters.AddWithValue("@CreatedBy", Model.CreatedBy);                    
+                    cmd.Parameters.AddWithValue("@CreatedBy", Model.CreatedBy);
                     cmd.Parameters.AddWithValue("@NotesId", Model.NotesId);
                     DataTable table = new DataTable();
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -786,8 +786,8 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                                 EmpId = Convert.ToInt32(table.Rows[i]["EmpId"].ToString()),
                                 NotifyTypeId = Convert.ToInt16(table.Rows[i]["NotifyTypeId"].ToString()),
                                 IsActive = Convert.ToInt16(table.Rows[i]["IsActive"].ToString()),
-                                CreatedOn=Convert.ToDateTime(table.Rows[i]["CreatedOn"].ToString()),
-                                CreatedBy=Convert.ToInt32(table.Rows[i]["CreatedBy"].ToString())
+                                CreatedOn = Convert.ToDateTime(table.Rows[i]["CreatedOn"].ToString()),
+                                CreatedBy = Convert.ToInt32(table.Rows[i]["CreatedBy"].ToString())
                             });
                         }
                         obj.Result = true;
@@ -808,16 +808,29 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         }
 
 
-        public async Task<ServiceResponse<string>> AddOtherInfo(OtherInfoModel _model)
+        public async Task<ServiceResponse<string>> AddOtherInfo(OtherInfoModel obj)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
             try
             {
                 using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = "INSERT INTO tblOthers (UserId,CASA3,ContactId,InsuranceGrp,IsMedications,IsDialysis,IsOxygen,IsAids,IsCourtOrdered,FlowRate,ReunionLocations,ShelterName,TalCode,Shelter,Facility,Room,ServiceRequestDate,CareDate,DischargeDate,Notes,Allergies,CreatedBy,CreatedOn) VALUES (UserId,@CASA3,@ContactId,@InsuranceGrp,@IsMedications,@IsDialysis,@IsOxygen,@IsAids,@IsCourtOrdered,@FlowRate,@ReunionLocations,@ShelterName,@TalCode,@Shelter,@Facility,@Room,@ServiceRequestDate,@CareDate,@DischargeDate,@Notes,@Allergies,@CreatedBy,@CreatedOn); ";
+                    string sqlQuery = "INSERT INTO tblOthers (UserId,CASA3,ContactId,InsuranceGrp,IsMedications,IsDialysis,IsOxygen,IsAids,IsCourtOrdered,FlowRate,ReunionLocations,ShelterName,TalCode,Shelter,Facility,Room,ServiceRequestDate,CareDate,DischargeDate,Notes,Allergies,CreatedBy,CreatedOn) VALUES (@UserId,@CASA3,@ContactId,@InsuranceGrp,@IsMedications,@IsDialysis,@IsOxygen,@IsAids,@IsCourtOrdered,@FlowRate,@ReunionLocations,@ShelterName,@TalCode,@Shelter,@Facility,@Room,@ServiceRequestDate,@CareDate,@DischargeDate,@Notes,@Allergies,@CreatedBy,@CreatedOn); ";
 
-                    int rowsAffected = cnn.Execute(sqlQuery, _model);
+                    int rowsAffected = cnn.Execute(sqlQuery, new { obj.UserId, obj.CASA3, obj.ContactId, obj.InsuranceGrp, obj.IsMedications, obj.IsDialysis, obj.IsOxygen, obj.IsAids,
+                        obj.IsCourtOrdered,obj.FlowRate,obj.ReunionLocations,
+                        obj.ShelterName,
+                        obj.TalCode,
+                        obj.Shelter,
+                        obj.Facility,
+                        obj.Room,
+                        ServiceRequestDate= obj.ServiceRequestDate.ParseDate(),
+                        CareDate = obj.CareDate.ParseDate(),
+                        DischargeDate = obj.DischargeDate.ParseDate(),
+                        obj.Notes,
+                        obj.Allergies,
+                        obj.CreatedBy,
+                        obj.CreatedOn });
 
                     if (rowsAffected > 0)
                     {
@@ -844,9 +857,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return sres;
         }
 
-        public async Task<ServiceResponse<string>> UpdateOtherInfo(OtherInfoModel item)
+        public async Task<ServiceResponse<string>> UpdateOtherInfo(OtherInfoModel obj)
         {
-            ServiceResponse<string> obj = new ServiceResponse<string>();
+            ServiceResponse<string> objResult = new ServiceResponse<string>();
             try
             {
 
@@ -854,17 +867,42 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 {
                     var sqlqry = "UPDATE tblOthers SET CASA3=@CASA3,ContactId=@ContactId,InsuranceGrp=@InsuranceGrp,IsMedications=@IsMedications,IsDialysis=@IsDialysis,IsOxygen=@IsOxygen,IsAids=@IsAids,IsCourtOrdered=@IsCourtOrdered,FlowRate=@FlowRate,ReunionLocations=@ReunionLocations,ShelterName=@ShelterName,TalCode=@TalCode,Shelter=@Shelter,Facility=@Facility,Room=@Room,ServiceRequestDate=@ServiceRequestDate,CareDate=@CareDate,DischargeDate=@DischargeDate,Notes=@Notes,Allergies=@Allergies Where UserId=@UserId";
 
-                    int rowsAffected = await connection.ExecuteAsync(sqlqry, item);
+                    int rowsAffected = await connection.ExecuteAsync(sqlqry, new
+                    {
+                        obj.UserId,
+                        obj.CASA3,
+                        obj.ContactId,
+                        obj.InsuranceGrp,
+                        obj.IsMedications,
+                        obj.IsDialysis,
+                        obj.IsOxygen,
+                        obj.IsAids,
+                        obj.IsCourtOrdered,
+                        obj.FlowRate,
+                        obj.ReunionLocations,
+                        obj.ShelterName,
+                        obj.TalCode,
+                        obj.Shelter,
+                        obj.Facility,
+                        obj.Room,
+                        ServiceRequestDate = obj.ServiceRequestDate.ParseDate(),
+                        CareDate = obj.CareDate.ParseDate(),
+                        DischargeDate = obj.DischargeDate.ParseDate(),
+                        obj.Notes,
+                        obj.Allergies,
+                        obj.CreatedBy,
+                        obj.CreatedOn
+                    });
 
                     if (rowsAffected > 0)
                     {
-                        obj.Result = true;
-                        obj.Data = "Updated Successfully";
+                        objResult.Result = true;
+                        objResult.Data = "Updated Successfully";
                     }
                     else
                     {
-                        obj.Data = null;
-                        obj.Message = "Updation Failed.";
+                        objResult.Data = null;
+                        objResult.Message = "Updation Failed.";
                     }
 
                 }
@@ -872,12 +910,12 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             }
             catch (Exception ex)
             {
-                obj.Message = ex.Message;
-                return obj;
+                objResult.Message = ex.Message;
+                return objResult;
             }
 
 
-            return obj;
+            return objResult;
         }
 
         public async Task<ServiceResponse<OtherInfoModel>> GetOtherInfo(int UserId)
@@ -885,11 +923,17 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             ServiceResponse<OtherInfoModel> obj = new ServiceResponse<OtherInfoModel>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "Select CASA3, ContactId, InsuranceGrp, IsMedications, IsDialysis, IsOxygen, IsAids, IsCourtOrdered, FlowRate, ReunionLocations, ShelterName, TalCode, Shelter, Facility, Room, ServiceRequestDate, CareDate, DischargeDate, Notes, Allergies from tblOthers(nolock) Where UserId = @UserId";
+                string sql = "Select OtherId,CASA3, ContactId, InsuranceGrp, IsMedications, IsDialysis, IsOxygen, IsAids, IsCourtOrdered, FlowRate, ReunionLocations, ShelterName, TalCode, Shelter, Facility, Room, ServiceRequestDate, CareDate, DischargeDate, Notes, Allergies from tblOthers(nolock) Where UserId = @UserId";
 
                 var objResult = (await connection.QueryAsync<OtherInfoModel>(sql, new { UserId = UserId })).FirstOrDefault();
 
-                objResult.EntityId = objResult.OtherId;
+
+                if (objResult != null)
+                {
+                    objResult.EntityId = objResult.OtherId;
+                }
+
+
                 obj.Data = objResult;
                 obj.Result = objResult != null ? true : false;
                 obj.Message = objResult != null ? "Data Found." : "No Data found.";
@@ -1024,14 +1068,81 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
 
 
+        public async Task<ServiceResponse<List<ClientCommunityMaster>>> ClientCommunityOperation(ClientCommunityMaster Model, int Flag)
+        {
+            ServiceResponse<List<ClientCommunityMaster>> obj = new ServiceResponse<List<ClientCommunityMaster>>();
+            List<ClientCommunityMaster> clientscommunity = new List<ClientCommunityMaster>();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("SP_ClientCommunityOperation", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-        public async Task<ServiceResponse<IEnumerable<ProvisionInfo>>> ClienProvisionInfo(DataTable dt,int UserId=0)
+                    cmd.Parameters.AddWithValue("@flag", Flag);
+                    cmd.Parameters.AddWithValue("@UserId", Model.UserId);
+                    cmd.Parameters.AddWithValue("@CommunityName", Model.CommunityName);
+                    cmd.Parameters.AddWithValue("@CommunityAddress", Model.CommunityAddress);
+                    cmd.Parameters.AddWithValue("@CommunityFloor", Model.CommunityFloor);
+                    cmd.Parameters.AddWithValue("@County", Model.County);
+                    cmd.Parameters.AddWithValue("@State", Model.State);
+                    cmd.Parameters.AddWithValue("@City", Model.City);
+                    cmd.Parameters.AddWithValue("@Contact", Model.Contact);
+                    cmd.Parameters.AddWithValue("@Email", Model.Email);
+                    cmd.Parameters.AddWithValue("@Notes", Model.Notes);
+                    cmd.Parameters.AddWithValue("@IsActive", Model.IsActive);
+                    cmd.Parameters.AddWithValue("@CreatedOn", Model.CreatedOn);
+                    cmd.Parameters.AddWithValue("@CreatedBy", Model.CreatedBy);
+                    cmd.Parameters.AddWithValue("@CommunityId", Model.CommunityId);
+                    DataTable table = new DataTable();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(table);
+                    if (table.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < table.Rows.Count; i++)
+                        {
+                            clientscommunity.Add(new ClientCommunityMaster
+                            {
+                                CommunityId = Convert.ToInt32(table.Rows[i]["CommunityId"].ToString()),
+                                CommunityName = table.Rows[i]["CommunityName"].ToString(),
+                                CommunityAddress = table.Rows[i]["CommunityAddress"].ToString(),
+                                CommunityFloor = table.Rows[i]["CommunityFloor"].ToString(),
+                                County = table.Rows[i]["County"].ToString(),
+                                State = table.Rows[i]["State"].ToString(),
+                                City = table.Rows[i]["City"].ToString(),
+                                Contact = table.Rows[i]["Contact"].ToString(),
+                                Email = table.Rows[i]["Email"].ToString(),
+                                Notes = table.Rows[i]["Notes"].ToString(),
+                                IsActive = Convert.ToInt16(table.Rows[i]["IsActive"].ToString()),
+                                CreatedOn = Convert.ToDateTime(table.Rows[i]["CreatedOn"].ToString()),
+                                CreatedBy = Convert.ToInt32(table.Rows[i]["CreatedBy"].ToString())
+                            });
+                        }
+                        obj.Result = true;
+                    }
+                    obj.Data = clientscommunity;
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+            finally
+            {
+
+            }
+        }
+
+
+        public async Task<ServiceResponse<IEnumerable<ProvisionInfo>>> ClienProvisionInfo(DataTable dt, int UserId = 0)
         {
             ServiceResponse<IEnumerable<ProvisionInfo>> obj = new ServiceResponse<IEnumerable<ProvisionInfo>>();
             List<ProvisionInfo> clientsEmrgencyInfo = new List<ProvisionInfo>();
             try
             {
-               
+
                 using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
                     SqlCommand cmd = new SqlCommand("ProvisionInfoProc", con);

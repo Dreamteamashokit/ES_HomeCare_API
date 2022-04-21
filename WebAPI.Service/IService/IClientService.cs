@@ -42,5 +42,6 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<IEnumerable<ProvisionInfo>>> ClienProvisionInfo(IEnumerable<ProvisionInfo> model, int UserId = 0);
 
         Task<ServiceResponse<List<ClientNote>>> ClientNoteOperation(ClientNote Model, int Flag);
+        Task<ServiceResponse<List<ClientCommunityMaster>>> ClientCommunityOperation(ClientCommunityMaster Model, int Flag);
     }
 }
