@@ -100,7 +100,16 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             {
                 foreach (ProvisionInfo item in Model)
                 {
-                    dt.Rows.Add(item.ProvisionId, item.Value, UserId);
+                    UserId = item.Userid;
+                    if (item.ProvisionType == 1)
+                    {
+                        dt.Rows.Add(item.ProvisionId, item.IsChecked, item.Userid);
+                    }
+                    else if (item.ProvisionType == 2)
+                    {
+                        dt.Rows.Add(item.ProvisionId, item.Value, item.Userid);
+                    }
+                   
                 }
             }
             

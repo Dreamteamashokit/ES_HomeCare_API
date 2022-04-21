@@ -6,6 +6,8 @@
         public string Desctiption { get; set; }
         public string Value { get; set; }
         public int ProvisionType{ get; set; }
+        public bool IsChecked { get; set; }
+        public int Userid { get; set; }
     }
 
    

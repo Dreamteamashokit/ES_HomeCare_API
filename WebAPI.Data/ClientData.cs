@@ -1049,7 +1049,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                             {
                                ProvisionId = Convert.ToInt32(table.Rows[i]["ProvisionId"].ToString()),
                                ProvisionType = Convert.ToInt32(table.Rows[i]["ProvisionType"].ToString()),
-                               Desctiption= table.Rows[i]["Description"].ToString()
+                               Desctiption= table.Rows[i]["Description"].ToString(),
+                               IsChecked = Convert.ToInt32(table.Rows[i]["ProvisionType"].ToString())==2?false: string.IsNullOrEmpty(table.Rows[i]["ProvisionValue"].ToString())?false:Convert.ToBoolean(table.Rows[i]["ProvisionValue"].ToString()),
+                               Value= Convert.ToInt32(table.Rows[i]["ProvisionType"].ToString()) == 1?string.Empty:string.IsNullOrEmpty(table.Rows[i]["ProvisionValue"].ToString())?string.Empty: table.Rows[i]["ProvisionValue"].ToString()
                             }); ;
                         }
                         obj.Result = true;
