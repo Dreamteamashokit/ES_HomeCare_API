@@ -32,6 +32,12 @@ namespace ES_HomeCare_API.Controllers
         {
             try
             {
+                model.IsActive = 1;       
+                model.CreatedOn = DateTime.Now;
+
+                model.ModifiedBy = model.CreatedBy;
+                model.ModifiedOn = model.CreatedOn;
+
                 return Ok(await locSrv.AddLocation(model));
 
             }

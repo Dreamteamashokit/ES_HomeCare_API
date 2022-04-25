@@ -3,6 +3,7 @@
     public class LocationModel : BaseModel
     {
         public int LocationId { get; set; }
+        public int CompanyId { get; set; }
         public string LocationName { get; set; }
         public string BillingName { get; set; }
         public string Contact { get; set; }

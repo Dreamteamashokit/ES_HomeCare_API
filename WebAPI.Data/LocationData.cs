@@ -27,7 +27,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             {
                 using (IDbConnection conn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = "INSERT INTO tblLocation (CompanyId,LocationName,BillingName,Contact,Email,Address,Phone,Fax,City,State,Zip,IsBilling,Description,TaxId,LegacyId,NPI,ISA06,ModifiedBy,ModifiedOn,CreatedBy,CreatedOn) VALUES (@CompanyId,@LocationName,@BillingName,@Contact,@Email,@Address,@Phone,@Fax,@City,@State,@Zip,@IsBilling,@Description,@TaxId,@LegacyId,@NPI,@ISA06,@ModifiedBy,@ModifiedOn,@CreatedBy,@CreatedOn) ;";
+                    string sqlQuery = "INSERT INTO tblLocation (CompanyId,LocationName,BillingName,Contact,Email,Address,Phone,Fax,City,State,ZipCode,IsBilling,Description,TaxId,LegacyId,NPI,ISA06,ModifiedBy,ModifiedOn,CreatedBy,CreatedOn) VALUES (@CompanyId,@LocationName,@BillingName,@Contact,@Email,@Address,@Phone,@Fax,@City,@State,@ZipCode,@IsBilling,@Description,@TaxId,@LegacyId,@NPI,@ISA06,@ModifiedBy,@ModifiedOn,@CreatedBy,@CreatedOn) ;";
 
                     int rowsAffected = await conn.ExecuteAsync(sqlQuery, _model);
                     if (rowsAffected > 0)
@@ -52,6 +52,7 @@ namespace ES_HomeCare_API.WebAPI.Data
 
             }
             return resObj;
+        
         }
 
 
@@ -62,7 +63,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             ServiceResponse<IEnumerable<LocationModel>> obj = new ServiceResponse<IEnumerable<LocationModel>>();
             using (var conn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sqlQuery = "select IsNull(p.LastName,'')  +' '+ p.FirstName as EmpName,q.EmpId,r.*,IsNull(s.LastName,'')+' '+s.FirstName as ClientName from tblUser p inner join tblEmpClientMeeting q on p.UserId=q.EmpId inner join tblMeeting r on q.MeetingId=r.MeetingId inner join tblUser s on r.ClientId=s.UserId where r.IsStatus<>0 and r.ClientId=@UserId;";
+                string sqlQuery = "select * from tblLocation;";
 
                 IEnumerable<LocationModel> resObj = (await conn.QueryAsync<LocationModel>(sqlQuery));
 
