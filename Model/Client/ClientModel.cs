@@ -69,5 +69,27 @@ namespace ES_HomeCare_API.Model.Client
         public string Contact { get; set; }
         public string Email { get; set; }
         public string Notes { get; set; }
-    }  
+    }
+
+    public class ClientCompliance : BaseModel
+    {
+        public int ClientComplianceId { get; set; }
+        public DateTime? DueDate { get; set; }
+        public DateTime? CompletedOn { get; set; }
+        public int Category { get; set; }
+        public DateTime? ScreenDate { get; set; }
+        public int SubCategory { get; set; }
+        public DateTime? SignedDate { get; set; }
+        public DateTime? MDOrderFdate { get; set; }
+        public DateTime? MDOrderEDate { get; set; }
+        public short IsReceived { get; set; }
+        public int AttachFile { get; set; }
+        public int EmpId { get; set; }
+        public int OfficeUserId { get; set; }
+        public short IsNotifyViaText { get; set; }
+        public short IsNotifyViaScreen { get; set; }
+        public short IsNotifyViaEmail { get; set; }
+        public string Notes { get; set; }
+        public string Status { get; set; }
+    }
 }

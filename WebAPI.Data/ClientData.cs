@@ -689,7 +689,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     cmd.Parameters.AddWithValue("@NotifyTypeId", Model.NotifyTypeId);
                     cmd.Parameters.AddWithValue("@IsActive", Model.IsActive);
                     cmd.Parameters.AddWithValue("@CreatedOn", Model.CreatedOn);
-                    cmd.Parameters.AddWithValue("@CreatedBy", Model.CreatedBy);                    
+                    cmd.Parameters.AddWithValue("@CreatedBy", Model.CreatedBy);
                     cmd.Parameters.AddWithValue("@NotesId", Model.NotesId);
                     DataTable table = new DataTable();
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -708,8 +708,8 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                                 EmpId = Convert.ToInt32(table.Rows[i]["EmpId"].ToString()),
                                 NotifyTypeId = Convert.ToInt16(table.Rows[i]["NotifyTypeId"].ToString()),
                                 IsActive = Convert.ToInt16(table.Rows[i]["IsActive"].ToString()),
-                                CreatedOn=Convert.ToDateTime(table.Rows[i]["CreatedOn"].ToString()),
-                                CreatedBy=Convert.ToInt32(table.Rows[i]["CreatedBy"].ToString())
+                                CreatedOn = Convert.ToDateTime(table.Rows[i]["CreatedOn"].ToString()),
+                                CreatedBy = Convert.ToInt32(table.Rows[i]["CreatedBy"].ToString())
                             });
                         }
                         obj.Result = true;
@@ -774,6 +774,90 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                                 Contact = table.Rows[i]["Contact"].ToString(),
                                 Email = table.Rows[i]["Email"].ToString(),
                                 Notes = table.Rows[i]["Notes"].ToString(),
+                                IsActive = Convert.ToInt16(table.Rows[i]["IsActive"].ToString()),
+                                CreatedOn = Convert.ToDateTime(table.Rows[i]["CreatedOn"].ToString()),
+                                CreatedBy = Convert.ToInt32(table.Rows[i]["CreatedBy"].ToString())
+                            });
+                        }
+                        obj.Result = true;
+                    }
+                    obj.Data = clientscommunity;
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+            finally
+            {
+
+            }
+        }
+
+
+        public async Task<ServiceResponse<List<ClientCompliance>>> ClientComplianceOperation(ClientCompliance Model, int Flag)
+        {
+            ServiceResponse<List<ClientCompliance>> obj = new ServiceResponse<List<ClientCompliance>>();
+            List<ClientCompliance> clientscommunity = new List<ClientCompliance>();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("SP_ClientComplianceOperation", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@flag", Flag);
+                    cmd.Parameters.AddWithValue("@DueDate", Model.DueDate);
+                    cmd.Parameters.AddWithValue("@CompletedOn", Model.CompletedOn);
+                    cmd.Parameters.AddWithValue("@Category", Model.Category);
+                    cmd.Parameters.AddWithValue("@ScreenDate", Model.ScreenDate);
+                    cmd.Parameters.AddWithValue("@SubCategory", Model.SubCategory);
+                    cmd.Parameters.AddWithValue("@SignedDate", Model.SignedDate);
+                    cmd.Parameters.AddWithValue("@MDOrderFdate", Model.MDOrderFdate);
+                    cmd.Parameters.AddWithValue("@MDOrderEDate", Model.MDOrderEDate);
+                    cmd.Parameters.AddWithValue("@IsReceived", Model.IsReceived);
+                    cmd.Parameters.AddWithValue("@AttachFile", Model.AttachFile);
+                    cmd.Parameters.AddWithValue("@EmpId", Model.EmpId);
+                    cmd.Parameters.AddWithValue("@OfficeUserId", Model.OfficeUserId);
+                    cmd.Parameters.AddWithValue("@ClientId", Model.UserId);
+                    cmd.Parameters.AddWithValue("@IsNotifyViaText", Model.IsNotifyViaText);
+                    cmd.Parameters.AddWithValue("@IsNotifyViaScreen", Model.IsNotifyViaScreen);
+                    cmd.Parameters.AddWithValue("@IsNotifyViaEmail", Model.IsNotifyViaEmail);
+                    cmd.Parameters.AddWithValue("@Notes", Model.Notes);
+                    cmd.Parameters.AddWithValue("@Status", Model.Status);
+                    cmd.Parameters.AddWithValue("@IsActive", Model.IsActive);
+                    cmd.Parameters.AddWithValue("@CreatedOn", Model.CreatedOn);
+                    cmd.Parameters.AddWithValue("@CreatedBy", Model.CreatedBy);
+                    cmd.Parameters.AddWithValue("@ClientComplianceId", Model.ClientComplianceId);
+                    DataTable table = new DataTable();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(table);
+                    if (table.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < table.Rows.Count; i++)
+                        {
+                            clientscommunity.Add(new ClientCompliance
+                            {
+                                DueDate = Convert.ToDateTime(table.Rows[i]["DueDate"].ToString()),
+                                CompletedOn = Convert.ToDateTime(table.Rows[i]["CompletedOn"].ToString()),
+                                Category = Convert.ToInt32(table.Rows[i]["Category"].ToString()),
+                                ScreenDate = !string.IsNullOrEmpty(table.Rows[i]["ScreenDate"].ToString()) ? Convert.ToDateTime(table.Rows[i]["ScreenDate"].ToString()) : (DateTime?)null,
+                                SubCategory = Convert.ToInt32(table.Rows[i]["SubCategory"].ToString()),
+                                SignedDate = !string.IsNullOrEmpty(table.Rows[i]["SignedDate"].ToString())? Convert.ToDateTime(table.Rows[i]["ScreenDate"].ToString()) : (DateTime?)null,
+                                MDOrderFdate = !string.IsNullOrEmpty(table.Rows[i]["MDOrderFdate"].ToString()) ? Convert.ToDateTime(table.Rows[i]["ScreenDate"].ToString()) : (DateTime?)null,
+                                MDOrderEDate = !string.IsNullOrEmpty(table.Rows[i]["MDOrderEDate"].ToString()) ? Convert.ToDateTime(table.Rows[i]["ScreenDate"].ToString()) : (DateTime?)null,
+                                IsReceived = Convert.ToBoolean(table.Rows[i]["IsReceived"]) ? Convert.ToInt16(1) : Convert.ToInt16(0),
+                                AttachFile = Convert.ToInt32(table.Rows[i]["AttachFile"].ToString()),
+                                EmpId = Convert.ToInt32(table.Rows[i]["EmpId"].ToString()),
+                                OfficeUserId = Convert.ToInt32(table.Rows[i]["OfficeUserId"].ToString()),                               
+                                IsNotifyViaText = Convert.ToBoolean(table.Rows[i]["IsNotifyViaText"]) ? Convert.ToInt16(1) : Convert.ToInt16(0),
+                                IsNotifyViaScreen = Convert.ToBoolean(table.Rows[i]["IsNotifyViaScreen"]) ? Convert.ToInt16(1) : Convert.ToInt16(0),
+                                IsNotifyViaEmail = Convert.ToBoolean(table.Rows[i]["IsNotifyViaEmail"]) ? Convert.ToInt16(1) : Convert.ToInt16(0),
+                                Notes = table.Rows[i]["Notes"].ToString(),
+                                Status = table.Rows[i]["Status"].ToString(),
+                                ClientComplianceId = Convert.ToInt32(table.Rows[i]["ClientComplianceId"].ToString()),
                                 IsActive = Convert.ToInt16(table.Rows[i]["IsActive"].ToString()),
                                 CreatedOn = Convert.ToDateTime(table.Rows[i]["CreatedOn"].ToString()),
                                 CreatedBy = Convert.ToInt32(table.Rows[i]["CreatedBy"].ToString())

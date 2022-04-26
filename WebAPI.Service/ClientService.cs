@@ -120,5 +120,10 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.ClientCommunityOperation(Model, Flag);
         }
+
+        public async Task<ServiceResponse<List<ClientCompliance>>> ClientComplianceOperation(ClientCompliance Model, int Flag)
+        {
+            return await data.ClientComplianceOperation(Model, Flag);
+        }
     }
 }

@@ -179,5 +179,20 @@ namespace ES_HomeCare_API.Controllers
             return Ok(await comSrv.GetNoteTypeList());
         }
 
+        [HttpGet("getCategory")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetCategoryList()
+        {
+            return Ok(await comSrv.GetCategoryList());
+        }
+
+        [HttpGet("getSubCategory")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetSubCategoryList()
+        {
+            return Ok(await comSrv.GetSubCategoryList());
+        }
     }
 }

@@ -8,7 +8,5 @@ namespace ES_HomeCare_API.Model
         public short IsActive { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
-
-
     }
 }

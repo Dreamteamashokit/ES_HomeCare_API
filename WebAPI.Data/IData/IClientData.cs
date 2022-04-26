@@ -33,5 +33,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
 
         Task<ServiceResponse<List<ClientNote>>> ClientNoteOperation(ClientNote Model, int Flag);
         Task<ServiceResponse<List<ClientCommunityMaster>>> ClientCommunityOperation(ClientCommunityMaster Model, int Flag);
+        Task<ServiceResponse<List<ClientCompliance>>> ClientComplianceOperation(ClientCompliance Model, int Flag);
     }
 }

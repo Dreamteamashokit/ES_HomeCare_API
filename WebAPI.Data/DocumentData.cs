@@ -36,8 +36,9 @@ namespace ES_HomeCare_API.WebAPI.Data
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
                     string sql = "select x.FolderId,x.FolderName,y.Documentid,y.FileName,y.FilePath,y.Title,y.Description,y.SeachTag, y.createdon as CreatedOn," +
-                        "e.FirstName + ' ' + e.MiddleName + ' ' + e.LastName as CreatedByName from " +
-                        "tblFoldermaster x left join tblEmpDocument y on x.FolderId = y.FolderId left join tblEmployee e on y.CreateOn=e.EmpId where x.EmpId = @EmpId;";
+                        // "e.FirstName + ' ' + e.MiddleName + ' ' + e.LastName as CreatedByName from " +
+                        " '' as CreatedByName from " +
+                        "tblFoldermaster x left join tblEmpDocument y on x.FolderId = y.FolderId left join tblEmployee e on y.CreateOn=e.EmpId where x.EmpId = @EmpId and x.FolderName<>'';";
 
                     var result = (await connection.QueryAsync(sql, new { @EmpId = empId }));
 
@@ -130,7 +131,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             ServiceResponse<IEnumerable<UploadFileRecord>> obj = new ServiceResponse<IEnumerable<UploadFileRecord>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select tbl.FolderId,FolderName,FileName from tblFoldermaster tbl left join tblEmpDocument ted on tbl.FolderId = ted.FolderId where EmpId = @EmpId or EmpId = 0;";
+                string sql = "select tbl.FolderId,FolderName,FileName from tblFoldermaster tbl left join tblEmpDocument ted on tbl.FolderId = ted.FolderId where EmpId = @EmpId and FolderName<>'';";
 
                 IEnumerable<UploadFileRecord> resData = (await connection.QueryAsync<UploadFileRecord>(sql,
              new { @EmpId = EmpId }));
