@@ -34,7 +34,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     _model.UserId = (int)(cnn.Query<int>(_query, _model).First());
 
 
-                    string sqlQuery = "INSERT INTO tblClient (UserId,BillTo,Nurse,OfChild,AltId,ID2,ID3,InsuranceID,WorkerName,WorkerContact,ReferredBy,IsHourly,TimeSlip,PriorityCode,IsActive,CreatedOn,CreatedBy) VALUES (@UserId,@BillTo,@Nurse,@OfChild,@AltId,@ID2,@ID3,@InsuranceID,@WorkerName,@WorkerContact,@ReferredBy,@IsHourly,@TimeSlip,@PriorityCode,@IsActive,@CreatedOn,@CreatedBy)";
+                    string sqlQuery = "INSERT INTO tblClient (UserId,BillTo,Nurse,OfChild,AltId,ID2,ID3,InsuranceID,WorkerName,WorkerContact,ReferredBy,IsHourly,TimeSlip,PriorityCode,IsActive,CreatedOn,CreatedBy) VALUES (@UserId,@BillTo,@NurseId,@OfChild,@AltId,@ID2,@ID3,@InsuranceID,@WorkerName,@WorkerContact,@ReferredBy,@IsHourly,@TimeSlip,@PriorityCode,@IsActive,@CreatedOn,@CreatedBy)";
 
 
                     int rowsAffected = cnn.Execute(sqlQuery, _model);
@@ -1023,7 +1023,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
                 var objResult = (await connection.QueryAsync<DiagnosisView>(sql, new { IsActive = 1, UserId = UserId }));
                 obj.Data = objResult;
-                obj.Result = objResult != null ? true : false;
+                                                                                                    obj.Result = objResult != null ? true : false;
                 obj.Message = objResult != null ? "Data Found." : "No Data found.";
             }
 
