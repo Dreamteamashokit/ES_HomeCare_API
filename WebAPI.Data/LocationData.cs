@@ -74,6 +74,28 @@ namespace ES_HomeCare_API.WebAPI.Data
             return obj;
         }
 
+        public async Task<ServiceResponse<IEnumerable<LocationModel>>> SearchLocation(string search)
+        {
+            ServiceResponse<IEnumerable<LocationModel>> obj = new ServiceResponse<IEnumerable<LocationModel>>();
+            using (var conn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sqlQuery = "Select x.* from tblLocation x Where x.LocationName Like '%'+@search+'%' OR x.Address Like '%'+@search+'%' OR x.City Like '%'+@search+'%' OR x.State Like '%'+@search+'%' OR x.Description Like '%'+@search+'%' ;";
+
+                IEnumerable<LocationModel> resObj = (await conn.QueryAsync<LocationModel>(sqlQuery, new { @search = search }));
+
+                obj.Data = resObj;
+                obj.Result = resObj.Any() ? true : false;
+                obj.Message = resObj.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
+        
+
+
+
+
+
+
 
 
     }

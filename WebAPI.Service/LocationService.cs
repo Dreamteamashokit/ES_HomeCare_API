@@ -23,8 +23,12 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             return await data.GetLocationList();
         }
+        public async Task<ServiceResponse<IEnumerable<LocationModel>>> SearchLocation(string search)
+        {
+            return await data.SearchLocation(search);
+        }
 
-
+        
 
 
     }

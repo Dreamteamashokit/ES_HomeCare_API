@@ -59,6 +59,14 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
+        [HttpGet("searchLocation/{search}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<LocationModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<LocationModel>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> SearchLocation(string search)
+        {
+            return Ok(await locSrv.SearchLocation(search.Trim()));
+        }
+
 
     }
 }

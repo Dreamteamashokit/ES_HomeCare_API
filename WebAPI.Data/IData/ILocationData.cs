@@ -10,6 +10,10 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
 
         Task<ServiceResponse<string>> AddLocation(LocationModel _model);
         Task<ServiceResponse<IEnumerable<LocationModel>>> GetLocationList();
+        Task<ServiceResponse<IEnumerable<LocationModel>>> SearchLocation(string search);
+
+
         
+
     }
 }
