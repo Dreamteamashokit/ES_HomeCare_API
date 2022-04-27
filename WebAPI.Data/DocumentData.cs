@@ -35,16 +35,9 @@ namespace ES_HomeCare_API.WebAPI.Data
             {
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sql = "select x.FolderId,x.FolderName,y.Documentid,y.FileName,y.FilePath,y.Title,y.Description,y.SeachTag, y.createdon as CreatedOn," +
-                        // "e.FirstName + ' ' + e.MiddleName + ' ' + e.LastName as CreatedByName from " +
-                        " '' as CreatedByName from " +
-                        "tblFoldermaster x left join tblEmpDocument y on x.FolderId = y.FolderId left join tblEmployee e on y.CreateOn=e.EmpId where x.EmpId = @EmpId and x.FolderName<>'';";
-                        "e.FirstName + ' ' + e.MiddleName + ' ' + e.LastName as CreatedByName from " +
-                        "tblFoldermaster x left join tblEmpDocument y on x.FolderId = y.FolderId left join tblUser e on y.CreateOn=e.UserId where x.EmpId = @EmpId;";
+                    string sql = "Select x.FolderId,x.FolderName,y.Documentid,y.FileName,y.FilePath,y.Title,y.Description,y.SeachTag, y.createdon as CreatedOn, e.FirstName + ' ' + e.MiddleName + ' ' + e.LastName as CreatedByName from  tblFoldermaster x left join tblEmpDocument y on x.FolderId = y.FolderId left join tblUser e on y.CreateOn=e.UserId where x.EmpId = @EmpId and x.FolderName <> '';";
 
                     var result = (await connection.QueryAsync(sql, new { @EmpId = empId }));
-
-
 
                     //Using Query Syntax
                     var GroupByQS = from doc in result

@@ -18,13 +18,10 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             data = ldata;
         }
-
-
         public async Task<ServiceResponse<string>> AddClient(ClientModel client)
         {
             return await data.AddClient(client);
         }
-
         public async Task<ServiceResponse<ClientModel>> GetClientDetail(int clientId)
         {
             return await data.GetClientDetail(clientId);
@@ -33,46 +30,34 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.SaveClientStatus(_model);
         }
-
         public async Task<ServiceResponse<IEnumerable<ClientStatusLst>>> GetClientStatusList(int ClientId)
         {
             return await data.GetClientStatusList(ClientId);
         }
-
         public async Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model, int Flag)
         {
             return await data.ClientMedicationcs(Model, Flag);
         }
-
-
-
         public async Task<ServiceResponse<string>> CreateServiceTask(IList<ServiceTaskModel> _list)
         {
             return await data.CreateServiceTask(_list);
         }
-
         public async Task<ServiceResponse<IEnumerable<ServiceTaskView>>> GetServiceTaskList(int userId)
         {
             return await data.GetServiceTaskList(userId);
         }
-
-
         public async Task<ServiceResponse<string>> UpdateService(ServiceTaskModel item)
         {
             return await data.UpdateService(item);
         }
-
-
         public async Task<ServiceResponse<string>> DeleteService(int SrvId)
         {
             return await data.DeleteService(SrvId);
         }
-
         public async Task<ServiceResponse<IEnumerable<ClientEmrgencyInfo>>> ClienEmergencyInfo(ClientEmrgencyInfo Model)
         {
             return await data.ClienEmergencyInfo(Model);
         }
-
         public async Task<ServiceResponse<string>> CreateEmpDeclined(EmployeeDecline _model)
         {
             return await data.CreateEmpDeclined(_model);
@@ -89,62 +74,22 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.DeleteEmpDeclined(declinedId);
         }
-
-        public async Task<ServiceResponse<IEnumerable<ProvisionInfo>>> ClienProvisionInfo(IEnumerable<ProvisionInfo> Model, int UserId = 0)
-        {
-
-
-
-            DataTable dt = CreateTable();
-            if (Model!=null)
-            {
-                foreach (ProvisionInfo item in Model)
-                {
-                    UserId = item.Userid;
-                    if (item.ProvisionType == 1)
-                    {
-                        dt.Rows.Add(item.ProvisionId, item.IsChecked, item.Userid);
-                    }
-                    else if (item.ProvisionType == 2)
-                    {
-                        dt.Rows.Add(item.ProvisionId, item.Value, item.Userid);
-                    }
-                   
-                }
-            }
-            
-            return await data.ClienProvisionInfo(dt,UserId);
-        }
-
         public async Task<ServiceResponse<string>> SaveClientContactLog(ClientContactLog _model)
         {
             return await data.SaveClientContactLog(_model);
         }
-
-        DataTable CreateTable()
-        {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("ProvisionId", typeof(Int32));
-            dt.Columns.Add("ProvisionValue", typeof(string));
-            dt.Columns.Add("UserId", typeof(Int32));
-            return dt;
-        }
-
         public async Task<ServiceResponse<IEnumerable<ClientContactLog>>> GetClientContactLogs(int ClientId)
         {
             return await data.GetClientContactLogs(ClientId);
         }
-
         public async Task<ServiceResponse<IEnumerable<ClientContactLog>>> getClientContactLogDetails(int contactLogId)
         {
             return await data.getClientContactLogDetails(contactLogId);
         }
-
         public async Task<ServiceResponse<string>> UpdateClientContactLog(ClientContactLog item)
         {
             return await data.UpdateClientContactLog(item);
         }
-
         public async Task<ServiceResponse<string>> DeleteClientContactLog(int contactLogId)
         {
             return await data.DeleteClientContactLog(contactLogId);
@@ -161,13 +106,10 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.GetOtherInfo(UserId);
         }
-
-
         public async Task<ServiceResponse<string>> AddDiagnosis(DiagnosisModel _model)
         {
             return await data.AddDiagnosis(_model);
         }
-
         public async Task<ServiceResponse<string>> UpdateDiagnosis(DiagnosisModel item)
         {
             return await data.UpdateDiagnosis(item);
@@ -180,20 +122,49 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.DeleteDiagnosis(DiagnosisId);
         }
-
         public async Task<ServiceResponse<List<ClientNote>>> ClientNoteOperation(ClientNote Model, int Flag)
         {
             return await data.ClientNoteOperation(Model, Flag);
         }
-
         public async Task<ServiceResponse<List<ClientCommunityMaster>>> ClientCommunityOperation(ClientCommunityMaster Model, int Flag)
         {
             return await data.ClientCommunityOperation(Model, Flag);
         }
+        public async Task<ServiceResponse<IEnumerable<ProvisionInfo>>> ClienProvisionInfo(IEnumerable<ProvisionInfo> Model, int UserId = 0)
+        {
+            DataTable dt = CreateTable();
+            if (Model != null)
+            {
+                foreach (ProvisionInfo item in Model)
+                {
+                    UserId = item.Userid;
+                    if (item.ProvisionType == 1)
+                    {
+                        dt.Rows.Add(item.ProvisionId, item.IsChecked, item.Userid);
+                    }
+                    else if (item.ProvisionType == 2)
+                    {
+                        dt.Rows.Add(item.ProvisionId, item.Value, item.Userid);
+                    }
 
+                }
+            }
+
+            return await data.ClienProvisionInfo(dt, UserId);
+        }
         public async Task<ServiceResponse<List<ClientCompliance>>> ClientComplianceOperation(ClientCompliance Model, int Flag)
         {
             return await data.ClientComplianceOperation(Model, Flag);
         }
+        DataTable CreateTable()
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("ProvisionId", typeof(Int32));
+            dt.Columns.Add("ProvisionValue", typeof(string));
+            dt.Columns.Add("UserId", typeof(Int32));
+            return dt;
+        }
+
+
     }
 }

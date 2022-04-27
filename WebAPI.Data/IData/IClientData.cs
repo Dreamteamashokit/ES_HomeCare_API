@@ -25,15 +25,11 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<IEnumerable<EmployeeDeclineView>>> GetEmpDeclined(int userId);
         Task<ServiceResponse<string>> UpdateEmpDeclined(EmployeeDecline item);
         Task<ServiceResponse<string>> DeleteEmpDeclined(int declinedId);
-        Task<ServiceResponse<IEnumerable<ProvisionInfo>>> ClienProvisionInfo(DataTable dt, int UserId = 0);
         Task<ServiceResponse<string>> SaveClientContactLog(ClientContactLog _model);
         Task<ServiceResponse<IEnumerable<ClientContactLog>>> GetClientContactLogs(int ClientId);
         Task<ServiceResponse<IEnumerable<ClientContactLog>>> getClientContactLogDetails(int contactLogId);
         Task<ServiceResponse<string>> UpdateClientContactLog(ClientContactLog item);
         Task<ServiceResponse<string>> DeleteClientContactLog(int contactLogId);
-
-        Task<ServiceResponse<List<ClientNote>>> ClientNoteOperation(ClientNote Model, int Flag);
-        Task<ServiceResponse<List<ClientCommunityMaster>>> ClientCommunityOperation(ClientCommunityMaster Model, int Flag);
         Task<ServiceResponse<string>> AddOtherInfo(OtherInfoModel _model);
         Task<ServiceResponse<string>> UpdateOtherInfo(OtherInfoModel item);
         Task<ServiceResponse<OtherInfoModel>> GetOtherInfo(int UserId);
@@ -41,8 +37,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<string>> UpdateDiagnosis(DiagnosisModel item);
         Task<ServiceResponse<IEnumerable<DiagnosisView>>> GetDiagnosisModel(int UserId);
         Task<ServiceResponse<string>> DeleteDiagnosis(int DiagnosisId);
-
-
+        Task<ServiceResponse<List<ClientNote>>> ClientNoteOperation(ClientNote Model, int Flag);
+        Task<ServiceResponse<List<ClientCommunityMaster>>> ClientCommunityOperation(ClientCommunityMaster Model, int Flag);
+        Task<ServiceResponse<IEnumerable<ProvisionInfo>>> ClienProvisionInfo(DataTable dt, int UserId = 0);
         Task<ServiceResponse<List<ClientCompliance>>> ClientComplianceOperation(ClientCompliance Model, int Flag);
     }
 }

@@ -342,10 +342,10 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<List<ClientEmrgencyInfo>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> getClientEmergencyInfo(int UserId)
         {
-           
-                ClientEmrgencyInfo model = new ClientEmrgencyInfo();
-                model.UserId = UserId;
-                model.CreatedOn = DateTime.Now.Date;
+
+            ClientEmrgencyInfo model = new ClientEmrgencyInfo();
+            model.UserId = UserId;
+            model.CreatedOn = DateTime.Now.Date;
 
             return Ok(await service.ClienEmergencyInfo(model));
 
@@ -592,14 +592,13 @@ namespace WebAPI_SAMPLE.Controllers
             }
         }
 
-
         [HttpGet("ProvisionInfo/{UserId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientEmrgencyInfo>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientEmrgencyInfo>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ProvisionInfo(int UserId)
-        {        
+        {
 
-            return Ok(await service.ClienProvisionInfo(null,UserId));
+            return Ok(await service.ClienProvisionInfo(null, UserId));
         }
 
         [HttpPost("SaveProvisionInfo")]
@@ -610,11 +609,6 @@ namespace WebAPI_SAMPLE.Controllers
 
             return Ok(await service.ClienProvisionInfo(model, 0));
         }
-
-    }
-
-
-
 
         [HttpPost("AddClientCompliance")]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientCompliance>>), StatusCodes.Status200OK)]
@@ -699,6 +693,7 @@ namespace WebAPI_SAMPLE.Controllers
             {
                 throw;
             }
+
         }
 
     }

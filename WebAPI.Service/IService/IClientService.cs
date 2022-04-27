@@ -32,17 +32,14 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<string>> DeleteClientContactLog(int contactLogId);
         Task<ServiceResponse<string>> AddOtherInfo(OtherInfoModel _model);
         Task<ServiceResponse<string>> UpdateOtherInfo(OtherInfoModel item);
-        Task<ServiceResponse<OtherInfoModel>> GetOtherInfo(int UserId);
-
-
+        Task<ServiceResponse<OtherInfoModel>> GetOtherInfo(int UserId);   
         Task<ServiceResponse<string>> AddDiagnosis(DiagnosisModel _model);
         Task<ServiceResponse<string>> UpdateDiagnosis(DiagnosisModel item);
         Task<ServiceResponse<IEnumerable<DiagnosisView>>> GetDiagnosisModel(int UserId);
         Task<ServiceResponse<string>> DeleteDiagnosis(int DiagnosisId);
-        Task<ServiceResponse<IEnumerable<ProvisionInfo>>> ClienProvisionInfo(IEnumerable<ProvisionInfo> model, int UserId = 0);
-
         Task<ServiceResponse<List<ClientNote>>> ClientNoteOperation(ClientNote Model, int Flag);
         Task<ServiceResponse<List<ClientCommunityMaster>>> ClientCommunityOperation(ClientCommunityMaster Model, int Flag);
+        Task<ServiceResponse<IEnumerable<ProvisionInfo>>> ClienProvisionInfo(IEnumerable<ProvisionInfo> model, int UserId = 0);
         Task<ServiceResponse<List<ClientCompliance>>> ClientComplianceOperation(ClientCompliance Model, int Flag);
     }
 }
