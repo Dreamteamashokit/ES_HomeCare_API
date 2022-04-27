@@ -43,5 +43,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<string>> DeleteDiagnosis(int DiagnosisId);
 
 
+        Task<ServiceResponse<List<ClientCompliance>>> ClientComplianceOperation(ClientCompliance Model, int Flag);
     }
 }

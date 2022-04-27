@@ -339,15 +339,35 @@ namespace ES_HomeCare_API.WebAPI.Data
 
         }
 
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetCategoryList()
+        {
+            ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "select *  from tblCategory; ";
+                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sql)).Select(x => new ItemList { ItemId = x.CategoryItemId, ItemName = x.CategoryItemName });
+                obj.Data = cmeetings;
+                obj.Result = cmeetings.Any() ? true : false;
+                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
 
+        }
 
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetSubCategoryList()
+        {
+            ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "select *  from tblSubCategory; ";
+                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sql)).Select(x => new ItemList { ItemId = x.SubCategoryItemId, ItemName = x.SubCategoryItemName });
+                obj.Data = cmeetings;
+                obj.Result = cmeetings.Any() ? true : false;
+                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
 
-
-
-
-
-
-
+        }
     }
 }
 

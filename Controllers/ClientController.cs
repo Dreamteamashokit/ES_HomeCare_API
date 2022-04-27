@@ -612,5 +612,95 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
     }
+
+
+
+
+        [HttpPost("AddClientCompliance")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientCompliance>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientCompliance>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddClientCompliance(ClientCompliance model)
+        {
+            try
+            {
+                model.CreatedOn = DateTime.Now.Date;
+                int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Create"));
+                return Ok(await service.ClientComplianceOperation(model, Flag));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("UpdateClientCompliance")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientCompliance>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientCompliance>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateClientCompliance(ClientCompliance model)
+        {
+            try
+            {
+                model.CreatedOn = DateTime.Now.Date;
+                int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Modify"));
+                return Ok(await service.ClientComplianceOperation(model, Flag));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("DeleteClientCompliance")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientCompliance>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientCompliance>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteClientCompliance(ClientCompliance model)
+        {
+            try
+            {
+                model.CreatedOn = DateTime.Now.Date;
+                int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Delete"));
+                return Ok(await service.ClientComplianceOperation(model, Flag));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("GetClientComplianceList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientCompliance>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientCompliance>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetClientComplianceList(ClientCompliance model)
+        {
+            try
+            {
+                model.CreatedOn = DateTime.Now.Date;
+                int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "select"));
+                return Ok(await service.ClientComplianceOperation(model, Flag));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("GetClientCompliance")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientCompliance>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientCompliance>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetClientCompliance(ClientCompliance model)
+        {
+            try
+            {
+                model.CreatedOn = DateTime.Now.Date;
+                int Flag = 5;
+                return Ok(await service.ClientComplianceOperation(model, Flag));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+    }
 }
 
