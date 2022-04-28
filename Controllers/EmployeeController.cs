@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ES_HomeCare_API.Model.Employee;
+using ES_HomeCare_API.ViewModel.Employee;
 using ES_HomeCare_API.WebAPI.Service;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using Microsoft.AspNetCore.Http;
@@ -60,8 +61,8 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
         [HttpGet("getEmployeebyId/{empId}")]
-        [ProducesResponseType(typeof(ServiceResponse<EmployeeModel>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<EmployeeModel>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<EmployeeJson>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<EmployeeJson>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetEmployeeById(int empId)
         {
             return Ok(await service.GetEmployeeById(empId));

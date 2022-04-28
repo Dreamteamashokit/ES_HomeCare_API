@@ -1,5 +1,6 @@
 ﻿using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Employee;
+using ES_HomeCare_API.ViewModel.Employee;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             return await data.DeleteEmployee(UserId);
         }
 
-        public async Task<ServiceResponse<EmployeeModel>> GetEmployeeById(int UserId)
+        public async Task<ServiceResponse<EmployeeJson>> GetEmployeeById(int UserId)
         {
             return await data.GetEmployeeById(UserId);
         }

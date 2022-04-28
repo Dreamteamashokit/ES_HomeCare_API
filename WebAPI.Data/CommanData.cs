@@ -124,7 +124,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select x.ItemId, x.ItemName from tblMaster x where x.MasterType= @TypeId and x.IsActive= 1; ";
+                string sql = "select x.MasterId, x.ItemName from tblMaster x where x.MasterType= @TypeId and x.IsActive= 1; ";
 
                 IEnumerable<ItemList> resData = (await connection.QueryAsync<ItemList>(sql,
        new { @TypeId = typeId }));

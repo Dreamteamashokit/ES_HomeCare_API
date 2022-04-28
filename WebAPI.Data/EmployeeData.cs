@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Employee;
+using ES_HomeCare_API.ViewModel.Employee;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -114,14 +115,14 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return obj;
         }
 
-        public async Task<ServiceResponse<EmployeeModel>> GetEmployeeById(int UserId)
+        public async Task<ServiceResponse<EmployeeJson>> GetEmployeeById(int UserId)
         {
-            ServiceResponse<EmployeeModel> obj = new ServiceResponse<EmployeeModel>();
+            ServiceResponse<EmployeeJson> obj = new ServiceResponse<EmployeeJson>();
 
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "SELECT x.*,y.EmpType,y.DateOfHire,y.DateOfFirstCase,y.Dependents,y.City,y.Country,y.TaxState,y.ZipCode,y.Municipality,y.Notes FROM tblUser x inner join tblEmployee y on x.UserId=y.UserId Where x.UserId=@UserId;";
-                IEnumerable<EmployeeModel> cmeetings = (await connection.QueryAsync<EmployeeModel>(sql,
+                string sql = "SELECT x.*,y.EmpType,y.DateOfHire,y.DateOfFirstCase,y.Dependents,y.City,y.Country,y.TaxState,y.ZipCode,y.Municipality,y.Notes,p.ItemName as GenderName,q.ItemName as MaritalStatusName,r.ItemName as EthnicityName,s.FirstName+''+s.LastName as Supervisor,t.TypeName as EmpTypeName FROM tblUser x inner join tblEmployee y on x.UserId=y.UserId Left join tblMaster p on x.Gender=p.MasterId Left join tblMaster q on x.MaritalStatus=q.MasterId Left join tblMaster r on x.Ethnicity=r.MasterId Left join tblUser s on  x.SupervisorId=s.UserId Left join tblEmpType t on  y.EmpType=t.TypeId Where x.UserId=@UserId; ";
+                IEnumerable<EmployeeJson> cmeetings = (await connection.QueryAsync<EmployeeJson>(sql,
                          new { @UserId = UserId }));
                 obj.Data = cmeetings.FirstOrDefault();
                 obj.Result = cmeetings.Any() ? true : false;
