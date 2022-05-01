@@ -2,6 +2,7 @@
 {
     public class LocationModel : BaseModel
     {
+        
         public int LocationId { get; set; }
         public int CompanyId { get; set; }
         public string LocationName { get; set; }
@@ -20,6 +21,8 @@
         public string LegacyId { get; set; }
         public string NPI { get; set; }
         public string ISA06 { get; set; }
+        public string SearchText { get; set; }
+
 
 
     }

@@ -47,10 +47,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                 resObj.Message = ex.Message;
                 return resObj;
             }
-            finally
-            {
-
-            }
+            
             return resObj;
         
         }
@@ -63,7 +60,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             ServiceResponse<IEnumerable<LocationModel>> obj = new ServiceResponse<IEnumerable<LocationModel>>();
             using (var conn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sqlQuery = "select * from tblLocation;";
+                string sqlQuery = "select x.*,ISNULL(x.LocationName,'') + ' ' + ISNULL(x.Address,'') + ' ' + ISNULL(x.State,'') + ' ' + ISNULL(x.City,'') + ' ' + ISNULL(x.ZipCode,'') as SearchText from tblLocation x;";
 
                 IEnumerable<LocationModel> resObj = (await conn.QueryAsync<LocationModel>(sqlQuery));
 
