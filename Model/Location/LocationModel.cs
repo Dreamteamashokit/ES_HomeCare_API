@@ -10,8 +10,6 @@
         public string LocationName { get; set; }
         public string BillingName { get; set; }
         public string Contact { get; set; }
-        public decimal Longitude { get; set; }
-        public decimal Latitude { get; set; }
         public string Email { get; set; }
         public string Address { get; set; }
         public string Phone { get; set; }
