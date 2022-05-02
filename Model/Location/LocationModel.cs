@@ -2,6 +2,7 @@
 {
     public class LocationModel : BaseModel
     {
+        
         public int LocationId { get; set; }
         public int CompanyId { get; set; }     
         public decimal Latitude { get; set; }
@@ -9,6 +10,8 @@
         public string LocationName { get; set; }
         public string BillingName { get; set; }
         public string Contact { get; set; }
+        public decimal Longitude { get; set; }
+        public decimal Latitude { get; set; }
         public string Email { get; set; }
         public string Address { get; set; }
         public string Phone { get; set; }
@@ -22,6 +25,8 @@
         public string LegacyId { get; set; }
         public string NPI { get; set; }
         public string ISA06 { get; set; }
+        public string SearchText { get; set; }
+
 
 
     }
