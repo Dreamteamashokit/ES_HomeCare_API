@@ -71,10 +71,10 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
-        [HttpGet("searchAvailbility")]
+        [HttpPost("searchAvailbility")]
         [ProducesResponseType(typeof(ServiceResponse<List<AvailbilityReponse>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<AvailbilityReponse>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SearchAvailbility([FromQuery] AvailbilityRequestJson obj)
+        public async Task<IActionResult> SearchAvailbility([FromBody] AvailbilityRequestJson obj)
         {
             var model = new AvailbilityRequest() {
                 
