@@ -6,6 +6,8 @@ namespace ES_HomeCare_API.Model.Employee
     {       
         public int AddressId { get; set; }
         public int AddressType { get; set; }
+        public decimal Latitude { get; set; }   
+        public decimal Longitude { get; set; }
         public string Owner { get; set; }
         public string FlatNo { get; set; }
         public string Address { get; set; }
