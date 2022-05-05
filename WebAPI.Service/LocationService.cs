@@ -1,4 +1,5 @@
-﻿using ES_HomeCare_API.Model.Location;
+﻿using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Location;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using System.Collections.Generic;
@@ -26,6 +27,12 @@ namespace ES_HomeCare_API.WebAPI.Service
         public async Task<ServiceResponse<IEnumerable<LocationModel>>> SearchLocation(string search)
         {
             return await data.SearchLocation(search);
+        }
+
+
+        public async Task<ServiceResponse<IEnumerable<AvailbilityReponse>>> SearchAvailbility(AvailbilityRequest req)
+        {
+            return await data.SearchAvailbility(req);
         }
 
         

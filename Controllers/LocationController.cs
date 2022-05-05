@@ -1,4 +1,7 @@
-﻿using ES_HomeCare_API.Model.Location;
+﻿using ES_HomeCare_API.Helper;
+using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Location;
+using ES_HomeCare_API.ViewModel;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -65,6 +68,27 @@ namespace ES_HomeCare_API.Controllers
         public async Task<IActionResult> SearchLocation(string search)
         {
             return Ok(await locSrv.SearchLocation(search.Trim()));
+        }
+
+
+        [HttpGet("searchAvailbility")]
+        [ProducesResponseType(typeof(ServiceResponse<List<AvailbilityReponse>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<AvailbilityReponse>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> SearchAvailbility([FromQuery] AvailbilityRequestJson obj)
+        {
+            var model = new AvailbilityRequest() {
+                
+                CaseId= obj.CaseId,
+                EmpTypeId = obj.EmpTypeId,
+                PayTypeId=obj.PayTypeId,
+                FromDate = obj.FromDate.ParseDate(),
+                ToDate = obj.ToDate.ParseDate(),
+                TimeIn = obj.TimeIn.ParseTime("hh:mm:ss"),
+                TimeOut = obj.TimeOut.ParseTime("hh:mm:ss"),
+                ProvisionsList=obj.ProvisionsList,
+
+            };
+            return Ok(await locSrv.SearchAvailbility(model));
         }
 
 

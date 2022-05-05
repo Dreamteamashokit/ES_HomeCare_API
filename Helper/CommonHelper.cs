@@ -16,6 +16,13 @@ namespace ES_HomeCare_API.Helper
             return output.Subtract(output.Date);
         }
 
+        static public TimeSpan ParseTime(this string strTime,string format)
+        {
+            DateTime output;
+            var ok = DateTime.TryParseExact(strTime, format, CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out output);
+            return output.Subtract(output.Date);
+        }
+
         public static DateTime ParseDate(this string dateStr)
         {
 

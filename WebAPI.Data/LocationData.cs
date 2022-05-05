@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Location;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using Microsoft.Extensions.Configuration;
@@ -47,9 +48,9 @@ namespace ES_HomeCare_API.WebAPI.Data
                 resObj.Message = ex.Message;
                 return resObj;
             }
-            
+
             return resObj;
-        
+
         }
 
         public async Task<ServiceResponse<IEnumerable<LocationModel>>> GetLocationList()
@@ -83,13 +84,59 @@ namespace ES_HomeCare_API.WebAPI.Data
             }
             return obj;
         }
-        
 
+        public async Task<ServiceResponse<IEnumerable<AvailbilityReponse>>> SearchAvailbility(AvailbilityRequest req)
+        {
+            ServiceResponse<IEnumerable<AvailbilityReponse>> obj = new ServiceResponse<IEnumerable<AvailbilityReponse>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string para = "";
+                foreach (var item in req.ProvisionsList)
+                {
+                    para += item;
+                    para += ",";
+                }
+                para.TrimEnd(',');
 
+                var procedure = "[AvailbilityProc]";
+                var values = new
+                {
+                    @FromDate = req.FromDate,
+                    @ToDate = req.ToDate,
+                    @StartTime = req.TimeIn,
+                    @Endtime = req.TimeOut,
+                    //@EmpType = req.EmpTypeId,
+                    @CaseId = req.CaseId,
+                    @ProvisionList = para
+                };
+                var results = (await connection.QueryAsync(procedure, values, commandType: CommandType.StoredProcedure)).ToList();
+                //Using Query Syntax
+                var GroupByQS = from p in results
+                                group p by new { p.EmpId, p.EName, p.Address, p.Latitude, p.Longitude,p.EmpName } into g
+                                orderby g.Key.EmpId descending
+                                select new AvailbilityReponse
+                                {
+                                    EmpId = g.Key.EmpId,
+                                    EmpName=g.Key.EmpName,
+                                    Address = g.Key.Address,
+                                    Latitude = g.Key.Latitude == null ? 0.0m : g.Key.Latitude,
+                                    Longitude = g.Key.Longitude==null?0.0m: g.Key.Longitude,
+                                    MeetingList = g.Select(f => new EmpAppointment
+                                    {
+                                        ClientId = f.ClientId,
+                                        ClientName = f.CName,
+                                        MeetingDate = f.MeetingDate,
+                                        StartTime = f.StartTime,
+                                        EndTime = f.EndTime,
+                                    }).ToList()
+                                };
 
-
-
-
+                obj.Data = GroupByQS;
+                obj.Result = results.Any() ? true : false;
+                obj.Message = results.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
 
 
     }
