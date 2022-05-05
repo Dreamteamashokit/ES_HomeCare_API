@@ -25,19 +25,26 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         public async Task<ServiceResponse<string>> AddEmployee(EmployeeModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
+            IDbTransaction transaction = null;
+
             try
             {
+
+
                 using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
+                    if (cnn.State != ConnectionState.Open)
+                        cnn.Open();
+                    transaction = cnn.BeginTransaction();
 
                     string _query = "INSERT INTO tblUser (UserKey,UserType,UserName,UserPassword,SSN,FirstName,MiddleName,LastName,DOB,Email,CellPhone,HomePhone,EmgPhone,EmgContact,Gender,MaritalStatus,Ethnicity,SupervisorId,IsActive,CreatedOn,CreatedBy) VALUES (@UserKey,@UserType,@UserName,@UserPassword,@SSN,@FirstName,@MiddleName,@LastName,@DOB,@Email,@CellPhone,@HomePhone,@EmgPhone,@EmgContact,@Gender,@MaritalStatus,@Ethnicity,@SupervisorId,@IsActive,@CreatedOn,@CreatedBy); select SCOPE_IDENTITY();";
-                    _model.UserId = (int)(cnn.Query<int>(_query, _model).First());
+
+                    _model.UserId = (int)(cnn.ExecuteScalar<int>(_query, _model, transaction));
 
                     string sqlQuery = "INSERT INTO tblEmployee (UserId,EmpType,DateOfHire,DateOfFirstCase,Dependents,City,Country,TaxState,ZipCode,Municipality,Notes,IsActive,CreatedOn,CreatedBy) VALUES (@UserId,@EmpType,@DateOfHire,@DateOfFirstCase,@Dependents,@City,@Country,@TaxState,@ZipCode,@Municipality,@Notes,@IsActive,@CreatedOn,@CreatedBy)";
 
-
-                    int rowsAffected = cnn.Execute(sqlQuery, _model);
-
+                    int rowsAffected = cnn.Execute(sqlQuery, _model, transaction);
+                    transaction.Commit();
                     if (rowsAffected > 0)
                     {
                         sres.Result = true;
@@ -48,17 +55,24 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                         sres.Data = null;
                         sres.Message = "Failed new creation.";
                     }
+
+
                 }
 
             }
             catch (Exception ex)
             {
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
                 sres.Message = ex.Message;
                 return sres;
             }
             finally
             {
-
+                if (transaction != null)
+                    transaction.Dispose();
             }
             return sres;
         }
@@ -69,7 +83,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 var procedure = "[EmpProc]";
-                var values = new { @flag = 1, @IsActive = 1,@UserId= userId };
+                var values = new { @flag = 1, @IsActive = 1, @UserId = userId };
                 IEnumerable<EmployeeList> results = (await connection.QueryAsync<EmployeeList>(procedure,
         values, commandType: CommandType.StoredProcedure));
                 obj.Data = results;
@@ -88,7 +102,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
                     var procedure = "[EmpProc]";
-                    var values = new { @flag = 2, @IsActive = 0, @UserId= UserId };
+                    var values = new { @flag = 2, @IsActive = 0, @UserId = UserId };
                     int rowsAffected = connection.Execute(procedure, values, commandType: CommandType.StoredProcedure);
 
                     if (rowsAffected > 0)
@@ -149,7 +163,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     string sqlQuery = "Insert Into tblAddress (UserId,AddressType,Owner,FlatNo,Address,City,Country,State,ZipCode,CreatedOn,CreatedBy) Values (@UserId,@AddressType,@Owner,@FlatNo,@Address,@City,@Country,@State,@ZipCode,@CreatedOn,@CreatedBy);";
                     int rowsAffected = db.Execute(sqlQuery, new
                     {
-                        UserId = _model.UserId,                       
+                        UserId = _model.UserId,
                         AddressType = _model.AddressType,
                         Owner = _model.Owner,
                         FlatNo = _model.FlatNo,

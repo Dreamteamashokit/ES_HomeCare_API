@@ -26,18 +26,25 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         public async Task<ServiceResponse<string>> AddClient(ClientModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
+            IDbTransaction transaction = null;
             try
             {
                 using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
+                    if (cnn.State != ConnectionState.Open)
+                        cnn.Open();
+                    transaction = cnn.BeginTransaction();
+
+
                     string _query = "INSERT INTO tblUser (UserKey,UserType,UserName,UserPassword,SSN,FirstName,MiddleName,LastName,DOB,Email,CellPhone,HomePhone,EmgPhone,EmgContact,Gender,MaritalStatus,Ethnicity,SupervisorId,IsActive,CreatedOn,CreatedBy) VALUES (@UserKey,@UserType,@UserName,@UserPassword,@SSN,@FirstName,@MiddleName,@LastName,@DOB,@Email,@CellPhone,@HomePhone,@EmgPhone,@EmgContact,@Gender,@MaritalStatus,@Ethnicity,@SupervisorId,@IsActive,@CreatedOn,@CreatedBy); select SCOPE_IDENTITY();";
-                    _model.UserId = (int)(cnn.Query<int>(_query, _model).First());
+                    
 
-
+                    _model.UserId = (int)(cnn.ExecuteScalar<int>(_query, _model, transaction));
                     string sqlQuery = "INSERT INTO tblClient (UserId,BillTo,Nurse,OfChild,AltId,ID2,ID3,InsuranceID,WorkerName,WorkerContact,ReferredBy,IsHourly,TimeSlip,PriorityCode,IsActive,CreatedOn,CreatedBy) VALUES (@UserId,@BillTo,@NurseId,@OfChild,@AltId,@ID2,@ID3,@InsuranceID,@WorkerName,@WorkerContact,@ReferredBy,@IsHourly,@TimeSlip,@PriorityCode,@IsActive,@CreatedOn,@CreatedBy)";
 
 
-                    int rowsAffected = cnn.Execute(sqlQuery, _model);
+                    int rowsAffected = cnn.Execute(sqlQuery, _model, transaction);
+                    transaction.Commit();
 
                     if (rowsAffected > 0)
                     {
@@ -54,12 +61,17 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             }
             catch (Exception ex)
             {
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
                 sres.Message = ex.Message;
                 return sres;
             }
             finally
             {
-
+                if (transaction != null)
+                    transaction.Dispose();
             }
             return sres;
         }
