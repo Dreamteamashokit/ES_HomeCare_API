@@ -105,22 +105,22 @@ namespace ES_HomeCare_API.WebAPI.Data
                     @ToDate = req.ToDate,
                     @StartTime = req.TimeIn,
                     @Endtime = req.TimeOut,
-                    //@EmpType = req.EmpTypeId,
+                    @EmpType = req.EmpTypeId,
                     @CaseId = req.CaseId,
                     @ProvisionList = para
                 };
                 var results = (await connection.QueryAsync(procedure, values, commandType: CommandType.StoredProcedure)).ToList();
                 //Using Query Syntax
                 var GroupByQS = from p in results
-                                group p by new { p.EmpId, p.EName, p.Address, p.Latitude, p.Longitude,p.EmpName } into g
+                                group p by new { p.EmpId, p.EName, p.Address, p.Latitude, p.Longitude } into g
                                 orderby g.Key.EmpId descending
                                 select new AvailbilityReponse
                                 {
                                     EmpId = g.Key.EmpId,
-                                    EmpName=g.Key.EmpName,
+                                    EmpName=g.Key.EName,
                                     Address = g.Key.Address,
-                                    Latitude = g.Key.Latitude == null ? 0.0m : g.Key.Latitude,
-                                    Longitude = g.Key.Longitude==null?0.0m: g.Key.Longitude,
+                                    Latitude = g.Key.Latitude == null ? 0.0m : Convert.ToDecimal(g.Key.Latitude),
+                                    Longitude = g.Key.Longitude==null?0.0m : Convert.ToDecimal(g.Key.Longitude),
                                     MeetingList = g.Select(f => new EmpAppointment
                                     {
                                         ClientId = f.ClientId,

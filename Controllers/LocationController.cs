@@ -83,8 +83,8 @@ namespace ES_HomeCare_API.Controllers
                 PayTypeId=obj.PayTypeId,
                 FromDate = obj.FromDate.ParseDate(),
                 ToDate = obj.ToDate.ParseDate(),
-                TimeIn = obj.TimeIn.ParseTime("hh:mm:ss"),
-                TimeOut = obj.TimeOut.ParseTime("hh:mm:ss"),
+                TimeIn = obj.TimeIn.ParseTime(),
+                TimeOut = obj.TimeOut.ParseTime(),
                 ProvisionsList=obj.ProvisionsList,
 
             };
