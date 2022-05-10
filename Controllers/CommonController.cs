@@ -200,5 +200,17 @@ namespace ES_HomeCare_API.Controllers
         {
             return Ok(await comSrv.GetSubCategoryList());
         }
+
+
+
+        [HttpGet("getProvisionList/{ProvisionType}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetProvisionList(int ProvisionType)
+        {
+            return Ok(await comSrv.GetProvisionList(ProvisionType));
+        }
+
+
     }
 }

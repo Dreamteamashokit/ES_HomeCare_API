@@ -593,8 +593,8 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
         [HttpGet("ProvisionInfo/{UserId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<ClientEmrgencyInfo>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<ClientEmrgencyInfo>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ProvisionInfo>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ProvisionInfo>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ProvisionInfo(int UserId)
         {
 

@@ -17,8 +17,6 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             data = ldata;
         }
-
-
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetMasterList(short typeId)
         {
             return await data.GetMasterList(typeId);
@@ -99,8 +97,11 @@ namespace ES_HomeCare_API.WebAPI.Service
 
         }
 
-        
 
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetProvisionList(int ProvisionType)
+        {
+            return await data.GetProvisionList(ProvisionType);
+        }
 
 
 

@@ -30,6 +30,8 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
         Task<ServiceResponse<IEnumerable<ItemList>>> GetSubCategoryList();
         Task<ServiceResponse<IEnumerable<ItemList>>> GetDiagnosisList();
 
+        Task<ServiceResponse<IEnumerable<ItemList>>> GetProvisionList(int ProvisionType);
+
     }
 
 

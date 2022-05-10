@@ -353,7 +353,6 @@ namespace ES_HomeCare_API.WebAPI.Data
             return obj;
 
         }
-
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetSubCategoryList()
         {
             ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
@@ -366,8 +365,35 @@ namespace ES_HomeCare_API.WebAPI.Data
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
             }
             return obj;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetProvisionList(int ProvisionType)
+        {
+            ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "Select * from tblProvisionsMaster Where ProvisionType=@ProvisionType; ";
+                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sql, new { @ProvisionType = ProvisionType })).Select(x => new ItemList { ItemId = x.ProvisionId, ItemName = x.Title });
+                obj.Data = cmeetings;
+                obj.Result = cmeetings.Any() ? true : false;
+                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
 
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }
 
