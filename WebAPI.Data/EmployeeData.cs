@@ -29,8 +29,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             try
             {
-
-
                 using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
                     if (cnn.State != ConnectionState.Open)
@@ -55,7 +53,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                         sres.Data = null;
                         sres.Message = "Failed new creation.";
                     }
-
 
                 }
 
@@ -160,20 +157,33 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = "Insert Into tblAddress (UserId,AddressType,Owner,FlatNo,Address,City,Country,State,ZipCode,CreatedOn,CreatedBy) Values (@UserId,@AddressType,@Owner,@FlatNo,@Address,@City,@Country,@State,@ZipCode,@CreatedOn,@CreatedBy);";
+                    string sqlQuery = String.Empty;
+                    if (_model.AddressId > 0)
+                    {
+                        sqlQuery = "UPDATE [dbo].[tblAddress] SET UserId=@UserId,AddressType=@AddressType,Owner=@Owner,FlatNo=@FlatNo,Address=@Address,City=@City,Country=@Country,State=@State,ZipCode=@ZipCode,Longitude=@Longitude,Latitude=@Latitude,CreatedOn=@CreatedOn,CreatedBy=@CreatedBy WHERE AddressId=@AddressId";
+                    }
+                    else
+                    {
+                        sqlQuery = "Insert Into tblAddress (UserId,AddressType,Owner,FlatNo,Address,City,Country,State,ZipCode,Longitude,Latitude,CreatedOn,CreatedBy) Values (@UserId,@AddressType,@Owner,@FlatNo,@Address,@City,@Country,@State,@ZipCode,@Longitude,@Latitude,@CreatedOn,@CreatedBy);";
+                    }
+
+
                     int rowsAffected = db.Execute(sqlQuery, new
                     {
-                        UserId = _model.UserId,
-                        AddressType = _model.AddressType,
-                        Owner = _model.Owner,
-                        FlatNo = _model.FlatNo,
-                        Address = _model.Address,
-                        City = _model.City,
-                        Country = _model.Country,
-                        State = _model.State,
-                        ZipCode = _model.ZipCode,
-                        CreatedOn = _model.CreatedOn,
-                        CreatedBy = _model.CreatedBy
+                        @AddressId= _model.AddressId,
+                        @UserId = _model.UserId,
+                        @AddressType = _model.AddressType,
+                        @Owner = _model.Owner,
+                        @FlatNo = _model.FlatNo,
+                        @Address = _model.Address,
+                        @City = _model.City,
+                        @Country = _model.Country,
+                        @State = _model.State,
+                        @ZipCode = _model.ZipCode,
+                        @Longitude = _model.Longitude,
+                        @Latitude = _model.Latitude,
+                        @CreatedOn = _model.CreatedOn,
+                        @CreatedBy = _model.CreatedBy
                     });
 
                     if (rowsAffected > 0)
