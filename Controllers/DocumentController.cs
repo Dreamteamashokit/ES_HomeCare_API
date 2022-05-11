@@ -105,7 +105,6 @@ namespace ES_HomeCare_API.Controllers
         }
 
         [HttpGet("download/{documentName}")]
-
         public IActionResult GetDocumentFromS3(string documentName, string foldername)
         {
             try

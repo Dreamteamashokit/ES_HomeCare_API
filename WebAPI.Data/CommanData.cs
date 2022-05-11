@@ -206,7 +206,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sqlqry = "Select x.UserId,x.LastName +' '+ x.FirstName+'(' + ISNULL(x.UserKey,'0-0-0')+')' as EmpName from tblUser x inner join tblEmployee y on x.UserId=y.UserId where y.EmpType=@EmpType;";
+                string sqlqry = "Select x.UserId,x.LastName +' '+ x.FirstName+'(' + ISNULL(x.UserId,'0-0-0')+')' as EmpName from tblUser x inner join tblEmployee y on x.UserId=y.UserId where y.EmpType=@EmpType;";
                 IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry, new { @EmpType = type })).Select(x => new ItemList { ItemId = x.UserId, ItemName = x.EmpName });
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
@@ -223,7 +223,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             {
 
 
-                string sqlqry = "select x.UserId,x.LastName +' '+ x.FirstName+'(' +ISNULL(x.UserKey,'0-0-0')+')' as EmpName from  tblUser x inner join tblEmployee y on x.UserId=y.UserId where x.IsActive=1;";
+                string sqlqry = "select x.UserId,x.LastName +' '+ x.FirstName+'(' +ISNULL(x.UserId,'0-0-0')+')' as EmpName from  tblUser x inner join tblEmployee y on x.UserId=y.UserId where x.IsActive=1;";
                 IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry)).Select(x => new ItemList { ItemId = x.UserId, ItemName = x.EmpName });
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
@@ -237,7 +237,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sqlqry = "select x.UserId,x.LastName +' '+ x.FirstName+'(' +ISNULL(x.UserKey,'1-1-1')+')' as ClientName from  tblUser x inner join tblClient y on x.UserId=y.UserId where x.IsActive=1;";
+                string sqlqry = "select x.UserId,x.LastName +' '+ x.FirstName+'(' +ISNULL(x.UserId,'1-1-1')+')' as ClientName from  tblUser x inner join tblClient y on x.UserId=y.UserId where x.IsActive=1;";
 
                 IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry)).Select(x => new ItemList { ItemId = x.UserId, ItemName = x.ClientName });
                 obj.Data = cmeetings;

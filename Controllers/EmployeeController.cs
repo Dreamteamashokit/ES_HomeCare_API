@@ -47,9 +47,7 @@ namespace WebAPI_SAMPLE.Controllers
         public async Task<IActionResult> GetEmployeeListObj(int userId)
         {
             return Ok(await service.GetEmployeeListObj(userId));
-        }
-
-      
+        }   
      
 
         [HttpGet("deleteEmployee/{empId}")]

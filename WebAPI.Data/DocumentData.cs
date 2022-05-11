@@ -27,7 +27,6 @@ namespace ES_HomeCare_API.WebAPI.Data
             configuration = _configuration;
         }
 
-
         public async Task<ServiceResponse<IEnumerable<FolderView>>> GetDocumentlist(int empId)
         {
             ServiceResponse<IEnumerable<FolderView>> obj = new ServiceResponse<IEnumerable<FolderView>>();
@@ -150,7 +149,7 @@ namespace ES_HomeCare_API.WebAPI.Data
 
             using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sqlQuery = "Insert Into tblEmpDocument (FolderId,FileName,FilePath,Title,SeachTag,Description,CreateOn,CreatedOn) Values (@FolderId,@FileName,@FilePath,@Title,@SeachTag,@Description,@CreateOn,@CreatedOn);";
+                string sqlQuery = "Insert Into tblEmpDocument (FolderId,FileName,FilePath,Title,SeachTag,Description,UserId,CreatedOn,CreatedBy) Values (@FolderId,@FileName,@FilePath,@Title,@SeachTag,@Description,@UserId,@CreatedOn,@CreatedBy);";
                 int rowsAffected = db.Execute(sqlQuery, new
                 {
                     FolderId = model.FolderId,
@@ -159,7 +158,8 @@ namespace ES_HomeCare_API.WebAPI.Data
                     Title = model.Title,
                     SeachTag = model.Search,
                     Description = model.Description,
-                    CreateOn = model.CreatedBy,
+                    UserId = model.CreatedBy,
+                    CreatedBy = model.CreatedBy,
                     CreatedOn = DateTime.Now
                 });
 

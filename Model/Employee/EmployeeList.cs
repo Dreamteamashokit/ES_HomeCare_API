@@ -19,10 +19,11 @@ namespace ES_HomeCare_API.Model.Employee
         public short IsActive { get; set; }
         public bool HasDOB { get; set; }
         public bool HasEmail { get; set; }
+        public bool Medical { get; set; }
+        public bool InService { get; set; }
         public int ManagerId { get; set; }        
         public string Coordinator { get; set; }
-        public bool Medical { get; set; } 
-        public bool InService { get; set; }
+     
     
 
     }
