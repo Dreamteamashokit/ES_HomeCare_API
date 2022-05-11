@@ -19,7 +19,7 @@ using ES_HomeCare_API.Model;
 namespace ES_HomeCare_API.WebAPI.Data
 {
 
-    public class DocumentData: IDocumentData
+    public class DocumentData : IDocumentData
     {
         private IConfiguration configuration;
         public DocumentData(IConfiguration _configuration)
@@ -34,7 +34,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             {
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sql = "Select x.FolderId,x.FolderName,y.Documentid,y.FileName,y.FilePath,y.Title,y.Description,y.SeachTag, y.createdon as CreatedOn, e.FirstName + ' ' + e.MiddleName + ' ' + e.LastName as CreatedByName from  tblFoldermaster x left join tblEmpDocument y on x.FolderId = y.FolderId left join tblUser e on y.CreateOn=e.UserId where x.EmpId = @EmpId and x.FolderName <> '';";
+                    string sql = "Select x.FolderId,x.FolderName,y.Documentid,y.FileName,y.FilePath,y.Title,y.Description,y.SeachTag, y.CreatedOn, e.FirstName + ' ' + ISNULL(e.MiddleName,'') + ' ' + e.LastName as CreatedByName from  tblFoldermaster x left join tblEmpDocument y on x.FolderId = y.FolderId left join tblUser e on y.CreatedBy=e.UserId where x.EmpId = @EmpId and x.FolderName <> '';";
 
                     var result = (await connection.QueryAsync(sql, new { @EmpId = empId }));
 
@@ -49,14 +49,14 @@ namespace ES_HomeCare_API.WebAPI.Data
 
                                         DocumentList = docGrp.Select(x => new DocumentView
                                         {
-                                            DocumentId = x.Documentid==null?0:x.Documentid,
-                                            Title = string.IsNullOrEmpty(x.Title) ? string.Empty : x.Title,
-                                            SearchTag = string.IsNullOrEmpty(x.SearchTag) ? string.Empty : x.SearchTag,
-                                            Description = string.IsNullOrEmpty(x.Description) ? string.Empty : x.Description,
-                                            FileName = string.IsNullOrEmpty(x.FileName) ? string.Empty : x.FileName,
-                                            FilePath = string.IsNullOrEmpty(x.FilePath) ? string.Empty : x.FilePath,
-                                            CreatedByName = string.IsNullOrEmpty(x.CreatedByName) ? "admin" : "",
-                                            CreatedOn = string.IsNullOrEmpty(x.CreatedOn) ?string.Empty: x.CreatedOn
+                                            DocumentId = x.Documentid == null ? 0 : x.Documentid,
+                                            Title = x.Title == null ? string.Empty : x.Title,
+                                            SearchTag = x.SearchTag == null ? string.Empty : x.SearchTag,
+                                            Description = x.Description == null ? string.Empty : x.Description,
+                                            FileName = x.FileName == null ? string.Empty : x.FileName,
+                                            FilePath = x.FilePath == null ? string.Empty : x.FilePath,
+                                            CreatedByName = x.CreatedByName == null ? "admin" : "",
+                                            CreatedOn = x.CreatedOn == null ? string.Empty : x.CreatedOn.ToString(),
                                         }).ToList()
                                     };
 
@@ -70,7 +70,7 @@ namespace ES_HomeCare_API.WebAPI.Data
 
                 throw ex;
             }
-           
+
             return obj;
 
         }
@@ -139,7 +139,7 @@ namespace ES_HomeCare_API.WebAPI.Data
         }
 
 
-      
+
 
 
 
@@ -195,7 +195,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
 
-                    cmd.Parameters.AddWithValue("@EmpId", item.EmpId);                   
+                    cmd.Parameters.AddWithValue("@EmpId", item.EmpId);
 
                     cmd.Parameters.AddWithValue("@EmpId", item.EmpId);
 
