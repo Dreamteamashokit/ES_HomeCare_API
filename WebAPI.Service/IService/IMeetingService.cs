@@ -1,4 +1,5 @@
-﻿using ES_HomeCare_API.Model.Employee;
+﻿using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.Model.Meeting;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<string>> AddMeeting(MeetingModel _model);
         Task<ServiceResponse<IEnumerable<EmpMeeting>>> GetEmpMeetingList(int empId);
         Task<ServiceResponse<IEnumerable<ClientMeeting>>> GetClientMeetingList();
+        Task<ServiceResponse<IEnumerable<ClientMeeting>>> GetClientMeetingList(ClientFilter model);
         Task<ServiceResponse<MeetingView>> GetMeetingDetail(long meetingId);
         Task<ServiceResponse<string>> UpdateMeeting(MeetingModel _model);
         Task<ServiceResponse<string>> PostNote(NotesModel _model);

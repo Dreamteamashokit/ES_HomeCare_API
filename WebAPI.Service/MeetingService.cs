@@ -1,4 +1,5 @@
-﻿using ES_HomeCare_API.Model.Employee;
+﻿using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.Model.Meeting;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using ES_HomeCare_API.WebAPI.Service.IService;
@@ -33,6 +34,10 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.GetClientMeetingList();
         }
 
+        public async Task<ServiceResponse<IEnumerable<ClientMeeting>>> GetClientMeetingList(ClientFilter model)
+        {
+            return await data.GetClientMeetingList(model);
+        }
 
         public async Task<ServiceResponse<MeetingView>> GetMeetingDetail(long meetingId)
 
@@ -59,12 +64,12 @@ namespace ES_HomeCare_API.WebAPI.Service
 
         public async Task<ServiceResponse<IEnumerable<EmpMeeting>>> GetUserMeetingList(int _userId, short _userTypeId)
 
-      
+
         {
             return await data.GetUserMeetingList(_userId, _userTypeId);
         }
 
-        
+
 
 
     }

@@ -211,6 +211,16 @@ namespace ES_HomeCare_API.Controllers
             return Ok(await comSrv.GetProvisionList(ProvisionType));
         }
 
+        [HttpGet("getPayers")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetPayers()
+        {
+            return Ok(await comSrv.GetPayers());
+        }
 
+
+
+       
     }
 }

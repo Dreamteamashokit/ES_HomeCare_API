@@ -696,6 +696,24 @@ namespace WebAPI_SAMPLE.Controllers
 
         }
 
+
+
+        [HttpGet("searchClient/{search}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientResult>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientResult>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> SearchClient(string search)
+       {
+
+            return Ok(await service.SearchClient(search.Trim()));
+        }
+
+
+
+
+
+
+
+
     }
 }
 

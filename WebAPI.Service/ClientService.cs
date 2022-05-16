@@ -166,5 +166,16 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         }
 
 
-    }
+
+
+        public async Task<ServiceResponse<IEnumerable<ClientResult>>> SearchClient(string search)
+        {
+            return await data.SearchClient(search);
+        }
+
+
+
+
+
+        }
 }

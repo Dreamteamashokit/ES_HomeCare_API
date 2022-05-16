@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
 using ES_HomeCare_API.Model.Common;
+using ES_HomeCare_API.Model;
 
 namespace ES_HomeCare_API.WebAPI.Data
 {
@@ -44,7 +45,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                         if (!string.IsNullOrEmpty(_model.MeetingNote))
                         {
                             string addComment = "INSERT INTO tblMeetingPoint (MeetingId,MeetingPoint,CreatedOn,CreatedBy) VALUES (@MeetingId,@MeetingPoint,@CreatedOn,@CreatedBy)";
-                            var result = cnn.Execute(addComment, new { _model.MeetingId, MeetingPoint= _model.MeetingNote, _model.CreatedOn, _model.CreatedBy });
+                            var result = cnn.Execute(addComment, new { _model.MeetingId, MeetingPoint = _model.MeetingNote, _model.CreatedOn, _model.CreatedBy });
                             sres.Result = true;
                         }
                         sres.Result = true;
@@ -127,10 +128,10 @@ namespace ES_HomeCare_API.WebAPI.Data
                                     MiddleName = momGroup.Key.MiddleName,
                                     LastName = momGroup.Key.LastName,
                                     Contact = momGroup.Key.CellPhone,
-                                    Meetings = momGroup.Where(x=>x.MeetingId!=0).Select(x => new ClMeeting
+                                    Meetings = momGroup.Where(x => x.MeetingId != 0).Select(x => new ClMeeting
                                     {
                                         EmpId = x.EmpId,
-                                        EmpName = x.EmpName!=null? x.EmpName :"",
+                                        EmpName = x.EmpName != null ? x.EmpName : "",
                                         MeetingId = x.MeetingId,
                                         MeetingDate = x.MeetingDate,
                                         StartTime = ((TimeSpan)x.StartTime).TimeHelper(),
@@ -146,6 +147,62 @@ namespace ES_HomeCare_API.WebAPI.Data
             return obj;
         }
 
+        public async Task<ServiceResponse<IEnumerable<ClientMeeting>>> GetClientMeetingList(ClientFilter model)
+        {
+            ServiceResponse<IEnumerable<ClientMeeting>> obj = new ServiceResponse<IEnumerable<ClientMeeting>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "ClientProc";
+                var sqlParameter = new { @flag = 1, @IsActive = model.Status, @SupervisorId = model.Coordinator, @State = model.State };
+                var result = (await connection.QueryAsync(sql, sqlParameter, commandType: CommandType.StoredProcedure)).ToList();
+                //Using Query Syntax
+                var GroupByQS = from mom in result
+                                group mom by new { mom.ClientId, mom.FirstName, mom.MiddleName, mom.LastName, mom.CellPhone, } into momGroup
+                                orderby momGroup.Key.ClientId descending
+                                select new ClientMeeting
+                                {
+                                    ClientId = momGroup.Key.ClientId,
+                                    FirstName = momGroup.Key.FirstName,
+                                    MiddleName = momGroup.Key.MiddleName,
+                                    LastName = momGroup.Key.LastName,
+                                    Contact = momGroup.Key.CellPhone,
+                                    Meetings = momGroup.Where(x => x.MeetingId != 0).Select(x => new ClMeeting
+                                    {
+                                        EmpId = x.EmpId,
+                                        EmpName = x.EmpName != null ? x.EmpName : "",
+                                        MeetingId = x.MeetingId,
+                                        MeetingDate = x.MeetingDate,
+                                        StartTime = ((TimeSpan)x.StartTime).TimeHelper(),
+                                        EndTime = ((TimeSpan)x.EndTime).TimeHelper(),
+                                    })
+                                };
+
+
+                obj.Data = GroupByQS;
+                obj.Result = GroupByQS.Any() ? true : false;
+                obj.Message = GroupByQS.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         public async Task<ServiceResponse<MeetingView>> GetMeetingDetail(long meetingId)
         {
             ServiceResponse<MeetingView> obj = new ServiceResponse<MeetingView>();
@@ -157,13 +214,13 @@ namespace ES_HomeCare_API.WebAPI.Data
 
                 MeetingView objResult = (from mom in rsData
 
-                                         group mom by new { mom.MeetingId} into momGroup
+                                         group mom by new { mom.MeetingId } into momGroup
                                          orderby momGroup.Key descending
 
 
                                          select new MeetingView
                                          {
-                                             
+
                                              MeetingId = momGroup.Key.MeetingId,
                                              MeetingDate = ((DateTime)momGroup.FirstOrDefault().MeetingDate).ToString("dd-MMM-yy"),
                                              StartTime = ((TimeSpan)momGroup.FirstOrDefault().StartTime).TimeHelper(),
@@ -194,8 +251,8 @@ namespace ES_HomeCare_API.WebAPI.Data
                                                  MiddleName = momGroup.FirstOrDefault().cltMName,
                                                  Lastname = momGroup.FirstOrDefault().cltLName,
                                              },
-                                             IsStatus= momGroup.FirstOrDefault().IsStatus,
-                                             Notes = momGroup.Select(x=>(string)x.MeetingPoint).ToList()
+                                             IsStatus = momGroup.FirstOrDefault().IsStatus,
+                                             Notes = momGroup.Select(x => (string)x.MeetingPoint).ToList()
                                          }).FirstOrDefault();
 
                 obj.Data = objResult;
@@ -299,7 +356,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                         if (!string.IsNullOrEmpty(_model.MeetingNote))
                         {
                             string query = "INSERT INTO tblMeetingPoint (MeetingId,MeetingPoint,CreatedOn,CreatedBy) VALUES (@MeetingId,@MeetingPoint,@CreatedOn,@CreatedBy)";
-                            var rs = cnn.Execute(query, new { _model.MeetingId, MeetingPoint= _model.MeetingNote, _model.CreatedOn, _model.CreatedBy });
+                            var rs = cnn.Execute(query, new { _model.MeetingId, MeetingPoint = _model.MeetingNote, _model.CreatedOn, _model.CreatedBy });
                             sres.Result = true;
 
                         }

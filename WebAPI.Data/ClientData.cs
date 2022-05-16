@@ -1276,9 +1276,28 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         }
 
 
-     
 
 
+        public async Task<ServiceResponse<IEnumerable<ClientResult>>> SearchClient(string search)
+        {
+            ServiceResponse<IEnumerable<ClientResult>> obj = new ServiceResponse<IEnumerable<ClientResult>>();
+            using (var conn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sqlQuery = @"select x.UserId as ClientId,x.FirstName,x.MiddleName,x.LastName,x.CellPhone,x.SSN,ISNULL(x.UserKey,'') as UserKey,ISNULL(z.Address,'') as Address,ISNULL(z.City,'') as City,ISNULL(z.State,'') as State,ISNULL(z.ZipCode,'') as ZipCode
+from tblUser x inner join tblClient y on x.UserId=y.UserId
+left join tblAddress z on x.UserId=z.UserId
+Where x.FirstName Like '%'+@search+'%'  OR x.LastName Like '%'+@search+'%' OR x.CellPhone Like '%'+@search+'%' OR x.SSN Like '%'+@search+'%' 
+OR x.UserKey Like '%'+@search+'%' OR z.Address Like '%'+@search+'%'  OR z.City Like '%'+@search+'%' OR z.State Like '%'+@search+'%'
+OR z.ZipCode Like '%'+@search+'%'; ";
+
+                IEnumerable<ClientResult> resObj = (await conn.QueryAsync<ClientResult>(sqlQuery, new { @search = search }));
+
+                obj.Data = resObj;
+                obj.Result = resObj.Any() ? true : false;
+                obj.Message = resObj.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
 
 
 

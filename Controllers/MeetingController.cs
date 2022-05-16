@@ -98,6 +98,14 @@ namespace ES_HomeCare_API.Controllers
             return Ok(await mtgSrv.GetClientMeetingList());
         }
 
+        [HttpPost("getClientMeetingList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientMeeting>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientMeeting>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetClientMeetingList([FromBody] ClientFilter model)
+        {
+            return Ok(await mtgSrv.GetClientMeetingList(model));
+        }
+
 
 
 

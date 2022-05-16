@@ -109,7 +109,10 @@ namespace ES_HomeCare_API.WebAPI.Service
 
 
 
-
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetPayers()
+        {
+            return await data.GetPayers();
+        }
 
 
 

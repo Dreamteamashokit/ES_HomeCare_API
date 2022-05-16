@@ -41,5 +41,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<List<ClientCommunityMaster>>> ClientCommunityOperation(ClientCommunityMaster Model, int Flag);
         Task<ServiceResponse<IEnumerable<ProvisionInfo>>> ClienProvisionInfo(DataTable dt, int UserId = 0);
         Task<ServiceResponse<List<ClientCompliance>>> ClientComplianceOperation(ClientCompliance Model, int Flag);
+        Task<ServiceResponse<IEnumerable<ClientResult>>> SearchClient(string search);
     }
 }
