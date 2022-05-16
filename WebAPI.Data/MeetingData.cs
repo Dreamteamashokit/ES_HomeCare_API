@@ -112,7 +112,13 @@ namespace ES_HomeCare_API.WebAPI.Data
             ServiceResponse<IEnumerable<ClientMeeting>> obj = new ServiceResponse<IEnumerable<ClientMeeting>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select x.UserId as ClientId,x.FirstName,x.MiddleName,x.LastName,x.CellPhone,IsNUll(z.EmpId,0) as EmpId,p.FirstName +' ' + ISNULL(p.MiddleName,' ')+' ' + p.LastName as EmpName,IsNUll(y.MeetingId,0) as MeetingId,y.MeetingDate,y.StartTime,y.EndTime from tblUser x Left Join tblMeeting y on x.UserId=y.ClientId and y.IsStatus<>0 Left join tblEmpClientMeeting z on y.MeetingId=z.MeetingId Left join tblUser p on z.EmpId=p.UserId;";
+                string sql = @"Select x.UserId as ClientId,x.FirstName,x.MiddleName,x.LastName,x.CellPhone,
+IsNUll(y.MeetingId,0) as MeetingId,y.MeetingDate,y.StartTime,y.EndTime,     
+IsNUll(z.EmpId,0) as EmpId,p.FirstName +' ' + ISNULL(p.MiddleName,' ')+' ' + p.LastName as EmpName
+from tblUser x inner join tblClient xx on x.UserId=xx.UserId
+Left Join tblMeeting y on xx.UserId=y.ClientId and y.IsStatus<>0 Left join tblEmpClientMeeting z     
+on y.MeetingId=z.MeetingId Left join tblUser p on z.EmpId=p.UserId    
+Left join tblAddress xy on x.UserId=xy.UserId";
 
                 var result = (await connection.QueryAsync(sql)).ToList();
 
