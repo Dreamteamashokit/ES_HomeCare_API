@@ -1,4 +1,6 @@
-﻿namespace ES_HomeCare_API.Model.Account
+﻿using ES_HomeCare_API.Model.Employee;
+
+namespace ES_HomeCare_API.Model.Account
 {
     public class AccountUserModel: BaseModel
     {
@@ -6,6 +8,8 @@
         public short UserType { get; set; }
         public string UserName { get; set; }
         public string UserPassword { get; set; }
+        public string Organization { get; set; }
+        public string Title { get; set; }
         public string SSN { get; set; }     
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
@@ -20,7 +24,7 @@
         public short MaritalStatus { get; set; }
         public short Ethnicity { get; set; }
         public int SupervisorId { get; set; }
-        
+        public AddressModel HomeAddress { get; set; }
 
     }
 }

@@ -219,8 +219,14 @@ namespace ES_HomeCare_API.Controllers
             return Ok(await comSrv.GetPayers());
         }
 
+        [HttpGet("getUsers/{type}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetUsers(int type)
+        {
+            return Ok(await comSrv.GetUsers(type));
+        }
 
 
-       
     }
 }

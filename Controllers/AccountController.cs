@@ -3,6 +3,7 @@ using ES_HomeCare_API.WebAPI.Service.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
 
@@ -55,6 +56,48 @@ namespace ES_HomeCare_API.Controllers
                 throw ex;
             }
         }
+
+
+
+
+        [HttpPost("addUser")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddUser(AccountUserModel model)
+        {
+            try
+            {
+
+                model.IsActive = 1;
+                model.UserName = model.Email;
+                model.UserPassword = model.SSN;
+                model.CreatedOn = DateTime.Now;
+
+
+                return Ok(await accountSrv.AddUser(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        [HttpGet("getUser/{userType}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<AccountUserModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<AccountUserModel>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetUser(int userType)
+        {
+            return Ok(await accountSrv.GetUser(userType));
+        }
+
+
+
+
+
+
+
 
 
     }

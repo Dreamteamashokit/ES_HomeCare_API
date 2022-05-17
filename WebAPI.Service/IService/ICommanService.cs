@@ -31,8 +31,7 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<IEnumerable<ItemList>>> GetSubCategoryList();
 
         Task<ServiceResponse<IEnumerable<ItemList>>> GetProvisionList(int ProvisionType);
-
-
         Task<ServiceResponse<IEnumerable<ItemList>>> GetPayers();
+        Task<ServiceResponse<IEnumerable<ItemList>>> GetUsers(int type);
     }
 }

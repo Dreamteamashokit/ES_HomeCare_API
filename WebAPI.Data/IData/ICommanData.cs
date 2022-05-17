@@ -33,6 +33,8 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
         Task<ServiceResponse<IEnumerable<ItemList>>> GetProvisionList(int ProvisionType);
         Task<ServiceResponse<IEnumerable<ItemList>>> GetPayers();
 
+        Task<ServiceResponse<IEnumerable<ItemList>>> GetUsers(int type);
+
     }
 
 

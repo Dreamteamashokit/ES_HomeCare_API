@@ -403,6 +403,20 @@ namespace ES_HomeCare_API.WebAPI.Data
 
 
 
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetUsers(int type)
+        {
+            ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sqlqry = "Select UserId,LastName +','+ FirstName  as UserName from tblUser where UserType=@UserType;";
+                IEnumerable<ItemList> users = (await connection.QueryAsync(sqlqry, new { @UserType = type })).Select(x => new ItemList { ItemId = x.UserId, ItemName = x.UserName });
+                obj.Data = users;
+                obj.Result = users.Any() ? true : false;
+                obj.Message = users.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+
+        }
 
 
 
