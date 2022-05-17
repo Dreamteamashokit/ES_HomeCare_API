@@ -118,7 +118,7 @@ namespace ES_HomeCare_API.Controllers
         [HttpGet("getEmployees/{type}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetEmployees(string type)
+        public async Task<IActionResult> GetEmployees(int type)
         {
             return Ok(await comSrv.GetEmployees(type));
         }

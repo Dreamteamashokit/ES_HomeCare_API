@@ -19,7 +19,7 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
         Task<ServiceResponse<IEnumerable<ItemList>>> GetEmpTypeList();
         Task<ServiceResponse<IEnumerable<SelectList>>> GetCountry();
         Task<ServiceResponse<IEnumerable<SelectList>>> GetState(string countryCode);
-        Task<ServiceResponse<IEnumerable<ItemList>>> GetEmployees(string type);
+        Task<ServiceResponse<IEnumerable<ItemList>>> GetEmployees(int type);
         Task<ServiceResponse<IEnumerable<ItemList>>> GetEmployeesList();
         Task<ServiceResponse<IEnumerable<ItemList>>> GetClientList();
 

@@ -201,12 +201,15 @@ namespace ES_HomeCare_API.WebAPI.Data
 
         }
 
-        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetEmployees(string type)
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetEmployees(int type)
         {
             ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sqlqry = "Select x.UserId,x.LastName +' '+ x.FirstName+'(' + ISNULL(x.UserId,'0-0-0')+')' as EmpName from tblUser x inner join tblEmployee y on x.UserId=y.UserId where y.EmpType=@EmpType;";
+                string sqlqry = @"Select x.UserId,x.LastName +', '+ x.FirstName +', '+z.TypeName +' - ' +convert(varchar,x.UserId)   as EmpName from 
+tblUser x inner join tblEmployee y on x.UserId=y.UserId 
+inner join tblEmpType z on y.EmpType=z.TypeId
+where y.EmpType=@EmpType;";
                 IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry, new { @EmpType = type })).Select(x => new ItemList { ItemId = x.UserId, ItemName = x.EmpName });
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;

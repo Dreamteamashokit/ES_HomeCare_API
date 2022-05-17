@@ -49,7 +49,7 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             return await data.GetState(countryCode);
         }
-        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetEmployees(string type)
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetEmployees(int type)
         {
             return await data.GetEmployees(type);
         }
