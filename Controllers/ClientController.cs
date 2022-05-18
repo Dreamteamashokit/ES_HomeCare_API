@@ -34,6 +34,7 @@ namespace WebAPI_SAMPLE.Controllers
             model.TimeSlip = true;
             model.IsHourly = true;
             model.IsActive = 1;
+            model.DOBS = model.DOB.ParseDate();
             model.UserName = model.Email;
             model.UserPassword = model.SSN;
             model.CreatedBy = 1;

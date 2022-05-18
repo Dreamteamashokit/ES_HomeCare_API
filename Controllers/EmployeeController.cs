@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ES_HomeCare_API.Helper;
 using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.ViewModel.Employee;
 using ES_HomeCare_API.WebAPI.Service;
@@ -33,7 +34,25 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddEmployee([FromBody] EmployeeModel model)
         {
-            
+
+
+
+            if (model.SupervisorId == 0)
+            {
+                model.SupervisorId = null;
+            }
+
+            model.DateOfHireS = model.DateOfHire.ParseDate();
+            model.DOBS = model.DOB.ParseDate();
+            if (!string.IsNullOrEmpty(model.DateOfFirstCase))
+            {
+                model.DateOfFirstCaseS = model.DateOfFirstCase.ParseDate();
+
+            }
+            else
+            {
+                model.DateOfFirstCaseS = null;
+            }
             model.IsActive = 1;
             model.CreatedBy = 1;
             model.CreatedOn = DateTime.Now;
@@ -47,8 +66,8 @@ namespace WebAPI_SAMPLE.Controllers
         public async Task<IActionResult> GetEmployeeListObj(int userId)
         {
             return Ok(await service.GetEmployeeListObj(userId));
-        }   
-     
+        }
+
 
         [HttpGet("deleteEmployee/{empId}")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
@@ -134,7 +153,7 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.GetEmpStatusList(empId));
         }
 
-        
+
 
 
         #region Compliance
@@ -169,7 +188,7 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddAddress([FromBody] AddressModel model)
         {
-            
+
             model.CreatedOn = DateTime.Now;
             return Ok(await service.AddEmpAddress(model));
         }

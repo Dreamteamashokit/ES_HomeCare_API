@@ -6,6 +6,8 @@
         public short UserType { get; set; }
         public string UserName { get; set; }
         public string UserPassword { get; set; }
+        public string Organization { get; set; }
+        public string Title { get; set; }
         public string SSN { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
@@ -16,8 +18,6 @@
         public string HomePhone { get; set; }
         public string EmgPhone { get; set; }
         public string EmgContact { get; set; }
-
-
         public short Gender { get; set; }
         public string GenderName { get; set; }
         public short MaritalStatus { get; set; }

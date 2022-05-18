@@ -1,4 +1,5 @@
 ﻿using ES_HomeCare_API.Model.Employee;
+using System;
 
 namespace ES_HomeCare_API.Model.Account
 {
@@ -15,6 +16,7 @@ namespace ES_HomeCare_API.Model.Account
         public string MiddleName { get; set; }
         public string LastName { get; set; }
         public string DOB { get; set; }
+        public DateTime? DOBS { get; set; }
         public string Email { get; set; }
         public string CellPhone { get; set; }
         public string HomePhone { get; set; }
@@ -23,7 +25,7 @@ namespace ES_HomeCare_API.Model.Account
         public short Gender { get; set; }
         public short MaritalStatus { get; set; }
         public short Ethnicity { get; set; }
-        public int SupervisorId { get; set; }
+        public int? SupervisorId { get; set; }
         public AddressModel HomeAddress { get; set; }
 
     }

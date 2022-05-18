@@ -12,7 +12,10 @@ namespace ES_HomeCare_API.Model.Employee
         public string EmpKey { get; set; }  
         public short EmpType { get; set; }  
         public string DateOfHire { get; set; }
-        public string DateOfFirstCase { get; set; }   
+        public string DateOfFirstCase { get; set; }
+
+        public DateTime DateOfHireS { get; set; }
+        public DateTime? DateOfFirstCaseS { get; set; }
         public short Enthnicity { get; set; }
         public short Dependents { get; set; }
         public string City { get; set; }
