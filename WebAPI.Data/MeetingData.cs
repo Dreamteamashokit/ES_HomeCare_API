@@ -72,9 +72,9 @@ namespace ES_HomeCare_API.WebAPI.Data
                         sres.Data = "Sucessfully  Created.";
                         transaction.Commit();
                     }
-            
 
-                  
+
+
                 }
 
             }
@@ -95,7 +95,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             }
             return sres;
         }
-      
+
         public async Task<ServiceResponse<IEnumerable<EmpMeeting>>> GetEmpMeetingList(int empId)
         {
             ServiceResponse<IEnumerable<EmpMeeting>> obj = new ServiceResponse<IEnumerable<EmpMeeting>>();
@@ -408,6 +408,45 @@ s.UserId=t.UserId Left Join tblMeetingPoint u on p.MeetingId=u.MeetingId where p
             }
             return sres;
         }
+
+        public async Task<ServiceResponse<IEnumerable<MeetingView>>> UpCommingAppointments(int ClientId)
+        {
+            ServiceResponse<IEnumerable<MeetingView>> obj = new ServiceResponse<IEnumerable<MeetingView>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "ClientProc";
+                var sqlParameter = new { @flag = 2, @ClientId = ClientId };
+                var result = (await connection.QueryAsync(sql, sqlParameter, commandType: CommandType.StoredProcedure)).Select(mom => new MeetingView
+                {
+                    MeetingId = mom.MeetingId,       
+                    MeetingDate = ((DateTime)mom.MeetingDate).ToString("dd-MMM-yy"),
+                    StartTime = ((TimeSpan)mom.StartTime).TimeHelper(),
+                    EndTime = ((TimeSpan)mom.EndTime).TimeHelper(),
+                    Employee = new UserView
+                    {
+                        Id = mom.EmpId,
+                        UserType = mom.TypeName,
+                        FirstName = mom.EFirstName,
+                        Lastname = mom.ELastname,
+                        CellPhone = mom.ECellPhone,
+                    }
+                });
+                obj.Data = result;
+                obj.Result = result.Any() ? true : false;
+                obj.Message = result.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
+
+
+
+
+
+
+
+
+
+
 
     }
 }

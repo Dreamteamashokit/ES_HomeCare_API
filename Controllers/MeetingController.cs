@@ -119,17 +119,6 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
         [HttpPost("updateMeeting")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
@@ -188,5 +177,17 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
-    }
+
+        [HttpGet("upCommingApp/{clientId}")]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<MeetingView>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<MeetingView>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpCommingAppointments(int clientId)
+        {
+            return Ok(await mtgSrv.UpCommingAppointments(clientId));
+        }
+
+
+
+
+        }
 }

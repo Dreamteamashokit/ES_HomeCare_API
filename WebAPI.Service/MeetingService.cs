@@ -70,6 +70,12 @@ namespace ES_HomeCare_API.WebAPI.Service
         }
 
 
+        public async Task<ServiceResponse<IEnumerable<MeetingView>>> UpCommingAppointments(int ClientId)
+        {
+            return await data.UpCommingAppointments(ClientId);
+        }
+
+
 
 
     }

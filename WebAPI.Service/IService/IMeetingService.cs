@@ -20,6 +20,7 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<string>> PostNote(NotesModel _model);
         Task<ServiceResponse<string>> ChangeStatus(MeetingStatus _model);
         Task<ServiceResponse<IEnumerable<EmpMeeting>>> GetUserMeetingList(int _userId, short _userTypeId);
+        Task<ServiceResponse<IEnumerable<MeetingView>>> UpCommingAppointments(int ClientId);
 
     }
 }
