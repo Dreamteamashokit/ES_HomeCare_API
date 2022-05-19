@@ -9,6 +9,7 @@ namespace ES_HomeCare_API.ViewModel
     {
         public int MeetingId { get; set; }
         public int ClientId { get; set; }
+        public int EmpId { get; set; }
         public List<int> EmpList { get; set; }
         public string MeetingDate { get; set; }
         public string StartTime { get; set; }

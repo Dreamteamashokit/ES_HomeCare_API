@@ -40,6 +40,7 @@ namespace ES_HomeCare_API.Controllers
                     MeetingDate = model.MeetingDate.ParseDate(),
                     MeetingNote = model.MeetingNote,
                     ClientId = model.ClientId,
+                    EmpId = model.EmpId,                    
                     StartTime = model.StartTime.ParseTime(),
                     EndTime = model.EndTime.ParseTime(),
                     EmpList = model.EmpList,

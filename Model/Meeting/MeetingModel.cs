@@ -9,6 +9,7 @@ namespace ES_HomeCare_API.Model.Meeting
     {
         public int MeetingId { get; set; }
         public int ClientId { get; set; }
+        public int EmpId { get; set; }
         public List<int> EmpList { get; set; }
         public DateTime MeetingDate { get; set; }
         public TimeSpan StartTime { get; set; }
