@@ -53,6 +53,8 @@ namespace WebAPI_SAMPLE.Controllers
             {
                 model.DateOfFirstCaseS = null;
             }
+
+            model.UserKey = model.EmpKey;
             model.IsActive = 1;
             model.CreatedBy = 1;
             model.CreatedOn = DateTime.Now;

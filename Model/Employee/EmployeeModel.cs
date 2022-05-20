@@ -17,7 +17,7 @@ namespace ES_HomeCare_API.Model.Employee
         public DateTime DateOfHireS { get; set; }
         public DateTime? DateOfFirstCaseS { get; set; }
         public short Enthnicity { get; set; }
-        public short Dependents { get; set; }
+        public int Dependents { get; set; }
         public string City { get; set; }
         public string Country { get; set; }
         public string TaxState { get; set; }
