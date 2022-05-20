@@ -255,6 +255,24 @@ namespace WebAPI_SAMPLE.Controllers
 
 
 
+        #region Caregiver 
+        [HttpGet("GetCareGiverDetails/{UserId}")]
+        [ProducesResponseType(typeof(ServiceResponse<CaregiverViewModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<CaregiverViewModel>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetCareGiverDetails(int UserId)
+        {
+            return Ok(await service.GetCareGiverDetails(UserId));
+        }
+        #endregion
 
+        #region External login
+        [HttpPost("ExternalLogin")]
+        [ProducesResponseType(typeof(ServiceResponse<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<bool>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ExternalLogin(ExternalLoginModel externalLoginModel)
+        {
+            return Ok(await service.ExternalLogin(externalLoginModel));
+        }
+        #endregion
     }
 }

@@ -37,7 +37,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
                     string _query = "INSERT INTO tblUser (UserKey,UserType,UserName,UserPassword,SSN,FirstName,MiddleName,LastName,DOB,Email,CellPhone,HomePhone,EmgPhone,EmgContact,Gender,MaritalStatus,Ethnicity,SupervisorId,IsActive,CreatedOn,CreatedBy) VALUES (@UserKey,@UserType,@UserName,@UserPassword,@SSN,@FirstName,@MiddleName,@LastName,@DOBS,@Email,@CellPhone,@HomePhone,@EmgPhone,@EmgContact,@Gender,@MaritalStatus,@Ethnicity,@SupervisorId,@IsActive,@CreatedOn,@CreatedBy); select SCOPE_IDENTITY();";
 
-             
+
                     _model.UserId = (int)(cnn.ExecuteScalar<int>(_query, _model, transaction));
 
                     string sqlQuery = "INSERT INTO tblEmployee (UserId,EmpType,DateOfHire,DateOfFirstCase,Dependents,City,Country,TaxState,ZipCode,Municipality,Notes,IsActive,CreatedOn,CreatedBy) VALUES (@UserId,@EmpType,@DateOfHireS,@DateOfFirstCaseS,@Dependents,@City,@Country,@TaxState,@ZipCode,@Municipality,@Notes,@IsActive,@CreatedOn,@CreatedBy)";
@@ -171,7 +171,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
                     int rowsAffected = db.Execute(sqlQuery, new
                     {
-                        @AddressId= _model.AddressId,
+                        @AddressId = _model.AddressId,
                         @UserId = _model.UserId,
                         @AddressType = _model.AddressType,
                         @Owner = _model.Owner,
@@ -717,5 +717,124 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         }
 
 
+        public async Task<ServiceResponse<CaregiverViewModel>> GetCareGiverDetails(int UserId)
+        {
+            ServiceResponse<CaregiverViewModel> obj = new ServiceResponse<CaregiverViewModel>();
+            CaregiverViewModel caregiver = new CaregiverViewModel();
+
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("GetCaregiverDetails", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@UserId", UserId);
+
+                    DataSet ds = new DataSet();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(ds);
+                    if (ds != null && ds.Tables.Count > 0)
+                    {
+                        address address = null;
+                        if (ds.Tables.Count > 0)
+                        {
+                            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                            {
+                                address = new address
+                                {
+                                    addressLine1 = ds.Tables[1].Rows[i]["addressLine1"].ToString(),
+                                    addressLine2 = ds.Tables[1].Rows[i]["addressLine2"].ToString(),
+                                    state = ds.Tables[1].Rows[i]["state"].ToString(),
+                                    city = ds.Tables[1].Rows[i]["city"].ToString(),
+                                    zipcode = ds.Tables[1].Rows[i]["zipcode"].ToString()
+                                };
+                            }
+                        }
+                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                        {
+                            caregiver = new CaregiverViewModel
+                            {
+                                providerTaxId = ds.Tables[0].Rows[i]["providerTaxId"].ToString(),
+                                npi = Convert.ToInt32(ds.Tables[0].Rows[i]["npi"].ToString()),
+                                ssn = Convert.ToInt32(ds.Tables[0].Rows[i]["ssn"].ToString()),
+                                dateOfBirth = Convert.ToDateTime(ds.Tables[0].Rows[i]["dateOfBirth"].ToString()),
+                                email = ds.Tables[0].Rows[i]["email"].ToString(),
+                                externalID = ds.Tables[0].Rows[i]["externalID"].ToString(),
+                                firstName = ds.Tables[0].Rows[i]["firstName"].ToString(),
+                                lastName = ds.Tables[0].Rows[i]["lastName"].ToString(),
+                                gender = ds.Tables[0].Rows[i]["gender"].ToString(),
+                                hireDate = Convert.ToDateTime(ds.Tables[0].Rows[i]["gender"].ToString()),
+                                phoneNumber = ds.Tables[0].Rows[i]["phoneNumber"].ToString(),
+                                professionalLicenseNumber = Convert.ToInt32(ds.Tables[0].Rows[i]["professionalLicenseNumber"].ToString()),
+                                qualifier = ds.Tables[0].Rows[i]["qualifier"].ToString(),
+                                stateRegistrationID = Convert.ToInt32(ds.Tables[0].Rows[i]["stateRegistrationID"].ToString()),
+                                type = ds.Tables[0].Rows[i]["type"].ToString(),
+                                address = address
+                            };
+                        }
+                        obj.Result = true;
+                    }
+                    obj.Data = caregiver;
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+            finally
+            {
+
+            }
+        }
+
+        public async Task<ServiceResponse<ExternalLoginViewModel>> ExternalLogin(ExternalLoginModel externalLoginModel)
+        {
+            ServiceResponse<ExternalLoginViewModel> obj = new ServiceResponse<ExternalLoginViewModel>();
+            ExternalLoginViewModel result = null;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("ExternalLoginBySSNORMobile", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@SSN", externalLoginModel.SSN);
+                    //cmd.Parameters.AddWithValue("@MobileNo", externalLoginModel.MobileNo);
+
+                    DataSet ds = new DataSet();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(ds);
+                    if (ds != null && ds.Tables.Count > 0)
+                    {
+                        if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                        {
+                            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                            {
+                                result = new ExternalLoginViewModel
+                                {
+                                    userId = Convert.ToInt32(ds.Tables[0].Rows[i]["userId"].ToString()),
+                                    userTypeId = Convert.ToInt32(ds.Tables[0].Rows[i]["userTypeId"]),
+                                    firstName = ds.Tables[0].Rows[i]["firstName"].ToString(),
+                                    lastName = ds.Tables[0].Rows[i]["lastName"].ToString(),
+                                    middleName = ds.Tables[0].Rows[i]["middleName"].ToString(),
+                                    userName = ds.Tables[0].Rows[i]["userName"].ToString(),
+                                    email = ds.Tables[0].Rows[i]["email"].ToString()
+                                };
+                            }
+                        }
+                        obj.Result = true;
+                    }
+                    obj.Data = result;
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+        }
     }
 }

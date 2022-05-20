@@ -39,7 +39,8 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<string>> SaveEmpDeclinedCase(EmpDeclinedCase client);
         Task<ServiceResponse<List<EmpDeclinedCase>>> GetEmpDeclinedcase(int EmpId);
 
-        
 
+        Task<ServiceResponse<CaregiverViewModel>> GetCareGiverDetails(int UserId);
+        Task<ServiceResponse<ExternalLoginViewModel>> ExternalLogin(ExternalLoginModel externalLoginModel);
     }
 }
