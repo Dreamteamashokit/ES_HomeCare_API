@@ -135,5 +135,14 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         }
 
 
+        public async Task<ServiceResponse<CaregiverViewModel>> GetCareGiverDetails(int UserId)
+        {
+            return await data.GetCareGiverDetails(UserId);
+        }
+
+        public async Task<ServiceResponse<ExternalLoginViewModel>> ExternalLogin(ExternalLoginModel externalLoginModel)
+        {
+            return await data.ExternalLogin(externalLoginModel);
+        }
     }
 }

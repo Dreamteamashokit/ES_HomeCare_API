@@ -1,9 +1,6 @@
-﻿using ES_HomeCare_API.Model;
-using ES_HomeCare_API.Model.Employee;
+﻿using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.ViewModel.Employee;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
 
@@ -38,6 +35,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<string>> SaveEmpDeclinedCase(EmpDeclinedCase client);
         Task<ServiceResponse<List<EmpDeclinedCase>>> GetEmpDeclinedcase(int EmpId);
 
-
+        Task<ServiceResponse<CaregiverViewModel>> GetCareGiverDetails(int UserId);
+        Task<ServiceResponse<ExternalLoginViewModel>> ExternalLogin(ExternalLoginModel externalLoginModel);
     }
 }
