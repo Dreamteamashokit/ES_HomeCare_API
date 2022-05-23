@@ -228,5 +228,16 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
+
+        [HttpGet("getUsersGeoProvision/{userId}")]
+        [ProducesResponseType(typeof(ServiceResponse<ClientGeoProvisions>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<ClientGeoProvisions>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetUsersGeoProvision(int userId)
+        {
+            return Ok(await comSrv.GetUsersGeoProvision(userId));
+
+        }
+
+
     }
 }

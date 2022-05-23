@@ -27,4 +27,18 @@ namespace ES_HomeCare_API.Model
         public string StartTime { get; set; }
         public string EndTime { get; set; }
     }
+
+
+
+
+    public class ClientGeoProvisions
+    {
+        public long ClientId { get; set; }
+        public decimal Latitude { get; set; }
+        public decimal Longitude { get; set; }
+        public int[] Provisions { get; set; }
+    }
+
+
+
 }

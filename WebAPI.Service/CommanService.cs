@@ -118,8 +118,11 @@ namespace ES_HomeCare_API.WebAPI.Service
         }
 
 
+        public async Task<ServiceResponse<ClientGeoProvisions>> GetUsersGeoProvision(int UserId)
+        {
+            return await data.GetUsersGeoProvision(UserId);
+        }
 
 
-
-    }
+        }
 }

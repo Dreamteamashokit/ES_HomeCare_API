@@ -35,6 +35,8 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
 
         Task<ServiceResponse<IEnumerable<ItemList>>> GetUsers(int type);
 
+        Task<ServiceResponse<ClientGeoProvisions>> GetUsersGeoProvision(int UserId);
+
     }
 
 
