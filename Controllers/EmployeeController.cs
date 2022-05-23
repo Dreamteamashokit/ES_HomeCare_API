@@ -274,5 +274,15 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.ExternalLogin(externalLoginModel));
         }
         #endregion
+
+        #region Get HHA Customer/Patients details
+        [HttpGet("GetClientListByempId/{empId}")]
+        [ProducesResponseType(typeof(ServiceResponse<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<bool>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetClientListByempId(int empId)
+        {
+            return Ok(await service.GetClientListByempId(empId));
+        }
+        #endregion
     }
 }
