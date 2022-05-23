@@ -736,9 +736,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     if (ds != null && ds.Tables.Count > 0)
                     {
                         address address = null;
-                        if (ds.Tables.Count > 0)
+                        if (ds.Tables.Count > 1)
                         {
-                            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                            for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
                             {
                                 address = new address
                                 {
@@ -783,10 +783,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 obj.Message = ex.Message;
                 return obj;
             }
-            finally
-            {
-
-            }
         }
 
         public async Task<ServiceResponse<ExternalLoginViewModel>> ExternalLogin(ExternalLoginModel externalLoginModel)
@@ -801,8 +797,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@SSN", externalLoginModel.SSN);
-                    //cmd.Parameters.AddWithValue("@MobileNo", externalLoginModel.MobileNo);
-
                     DataSet ds = new DataSet();
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     da.Fill(ds);
@@ -820,13 +814,81 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                                     lastName = ds.Tables[0].Rows[i]["lastName"].ToString(),
                                     middleName = ds.Tables[0].Rows[i]["middleName"].ToString(),
                                     userName = ds.Tables[0].Rows[i]["userName"].ToString(),
-                                    email = ds.Tables[0].Rows[i]["email"].ToString()
+                                    email = ds.Tables[0].Rows[i]["email"].ToString(),
+                                    latitude = Convert.ToDecimal(ds.Tables[0].Rows[i]["latitude"]),
+                                    longitude = Convert.ToDecimal(ds.Tables[0].Rows[i]["longitude"])
                                 };
                             }
                         }
                         obj.Result = true;
                     }
                     obj.Data = result;
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+        }
+
+        public async Task<ServiceResponse<List<ClientListViewModel>>> GetClientListByempId(int empId)
+        {
+            ServiceResponse<List<ClientListViewModel>> obj = new ServiceResponse<List<ClientListViewModel>>();
+            List<ClientListViewModel> objClientList = null;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("GetCLientDetailsByUserId", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@empId", empId);
+
+                    DataSet ds = new DataSet();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(ds);
+                    if (ds != null && ds.Tables.Count > 0)
+                    {
+                        objClientList = new List<ClientListViewModel>();
+                        ClientAddressViewModel address = null;
+                        if (ds.Tables.Count > 1)
+                        {
+                            for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
+                            {
+                                address = new ClientAddressViewModel
+                                {
+                                    AddressId = Convert.ToInt32(ds.Tables[1].Rows[i]["AddressId"]),
+                                    FlatNo = ds.Tables[1].Rows[i]["FlatNo"].ToString(),
+                                    City = ds.Tables[1].Rows[i]["City"].ToString(),
+                                    Address = ds.Tables[1].Rows[i]["Address"].ToString(),
+                                    Country = ds.Tables[1].Rows[i]["Country"].ToString(),
+                                    State = ds.Tables[1].Rows[i]["State"].ToString(),
+                                    ZipCode = ds.Tables[1].Rows[i]["ZipCode"].ToString(),
+                                    Latitude = Convert.ToDecimal(ds.Tables[1].Rows[i]["Latitude"]),
+                                    Longitude = Convert.ToDecimal(ds.Tables[1].Rows[i]["Longitude"])
+                                };
+                            }
+                        }
+                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                        {
+                            ClientListViewModel objClient = new ClientListViewModel
+                            {
+                                ClientId = Convert.ToInt32(ds.Tables[0].Rows[i]["ClientId"]),
+                                UserId = Convert.ToInt32(ds.Tables[0].Rows[i]["UserId"]),
+                                FirstName = ds.Tables[0].Rows[i]["FirstName"].ToString(),
+                                MiddleName = ds.Tables[0].Rows[i]["MiddleName"].ToString(),
+                                LastName = ds.Tables[0].Rows[i]["LastName"].ToString(),
+                                MeetingDate = ds.Tables[0].Rows[i]["MeetingDate"].ToString(),
+                                MeetingStartTime = ds.Tables[0].Rows[i]["MeetingStartTime"].ToString(),
+                                MeetingEndTime = ds.Tables[0].Rows[i]["MeetingEndTime"].ToString(),
+                                clientAddress = address
+                            };
+                            objClientList.Add(objClient);
+                        }
+                        obj.Result = true;
+                    }
+                    obj.Data = objClientList;
                     return obj;
                 }
             }

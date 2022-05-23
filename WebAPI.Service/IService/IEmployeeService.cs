@@ -37,5 +37,6 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
 
         Task<ServiceResponse<CaregiverViewModel>> GetCareGiverDetails(int UserId);
         Task<ServiceResponse<ExternalLoginViewModel>> ExternalLogin(ExternalLoginModel externalLoginModel);
+        Task<ServiceResponse<List<ClientListViewModel>>> GetClientListByempId(int empId);
     }
 }

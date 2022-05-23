@@ -9,5 +9,7 @@
         public string lastName { get; set; }
         public string middleName { get; set; }
         public string email { get; set; }
+        public decimal latitude { get; set; }
+        public decimal longitude { get; set; }
     }
 }

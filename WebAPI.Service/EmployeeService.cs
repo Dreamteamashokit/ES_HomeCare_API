@@ -144,5 +144,10 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.ExternalLogin(externalLoginModel);
         }
+
+        public async Task<ServiceResponse<List<ClientListViewModel>>> GetClientListByempId(int empId)
+        {
+            return await data.GetClientListByempId(empId);
+        }
     }
 }
