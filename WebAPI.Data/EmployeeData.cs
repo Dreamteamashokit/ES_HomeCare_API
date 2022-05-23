@@ -851,25 +851,25 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     if (ds != null && ds.Tables.Count > 0)
                     {
                         objClientList = new List<ClientListViewModel>();
-                        ClientAddressViewModel address = null;
-                        if (ds.Tables.Count > 1)
-                        {
-                            for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
-                            {
-                                address = new ClientAddressViewModel
-                                {
-                                    AddressId = Convert.ToInt32(ds.Tables[1].Rows[i]["AddressId"]),
-                                    FlatNo = ds.Tables[1].Rows[i]["FlatNo"].ToString(),
-                                    City = ds.Tables[1].Rows[i]["City"].ToString(),
-                                    Address = ds.Tables[1].Rows[i]["Address"].ToString(),
-                                    Country = ds.Tables[1].Rows[i]["Country"].ToString(),
-                                    State = ds.Tables[1].Rows[i]["State"].ToString(),
-                                    ZipCode = ds.Tables[1].Rows[i]["ZipCode"].ToString(),
-                                    Latitude = Convert.ToDecimal(ds.Tables[1].Rows[i]["Latitude"]),
-                                    Longitude = Convert.ToDecimal(ds.Tables[1].Rows[i]["Longitude"])
-                                };
-                            }
-                        }
+                        //ClientAddressViewModel address = null;
+                        //if (ds.Tables.Count > 1)
+                        //{
+                        //    for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
+                        //    {
+                        //        address = new ClientAddressViewModel
+                        //        {
+                        //            AddressId = Convert.ToInt32(ds.Tables[1].Rows[i]["AddressId"]),
+                        //            FlatNo = ds.Tables[1].Rows[i]["FlatNo"].ToString(),
+                        //            City = ds.Tables[1].Rows[i]["City"].ToString(),
+                        //            Address = ds.Tables[1].Rows[i]["Address"].ToString(),
+                        //            Country = ds.Tables[1].Rows[i]["Country"].ToString(),
+                        //            State = ds.Tables[1].Rows[i]["State"].ToString(),
+                        //            ZipCode = ds.Tables[1].Rows[i]["ZipCode"].ToString(),
+                        //            Latitude = Convert.ToDecimal(ds.Tables[1].Rows[i]["Latitude"]),
+                        //            Longitude = Convert.ToDecimal(ds.Tables[1].Rows[i]["Longitude"])
+                        //        };
+                        //    }
+                        //}
                         for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                         {
                             ClientListViewModel objClient = new ClientListViewModel
@@ -880,9 +880,17 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                                 MiddleName = ds.Tables[0].Rows[i]["MiddleName"].ToString(),
                                 LastName = ds.Tables[0].Rows[i]["LastName"].ToString(),
                                 MeetingDate = ds.Tables[0].Rows[i]["MeetingDate"].ToString(),
-                                MeetingStartTime = ds.Tables[0].Rows[i]["MeetingStartTime"].ToString(),
-                                MeetingEndTime = ds.Tables[0].Rows[i]["MeetingEndTime"].ToString(),
-                                clientAddress = address
+                                MeetingStartTime = ds.Tables[0].Rows[i]["StartTime"].ToString(),
+                                MeetingEndTime = ds.Tables[0].Rows[i]["EndTime"].ToString(),
+                                //clientAddress = address
+                                FlatNo = ds.Tables[0].Rows[i]["FlatNo"].ToString(),
+                                City = ds.Tables[0].Rows[i]["City"].ToString(),
+                                Address = ds.Tables[0].Rows[i]["Address"].ToString(),
+                                Country = ds.Tables[0].Rows[i]["Country"].ToString(),
+                                State = ds.Tables[0].Rows[i]["State"].ToString(),
+                                ZipCode = ds.Tables[0].Rows[i]["ZipCode"].ToString(),
+                                Latitude = ds.Tables[0].Rows[i]["Latitude"].ToString(),
+                                Longitude = ds.Tables[0].Rows[i]["Longitude"].ToString()
                             };
                             objClientList.Add(objClient);
                         }
