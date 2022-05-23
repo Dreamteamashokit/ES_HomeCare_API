@@ -269,8 +269,8 @@ namespace WebAPI_SAMPLE.Controllers
 
         #region External login
         [HttpPost("ExternalLogin")]
-        [ProducesResponseType(typeof(ServiceResponse<bool>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<bool>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<ExternalLoginViewModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<ExternalLoginViewModel>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ExternalLogin(ExternalLoginModel externalLoginModel)
         {
             return Ok(await service.ExternalLogin(externalLoginModel));
@@ -279,8 +279,8 @@ namespace WebAPI_SAMPLE.Controllers
 
         #region Get HHA Customer/Patients details
         [HttpGet("GetClientListByempId/{empId}")]
-        [ProducesResponseType(typeof(ServiceResponse<bool>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<bool>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientListViewModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientListViewModel>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetClientListByempId(int empId)
         {
             return Ok(await service.GetClientListByempId(empId));
