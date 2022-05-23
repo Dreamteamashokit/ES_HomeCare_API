@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using ES_HomeCare_API.Helper;
 using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Location;
 using ES_HomeCare_API.WebAPI.Data.IData;
@@ -109,29 +110,32 @@ namespace ES_HomeCare_API.WebAPI.Data
                     @CaseId = req.CaseId,
                     @ProvisionList = para
                 };
+
                 var results = (await connection.QueryAsync(procedure, values, commandType: CommandType.StoredProcedure)).ToList();
                 //Using Query Syntax
-                var GroupByQS = from p in results
-                                group p by new { p.EmpId, p.EName, p.Address, p.Latitude, p.Longitude } into g
-                                orderby g.Key.EmpId descending
-                                select new AvailbilityReponse
-                                {
-                                    EmpId = g.Key.EmpId,
-                                    EmpName=g.Key.EName,
-                                    Address = g.Key.Address,
-                                    Latitude = g.Key.Latitude == null ? 0.0m : Convert.ToDecimal(g.Key.Latitude),
-                                    Longitude = g.Key.Longitude==null?0.0m : Convert.ToDecimal(g.Key.Longitude),
-                                    MeetingList = g.Select(f => new EmpAppointment
-                                    {
-                                        ClientId = f.ClientId,
-                                        ClientName = f.CName,
-                                        MeetingDate = f.MeetingDate,
-                                        StartTime = f.StartTime,
-                                        EndTime = f.EndTime,
-                                    }).ToList()
-                                };
+                var GroupByQS = (from p in results
+                                 group p by new { p.UserId, p.EName, p.Address, p.Latitude, p.Longitude } into g
+                                 orderby g.Key.UserId descending
+                                 select new AvailbilityReponse
+                                 {
+                                     EmpId = g.Key.UserId,
+                                     EmpName = g.Key.EName,
+                                     Address = g.Key.Address == null ? "" : g.Key.Address,
+                                     Latitude = g.Key.Latitude == null ? 0.0m : Convert.ToDecimal(g.Key.Latitude),
+                                     Longitude = g.Key.Longitude == null ? 0.0m : Convert.ToDecimal(g.Key.Longitude),
+                                     MeetingList = g.Select(f => new EmpAppointment
+                                     {
 
-                obj.Data = GroupByQS;
+                                         ClientId = f.ClientId != null ? f.ClientId : 0,
+                                         ClientName = f.CName != null ? f.CName : "",
+                                         MeetingDate = f.MeetingDate != null ? f.MeetingDate : DateTime.Now,                                        
+                                         StartTime = f.StartTime != null ? ((TimeSpan)f.StartTime): DateTime.Now.TimeOfDay,
+                                         EndTime = f.EndTime != null ? ((TimeSpan)f.EndTime):DateTime.Now.TimeOfDay,
+
+                                     }).ToList()
+                                 });
+
+                obj.Data = GroupByQS.ToList();
                 obj.Result = results.Any() ? true : false;
                 obj.Message = results.Any() ? "Data Found." : "No Data found.";
             }
