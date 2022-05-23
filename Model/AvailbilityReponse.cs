@@ -20,10 +20,11 @@ namespace ES_HomeCare_API.Model
 
     public class EmpAppointment
     {
+        public long MeetingId { get; set; }
         public long ClientId { get; set; }
         public string ClientName { get; set; }
         public DateTime MeetingDate { get; set; }
-        public TimeSpan StartTime { get; set; }
-        public TimeSpan EndTime { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
     }
 }

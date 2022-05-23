@@ -21,7 +21,6 @@ namespace ES_HomeCare_API.WebAPI.Data
         {
             configuration = _configuration;
         }
-
         public async Task<ServiceResponse<string>> AddLocation(LocationModel _model)
         {
             ServiceResponse<string> resObj = new ServiceResponse<string>();
@@ -123,14 +122,14 @@ namespace ES_HomeCare_API.WebAPI.Data
                                      Address = g.Key.Address == null ? "" : g.Key.Address,
                                      Latitude = g.Key.Latitude == null ? 0.0m : Convert.ToDecimal(g.Key.Latitude),
                                      Longitude = g.Key.Longitude == null ? 0.0m : Convert.ToDecimal(g.Key.Longitude),
-                                     MeetingList = g.Select(f => new EmpAppointment
+                                     MeetingList = g.Where(x=>x.MeetingId != null).Select(f => new EmpAppointment
                                      {
-
+                                         MeetingId = f.MeetingId != null ? f.MeetingId : 0,
                                          ClientId = f.ClientId != null ? f.ClientId : 0,
                                          ClientName = f.CName != null ? f.CName : "",
                                          MeetingDate = f.MeetingDate != null ? f.MeetingDate : DateTime.Now,                                        
-                                         StartTime = f.StartTime != null ? ((TimeSpan)f.StartTime): DateTime.Now.TimeOfDay,
-                                         EndTime = f.EndTime != null ? ((TimeSpan)f.EndTime):DateTime.Now.TimeOfDay,
+                                         StartTime = ((TimeSpan)f.StartTime).TimeHelper(),
+                                         EndTime = ((TimeSpan)f.EndTime).TimeHelper()
 
                                      }).ToList()
                                  });
