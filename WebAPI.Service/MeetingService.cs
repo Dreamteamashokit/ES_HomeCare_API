@@ -76,7 +76,10 @@ namespace ES_HomeCare_API.WebAPI.Service
         }
 
 
-
+        public async Task<ServiceResponse<string>> AddRecurringMeeting(MeetingModel model)
+        {
+            return await data.AddRecurringMeeting(model);
+        }
 
     }
 }

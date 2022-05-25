@@ -20,17 +20,11 @@ namespace ES_HomeCare_API.WebAPI.Data
 {
     public class MeetingData : IMeetingData
     {
-
         private IConfiguration configuration;
         public MeetingData(IConfiguration _configuration)
         {
             configuration = _configuration;
         }
-
-
-
-
-
         public async Task<ServiceResponse<string>> AddMeeting(MeetingModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -96,6 +90,59 @@ namespace ES_HomeCare_API.WebAPI.Data
             return sres;
         }
 
+
+
+        public async Task<ServiceResponse<string>> AddRecurringMeeting(MeetingModel model)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {             
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sql = "MeetingProc";
+                    var sqlParameter = new { @flag = 1,
+                        @ClientId = model.ClientId, 
+                        @EmpId = model.EmpId,
+                        @FromDate = model.FromDate,
+                        @ToDate = model.ToDate,
+                        @StartTime = model.StartTime,
+                        @EndTime = model.EndTime,
+                        @MeetingPoint = model.MeetingNote,
+                        @CreatedOn = model.CreatedOn,
+                        @CreatedBy = model.CreatedBy,
+                    };
+                    int rowsAffected = (await connection.ExecuteAsync(sql, sqlParameter, commandType: CommandType.StoredProcedure));
+
+                    if (rowsAffected > 0)
+                    {
+                        obj.Result = true;
+                        obj.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        obj.Result = false;
+                        obj.Data = null;
+                        obj.Message = "Failed new creation.";
+                    }
+                }
+                return obj;
+
+            }
+            catch (Exception ex)
+            {
+
+                obj.Result = false;
+                obj.Message = ex.Message;
+                return obj;
+            }
+          
+        }
+
+
+
+
+
+
         public async Task<ServiceResponse<IEnumerable<EmpMeeting>>> GetEmpMeetingList(int empId)
         {
             ServiceResponse<IEnumerable<EmpMeeting>> obj = new ServiceResponse<IEnumerable<EmpMeeting>>();
@@ -146,7 +193,7 @@ IsNUll(y.MeetingId,0) as MeetingId,y.MeetingDate,y.StartTime,y.EndTime,
 y.EmpId as EmpId,p.FirstName +' ' + ISNULL(p.MiddleName,' ')+' ' + p.LastName as EmpName
 from tblUser x inner join tblClient xx on x.UserId=xx.UserId
 Left Join tblMeeting y on xx.UserId=y.ClientId and y.IsStatus<>0  Left join tblUser p on y.EmpId=p.UserId    
-Left join tblAddress xy on x.UserId=xy.UserId";
+Left join tblAddress xy on x.UserId=xy.UserId ORDER BY TRIM(x.LastName)";
 
                 var result = (await connection.QueryAsync(sql)).ToList();
 

@@ -57,6 +57,36 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
+        [HttpPost("addRecurringMeeting")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddRecurringMeeting([FromBody] MeetingJson model)
+        {
+            try
+            {
+                MeetingModel obj = new MeetingModel()
+                {
+                    MeetingDate = model.MeetingDate.ParseDate(),
+                    MeetingNote = model.MeetingNote,
+                    FromDate = model.FromDate.ParseDate(),
+                    ToDate = model.ToDate.ParseDate(),
+                    ClientId = model.ClientId,
+                    EmpId = model.EmpId,
+                    StartTime = model.StartTime.ParseTime(),
+                    EndTime = model.EndTime.ParseTime(),
+                    EmpList = model.EmpList,
+                    IsStatus = (short)MeetingEnum.Active,
+                    CreatedBy = model.UserId,
+                    CreatedOn = DateTime.Now
+                };
+                return Ok(await mtgSrv.AddRecurringMeeting(obj));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
 
 
         [HttpGet("getEmpMeeting/{empId}")]

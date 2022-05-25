@@ -21,10 +21,7 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
         Task<ServiceResponse<string>> ChangeStatus(MeetingStatus _model);
         Task<ServiceResponse<IEnumerable<EmpMeeting>>> GetUserMeetingList(int _userId, short _userTypeId);
         Task<ServiceResponse<IEnumerable<MeetingView>>> UpCommingAppointments(int ClientId);
-
-
-
-
+        Task<ServiceResponse<string>> AddRecurringMeeting(MeetingModel model);
 
     }
 }

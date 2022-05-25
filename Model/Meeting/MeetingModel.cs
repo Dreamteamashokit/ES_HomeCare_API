@@ -12,6 +12,8 @@ namespace ES_HomeCare_API.Model.Meeting
         public int EmpId { get; set; }
         public List<int> EmpList { get; set; }
         public DateTime MeetingDate { get; set; }
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
         public string MeetingNote { get; set; }
