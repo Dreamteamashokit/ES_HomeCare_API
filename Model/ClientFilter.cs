@@ -11,6 +11,7 @@ namespace ES_HomeCare_API.Model
         public string State { get; set; }
         public int Coordinator { get; set; }
         public int Payer { get; set; }
+        public int EmpType { get; set; }
     }
 
     public class ClientResult

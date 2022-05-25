@@ -108,6 +108,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                         @StartTime = model.StartTime,
                         @EndTime = model.EndTime,
                         @MeetingPoint = model.MeetingNote,
+                        @IsStatus=model.IsStatus,
                         @CreatedOn = model.CreatedOn,
                         @CreatedBy = model.CreatedBy,
                     };

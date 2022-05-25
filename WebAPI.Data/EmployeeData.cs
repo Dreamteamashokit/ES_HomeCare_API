@@ -91,6 +91,28 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return obj;
         }
 
+        public async Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj(ClientFilter model)
+        {
+            ServiceResponse<IEnumerable<EmployeeList>> obj = new ServiceResponse<IEnumerable<EmployeeList>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sqlQuery = "EmpProc";
+                var sqlParameter = new { @flag = 3, @IsActive = model.Status, 
+                    @SupervisorId = model.Coordinator, 
+                    @State = model.State, 
+                    @TypeId=model.EmpType };
+               
+                IEnumerable<EmployeeList> results = (await connection.QueryAsync<EmployeeList>(sqlQuery,
+    sqlParameter, commandType: CommandType.StoredProcedure));
+                obj.Data = results;
+                obj.Result = results.Any() ? true : false;
+                obj.Message = results.Any() ? "Data Found." : "No Data found.";
+
+            
+            }
+            return obj;
+        }
+
         public async Task<ServiceResponse<string>> DeleteEmployee(int UserId)
         {
             ServiceResponse<string> obj = new ServiceResponse<string>();

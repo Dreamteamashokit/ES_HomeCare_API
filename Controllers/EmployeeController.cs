@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ES_HomeCare_API.Helper;
+using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.ViewModel.Employee;
 using ES_HomeCare_API.WebAPI.Service;
@@ -69,6 +70,16 @@ namespace WebAPI_SAMPLE.Controllers
         {
             return Ok(await service.GetEmployeeListObj(userId));
         }
+
+        [HttpPost("getEmployeeListObj")]
+        [ProducesResponseType(typeof(ServiceResponse<List<EmployeeList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<EmployeeList>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetEmployeeListObj([FromBody] ClientFilter model)
+        {
+            return Ok(await service.GetEmployeeListObj(model));
+        }
+
+        
 
 
         [HttpGet("deleteEmployee/{empId}")]
