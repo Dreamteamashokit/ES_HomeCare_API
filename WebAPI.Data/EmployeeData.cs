@@ -851,25 +851,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     if (ds != null && ds.Tables.Count > 0)
                     {
                         objClientList = new List<ClientListViewModel>();
-                        //ClientAddressViewModel address = null;
-                        //if (ds.Tables.Count > 1)
-                        //{
-                        //    for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
-                        //    {
-                        //        address = new ClientAddressViewModel
-                        //        {
-                        //            AddressId = Convert.ToInt32(ds.Tables[1].Rows[i]["AddressId"]),
-                        //            FlatNo = ds.Tables[1].Rows[i]["FlatNo"].ToString(),
-                        //            City = ds.Tables[1].Rows[i]["City"].ToString(),
-                        //            Address = ds.Tables[1].Rows[i]["Address"].ToString(),
-                        //            Country = ds.Tables[1].Rows[i]["Country"].ToString(),
-                        //            State = ds.Tables[1].Rows[i]["State"].ToString(),
-                        //            ZipCode = ds.Tables[1].Rows[i]["ZipCode"].ToString(),
-                        //            Latitude = Convert.ToDecimal(ds.Tables[1].Rows[i]["Latitude"]),
-                        //            Longitude = Convert.ToDecimal(ds.Tables[1].Rows[i]["Longitude"])
-                        //        };
-                        //    }
-                        //}
+
                         for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                         {
                             ClientListViewModel objClient = new ClientListViewModel
@@ -882,7 +864,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                                 MeetingDate = ds.Tables[0].Rows[i]["MeetingDate"].ToString(),
                                 MeetingStartTime = ds.Tables[0].Rows[i]["StartTime"].ToString(),
                                 MeetingEndTime = ds.Tables[0].Rows[i]["EndTime"].ToString(),
-                                //clientAddress = address
                                 FlatNo = ds.Tables[0].Rows[i]["FlatNo"].ToString(),
                                 City = ds.Tables[0].Rows[i]["City"].ToString(),
                                 Address = ds.Tables[0].Rows[i]["Address"].ToString(),
@@ -905,6 +886,91 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 obj.Message = ex.Message;
                 return obj;
             }
+        }
+
+        public async Task<ServiceResponse<HHAClockInDetailsModel>> GetClockinDetails(int userId)
+        {
+            ServiceResponse<HHAClockInDetailsModel> obj = new ServiceResponse<HHAClockInDetailsModel>();
+            HHAClockInDetailsModel objClockinDetail = null;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("GetHHAClockInOutDetails", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@UserId", userId);
+
+                    DataSet ds = new DataSet();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(ds);
+                    if (ds != null && ds.Tables.Count > 0)
+                    {
+                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                        {
+                            objClockinDetail = new HHAClockInDetailsModel();
+
+                            objClockinDetail.ClockId = Convert.ToInt32(ds.Tables[0].Rows[i]["ClockId"]);
+                            objClockinDetail.UserId = Convert.ToInt32(ds.Tables[0].Rows[i]["UserId"]);
+                            if (ds.Tables[0].Rows[i]["ClockInTime"] != null)
+                            {
+                                objClockinDetail.ClockInTime = Convert.ToDateTime(ds.Tables[0].Rows[i]["ClockInTime"]);
+                            }
+                            if (ds.Tables[0].Rows[i]["ClockOutTime"] != null && ds.Tables[0].Rows[i]["ClockOutTime"] != DBNull.Value)
+                            {
+                                objClockinDetail.ClockOutTime = Convert.ToDateTime(ds.Tables[0].Rows[i]["ClockOutTime"]);
+                            }
+                            objClockinDetail.Notes = ds.Tables[0].Rows[i]["Notes"].ToString();
+                        }
+                        obj.Result = true;
+                    }
+                    obj.Data = objClockinDetail;
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+        }
+
+        public async Task<ServiceResponse<string>> HHAClockin(HHAClockInModel hhaClockin)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+
+                    SqlCommand cmd = new SqlCommand("AddHHAClockInOutDetails", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@UserId", hhaClockin.UserId);
+                    cmd.Parameters.AddWithValue("@ClockInTime", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@ClockOutTime", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@Notes", hhaClockin.Notes);
+                    cmd.Parameters.AddWithValue("@Type", hhaClockin.Type);
+
+                    con.Open();
+                    int value = cmd.ExecuteNonQuery();
+                    if (value > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "HHA Login Success.";
+                        sres.Message = "HHA Login Success.";
+                    }
+                    else
+                    {
+                        sres.Result = true;
+                        sres.Data = null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return sres;
         }
     }
 }

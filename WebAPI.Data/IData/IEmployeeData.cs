@@ -43,5 +43,8 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<CaregiverViewModel>> GetCareGiverDetails(int UserId);
         Task<ServiceResponse<ExternalLoginViewModel>> ExternalLogin(ExternalLoginModel externalLoginModel);
         Task<ServiceResponse<List<ClientListViewModel>>> GetClientListByempId(int empId);
+        Task<ServiceResponse<HHAClockInDetailsModel>> GetClockinDetails(int userId);
+        Task<ServiceResponse<string>> HHAClockin(HHAClockInModel hhaClockin);
+
     }
 }

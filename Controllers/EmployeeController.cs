@@ -286,5 +286,22 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.GetClientListByempId(empId));
         }
         #endregion
+
+
+        [HttpGet("GetClockinDetails/{userId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientListViewModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientListViewModel>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetClockinDetails(int userId)
+        {
+            return Ok(await service.GetClockinDetails(userId));
+        }
+
+        [HttpPost("HHAClockin")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> HHAClockin([FromBody] HHAClockInModel hhaClockinModel)
+        {
+            return Ok(await service.HHAClockin(hhaClockinModel));
+        }
     }
 }
