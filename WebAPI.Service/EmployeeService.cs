@@ -152,5 +152,15 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.GetClientListByempId(empId);
         }
+
+        public async Task<ServiceResponse<HHAClockInDetailsModel>> GetClockinDetails(int userId)
+        {
+            return await data.GetClockinDetails(userId);
+        }
+
+        public async Task<ServiceResponse<string>> HHAClockin(HHAClockInModel hhaClockin)
+        {
+            return await data.HHAClockin(hhaClockin);
+        }
     }
 }
