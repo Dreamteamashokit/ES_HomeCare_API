@@ -284,6 +284,10 @@ Inner Join tblUser r on p.ClientId=r.UserId Left Join tblAddress rp on r.UserId=
 Inner Join tblUser s on p.EmpId=s.UserId  Left Join tblAddress sp on s.UserId=sp.UserId
 Where p.MeetingId=@MeetingId;";
 
+                try
+                {
+
+               
                 var rsData = (await connection.QueryAsync(sql, new { @MeetingId = meetingId }));
 
                 MeetingView objResult = (from mom in rsData
@@ -303,7 +307,7 @@ Where p.MeetingId=@MeetingId;";
                                              {
                                                
                                                  Id = momGroup.FirstOrDefault().EmpId,
-                                                 UserType = momGroup.FirstOrDefault().empUserType,
+                                                 //UserType = momGroup.FirstOrDefault().empUserType,
                                                  FirstName = momGroup.FirstOrDefault().empFName,
                                                  MiddleName = momGroup.FirstOrDefault().empMName,
                                                  Lastname = momGroup.FirstOrDefault().empLName,
@@ -329,7 +333,7 @@ Where p.MeetingId=@MeetingId;";
                                              {
 
                                                  Id = momGroup.FirstOrDefault().ClientId,
-                                                 UserType = momGroup.FirstOrDefault().UserType,
+                                                 //UserType = momGroup.FirstOrDefault().UserType,
                                                  FirstName = momGroup.FirstOrDefault().FirstName,
                                                  MiddleName = momGroup.FirstOrDefault().MiddleName,
                                                  Lastname = momGroup.FirstOrDefault().LastName,
@@ -358,6 +362,12 @@ Where p.MeetingId=@MeetingId;";
                 obj.Data = objResult;
                 obj.Result = objResult != null ? true : false;
                 obj.Message = objResult != null ? "Data Found." : "No Data found.";
+
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
             }
             return obj;
         }
