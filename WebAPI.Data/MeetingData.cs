@@ -272,12 +272,17 @@ Left join tblAddress xy on x.UserId=xy.UserId ORDER BY TRIM(x.LastName)";
             ServiceResponse<MeetingView> obj = new ServiceResponse<MeetingView>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = @"select p.*,q.CellPhone,q.FirstName as cltFName,q.MiddleName as cltMName,q.LastName as cltLName,p.EmpId,s.FirstName as empFName,
-s.MiddleName as empMName,s.LastName as empLName,s.CellPhone,t.Owner as empOwner,t.FlatNo as empFlatNo,t.Address as empAddress,
-t.City as empCity,t.Country as empCountry,t.State as empState,t.ZipCode as empZipCode,u.MeetingPoint from 
-tblMeeting p inner join tblUser q on p.ClientId=q.UserId inner join 
-tblUser s on p.EmpId=s.UserId left join  tblAddress t on
-s.UserId=t.UserId Left Join tblMeetingPoint u on p.MeetingId=u.MeetingId where p.MeetingId=@MeetingId;";
+                string sql = @"Select p.*,q.MeetingPoint,r.UserType,
+r.FirstName,r.MiddleName,r.LastName,r.Email,r.CellPhone,r.HomePhone,r.EmgPhone,r.EmgContact,
+rp.Owner,rp.FlatNo,rp.Address,rp.City,rp.Country,rp.State,rp.ZipCode,
+p.EmpId,s.UserType as empUserType,s.FirstName as empFName,s.MiddleName as empMName,s.LastName as empLName,s.Email as empEmail,
+s.CellPhone as empCellPhone,s.HomePhone as empHomePhone,s.EmgPhone as empEmgPhone,s.EmgContact as empEmgContact,
+sp.Owner as empOwner,sp.FlatNo as empFlatNo,sp.Address as empAddress,
+sp.City as empCity,sp.Country as empCountry,sp.State as empState,sp.ZipCode as empZipCode from 
+tblMeeting p Left Join tblMeetingPoint q on p.MeetingId=q.MeetingId
+Inner Join tblUser r on p.ClientId=r.UserId Left Join tblAddress rp on r.UserId=rp.UserId
+Inner Join tblUser s on p.EmpId=s.UserId  Left Join tblAddress sp on s.UserId=sp.UserId
+Where p.MeetingId=@MeetingId;";
 
                 var rsData = (await connection.QueryAsync(sql, new { @MeetingId = meetingId }));
 
@@ -296,15 +301,23 @@ s.UserId=t.UserId Left Join tblMeetingPoint u on p.MeetingId=u.MeetingId where p
                                              EndTime = ((TimeSpan)momGroup.FirstOrDefault().EndTime).TimeHelper(),
                                              Employee = new UserView()
                                              {
-
+                                               
                                                  Id = momGroup.FirstOrDefault().EmpId,
+                                                 UserType = momGroup.FirstOrDefault().empUserType,
                                                  FirstName = momGroup.FirstOrDefault().empFName,
                                                  MiddleName = momGroup.FirstOrDefault().empMName,
                                                  Lastname = momGroup.FirstOrDefault().empLName,
-                                                 CellPhone = momGroup.FirstOrDefault().CellPhone,
+                                                 CellPhone = momGroup.FirstOrDefault().empCellPhone,
+                                                 Email = momGroup.FirstOrDefault().empEmail,
+                                                 HomePhone = momGroup.FirstOrDefault().empHomePhone,
+                                                 EmergPhone = momGroup.FirstOrDefault().empEmgPhone,
+                                                 EmergContact = momGroup.FirstOrDefault().empEmgPhone,
+
+
                                                  Address = new AddressView()
                                                  {
                                                      LocationDetail = momGroup.FirstOrDefault().empAddress,
+                                                     Owner = momGroup.FirstOrDefault().empOwner,
                                                      FlatNo = momGroup.FirstOrDefault().empFlatNo,
                                                      Country = momGroup.FirstOrDefault().empCountry,
                                                      State = momGroup.FirstOrDefault().empState,
@@ -316,9 +329,27 @@ s.UserId=t.UserId Left Join tblMeetingPoint u on p.MeetingId=u.MeetingId where p
                                              {
 
                                                  Id = momGroup.FirstOrDefault().ClientId,
-                                                 FirstName = momGroup.FirstOrDefault().cltFName,
-                                                 MiddleName = momGroup.FirstOrDefault().cltMName,
-                                                 Lastname = momGroup.FirstOrDefault().cltLName,
+                                                 UserType = momGroup.FirstOrDefault().UserType,
+                                                 FirstName = momGroup.FirstOrDefault().FirstName,
+                                                 MiddleName = momGroup.FirstOrDefault().MiddleName,
+                                                 Lastname = momGroup.FirstOrDefault().LastName,
+                                                 CellPhone= momGroup.FirstOrDefault().CellPhone,
+                                                 Email = momGroup.FirstOrDefault().Email,
+                                                 HomePhone = momGroup.FirstOrDefault().HomePhone,
+                                                 EmergPhone = momGroup.FirstOrDefault().EmgPhone,
+                                                 EmergContact = momGroup.FirstOrDefault().EmgPhone,
+
+                                                 Address = new AddressView()
+                                                 {
+                                                     LocationDetail = momGroup.FirstOrDefault().Address,
+                                                     Owner= momGroup.FirstOrDefault().Owner,
+                                                     FlatNo = momGroup.FirstOrDefault().FlatNo,
+                                                     Country = momGroup.FirstOrDefault().Country,
+                                                     State = momGroup.FirstOrDefault().State,
+                                                     City = momGroup.FirstOrDefault().City,
+                                                     ZipCode = momGroup.FirstOrDefault().ZipCode,
+                                                 },
+
                                              },
                                              IsStatus = momGroup.FirstOrDefault().IsStatus,
                                              Notes = momGroup.Select(x => (string)x.MeetingPoint).ToList()
@@ -485,6 +516,39 @@ s.UserId=t.UserId Left Join tblMeetingPoint u on p.MeetingId=u.MeetingId where p
             }
             return obj;
         }
+
+
+
+        public async Task<ServiceResponse<IEnumerable<MeetingLog>>> GetMeetingLog(long MeetingId)
+        {
+            ServiceResponse<IEnumerable<MeetingLog>> obj = new ServiceResponse<IEnumerable<MeetingLog>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = @"Select p.LogLable,q.FirstName,q.MiddleName,q.LastName,p.CreatedOn from tblMeeting_Log p inner join tblUser q on p.UserId=q.UserId
+			where p.MeetingId =@MeetingId
+			Order by p.CreatedOn";
+       
+                var result = (await connection.QueryAsync(sql, new { @MeetingId = MeetingId })).Select(mom => new MeetingLog
+                {
+                    MeetingId = mom.MeetingId,
+                    LogNote = mom.LogLable,
+                    CreatedOn = mom.CreatedOn,
+                    CreatedBy = new NameClass
+                    {
+                     
+                        FirstName = mom.FirstName,
+                        MiddleName = mom.MiddleName,
+                        LastName = mom.Lastname,
+                    }
+                });
+                obj.Data = result;
+                obj.Result = result.Any() ? true : false;
+                obj.Message = result.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
+
+        
 
 
 

@@ -15,4 +15,17 @@ namespace ES_HomeCare_API.Model.Meeting
         public List<string> Notes { get; set; }
         public short IsStatus { get; set; }
     }
+
+
+
+    public class MeetingLog
+    {
+        public long MeetingId { get; set; }
+        public string LogNote { get; set; }
+        public string CreatedOn { get; set; }
+        public NameClass CreatedBy { get; set; }
+    }
+
+
+
 }

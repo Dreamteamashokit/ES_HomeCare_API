@@ -1,4 +1,5 @@
 ﻿using ES_HomeCare_API.Model.Account;
+using ES_HomeCare_API.Model.User;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using System.Collections.Generic;
@@ -37,7 +38,10 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.GetUser(userType);
         }
 
-
+        public async Task<ServiceResponse<UserItem>> GetUserDetail(int UserId)
+        {
+            return await data.GetUserDetail(UserId);
+        }
 
 
 

@@ -1,4 +1,5 @@
 ﻿using ES_HomeCare_API.Model.Account;
+using ES_HomeCare_API.Model.User;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -94,6 +95,13 @@ namespace ES_HomeCare_API.Controllers
 
 
 
+        [HttpGet("getUserDetail/{userId}")]
+        [ProducesResponseType(typeof(ServiceResponse<UserItem>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<UserItem>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetUserDetail(int userId)
+        {
+            return Ok(await accountSrv.GetUserDetail(userId));
+        }
 
 
 

@@ -218,6 +218,21 @@ namespace ES_HomeCare_API.Controllers
 
 
 
-
+        [HttpGet("getMeetingLog/{meetingId}")]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<MeetingLog>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<MeetingLog>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetMeetingLog(long meetingId)
+        {
+            return Ok(await mtgSrv.GetMeetingLog(meetingId));
         }
+
+
+
+
+
+
+
+
+
+    }
 }
