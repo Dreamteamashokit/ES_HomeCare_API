@@ -947,7 +947,14 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@UserId", hhaClockin.UserId);
                     cmd.Parameters.AddWithValue("@ClockInTime", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@ClockOutTime", DateTime.Now);
+                    if (hhaClockin.Type == 2)
+                    {
+                        cmd.Parameters.AddWithValue("@ClockOutTime", DateTime.Now);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@ClockOutTime", DBNull.Value);
+                    }
                     cmd.Parameters.AddWithValue("@Notes", hhaClockin.Notes);
                     cmd.Parameters.AddWithValue("@Type", hhaClockin.Type);
 
