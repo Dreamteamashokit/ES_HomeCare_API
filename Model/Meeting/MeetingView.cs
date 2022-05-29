@@ -22,7 +22,7 @@ namespace ES_HomeCare_API.Model.Meeting
     {
         public long MeetingId { get; set; }
         public string LogNote { get; set; }
-        public string CreatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
         public NameClass CreatedBy { get; set; }
     }
 

@@ -303,10 +303,10 @@ Where p.MeetingId=@MeetingId;";
                                              {
                                                
                                                  Id = momGroup.FirstOrDefault().EmpId,
-                                                 UserType = momGroup.FirstOrDefault().empUserType,
+                                                // UserType = momGroup.FirstOrDefault().empUserType,
                                                  FirstName = momGroup.FirstOrDefault().empFName,
                                                  MiddleName = momGroup.FirstOrDefault().empMName,
-                                                 Lastname = momGroup.FirstOrDefault().empLName,
+                                                 LastName = momGroup.FirstOrDefault().empLName,
                                                  CellPhone = momGroup.FirstOrDefault().empCellPhone,
                                                  Email = momGroup.FirstOrDefault().empEmail,
                                                  HomePhone = momGroup.FirstOrDefault().empHomePhone,
@@ -329,10 +329,10 @@ Where p.MeetingId=@MeetingId;";
                                              {
 
                                                  Id = momGroup.FirstOrDefault().ClientId,
-                                                 UserType = momGroup.FirstOrDefault().UserType,
+                                                // UserType = momGroup.FirstOrDefault().UserType,
                                                  FirstName = momGroup.FirstOrDefault().FirstName,
                                                  MiddleName = momGroup.FirstOrDefault().MiddleName,
-                                                 Lastname = momGroup.FirstOrDefault().LastName,
+                                                 LastName = momGroup.FirstOrDefault().LastName,
                                                  CellPhone= momGroup.FirstOrDefault().CellPhone,
                                                  Email = momGroup.FirstOrDefault().Email,
                                                  HomePhone = momGroup.FirstOrDefault().HomePhone,
@@ -352,7 +352,7 @@ Where p.MeetingId=@MeetingId;";
 
                                              },
                                              IsStatus = momGroup.FirstOrDefault().IsStatus,
-                                             Notes = momGroup.Select(x => (string)x.MeetingPoint).ToList()
+                                             Notes = momGroup.Select(x => (string)x.MeetingPoint).Where(x=>x!=null).Distinct().ToList()
                                          }).FirstOrDefault();
 
                 obj.Data = objResult;
@@ -506,7 +506,7 @@ Where p.MeetingId=@MeetingId;";
                         Id = mom.EmpId,
                         UserType = mom.TypeName,
                         FirstName = mom.EFirstName,
-                        Lastname = mom.ELastname,
+                        LastName = mom.ELastname,
                         CellPhone = mom.ECellPhone,
                     }
                 });
@@ -524,21 +524,21 @@ Where p.MeetingId=@MeetingId;";
             ServiceResponse<IEnumerable<MeetingLog>> obj = new ServiceResponse<IEnumerable<MeetingLog>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = @"Select p.LogLable,q.FirstName,q.MiddleName,q.LastName,p.CreatedOn from tblMeeting_Log p inner join tblUser q on p.UserId=q.UserId
+                string sql = @"Select p.MeetingId ,p.LogMsg,q.FirstName,q.MiddleName,q.LastName,p.CreatedOn from tblMeetingLog p inner join tblUser q on p.CreatedBy=q.UserId
 			where p.MeetingId =@MeetingId
 			Order by p.CreatedOn";
        
                 var result = (await connection.QueryAsync(sql, new { @MeetingId = MeetingId })).Select(mom => new MeetingLog
                 {
                     MeetingId = mom.MeetingId,
-                    LogNote = mom.LogLable,
+                    LogNote = mom.LogMsg,
                     CreatedOn = mom.CreatedOn,
                     CreatedBy = new NameClass
                     {
                      
                         FirstName = mom.FirstName,
                         MiddleName = mom.MiddleName,
-                        LastName = mom.Lastname,
+                        LastName = mom.LastName,
                     }
                 });
                 obj.Data = result;
