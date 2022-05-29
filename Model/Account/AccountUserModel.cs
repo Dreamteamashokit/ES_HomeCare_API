@@ -26,6 +26,8 @@ namespace ES_HomeCare_API.Model.Account
         public short MaritalStatus { get; set; }
         public short Ethnicity { get; set; }
         public int? SupervisorId { get; set; }
+
+
         public AddressModel HomeAddress { get; set; }
 
     }

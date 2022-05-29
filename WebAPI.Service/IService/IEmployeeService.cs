@@ -1,4 +1,5 @@
-﻿using ES_HomeCare_API.Model.Employee;
+﻿using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.ViewModel.Employee;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
     {
         #region Employee
         Task<ServiceResponse<string>> AddEmployee(EmployeeModel _model);
+        Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj(ClientFilter model);
         Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj(int userId);
         Task<ServiceResponse<string>> DeleteEmployee(int UserId);
         Task<ServiceResponse<EmployeeJson>> GetEmployeeById(int UserId);

@@ -14,6 +14,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         #region Employee
         Task<ServiceResponse<string>> AddEmployee(EmployeeModel _model);
         Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj(int userId);
+        Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj(ClientFilter model);
         Task<ServiceResponse<string>> DeleteEmployee(int UserId);
         Task<ServiceResponse<EmployeeJson>> GetEmployeeById(int UserId);
         #endregion

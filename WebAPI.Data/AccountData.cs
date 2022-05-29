@@ -1,5 +1,7 @@
 ﻿using Dapper;
 using ES_HomeCare_API.Model.Account;
+using ES_HomeCare_API.Model.Common;
+using ES_HomeCare_API.Model.User;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -106,7 +108,7 @@ namespace ES_HomeCare_API.WebAPI.Data
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
             IDbTransaction transaction = null;
-        
+
             try
             {
                 using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
@@ -122,7 +124,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                     int rowsAffected = cnn.Execute(sqlQuery, new
                     {
                         @UserId = _model.UserId,
-                        @AddressType = 1,             
+                        @AddressType = 1,
                         @FlatNo = _model.HomeAddress.FlatNo,
                         @Address = _model.HomeAddress.Address,
                         @City = _model.HomeAddress.City,
@@ -180,6 +182,66 @@ namespace ES_HomeCare_API.WebAPI.Data
             }
             return obj;
         }
+
+
+
+        public async Task<ServiceResponse<UserItem>> GetUserDetail(int UserId)
+        {
+            ServiceResponse<UserItem> obj = new ServiceResponse<UserItem>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = @"Select p.UserId,p.UserType,p.FirstName,p.MiddleName,p.LastName,p.Email,p.CellPhone,p.HomePhone,p.EmgPhone,p.EmgContact,
+q.Owner,q.FlatNo,q.Address,q.City,q.Country,q.State,q.ZipCode,
+p.FirstName as SuprFName,p.MiddleName as SuprMName,p.LastName as SuprLName
+from tblUser p  Left Join tblAddress q on p.UserId=q.UserId
+Left Join tblUser s on p.SupervisorId=s.UserId
+Where p.UserId=@UserId;";
+
+                var result = (await connection.QueryAsync(sql, new { @UserId = UserId }));
+                var objItem = (from usr in result                              
+                                select new UserItem
+                                {
+                                    UserId = usr.UserId,
+                                    UserType = usr.UserType,
+                                    Name = new NameClass { FirstName=usr.FirstName,
+                                        MiddleName = usr.MiddleName,
+                                        LastName = usr.LastName,
+                                    },
+                                    Supervisor = new NameClass
+                                    {
+                                        FirstName = usr.SuprFName,
+                                        MiddleName = usr.SuprMName,
+                                        LastName = usr.SuprLName,
+                                    },
+                                    CellPhone = usr.CellPhone,
+                                    Email = usr.Email,
+                                    HomePhone = usr.HomePhone,
+                                    EmergPhone = usr.EmgPhone,
+                                    EmergContact = usr.EmgPhone,
+
+                                    Address = new AddressView()
+                                    {
+                                        LocationDetail = usr.Address,
+                                        Owner = usr.Owner,
+                                        FlatNo = usr.FlatNo,
+                                        Country = usr.Country,
+                                        State = usr.State,
+                                        City = usr.City,
+                                        ZipCode = usr.ZipCode,
+                                    },
+                                }).FirstOrDefault();
+
+
+            
+                obj.Data = objItem;
+                obj.Result = obj.Data.UserId > 0 ? true : false;
+                obj.Message = obj.Data.UserId > 0 ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
+
+
+
 
     }
 }
