@@ -961,23 +961,28 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             ServiceResponse<string> sres = new ServiceResponse<string>();
             try
             {
-
                 using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-
                     SqlCommand cmd = new SqlCommand("AddHHAClockInOutDetails", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@UserId", hhaClockin.UserId);
-                    cmd.Parameters.AddWithValue("@ClockInTime", DateTime.Now);
+                    
+                    cmd.Parameters.AddWithValue("@ClockInTime", hhaClockin.ClockInTime.ToLocalTime());
                     if (hhaClockin.Type == 2)
                     {
-                        cmd.Parameters.AddWithValue("@ClockOutTime", DateTime.Now);
+                        cmd.Parameters.AddWithValue("@ClockOutTime", hhaClockin.ClockOutTime.ToLocalTime());
                     }
                     else
                     {
                         cmd.Parameters.AddWithValue("@ClockOutTime", DBNull.Value);
                     }
-                    cmd.Parameters.AddWithValue("@Notes", hhaClockin.Notes);
+                    cmd.Parameters.AddWithValue("@Notes", hhaClockin.Notes == null ? "" : hhaClockin.Notes);
+                    cmd.Parameters.AddWithValue("@BedBath", hhaClockin.BedBath);
+                    cmd.Parameters.AddWithValue("@SpongeBath", hhaClockin.SpongeBath);
+                    cmd.Parameters.AddWithValue("@Footcare", hhaClockin.Footcare);
+                    cmd.Parameters.AddWithValue("@Skincare", hhaClockin.Skincare);
+                    cmd.Parameters.AddWithValue("@ClientSignature", hhaClockin.ClientSignature == null ? "" : hhaClockin.ClientSignature);
+                    cmd.Parameters.AddWithValue("@HHAUserSignature", hhaClockin.HHAUserSignature == null ? "" : hhaClockin.HHAUserSignature);
                     cmd.Parameters.AddWithValue("@Type", hhaClockin.Type);
 
                     con.Open();
