@@ -62,4 +62,43 @@ namespace ES_HomeCare_API.Model
         other = 4,
 
     }
+
+
+
+    public enum UserType
+    {
+        [Display(Name = "Super Admin")]
+        SuperAdmin = 1,
+        [Display(Name = "Administrators")]
+        Administrators = 2,     
+        [Display(Name = "Coordinators")]
+        Coordinators =3,
+        [Display(Name = "Human Resources")]
+        HR = 4,
+        [Display(Name = "Nursing Supervisors")]
+        Nursing = 5,
+        [Display(Name = "Office Staff")]
+        OfficeStaff = 6,
+        [Display(Name = "Billing")]
+        Billing = 7,
+        [Display(Name = "Employee")]
+        Employee = 8,
+        [Display(Name = "Client")]
+        Client = 9,
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

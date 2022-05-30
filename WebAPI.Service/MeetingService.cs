@@ -76,7 +76,17 @@ namespace ES_HomeCare_API.WebAPI.Service
         }
 
 
+        public async Task<ServiceResponse<string>> AddRecurringMeeting(MeetingModel model)
+        {
+            return await data.AddRecurringMeeting(model);
+        }
 
+        public async Task<ServiceResponse<IEnumerable<MeetingLog>>> GetMeetingLog(long MeetingId)
+        {
+            return await data.GetMeetingLog(MeetingId);
+        }
+
+       
 
     }
 }

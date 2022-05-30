@@ -28,7 +28,10 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.GetEmployeeListObj(userId);
         }
-
+        public async Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj(ClientFilter model)
+        {
+            return await data.GetEmployeeListObj(model);
+        }
         public async Task<ServiceResponse<string>> DeleteEmployee(int UserId)
         {
             return await data.DeleteEmployee(UserId);

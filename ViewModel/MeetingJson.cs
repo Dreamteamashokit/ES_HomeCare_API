@@ -12,6 +12,8 @@ namespace ES_HomeCare_API.ViewModel
         public int EmpId { get; set; }
         public List<int> EmpList { get; set; }
         public string MeetingDate { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
         public string MeetingNote { get; set; }
