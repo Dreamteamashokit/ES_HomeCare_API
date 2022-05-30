@@ -5,8 +5,8 @@ namespace ES_HomeCare_API.Model.Employee
     public class HHAClockInModel
     {
         public int UserId { get; set; }
-        public DateTime ClockInTime { get; set; }
-        public DateTime ClockOutTime { get; set; }
+        public string ClockInTime { get; set; }
+        public string ClockOutTime { get; set; }
         public int Type { get; set; }
         public string Notes { get; set; }
         public bool BedBath { get; set; }
