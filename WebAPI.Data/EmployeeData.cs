@@ -83,7 +83,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 var procedure = "[EmpProc]";
                 var values = new { @flag = 1, @IsActive = 1, @UserId = userId };
                 IEnumerable<EmployeeList> results = (await connection.QueryAsync<EmployeeList>(procedure,
-        values, commandType: CommandType.StoredProcedure));
+        values, commandType: CommandType.StoredProcedure)).OrderBy(x => x.EmpName.Trim()); 
                 obj.Data = results;
                 obj.Result = results.Any() ? true : false;
                 obj.Message = results.Any() ? "Data Found." : "No Data found.";
@@ -103,7 +103,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     @TypeId=model.EmpType };
                
                 IEnumerable<EmployeeList> results = (await connection.QueryAsync<EmployeeList>(sqlQuery,
-    sqlParameter, commandType: CommandType.StoredProcedure));
+    sqlParameter, commandType: CommandType.StoredProcedure)).OrderBy(x => x.EmpName.Trim()); 
                 obj.Data = results;
                 obj.Result = results.Any() ? true : false;
                 obj.Message = results.Any() ? "Data Found." : "No Data found.";
@@ -157,7 +157,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 string sql = "SELECT x.*,y.EmpType,y.DateOfHire,y.DateOfFirstCase,y.Dependents,y.City,y.Country,y.TaxState,y.ZipCode,y.Municipality,y.Notes,p.ItemName as GenderName,q.ItemName as MaritalStatusName,r.ItemName as EthnicityName,s.FirstName+''+s.LastName as Supervisor,t.TypeName as EmpTypeName FROM tblUser x inner join tblEmployee y on x.UserId=y.UserId Left join tblMaster p on x.Gender=p.MasterId Left join tblMaster q on x.MaritalStatus=q.MasterId Left join tblMaster r on x.Ethnicity=r.MasterId Left join tblUser s on  x.SupervisorId=s.UserId Left join tblEmpType t on  y.EmpType=t.TypeId Where x.UserId=@UserId; ";
                 IEnumerable<EmployeeJson> cmeetings = (await connection.QueryAsync<EmployeeJson>(sql,
-                         new { @UserId = UserId }));
+                         new { @UserId = UserId })).ToList().OrderBy(x => x.LastName.Trim()); 
                 obj.Data = cmeetings.FirstOrDefault();
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";

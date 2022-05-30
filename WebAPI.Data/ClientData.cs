@@ -1092,7 +1092,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return obj;
         }
 
-
         public async Task<ServiceResponse<IEnumerable<ProvisionInfo>>> ClienProvisionInfo(DataTable dt, int UserId = 0)
         {
             ServiceResponse<IEnumerable<ProvisionInfo>> obj = new ServiceResponse<IEnumerable<ProvisionInfo>>();
@@ -1138,6 +1137,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             }
         }
+        
         public async Task<ServiceResponse<List<ClientCommunityMaster>>> ClientCommunityOperation(ClientCommunityMaster Model, int Flag)
         {
             ServiceResponse<List<ClientCommunityMaster>> obj = new ServiceResponse<List<ClientCommunityMaster>>();

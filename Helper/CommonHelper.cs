@@ -32,6 +32,15 @@ namespace ES_HomeCare_API.Helper
         }
 
 
+        public static DateTime ParseDate(this string dateStr, string format)
+        {
+
+            string dateTimeStr = dateStr;
+            DateTime dte = DateTime.ParseExact(dateTimeStr.Trim(), format, CultureInfo.InvariantCulture);
+            return dte;
+        }
+
+
         public static DateTime ParseDateTime(this string dateStr)
         {
 

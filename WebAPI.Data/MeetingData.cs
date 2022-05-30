@@ -200,7 +200,7 @@ Left join tblAddress xy on x.UserId=xy.UserId ORDER BY TRIM(x.LastName)";
 
 
                 //Using Query Syntax
-                var GroupByQS = from mom in result
+                var GroupByQS = (from mom in result
                                 group mom by new { mom.ClientId, mom.FirstName, mom.MiddleName, mom.LastName, mom.CellPhone, } into momGroup
                                 orderby momGroup.Key.ClientId descending
                                 select new ClientMeeting
@@ -219,7 +219,7 @@ Left join tblAddress xy on x.UserId=xy.UserId ORDER BY TRIM(x.LastName)";
                                         StartTime = ((TimeSpan)x.StartTime).TimeHelper(),
                                         EndTime = ((TimeSpan)x.EndTime).TimeHelper(),
                                     })
-                                };
+                                }).OrderBy(x=>x.LastName.Trim());
 
 
                 obj.Data = GroupByQS;
@@ -238,7 +238,7 @@ Left join tblAddress xy on x.UserId=xy.UserId ORDER BY TRIM(x.LastName)";
                 var sqlParameter = new { @flag = 1, @IsActive = model.Status, @SupervisorId = model.Coordinator, @State = model.State };
                 var result = (await connection.QueryAsync(sql, sqlParameter, commandType: CommandType.StoredProcedure)).ToList();
                 //Using Query Syntax
-                var GroupByQS = from mom in result
+                var GroupByQS = (from mom in result
                                 group mom by new { mom.ClientId, mom.FirstName, mom.MiddleName, mom.LastName, mom.CellPhone, } into momGroup
                                 orderby momGroup.Key.ClientId descending
                                 select new ClientMeeting
@@ -257,7 +257,7 @@ Left join tblAddress xy on x.UserId=xy.UserId ORDER BY TRIM(x.LastName)";
                                         StartTime = ((TimeSpan)x.StartTime).TimeHelper(),
                                         EndTime = ((TimeSpan)x.EndTime).TimeHelper(),
                                     })
-                                };
+                                }).OrderBy(x => x.LastName.Trim()); 
 
 
                 obj.Data = GroupByQS;
@@ -509,7 +509,7 @@ Where p.MeetingId=@MeetingId;";
                         LastName = mom.ELastname,
                         CellPhone = mom.ECellPhone,
                     }
-                });
+                }).ToList().OrderBy(x=>x.MeetingDate.ParseDate("dd-MMM-yy"));
                 obj.Data = result;
                 obj.Result = result.Any() ? true : false;
                 obj.Message = result.Any() ? "Data Found." : "No Data found.";
