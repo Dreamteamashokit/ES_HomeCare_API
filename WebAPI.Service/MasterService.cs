@@ -1,4 +1,5 @@
-﻿using ES_HomeCare_API.Model.Common;
+﻿using ES_HomeCare_API.Model.Client;
+using ES_HomeCare_API.Model.Common;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using System;
@@ -9,7 +10,7 @@ using WebAPI_SAMPLE.Model;
 
 namespace ES_HomeCare_API.WebAPI.Service
 {
-    public class MasterService: IMasterService
+    public class MasterService : IMasterService
     {
         private readonly IMasterData data;
         public MasterService(IMasterData ldata)
@@ -28,6 +29,16 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             return await data.GetDiagnosis();
 
+        }
+
+        public async Task<ServiceResponse<string>> UpdateTask(TaskModel item)
+        {
+            return await data.UpdateTask(item);
+        }
+
+        public async Task<ServiceResponse<string>> ActiveTask(int TaskId, int Status)
+        {
+            return await data.ActiveTask(TaskId, Status);
         }
 
 

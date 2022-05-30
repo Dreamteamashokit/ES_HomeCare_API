@@ -37,7 +37,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
 
                     string _query = "INSERT INTO tblUser (UserKey,UserType,UserName,UserPassword,SSN,FirstName,MiddleName,LastName,DOB,Email,CellPhone,HomePhone,EmgPhone,EmgContact,Gender,MaritalStatus,Ethnicity,SupervisorId,IsActive,CreatedOn,CreatedBy) VALUES (@UserKey,@UserType,@UserName,@UserPassword,@SSN,@FirstName,@MiddleName,@LastName,@DOBS,@Email,@CellPhone,@HomePhone,@EmgPhone,@EmgContact,@Gender,@MaritalStatus,@Ethnicity,@SupervisorId,@IsActive,@CreatedOn,@CreatedBy); select SCOPE_IDENTITY();";
-                    
+
 
                     _model.UserId = (int)(cnn.ExecuteScalar<int>(_query, _model, transaction));
                     string sqlQuery = "INSERT INTO tblClient (UserId,BillTo,Nurse,OfChild,AltId,ID2,ID3,InsuranceID,WorkerName,WorkerContact,ReferredBy,IsHourly,TimeSlip,PriorityCode,IsActive,CreatedOn,CreatedBy) VALUES (@UserId,@BillTo,@NurseId,@OfChild,@AltId,@ID2,@ID3,@InsuranceID,@WorkerName,@WorkerContact,@ReferredBy,@IsHourly,@TimeSlip,@PriorityCode,@IsActive,@CreatedOn,@CreatedBy)";
@@ -174,8 +174,8 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
                     cmd.Parameters.AddWithValue("@flag", Flag);
                     cmd.Parameters.AddWithValue("@MedicationID", Model.MedicationID);
-                    cmd.Parameters.AddWithValue("@StartDate", Model.StartDate.ToString("dd-mm-yyyy") == "01-00-0001" ? DateTime.Now.Date : Model.StartDate.Date);
-                    cmd.Parameters.AddWithValue("@EndDate", Model.EndDate.ToString("dd-mm-yyyy") == "01-00-0001" ? DateTime.Now.Date : Model.EndDate.Date);
+                    cmd.Parameters.AddWithValue("@StartDate", Model.StartDate);
+                    cmd.Parameters.AddWithValue("@EndDate", Model.EndDate);
                     cmd.Parameters.AddWithValue("@Medication", Model.MedicationText);
                     cmd.Parameters.AddWithValue("@NDC", Model.NDCText);
                     cmd.Parameters.AddWithValue("@Strength", Model.StrengthText);
@@ -185,13 +185,13 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     cmd.Parameters.AddWithValue("@Tabs", Model.TabsText);
                     cmd.Parameters.AddWithValue("@Prescriber", Model.PrescriberText);
                     cmd.Parameters.AddWithValue("@Classification", Model.ClassificationText);
-                    cmd.Parameters.AddWithValue("@Instructions", Model.Instructionscheck);
-                    cmd.Parameters.AddWithValue("@IsReminders", Model.Reminderscheck);
-                    cmd.Parameters.AddWithValue("@IsInstructionscheck", Model.Instructionscheck);
-                    cmd.Parameters.AddWithValue("@Isadministrationcheck", Model.administrationcheck);
-                    cmd.Parameters.AddWithValue("@Isselfadministercheck", Model.selfadministercheck);
+                    cmd.Parameters.AddWithValue("@Instructions", Model.InstructionsCheck);
+                    cmd.Parameters.AddWithValue("@IsReminders", Model.RemindersCheck);
+                    cmd.Parameters.AddWithValue("@IsInstructionscheck", Model.InstructionsCheck);
+                    cmd.Parameters.AddWithValue("@Isadministrationcheck", Model.AdministrationCheck);
+                    cmd.Parameters.AddWithValue("@Isselfadministercheck", Model.SelfAdministerCheck);
                     cmd.Parameters.AddWithValue("@UserId", Model.ClientID);
-                    cmd.Parameters.AddWithValue("@CreatedOn", Model.createdOn.Date);
+                    cmd.Parameters.AddWithValue("@CreatedOn", Model.CreatedOn);
                     cmd.Parameters.AddWithValue("@CreatedBy", Model.CreatedBy);
                     cmd.Parameters.AddWithValue("@IsActive", Model.IsActive);
                     DataTable table = new DataTable();
@@ -201,17 +201,21 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     {
                         for (int i = 0; i < table.Rows.Count; i++)
                         {
-                            clientsMedicationcs.Add(new Medicationcs
+                            var item = new Medicationcs
                             {
-                                MedicationID = Convert.ToInt32(table.Rows[i]["MedicationID"].ToString()),
+                                MedicationID = Convert.ToInt32(table.Rows[i]["MedicationID"]),
                                 StartDate = Convert.ToDateTime(table.Rows[i]["StartDate"]),
-                                EndDate = Convert.ToDateTime(table.Rows[i]["EndDate"]),
-                                MedicationText = string.IsNullOrEmpty(table.Rows[i]["Medication"].ToString()) ? table.Rows[i]["NDC"].ToString() : table.Rows[i]["Medication"].ToString(),
-                                StrengthText = table.Rows[i]["Strength"].ToString(),
-                                FrequencyText = table.Rows[i]["Frequency"].ToString(),
-                                DosageText = table.Rows[i]["Dosage"].ToString(),
-                                RouteText = string.IsNullOrEmpty(table.Rows[i]["Route"].ToString()) ? table.Rows[i]["Instructions"].ToString() : table.Rows[i]["Route"].ToString(),
-                            });
+                                MedicationText = table.Rows[i]["Medication"] == DBNull.Value ? "" : table.Rows[i]["Medication"].ToString(),
+                                StrengthText = table.Rows[i]["Strength"] == DBNull.Value ? "" : table.Rows[i]["Strength"].ToString(),
+                                FrequencyText = (table.Rows[i]["Frequency"] == DBNull.Value) ? (short)0 : Convert.ToInt16(table.Rows[i]["Frequency"]),
+                                DosageText = table.Rows[i]["Dosage"] == DBNull.Value ? "" : table.Rows[i]["Dosage"].ToString(),
+                                RouteText = table.Rows[i]["Route"] == DBNull.Value ? "" : table.Rows[i]["Route"].ToString()
+                            };
+                            if (table.Rows[i]["EndDate"] != DBNull.Value)
+                            {
+                                item.EndDate= Convert.ToDateTime(table.Rows[i]["EndDate"]);
+                            }
+                            clientsMedicationcs.Add(item);
                         }
                         obj.Result = true;
                     }
@@ -285,9 +289,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
 
-                string sqlqry = "Select x.TaskSrvId,y.TaskCode,y.TaskName,x.Frequency,x.ServiceNote,x.UserId from tblServiceTask x inner join tblTaskMaster y on x.TaskId=y.TaskId Where  x.UserId=@UserId and x.IsActive=1;";
+                string sqlqry = "Select x.TaskSrvId,x.TaskId,y.TaskCode,y.TaskName,x.Frequency,x.ServiceNote,x.UserId from tblServiceTask x inner join tblTaskMaster y on x.TaskId=y.TaskId Where  x.UserId=@UserId and x.IsActive=@IsActive;";
 
-                IEnumerable<ServiceTaskView> objResult = (await connection.QueryAsync<ServiceTaskView>(sqlqry, new { @UserId = userId }));
+                IEnumerable<ServiceTaskView> objResult = (await connection.QueryAsync<ServiceTaskView>(sqlqry, new { @UserId = userId, @IsActive = (int)Status.Active }));
 
                 obj.Data = objResult;
                 obj.Result = objResult != null ? true : false;
@@ -457,8 +461,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 return obj;
             }
         }
-
-
 
         public async Task<ServiceResponse<IEnumerable<ClientEmrgencyInfo>>> ClienEmergencyInfo(ClientEmrgencyInfo Model)
         {
@@ -829,20 +831,32 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 {
                     string sqlQuery = "INSERT INTO tblOthers (UserId,CASA3,ContactId,InsuranceGrp,IsMedications,IsDialysis,IsOxygen,IsAids,IsCourtOrdered,FlowRate,ReunionLocations,ShelterName,TalCode,Shelter,Facility,Room,ServiceRequestDate,CareDate,DischargeDate,Notes,Allergies,CreatedBy,CreatedOn) VALUES (@UserId,@CASA3,@ContactId,@InsuranceGrp,@IsMedications,@IsDialysis,@IsOxygen,@IsAids,@IsCourtOrdered,@FlowRate,@ReunionLocations,@ShelterName,@TalCode,@Shelter,@Facility,@Room,@ServiceRequestDate,@CareDate,@DischargeDate,@Notes,@Allergies,@CreatedBy,@CreatedOn); ";
 
-                    int rowsAffected = cnn.Execute(sqlQuery, new { obj.UserId, obj.CASA3, obj.ContactId, obj.InsuranceGrp, obj.IsMedications, obj.IsDialysis, obj.IsOxygen, obj.IsAids,
-                        obj.IsCourtOrdered,obj.FlowRate,obj.ReunionLocations,
+                    int rowsAffected = cnn.Execute(sqlQuery, new
+                    {
+                        obj.UserId,
+                        obj.CASA3,
+                        obj.ContactId,
+                        obj.InsuranceGrp,
+                        obj.IsMedications,
+                        obj.IsDialysis,
+                        obj.IsOxygen,
+                        obj.IsAids,
+                        obj.IsCourtOrdered,
+                        obj.FlowRate,
+                        obj.ReunionLocations,
                         obj.ShelterName,
                         obj.TalCode,
                         obj.Shelter,
                         obj.Facility,
                         obj.Room,
-                        ServiceRequestDate= obj.ServiceRequestDate.ParseDate(),
+                        ServiceRequestDate = obj.ServiceRequestDate.ParseDate(),
                         CareDate = obj.CareDate.ParseDate(),
                         DischargeDate = obj.DischargeDate.ParseDate(),
                         obj.Notes,
                         obj.Allergies,
                         obj.CreatedBy,
-                        obj.CreatedOn });
+                        obj.CreatedOn
+                    });
 
                     if (rowsAffected > 0)
                     {
@@ -1035,7 +1049,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
                 var objResult = (await connection.QueryAsync<DiagnosisView>(sql, new { IsActive = 1, UserId = UserId }));
                 obj.Data = objResult;
-                                                                                                    obj.Result = objResult != null ? true : false;
+                obj.Result = objResult != null ? true : false;
                 obj.Message = objResult != null ? "Data Found." : "No Data found.";
             }
 
@@ -1240,13 +1254,13 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                                 Category = Convert.ToInt32(table.Rows[i]["Category"].ToString()),
                                 ScreenDate = !string.IsNullOrEmpty(table.Rows[i]["ScreenDate"].ToString()) ? Convert.ToDateTime(table.Rows[i]["ScreenDate"].ToString()) : (DateTime?)null,
                                 SubCategory = Convert.ToInt32(table.Rows[i]["SubCategory"].ToString()),
-                                SignedDate = !string.IsNullOrEmpty(table.Rows[i]["SignedDate"].ToString())? Convert.ToDateTime(table.Rows[i]["ScreenDate"].ToString()) : (DateTime?)null,
+                                SignedDate = !string.IsNullOrEmpty(table.Rows[i]["SignedDate"].ToString()) ? Convert.ToDateTime(table.Rows[i]["ScreenDate"].ToString()) : (DateTime?)null,
                                 MDOrderFdate = !string.IsNullOrEmpty(table.Rows[i]["MDOrderFdate"].ToString()) ? Convert.ToDateTime(table.Rows[i]["ScreenDate"].ToString()) : (DateTime?)null,
                                 MDOrderEDate = !string.IsNullOrEmpty(table.Rows[i]["MDOrderEDate"].ToString()) ? Convert.ToDateTime(table.Rows[i]["ScreenDate"].ToString()) : (DateTime?)null,
                                 IsReceived = Convert.ToBoolean(table.Rows[i]["IsReceived"]) ? Convert.ToInt16(1) : Convert.ToInt16(0),
                                 AttachFile = Convert.ToInt32(table.Rows[i]["AttachFile"].ToString()),
                                 EmpId = Convert.ToInt32(table.Rows[i]["EmpId"].ToString()),
-                                OfficeUserId = Convert.ToInt32(table.Rows[i]["OfficeUserId"].ToString()),                               
+                                OfficeUserId = Convert.ToInt32(table.Rows[i]["OfficeUserId"].ToString()),
                                 IsNotifyViaText = Convert.ToBoolean(table.Rows[i]["IsNotifyViaText"]) ? Convert.ToInt16(1) : Convert.ToInt16(0),
                                 IsNotifyViaScreen = Convert.ToBoolean(table.Rows[i]["IsNotifyViaScreen"]) ? Convert.ToInt16(1) : Convert.ToInt16(0),
                                 IsNotifyViaEmail = Convert.ToBoolean(table.Rows[i]["IsNotifyViaEmail"]) ? Convert.ToInt16(1) : Convert.ToInt16(0),

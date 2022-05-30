@@ -33,7 +33,7 @@ namespace WebAPI_SAMPLE.Controllers
 
             model.TimeSlip = true;
             model.IsHourly = true;
-            model.IsActive = 1;
+            model.IsActive = (int)Status.Active;
             model.DOBS = model.DOB.ParseDate();
             model.UserName = model.Email;
             model.UserPassword = model.SSN;
@@ -77,7 +77,8 @@ namespace WebAPI_SAMPLE.Controllers
         {
 
 
-            model.createdOn = DateTime.Now.Date;
+            model.CreatedOn = DateTime.Now;
+            model.IsActive = (int)Status.Active;
             int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Create"));
             return Ok(await service.ClientMedicationcs(model, Flag));
 
@@ -90,9 +91,14 @@ namespace WebAPI_SAMPLE.Controllers
         {
             Medicationcs model = new Medicationcs();
             model.ClientID = CilentId;
-            model.createdOn = DateTime.Now.Date;
-            model.ClientID = CilentId;
+            model.CreatedOn = DateTime.Now;
+            model.StartDate = DateTime.Now;
+            model.EndDate = DateTime.Now;
             int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "select"));
+
+
+            
+
             return Ok(await service.ClientMedicationcs(model, Flag));
         }
 
@@ -106,7 +112,9 @@ namespace WebAPI_SAMPLE.Controllers
             Medicationcs model = new Medicationcs();
             model.MedicationID = MedicationId;
             model.ClientID = UserId;
-            model.createdOn = DateTime.Now.Date;
+            model.CreatedOn = DateTime.Now;
+            model.StartDate = DateTime.Now;
+            model.EndDate = DateTime.Now;
             int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "Delete"));
             return Ok(await service.ClientMedicationcs(model, Flag));
         }
@@ -122,16 +130,9 @@ namespace WebAPI_SAMPLE.Controllers
 
                 foreach (var item in model)
                 {
-
-
-
-                    item.IsActive = 1;
-                    item.CreatedBy = 1;
+                    item.IsActive = (int)Status.Active;                 
                     item.CreatedOn = DateTime.Now;
                 }
-
-
-
                 return Ok(await service.CreateServiceTask(model));
 
             }

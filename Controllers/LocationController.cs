@@ -35,7 +35,7 @@ namespace ES_HomeCare_API.Controllers
         {
             try
             {
-                model.IsActive = 1;       
+                model.IsActive = (int)Status.Active;
                 model.CreatedOn = DateTime.Now;
 
                 model.ModifiedBy = model.CreatedBy;

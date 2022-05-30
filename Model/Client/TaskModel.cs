@@ -5,7 +5,7 @@
         public int TaskId { get; set; }
         public string TaskCode { get; set; }
         public string TaskName { get; set; }
-        public int TaskDetail { get; set; }
+        public string TaskDetail { get; set; }
      
     }
 
@@ -29,6 +29,8 @@
     {
         public int TaskSrvId { get; set; }
         public int UserId { get; set; }
+
+        public int TaskId { get; set; }
         public string TaskCode { get; set; }
         public string TaskName { get; set; }
         public short Frequency { get; set; }

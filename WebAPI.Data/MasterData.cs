@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using ES_HomeCare_API.Model.Client;
 using ES_HomeCare_API.Model.Common;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using Microsoft.Extensions.Configuration;
@@ -19,7 +20,6 @@ namespace ES_HomeCare_API.WebAPI.Data
         {
             configuration = _configuration;
         }
-
 
         public async Task<ServiceResponse<string>> CreateDiagnosis(DiagnosisItem _model)
         {
@@ -71,21 +71,83 @@ namespace ES_HomeCare_API.WebAPI.Data
             return obj;
         }
 
+        public async Task<ServiceResponse<string>> UpdateTask(TaskModel item)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var sqlqry = "Update tblTaskMaster SET TaskCode = @TaskCode, TaskName = @TaskName Where TaskId = @TaskId";
+                    int rowsAffected = await connection.ExecuteAsync(sqlqry, new
+                    {
+                        @TaskCode = item.TaskCode,
+                        @TaskName = item.TaskName,
+                        @TaskId = item.TaskId,
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        obj.Result = true;
+                        obj.Data = "Updated Successfully";
+                    }
+                    else
+                    {
+                        obj.Data = null;
+                        obj.Message = "Updation Failed.";
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
 
 
+            return obj;
+        }
+
+        public async Task<ServiceResponse<string>> ActiveTask(int TaskId,int Status)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var sqlqry = "Update tblTaskMaster SET IsActive = @IsActive Where TaskId = @TaskId";
+
+                    int rowsAffected = await connection.ExecuteAsync(sqlqry, new
+                    {
+                        @TaskId = TaskId,
+                        @IsActive=Status,
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        obj.Result = true;
+                        obj.Data = "Updated Successfully";
+                    }
+                    else
+                    {
+                        obj.Data = null;
+                        obj.Message = "Updation Failed.";
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
 
 
-
-
-
-
-
-
-
-
-
-
-
+            return obj;
+        }
 
     }
 }

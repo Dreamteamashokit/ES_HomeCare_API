@@ -299,8 +299,8 @@ where y.EmpType=@EmpType;";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
 
-                string sqlqry = "select * from tblTaskMaster; ";
-                IEnumerable<TaskModel> objResult = (await connection.QueryAsync<TaskModel>(sqlqry));
+                string sqlqry = "select * from tblTaskMaster Where IsActive=@IsActive";
+                IEnumerable<TaskModel> objResult = (await connection.QueryAsync<TaskModel>(sqlqry, new { @IsActive= (int)Status.Active}));
 
                 obj.Data = objResult;
                 obj.Result = objResult != null ? true : false;

@@ -1,4 +1,5 @@
-﻿using ES_HomeCare_API.Model.Common;
+﻿using ES_HomeCare_API.Model.Client;
+using ES_HomeCare_API.Model.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,7 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
     {
         Task<ServiceResponse<string>> CreateDiagnosis(DiagnosisItem _model);
         Task<ServiceResponse<IEnumerable<DiagnosisItem>>> GetDiagnosis();
+        Task<ServiceResponse<string>> UpdateTask(TaskModel item);
+        Task<ServiceResponse<string>> ActiveTask(int TaskId, int Status);
     }
 }

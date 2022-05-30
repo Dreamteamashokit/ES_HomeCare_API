@@ -56,7 +56,7 @@ namespace WebAPI_SAMPLE.Controllers
             }
 
             model.UserKey = model.EmpKey;
-            model.IsActive = 1;
+            model.IsActive = (int)Status.Active;
             model.CreatedBy = 1;
             model.CreatedOn = DateTime.Now;
             return Ok(await service.AddEmployee(model));

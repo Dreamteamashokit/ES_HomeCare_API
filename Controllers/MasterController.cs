@@ -1,4 +1,5 @@
 ﻿using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Client;
 using ES_HomeCare_API.Model.Common;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using Microsoft.AspNetCore.Http;
@@ -16,7 +17,6 @@ namespace ES_HomeCare_API.Controllers
     [ApiController]
     public class MasterController : ControllerBase
     {
-
         private readonly IMasterService mstrSrv;
         private IConfiguration configuration;
 
@@ -45,6 +45,7 @@ namespace ES_HomeCare_API.Controllers
             }
         }
 
+        
         [HttpGet("getDiagnosis")]
         [ProducesResponseType(typeof(ServiceResponse<List<DiagnosisItem>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<DiagnosisItem>>), StatusCodes.Status400BadRequest)]
@@ -54,5 +55,38 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
+        [HttpPost("updateTask")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateTask([FromBody] TaskModel model)
+        {
+            try
+            {
+                return Ok(await mstrSrv.UpdateTask(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpDelete("activeTask")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ActiveTask(int TaskId)
+        {
+            try
+            {
+                return Ok(await mstrSrv.ActiveTask(TaskId, (int)Status.InActive));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+    
     }
 }
