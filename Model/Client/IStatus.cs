@@ -28,4 +28,30 @@ namespace ES_HomeCare_API.Model.Client
     }
 
 
+
+
+
+
+
+    public class ClientStatusModel 
+    {
+        public int StatusId { get; set; }
+        public int UserId { get; set; }
+        public int ActivityId { get; set; }
+        public int ReferralCode { get; set; }
+        public string StatusDate { get; set; }
+        public string Note { get; set; }
+        public short IsActive { get; set; }
+        public int CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+
+
+    }
+
+
+
+
+
+
+
 }
