@@ -101,15 +101,13 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = "Insert Into tblClientSatus (ActivityID,StatusDate,ReferralCodeId," +
-                        "note,clientId,OfficeUserId,ReferaalUserID,TextCheck,ScreenCheck,EmailCheck,Createdon,CreatedBy) " +
-                        "Values(@ActivityID,@StatusDate,@ReferralCodeId,@note,@clientId,@OfficeUserId,@ReferaalUserID,@Text,@Screen," +
-                        "@Email,@CreatedOn,@CreatedBy)";
+                    string sqlQuery = @"Insert Into tblClientSatus (ActivityID,StatusDate,ReferralCodeId,note,clientId,OfficeUserId,ReferaalUserID,TextCheck,ScreenCheck,EmailCheck,Createdon,CreatedBy,IsActive) 
+Values(@ActivityID,@StatusDate,@ReferralCodeId,@note,@clientId,@OfficeUserId,@ReferaalUserID,@Text,@Screen,@Email,@CreatedOn,@CreatedBy,@IsActive)";
 
                     int rowsAffected = db.Execute(sqlQuery, new
                     {
                         ActivityID = _model.ActivityId,
-                        StatusDate = _model.Date,
+                        StatusDate = _model.Date.ParseDate(),
                         ReferralCodeId = _model.ReferralCode,
                         note = _model.Note,
                         clientId = _model.ClientId,
@@ -119,7 +117,8 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                         Screen = _model.Screen,
                         Email = _model.Email,
                         CreatedOn = _model.CreatedOn,
-                        CreatedBy = _model.CreatedBy
+                        CreatedBy = _model.CreatedBy,
+                        IsActive=_model.IsActive
 
                     });
 
@@ -150,9 +149,12 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             ServiceResponse<IEnumerable<ClientStatusLst>> obj = new ServiceResponse<IEnumerable<ClientStatusLst>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select tm.ItemName as ActivityText,StatusDate as Date,tmm.ItemName as ReferralCodeText,note as Note from tblClientSatus tcs left join tblMaster tm on tcs.ActivityID=tm.ItemId " +
-                              "left join tblMaster tmm on tcs.ReferralCodeId = tmm.ItemId where tm.MasterType = 6 and tmm.MasterType = 7 and tcs.clientId=@ClientId";
-                IEnumerable<ClientStatusLst> cmeetings = (await connection.QueryAsync<ClientStatusLst>(sql, new { ClientId = ClientId }));
+                string sql = @"select x.StatusId,x.ActivityID,x.StatusDate,x.ReferralCodeId,x.note,
+y.ItemName as ActivityText,z.ItemName as ReferralCodeText
+from tblClientSatus x left join tblMaster y on x.ActivityID=y.MasterId
+left join tblMaster z on x.ReferralCodeId=z.MasterId
+Where x.clientId=@ClientId and x.IsActive=@IsActive";
+                IEnumerable<ClientStatusLst> cmeetings = (await connection.QueryAsync<ClientStatusLst>(sql, new { @ClientId = ClientId, @IsActive=(int)Status.Active }));
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
@@ -418,9 +420,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
 
-                string sqlqry = " Select x.*,(ISNULL(y.FirstName,'') + ' ' +   ISNULL(y.MiddleName,'') + ' ' + ISNULL(y.LastName,'') ) EmpName  from tblEmpDeclined x inner join tblUser y on x.EmpId=y.UserId Where  x.UserId=@UserId and x.IsActive=1;";
+                string sqlqry = " Select x.*,(ISNULL(y.FirstName,'') + ' ' +   ISNULL(y.MiddleName,'') + ' ' + ISNULL(y.LastName,'') ) EmpName  from tblEmpDeclined x inner join tblUser y on x.EmpId=y.UserId Where  x.UserId=@UserId and x.IsActive=@IsActive;";
 
-                IEnumerable<EmployeeDeclineView> objResult = (await connection.QueryAsync<EmployeeDeclineView>(sqlqry, new { @UserId = userId }));
+                IEnumerable<EmployeeDeclineView> objResult = (await connection.QueryAsync<EmployeeDeclineView>(sqlqry, new { @UserId = userId, @IsActive=(int)Status.Active }));
 
                 obj.Data = objResult;
                 obj.Result = objResult != null ? true : false;

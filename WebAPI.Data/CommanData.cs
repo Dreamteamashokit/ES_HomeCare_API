@@ -226,8 +226,10 @@ where y.EmpType=@EmpType;";
             {
 
 
-                string sqlqry = "select x.UserId,x.LastName +' '+ x.FirstName+'(' + CONVERT(varchar(10), x.UserId) +')' as EmpName from  tblUser x inner join tblEmployee y on x.UserId=y.UserId where x.IsActive=1;";
-                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry)).Select(x => new ItemList { ItemId = x.UserId, ItemName = x.EmpName });
+                string sqlqry = @"Select x.UserId,x.LastName +', '+ x.FirstName +', '+ z.TypeName +' - ' + CONVERT(varchar(10), x.UserId) as EmpName from  
+			tblUser x inner join tblEmployee y Inner JOIN tblEmpType z on y.EmpType=z.TypeId
+			on x.UserId=y.UserId where x.IsActive=@IsActive;";
+                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry, new { @IsActive =(int)Status.Active})).Select(x => new ItemList { ItemId = x.UserId, ItemName = x.EmpName });
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";

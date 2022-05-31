@@ -20,11 +20,11 @@ namespace ES_HomeCare_API.Model.Client
 
     public class ClientStatusLst
     {
+        public int StatusId { get; set; }
         public string ActivityText { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime StatusDate { get; set; }
         public string ReferralCodeText { get; set; }
-        public string Note { get; set; }
-       
+        public string note { get; set; }
     }
 
 

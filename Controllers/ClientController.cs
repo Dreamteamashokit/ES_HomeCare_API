@@ -58,6 +58,7 @@ namespace WebAPI_SAMPLE.Controllers
         public async Task<IActionResult> SaveClientStatus([FromBody] ClientStatus model)
         {
             model.CreatedOn = DateTime.Now;
+            model.IsActive = (int)Status.Active;
             return Ok(await service.SaveClientStatus(model));
         }
 
@@ -205,8 +206,7 @@ namespace WebAPI_SAMPLE.Controllers
                     CreatedBy = model.CreatedBy,
 
                 };
-
-                obj.IsActive = 1;
+                obj.IsActive = (int)Status.Active;
                 obj.CreatedOn = DateTime.Now;
 
                 return Ok(await service.CreateEmpDeclined(obj));
