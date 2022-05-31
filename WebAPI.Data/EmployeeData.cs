@@ -967,10 +967,10 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@UserId", hhaClockin.UserId);
                     
-                    cmd.Parameters.AddWithValue("@ClockInTime", hhaClockin.ClockInTime.ToLocalTime());
+                    cmd.Parameters.AddWithValue("@ClockInTime", Convert.ToDateTime(hhaClockin.ClockInTime));
                     if (hhaClockin.Type == 2)
                     {
-                        cmd.Parameters.AddWithValue("@ClockOutTime", hhaClockin.ClockOutTime.ToLocalTime());
+                        cmd.Parameters.AddWithValue("@ClockOutTime",Convert.ToDateTime(hhaClockin.ClockOutTime));
                     }
                     else
                     {
