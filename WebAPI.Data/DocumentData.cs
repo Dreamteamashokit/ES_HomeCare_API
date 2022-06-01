@@ -27,16 +27,19 @@ namespace ES_HomeCare_API.WebAPI.Data
             configuration = _configuration;
         }
 
-        public async Task<ServiceResponse<IEnumerable<FolderView>>> GetDocumentlist(int empId)
+        public async Task<ServiceResponse<IEnumerable<FolderView>>> GetDocumentlist(int UserId)
         {
             ServiceResponse<IEnumerable<FolderView>> obj = new ServiceResponse<IEnumerable<FolderView>>();
             try
             {
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sql = "Select x.FolderId,x.FolderName,y.Documentid,y.FileName,y.FilePath,y.Title,y.Description,y.SeachTag, y.CreatedOn, e.FirstName + ' ' + ISNULL(e.MiddleName,'') + ' ' + e.LastName as CreatedByName from  tblFoldermaster x left join tblEmpDocument y on x.FolderId = y.FolderId left join tblUser e on y.CreatedBy=e.UserId where x.EmpId = @EmpId and x.FolderName <> '';";
+                    string sql = @"Select x.FolderId,x.FolderName,y.Documentid,y.FileName,y.FilePath,y.Title,y.Description,y.SeachTag, y.CreatedOn,
+e.FirstName + ' ' + ISNULL(e.MiddleName,'') + ' ' + e.LastName as CreatedByName from  tblFoldermaster x 
+left join tblEmpDocument y on x.FolderId = y.FolderId 
+left join tblUser e on y.CreatedBy=e.UserId where x.EmpId = @UserId;";
 
-                    var result = (await connection.QueryAsync(sql, new { @EmpId = empId }));
+                    var result = (await connection.QueryAsync(sql, new { @UserId = UserId }));
 
                     //Using Query Syntax
                     var GroupByQS = from doc in result
@@ -47,7 +50,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                                         FolderId = docGrp.Key.FolderId,
                                         FolderName = docGrp.Key.FolderName,
 
-                                        DocumentList = docGrp.Select(x => new DocumentView
+                                        DocumentList = docGrp.Where(x=>x.Documentid!=null).Select(x => new DocumentView
                                         {
                                             DocumentId = x.Documentid == null ? 0 : x.Documentid,
                                             Title = x.Title == null ? string.Empty : x.Title,
@@ -55,7 +58,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                                             Description = x.Description == null ? string.Empty : x.Description,
                                             FileName = x.FileName == null ? string.Empty : x.FileName,
                                             FilePath = x.FilePath == null ? string.Empty : x.FilePath,
-                                            CreatedByName = x.CreatedByName == null ? "admin" : "",
+                                            CreatedByName = x.CreatedByName == null ? "admin" : x.CreatedByName,
                                             CreatedOn = x.CreatedOn == null ? string.Empty : x.CreatedOn.ToString(),
                                         }).ToList()
                                     };
@@ -149,8 +152,9 @@ namespace ES_HomeCare_API.WebAPI.Data
 
             using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sqlQuery = "Insert Into tblEmpDocument (FolderId,FileName,FilePath,Title,SeachTag,Description,UserId,CreatedOn,CreatedBy) Values (@FolderId,@FileName,@FilePath,@Title,@SeachTag,@Description,@UserId,@CreatedOn,@CreatedBy);";
-                int rowsAffected = db.Execute(sqlQuery, new
+                string sqlQuery = @"Insert Into tblEmpDocument (FolderId,FileName,FilePath,Title,SeachTag,Description,UserId,CreatedOn,CreatedBy) 
+	Values (@FolderId,@FileName,@FilePath,@Title,@SeachTag,@Description,@UserId,@CreatedOn,@CreatedBy);";
+                int rowsAffected =await db.ExecuteAsync(sqlQuery, new
                 {
                     FolderId = model.FolderId,
                     FileName = model.FileName,
@@ -158,7 +162,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                     Title = model.Title,
                     SeachTag = model.Search,
                     Description = model.Description,
-                    UserId = model.CreatedBy,
+                    UserId = model.UserId,
                     CreatedBy = model.CreatedBy,
                     CreatedOn = DateTime.Now
                 });
@@ -166,7 +170,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                 if (rowsAffected > 0)
                 {
 
-                    sres.Message = " Data Save Sucessfully";
+                    sres.Message = "Data Save Sucessfully";
                 }
                 else
                 {
@@ -193,12 +197,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                 {
                     SqlCommand cmd = new SqlCommand("SP_DocumentProc", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-
                     cmd.Parameters.AddWithValue("@EmpId", item.EmpId);
-
-                    cmd.Parameters.AddWithValue("@EmpId", item.EmpId);
-
                     cmd.Parameters.AddWithValue("@DocumentId", item.DocumentId);
                     cmd.Parameters.AddWithValue("@FolderId", item.FolderId);
 

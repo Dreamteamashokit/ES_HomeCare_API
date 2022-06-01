@@ -34,6 +34,18 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.GetClientStatusList(ClientId);
         }
+
+
+        public async Task<ServiceResponse<string>> DelClientStatus(int StatusId)
+        {
+            return await data.DelClientStatus(StatusId);
+        }
+        public async Task<ServiceResponse<string>> UpdateClientStatus(ClientStatusModel _model)
+        {
+            return await data.UpdateClientStatus(_model);
+        }
+
+
         public async Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model, int Flag)
         {
             return await data.ClientMedicationcs(Model, Flag);

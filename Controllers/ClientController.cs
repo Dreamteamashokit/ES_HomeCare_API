@@ -71,6 +71,27 @@ namespace WebAPI_SAMPLE.Controllers
         }
 
 
+        [HttpDelete("delClientStatus")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<ServiceResponse<string>> DelClientStatus(int StatusId)
+        {
+            return await service.DelClientStatus(StatusId);
+        }
+        [HttpPost("updateClientStatus")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<ServiceResponse<string>> UpdateClientStatus(ClientStatusModel _model)
+        {
+            return await service.UpdateClientStatus(_model);
+        }
+
+
+
+
+
+
+
         [HttpPost("ClientMedicationcs")]
         [ProducesResponseType(typeof(ServiceResponse<List<Medicationcs>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<Medicationcs>>), StatusCodes.Status400BadRequest)]

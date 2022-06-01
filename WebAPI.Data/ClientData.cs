@@ -163,6 +163,87 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
             return obj;
         }
 
+        public async Task<ServiceResponse<string>> UpdateClientStatus(ClientStatusModel _model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sqlQuery = @"Update tblClientSatus Set ActivityID=@ActivityID,ReferralCodeId=@ReferralCodeId,StatusDate=@StatusDate,note=@note Where StatusId=@StatusId";
+
+                    int rowsAffected = db.Execute(sqlQuery, new
+                    {
+                        ActivityID = _model.ActivityId,
+                        StatusDate = _model.StatusDate.ParseDate(),
+                        ReferralCodeId = _model.ReferralCode,
+                        StatusId=_model.StatusId,
+                        note= _model.Note,
+
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Updated.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new Update.";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+
+            }
+
+            return sres;
+        }
+        public async Task<ServiceResponse<string>> DelClientStatus(int StatusId)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sqlQuery = @"Update tblClientSatus Set IsActive=@IsActive Where StatusId=@StatusId";
+
+                    int rowsAffected = db.Execute(sqlQuery, new
+                    {
+                        @IsActive=(int)Status.InActive,
+                        @StatusId = StatusId
+
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Updated.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new Update.";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+
+            }
+
+            return sres;
+        }
+
+
+
+
         public async Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model, int Flag)
         {
             ServiceResponse<List<Medicationcs>> obj = new ServiceResponse<List<Medicationcs>>();
@@ -803,7 +884,9 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
                                 NotifyTypeId = Convert.ToInt16(table.Rows[i]["NotifyTypeId"].ToString()),
                                 IsActive = Convert.ToInt16(table.Rows[i]["IsActive"].ToString()),
                                 CreatedOn = Convert.ToDateTime(table.Rows[i]["CreatedOn"].ToString()),
-                                CreatedBy = Convert.ToInt32(table.Rows[i]["CreatedBy"].ToString())
+                                CreatedBy = Convert.ToInt32(table.Rows[i]["CreatedBy"].ToString()),
+                                  NotesType = table.Rows[i]["NotesType"].ToString(),
+                                
                             });
                         }
                         obj.Result = true;

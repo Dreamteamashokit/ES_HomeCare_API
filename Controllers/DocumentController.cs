@@ -33,8 +33,8 @@ namespace ES_HomeCare_API.Controllers
 
 
         [HttpGet("getDocumentlist/{empId}")]
-        [ProducesResponseType(typeof(ServiceResponse<FolderView>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<FolderView>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<FolderView>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<FolderView>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetDocumentlist(int empId)
         {
             return Ok(await docSrv.GetDocumentlist(empId));
@@ -56,6 +56,7 @@ namespace ES_HomeCare_API.Controllers
                 model.CreatedBy = Convert.ToInt32(Request.Form["CreatedBy"]);
                 model.Search = Request.Form["Search"].ToString();
                 model.Description = Request.Form["Description"].ToString();
+                model.UserId = Convert.ToInt32(Request.Form["UserId"]);
                 string Foldername = Request.Form["Foldername"].ToString();
 
 

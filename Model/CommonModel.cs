@@ -26,6 +26,7 @@ namespace ES_HomeCare_API.Model
         public string Search { get; set; }
         public string Description { get; set; }
         public string FileName { get; set; }
+        public int UserId { get; set; }
         public int CreatedBy { get; set; }
     }
 
