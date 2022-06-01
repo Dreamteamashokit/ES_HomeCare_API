@@ -22,6 +22,7 @@ namespace ES_HomeCare_API.Model.Client
         public bool IsCourtOrdered { get; set; }
         public string FlowRate { get; set; }
         public string ReunionLocations { get; set; }
+        public string LinkedClients { get; set; }
         public string ShelterName { get; set; }
         public string TalCode { get; set; }
         public string Shelter { get; set; }
