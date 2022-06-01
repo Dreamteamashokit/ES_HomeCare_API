@@ -453,7 +453,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             ServiceResponse<IEnumerable<AvailabilityStatus>> obj = new ServiceResponse<IEnumerable<AvailabilityStatus>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select ItemName as StatusType,EffectiveDate,ReturnDate,OKResume as Resume,ReHire as Rehire,Note from tblEmpStatus ES inner join tblMaster ESM  on ES.TypeId = ESM.ItemId and ESM.MasterType = 5 where ES.EmployeeId = @EmployeeId ;";
+                string sql = "select ItemName as StatusType,EffectiveDate,ReturnDate,OKResume as Resume,ReHire as Rehire,Note from tblEmpStatus ES inner join tblMaster ESM  on ES.TypeId = ESM.MasterId  where ES.EmployeeId = @EmployeeId ;";
                 IEnumerable<AvailabilityStatus> cmeetings = (await connection.QueryAsync<AvailabilityStatus>(sql, new { EmployeeId = empId }));
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
