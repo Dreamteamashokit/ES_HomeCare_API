@@ -119,7 +119,7 @@ namespace WebAPI_SAMPLE.Controllers
             int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "select"));
 
 
-            
+
 
             return Ok(await service.ClientMedicationcs(model, Flag));
         }
@@ -152,7 +152,7 @@ namespace WebAPI_SAMPLE.Controllers
 
                 foreach (var item in model)
                 {
-                    item.IsActive = (int)Status.Active;                 
+                    item.IsActive = (int)Status.Active;
                     item.CreatedOn = DateTime.Now;
                 }
                 return Ok(await service.CreateServiceTask(model));
@@ -725,10 +725,86 @@ namespace WebAPI_SAMPLE.Controllers
         [ProducesResponseType(typeof(ServiceResponse<List<ClientResult>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientResult>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SearchClient(string search)
-       {
+        {
 
             return Ok(await service.SearchClient(search.Trim()));
         }
+
+
+
+        [HttpPost("addEmergContact")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddEmergContact(ContactModel model)
+        {
+           
+
+            try
+            {
+                model.CreatedOn = DateTime.Now;
+
+                return Ok(await service.AddEmergContact(model));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+        [HttpPost("addEmergProvider")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddEmergProvider(ProviderModel model)
+        {
+            try
+            {
+                model.CreatedOn = DateTime.Now;
+           
+                return Ok(await service.AddEmergProvider(model));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+
+
+        [HttpDelete("delEmergProvider")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DelEmergProvider(int ProviderId)
+        {
+            try
+            {
+                return Ok(await service.DelEmergProvider(ProviderId));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet("getEmergContact/{userId}/{typeId}")]
+        [ProducesResponseType(typeof(ServiceResponse<ContactModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<ContactModel>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetEmergContact(int userId, short typeId)
+        {
+       
+            return Ok(await service.GetEmergContact(userId, typeId));
+        }
+        [HttpGet("getEmergProvider/{userId}")]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<ProviderModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<ProviderModel>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetEmergProvider(int userId)
+        {
+
+            return Ok(await service.GetEmergProvider(userId));
+        }
+
+
+
 
 
 

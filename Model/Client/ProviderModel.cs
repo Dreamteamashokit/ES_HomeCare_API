@@ -16,6 +16,6 @@
         public string Phone { get; set; }
         public string Fax { get; set; }
         public string State { get; set; }
-        public string Zip { get; set; }
+        public string ZipCode { get; set; }
     }
 }

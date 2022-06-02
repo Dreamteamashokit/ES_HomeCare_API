@@ -43,7 +43,11 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<List<ClientCommunityMaster>>> ClientCommunityOperation(ClientCommunityMaster Model, int Flag);
         Task<ServiceResponse<IEnumerable<ProvisionInfo>>> ClienProvisionInfo(IEnumerable<ProvisionInfo> model, int UserId = 0);
         Task<ServiceResponse<List<ClientCompliance>>> ClientComplianceOperation(ClientCompliance Model, int Flag);
-
         Task<ServiceResponse<IEnumerable<ClientResult>>> SearchClient(string search);
+        Task<ServiceResponse<string>> AddEmergContact(ContactModel model);
+        Task<ServiceResponse<string>> AddEmergProvider(ProviderModel model);
+        Task<ServiceResponse<string>> DelEmergProvider(int ProviderId);
+        Task<ServiceResponse<ContactModel>> GetEmergContact(int userId, short typeId);
+        Task<ServiceResponse<IEnumerable<ProviderModel>>> GetEmergProvider(int userId);
     }
 }

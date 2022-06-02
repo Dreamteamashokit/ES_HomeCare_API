@@ -176,18 +176,28 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             dt.Columns.Add("UserId", typeof(Int32));
             return dt;
         }
-
-
-
-
         public async Task<ServiceResponse<IEnumerable<ClientResult>>> SearchClient(string search)
         {
             return await data.SearchClient(search);
         }
 
-
-
-
-
+        public async Task<ServiceResponse<string>> AddEmergContact(ContactModel model) {
+            return await data.AddEmergContact(model);
         }
+        public async Task<ServiceResponse<string>> AddEmergProvider(ProviderModel model) {
+            return await data.AddEmergProvider(model);
+        }
+        public async Task<ServiceResponse<string>> DelEmergProvider(int ProviderId) {
+
+            return await data.DelEmergProvider(ProviderId);
+        }
+        public async Task<ServiceResponse<ContactModel>> GetEmergContact(int userId, short typeId) {
+            return await data.GetEmergContact(userId, typeId);
+        }
+        public async Task<ServiceResponse<IEnumerable<ProviderModel>>> GetEmergProvider(int userId) {
+            return await data.GetEmergProvider(userId);
+        }
+
+
+    }
 }

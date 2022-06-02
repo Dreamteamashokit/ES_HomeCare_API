@@ -118,7 +118,7 @@ Values(@ActivityID,@StatusDate,@ReferralCodeId,@note,@clientId,@OfficeUserId,@Re
                         Email = _model.Email,
                         CreatedOn = _model.CreatedOn,
                         CreatedBy = _model.CreatedBy,
-                        IsActive=_model.IsActive
+                        IsActive = _model.IsActive
 
                     });
 
@@ -154,7 +154,7 @@ y.ItemName as ActivityText,z.ItemName as ReferralCodeText
 from tblClientSatus x left join tblMaster y on x.ActivityID=y.MasterId
 left join tblMaster z on x.ReferralCodeId=z.MasterId
 Where x.clientId=@ClientId and x.IsActive=@IsActive";
-                IEnumerable<ClientStatusLst> cmeetings = (await connection.QueryAsync<ClientStatusLst>(sql, new { @ClientId = ClientId, @IsActive=(int)Status.Active }));
+                IEnumerable<ClientStatusLst> cmeetings = (await connection.QueryAsync<ClientStatusLst>(sql, new { @ClientId = ClientId, @IsActive = (int)Status.Active }));
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
@@ -177,8 +177,8 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
                         ActivityID = _model.ActivityId,
                         StatusDate = _model.StatusDate.ParseDate(),
                         ReferralCodeId = _model.ReferralCode,
-                        StatusId=_model.StatusId,
-                        note= _model.Note,
+                        StatusId = _model.StatusId,
+                        note = _model.Note,
 
                     });
 
@@ -214,7 +214,7 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
 
                     int rowsAffected = db.Execute(sqlQuery, new
                     {
-                        @IsActive=(int)Status.InActive,
+                        @IsActive = (int)Status.InActive,
                         @StatusId = StatusId
 
                     });
@@ -296,7 +296,7 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
                             };
                             if (table.Rows[i]["EndDate"] != DBNull.Value)
                             {
-                                item.EndDate= Convert.ToDateTime(table.Rows[i]["EndDate"]);
+                                item.EndDate = Convert.ToDateTime(table.Rows[i]["EndDate"]);
                             }
                             clientsMedicationcs.Add(item);
                         }
@@ -503,7 +503,7 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
 
                 string sqlqry = " Select x.*,(ISNULL(y.FirstName,'') + ' ' +   ISNULL(y.MiddleName,'') + ' ' + ISNULL(y.LastName,'') ) EmpName  from tblEmpDeclined x inner join tblUser y on x.EmpId=y.UserId Where  x.UserId=@UserId and x.IsActive=@IsActive;";
 
-                IEnumerable<EmployeeDeclineView> objResult = (await connection.QueryAsync<EmployeeDeclineView>(sqlqry, new { @UserId = userId, @IsActive=(int)Status.Active }));
+                IEnumerable<EmployeeDeclineView> objResult = (await connection.QueryAsync<EmployeeDeclineView>(sqlqry, new { @UserId = userId, @IsActive = (int)Status.Active }));
 
                 obj.Data = objResult;
                 obj.Result = objResult != null ? true : false;
@@ -885,8 +885,8 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
                                 IsActive = Convert.ToInt16(table.Rows[i]["IsActive"].ToString()),
                                 CreatedOn = Convert.ToDateTime(table.Rows[i]["CreatedOn"].ToString()),
                                 CreatedBy = Convert.ToInt32(table.Rows[i]["CreatedBy"].ToString()),
-                                  NotesType = table.Rows[i]["NotesType"].ToString(),
-                                
+                                NotesType = table.Rows[i]["NotesType"].ToString(),
+
                             });
                         }
                         obj.Result = true;
@@ -1242,7 +1242,7 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
 
             }
         }
-        
+
         public async Task<ServiceResponse<List<ClientCommunityMaster>>> ClientCommunityOperation(ClientCommunityMaster Model, int Flag)
         {
             ServiceResponse<List<ClientCommunityMaster>> obj = new ServiceResponse<List<ClientCommunityMaster>>();
@@ -1420,10 +1420,270 @@ OR z.ZipCode Like '%'+@search+'%'; ";
 
 
 
+        public async Task<ServiceResponse<string>> AddEmergContact(ContactModel model)
+        {
+            ServiceResponse<string> result = new ServiceResponse<string>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sqlQuery;
+                if (model.EntityId == 0)
+                {
+
+                    sqlQuery = @"Insert into tblContact(UserId,ContactType,ContactName,Relationship,ContactPhone,ContactEmail,IsActive,CreatedOn,CreatedBy) 
+values (@UserId,@ContactType,@ContactName,@Relationship,@Phone,@Email,@IsActive,@CreatedOn,@CreatedBy) ";
+
+                }
+                else
+                {
+                    sqlQuery = @"Update tblContact set ContactName=@ContactName,Relationship=@Relationship,ContactPhone=@Phone,ContactEmail=@Email where ContactId=@ContactId;";
+                }
+
+                var modeMapping = new
+                {
+                    @flag = 1,
+                    @ContactId = model.EntityId,
+                    @UserId = model.UserId,
+                    @ContactType = model.ContactType,
+                    @ContactName = model.Name,
+                    @Relationship = model.Relationship,
+                    @Phone = model.Phone,
+                    @Email = model.Email,
+                    @IsActive = (int)Status.Active,
+                    @CreatedOn = model.CreatedOn,
+                    @CreatedBy = model.CreatedBy
+                };
+
+                int rowsAffected = await connection.ExecuteAsync(sqlQuery, modeMapping);
+                if (rowsAffected > 0)
+                {
+                    result.Result = true;
+                    result.Data = "Sucessfully  Created.";
+                }
+                else
+                {
+                    result.Data = null;
+                    result.Message = "Failed new creation.";
+                }
+
+            }
+            return result;
+        }
+
+
+        public async Task<ServiceResponse<string>> AddEmergProvider(ProviderModel model)
+        {
+            ServiceResponse<string> result = new ServiceResponse<string>();
+            try
+            {
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+
+
+                    string sqlQuery;
+                    if (model.EntityId == 0)
+                    {
+
+                        sqlQuery = @"Insert into tblProvider(UserId,ProviderType,Title,FirstName,LastName,License,LicenseExpires,NPINumber,Email,Phone,
+ Fax,Address,State,City,ZipCode,IsActive,CreatedOn,CreatedBy)   
+ values(@UserId,@ContactType,@Title,@FirstName,@LastName,@License,@LicenseEx,@NPI,
+ @Email,@Phone,@Fax,@Address,@State,@City,@ZipCode,@IsActive,@CreatedOn,@CreatedBy);  ";
+
+
+                    }
+                    else
+                    {
+                        sqlQuery = @"Update tblProvider set Title=@Title,FirstName=@FirstName,LastName=@LastName,License=@License,LicenseExpires=@LicenseEx,
+NPINumber=@NPI,Email=@Email,Phone=@Phone,Fax=@Fax,Address=@Address,State=@State,City=@City,ZipCode=@ZipCode,
+IsActive=@IsActive where ProviderId=@ContactId";
+                    }
+
+                    var modeMapping = new
+                    {
+                        @flag = 2,
+                        @ContactId = model.EntityId,
+                        @UserId = model.UserId,
+                        @ContactType = model.ContactType,
+                        @Title = model.Title,
+                        @FirstName = model.FirstName,
+                        @LastName = model.LastName,
+                        @License = model.License,
+                        @LicenseEx = model.LicenseExpires,
+                        @NPI = model.NPINumber,
+                        @Email = model.Email,
+                        @Phone = model.Phone,
+                        @Fax = model.Fax,
+                        @Address = model.Address,
+                        @State = model.State,
+                        @City = model.City,
+                        @ZipCode = model.ZipCode,
+                        @Relationship = model.Relationship,
+                        @IsActive = (int)Status.Active,
+                        @CreatedOn = model.CreatedOn,
+                        @CreatedBy = model.CreatedBy
+                    };
+                    int rowsAffected = await connection.ExecuteAsync(sqlQuery, modeMapping);
+                    if (rowsAffected > 0)
+                    {
+                        result.Result = true;
+                        result.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        result.Data = null;
+                        result.Message = "Failed new creation.";
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
 
 
 
 
+
+        public async Task<ServiceResponse<string>> DelEmergProvider(int ProviderId)
+        {
+            ServiceResponse<string> result = new ServiceResponse<string>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                var sqlQuery = "EmergInfoProc";
+                var modeMapping = new
+                {
+                    @flag = 5,
+                    @ContactId = ProviderId,
+                    @IsActive = (int)Status.InActive,
+                };
+                int rowsAffected = await connection.ExecuteAsync(sqlQuery, modeMapping);
+                if (rowsAffected > 0)
+                {
+                    result.Result = true;
+                    result.Data = "Sucessfully  Updated.";
+                }
+                else
+                {
+                    result.Data = null;
+                    result.Message = "Failed to Update.";
+                }
+
+            }
+            return result;
+        }
+
+        public async Task<ServiceResponse<ContactModel>> GetEmergContact(int userId, short typeId)
+        {
+            ServiceResponse<ContactModel> obj = new ServiceResponse<ContactModel>();
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var procedure = "EmergInfoProc";
+                    var model = new { @flag = 6, @IsActive = Status.Active, @UserId = userId, @ContactType = typeId };
+
+                    ContactModel results;
+
+                    var ItemList = (await connection.QueryAsync(procedure, model, commandType: CommandType.StoredProcedure));
+                    if (ItemList.Count() > 0)
+                    {
+                        results = ItemList.Select(x => new ContactModel
+                        {
+                            EntityId = (int)x.ContactId,
+                            UserId = (int)x.UserId,
+                            ContactType = (short)x.ContactType,
+                            Name = x.ContactName != null ? x.ContactName : "",
+                            Relationship = x.Relationship != null ? x.Relationship : "",
+                            Phone = x.ContactPhone != null ? x.ContactPhone : "",
+                            Email = x.ContactEmail != null ? x.ContactEmail : "",
+
+                            IsActive = x.IsActive,
+                            CreatedOn = x.CreatedOn,
+                            CreatedBy = x.CreatedBy
+                        }).FirstOrDefault();
+
+                    }
+                    else
+                    {
+                        results = new ContactModel();
+                    }
+
+
+                    obj.Data = results;
+                    obj.Result = results != null ? true : false;
+                    obj.Message = results != null ? "Data Found." : "No Data found.";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return obj;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ProviderModel>>> GetEmergProvider(int userId)
+        {
+            ServiceResponse<IEnumerable<ProviderModel>> obj = new ServiceResponse<IEnumerable<ProviderModel>>();
+
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var procedure = "EmergInfoProc";
+                    var model = new { @flag = 7, @IsActive = Status.Active, @UserId = userId };
+
+                    IEnumerable<ProviderModel> results;
+
+                    var ItemList = (await connection.QueryAsync(procedure, model, commandType: CommandType.StoredProcedure));
+                    if (ItemList.Count() > 0)
+                    {
+                        results = ItemList.Select(x => new ProviderModel
+                        {
+                            EntityId = (int)x.ProviderId,
+                            UserId = (int)x.UserId,
+                            ContactType = (short)x.ProviderType,
+                            Title = x.Title != null ? x.Title : "",
+                            FirstName = x.FirstName != null ? x.FirstName : "",
+                            LastName = x.LastName != null ? x.LastName : "",
+                            License = x.License != null ? x.License : "",
+                            //LicenseExpires = x.LicenseExpires != null ? x.LicenseExpires.tostr : "",
+                            NPINumber = x.NPINumber != null ? x.NPINumber : "",
+                            Email = x.Email != null ? x.Email : "",
+                            Phone = x.Phone != null ? x.Phone : "",
+                            Fax = x.Fax != null ? x.Fax : "",
+                            Address = x.Address != null ? x.Address : "",
+                            State = x.State != null ? x.State : "",
+                            City = x.City != null ? x.City : "",
+                            ZipCode = x.ZipCode != null ? x.ZipCode : "",
+                            IsActive = x.IsActive,
+                            CreatedOn = x.CreatedOn,
+                            CreatedBy = x.CreatedBy
+                        });
+
+                    }
+                    else
+                    {
+                        results = null;
+                    }
+
+
+                    obj.Data = results;
+                    obj.Result = results.Any() ? true : false;
+                    obj.Message = results.Any() ? "Data Found." : "No Data found.";
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return obj;
+        }
 
 
     }

@@ -92,6 +92,19 @@ namespace ES_HomeCare_API.Helper
 
         }
 
+
+
+        public static string StringIsNull(this string str)
+        {
+            string result = String.Empty;
+            if (!string.IsNullOrEmpty(str))
+            {
+                result = str;
+            }
+            return result;
+
+        }
+
     }
 
 }

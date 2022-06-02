@@ -58,7 +58,7 @@ namespace ES_HomeCare_API.Model
         EmergencyInfo = 2,
         [Display(Name = "Physician")]
         Physician = 3,
-        [Display(Name = "other")]
+        [Display(Name = " Provider")]
         other = 4,
 
     }
