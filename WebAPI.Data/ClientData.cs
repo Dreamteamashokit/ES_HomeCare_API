@@ -914,7 +914,16 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
             {
                 using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = "INSERT INTO tblOthers (UserId,CASA3,ContactId,InsuranceGrp,IsMedications,IsDialysis,IsOxygen,IsAids,IsCourtOrdered,FlowRate,ReunionLocations,ShelterName,TalCode,Shelter,Facility,Room,ServiceRequestDate,CareDate,DischargeDate,Notes,Allergies,CreatedBy,CreatedOn) VALUES (@UserId,@CASA3,@ContactId,@InsuranceGrp,@IsMedications,@IsDialysis,@IsOxygen,@IsAids,@IsCourtOrdered,@FlowRate,@ReunionLocations,@ShelterName,@TalCode,@Shelter,@Facility,@Room,@ServiceRequestDate,@CareDate,@DischargeDate,@Notes,@Allergies,@CreatedBy,@CreatedOn); ";
+                    string sqlQuery = "INSERT INTO tblOthers (UserId,CASA3,ContactId,InsuranceGrp,IsMedications,IsDialysis,IsOxygen,IsAids,IsCourtOrdered,FlowRate,ReunionLocations,LinkedClients,ShelterName,TalCode,Shelter,Facility,Room,ServiceRequestDate,CareDate,DischargeDate,Notes,Allergies,CreatedBy,CreatedOn) VALUES (@UserId,@CASA3,@ContactId,@InsuranceGrp,@IsMedications,@IsDialysis,@IsOxygen,@IsAids,@IsCourtOrdered,@FlowRate,@ReunionLocations,@LinkedClients,@ShelterName,@TalCode,@Shelter,@Facility,@Room,@ServiceRequestDate,@CareDate,@DischargeDate,@Notes,@Allergies,@CreatedBy,@CreatedOn); ";
+                    DateTime? servieRequestDate = null, careDate = null, dischargeDate = null;
+                    if (!string.IsNullOrEmpty(obj.ServiceRequestDate))
+                        servieRequestDate = obj.ServiceRequestDate.ParseDate();
+
+                    if (!string.IsNullOrEmpty(obj.CareDate))
+                        careDate = obj.CareDate.ParseDate();
+
+                    if (!string.IsNullOrEmpty(obj.DischargeDate))
+                        dischargeDate = obj.DischargeDate.ParseDate();
 
                     int rowsAffected = cnn.Execute(sqlQuery, new
                     {
@@ -929,14 +938,15 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
                         obj.IsCourtOrdered,
                         obj.FlowRate,
                         obj.ReunionLocations,
+                        obj.LinkedClients,
                         obj.ShelterName,
                         obj.TalCode,
                         obj.Shelter,
                         obj.Facility,
                         obj.Room,
-                        ServiceRequestDate = obj.ServiceRequestDate.ParseDate(),
-                        CareDate = obj.CareDate.ParseDate(),
-                        DischargeDate = obj.DischargeDate.ParseDate(),
+                        ServiceRequestDate = servieRequestDate,
+                        CareDate = careDate,
+                        DischargeDate = dischargeDate,
                         obj.Notes,
                         obj.Allergies,
                         obj.CreatedBy,
@@ -976,7 +986,16 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
 
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    var sqlqry = "UPDATE tblOthers SET CASA3=@CASA3,ContactId=@ContactId,InsuranceGrp=@InsuranceGrp,IsMedications=@IsMedications,IsDialysis=@IsDialysis,IsOxygen=@IsOxygen,IsAids=@IsAids,IsCourtOrdered=@IsCourtOrdered,FlowRate=@FlowRate,ReunionLocations=@ReunionLocations,ShelterName=@ShelterName,TalCode=@TalCode,Shelter=@Shelter,Facility=@Facility,Room=@Room,ServiceRequestDate=@ServiceRequestDate,CareDate=@CareDate,DischargeDate=@DischargeDate,Notes=@Notes,Allergies=@Allergies Where UserId=@UserId";
+                    var sqlqry = "UPDATE tblOthers SET CASA3=@CASA3,ContactId=@ContactId,InsuranceGrp=@InsuranceGrp,IsMedications=@IsMedications,IsDialysis=@IsDialysis,IsOxygen=@IsOxygen,IsAids=@IsAids,IsCourtOrdered=@IsCourtOrdered,FlowRate=@FlowRate,ReunionLocations=@ReunionLocations,LinkedClients=@LinkedClients,ShelterName=@ShelterName,TalCode=@TalCode,Shelter=@Shelter,Facility=@Facility,Room=@Room,ServiceRequestDate=@ServiceRequestDate,CareDate=@CareDate,DischargeDate=@DischargeDate,Notes=@Notes,Allergies=@Allergies Where UserId=@UserId";
+                    DateTime? servieRequestDate = null, careDate = null, dischargeDate = null;
+                    if (!string.IsNullOrEmpty(obj.ServiceRequestDate))
+                        servieRequestDate = obj.ServiceRequestDate.ParseDate();
+
+                    if (!string.IsNullOrEmpty(obj.CareDate))
+                        careDate = obj.CareDate.ParseDate();
+
+                    if (!string.IsNullOrEmpty(obj.DischargeDate))
+                        dischargeDate = obj.DischargeDate.ParseDate();
 
                     int rowsAffected = await connection.ExecuteAsync(sqlqry, new
                     {
@@ -991,14 +1010,15 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
                         obj.IsCourtOrdered,
                         obj.FlowRate,
                         obj.ReunionLocations,
+                        obj.LinkedClients,
                         obj.ShelterName,
                         obj.TalCode,
                         obj.Shelter,
                         obj.Facility,
                         obj.Room,
-                        ServiceRequestDate = obj.ServiceRequestDate.ParseDate(),
-                        CareDate = obj.CareDate.ParseDate(),
-                        DischargeDate = obj.DischargeDate.ParseDate(),
+                        ServiceRequestDate = servieRequestDate,
+                        CareDate = careDate,
+                        DischargeDate = dischargeDate,
                         obj.Notes,
                         obj.Allergies,
                         obj.CreatedBy,
@@ -1034,7 +1054,7 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
             ServiceResponse<OtherInfoModel> obj = new ServiceResponse<OtherInfoModel>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "Select OtherId,CASA3, ContactId, InsuranceGrp, IsMedications, IsDialysis, IsOxygen, IsAids, IsCourtOrdered, FlowRate, ReunionLocations, ShelterName, TalCode, Shelter, Facility, Room, ServiceRequestDate, CareDate, DischargeDate, Notes, Allergies from tblOthers(nolock) Where UserId = @UserId";
+                string sql = "Select OtherId,CASA3, ContactId, InsuranceGrp, IsMedications, IsDialysis, IsOxygen, IsAids, IsCourtOrdered, FlowRate, ReunionLocations, LinkedClients, ShelterName, TalCode, Shelter, Facility, Room, ServiceRequestDate, CareDate, DischargeDate, Notes, Allergies from tblOthers(nolock) Where UserId = @UserId";
 
                 var objResult = (await connection.QueryAsync<OtherInfoModel>(sql, new { UserId = UserId })).FirstOrDefault();
 
