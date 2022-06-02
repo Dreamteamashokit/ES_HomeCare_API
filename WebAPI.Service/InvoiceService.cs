@@ -1,4 +1,5 @@
 ﻿using ES_HomeCare_API.Model;
+using ES_HomeCare_API.ViewModel.Invoice;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using Stripe;
@@ -32,9 +33,15 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             return await data.GetInvoiceList();
         }
+
         public async Task<ServiceResponse<Invoice>> PayInvoice(string InvId)
         {
             return await data.PayInvoice(InvId);
+        }
+
+        public async Task<ServiceResponse<IEnumerable<PayerListViewModel>>> GetAllActivePayers()
+        {
+            return await data.GetAllActivePayers();
         }
     }
 }
