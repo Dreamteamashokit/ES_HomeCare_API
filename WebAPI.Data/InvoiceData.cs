@@ -1,11 +1,13 @@
-﻿using ES_HomeCare_API.Model;
+﻿using Dapper;
+using ES_HomeCare_API.Model;
+using ES_HomeCare_API.ViewModel.Invoice;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Stripe;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
 
@@ -88,7 +90,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                 Price price = priceservice.Create(priceoptions);
 
                 // STEP 3 : Create Invoice for Price & Customer
-                
+
                 var options = new InvoiceItemCreateOptions
                 {
                     Customer = ginvoice.custId,
@@ -142,6 +144,30 @@ namespace ES_HomeCare_API.WebAPI.Data
             catch (Exception ex)
             {
                 obj.Message = ex.Message;
+            }
+            return obj;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<PayerListViewModel>>> GetAllActivePayers()
+        {
+            ServiceResponse<IEnumerable<PayerListViewModel>> obj = new ServiceResponse<IEnumerable<PayerListViewModel>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+
+                string sql = "SELECT TP.PayerId,TP.PayerName FROM TBLPAYER TP WHERE ISACTIVE = 1";
+
+                IEnumerable<PayerListViewModel> payerList = (await connection.QueryAsync<PayerListViewModel>(sql, ""));
+                obj.Data = payerList;
+                if (payerList != null)
+                {
+                    obj.Result = true;
+                    obj.Message = "Data Found.";
+                }
+                else
+                {
+                    obj.Result = false;
+                    obj.Message = "No Data found.";
+                }
             }
             return obj;
         }
