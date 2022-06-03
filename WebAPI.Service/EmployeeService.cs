@@ -19,7 +19,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             data = ldata;
         }
         #region Employee
-        public async Task<ServiceResponse<string>> AddEmployee(EmployeeModel _model)
+        public async Task<ServiceResponse<int>> AddEmployee(EmployeeModel _model)
         {
             return await data.AddEmployee(_model);
         }

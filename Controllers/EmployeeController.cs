@@ -31,8 +31,8 @@ namespace WebAPI_SAMPLE.Controllers
         #region Employee
 
         [HttpPost("addEmployee")]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<int>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddEmployee([FromBody] EmployeeModel model)
         {
 

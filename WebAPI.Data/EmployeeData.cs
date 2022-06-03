@@ -22,9 +22,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             configuration = _configuration;
         }
         #region Employee
-        public async Task<ServiceResponse<string>> AddEmployee(EmployeeModel _model)
+        public async Task<ServiceResponse<int>> AddEmployee(EmployeeModel _model)
         {
-            ServiceResponse<string> sres = new ServiceResponse<string>();
+            ServiceResponse<int> sres = new ServiceResponse<int>();
             IDbTransaction transaction = null;
 
             try
@@ -47,11 +47,11 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     if (rowsAffected > 0)
                     {
                         sres.Result = true;
-                        sres.Data = "Sucessfully  Created.";
+                        sres.Data = _model.UserId;
                     }
                     else
                     {
-                        sres.Data = null;
+                        sres.Data = 0;
                         sres.Message = "Failed new creation.";
                     }
 

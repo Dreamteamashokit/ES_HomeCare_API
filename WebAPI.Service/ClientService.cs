@@ -18,7 +18,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             data = ldata;
         }
-        public async Task<ServiceResponse<string>> AddClient(ClientModel client)
+        public async Task<ServiceResponse<int>> AddClient(ClientModel client)
         {
             return await data.AddClient(client);
         }

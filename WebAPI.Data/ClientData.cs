@@ -23,9 +23,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             configuration = _configuration;
         }
 
-        public async Task<ServiceResponse<string>> AddClient(ClientModel _model)
+        public async Task<ServiceResponse<int>> AddClient(ClientModel _model)
         {
-            ServiceResponse<string> sres = new ServiceResponse<string>();
+            ServiceResponse<int> sres = new ServiceResponse<int>();
             IDbTransaction transaction = null;
             try
             {
@@ -43,17 +43,17 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     string sqlQuery = "INSERT INTO tblClient (UserId,BillTo,Nurse,OfChild,AltId,ID2,ID3,InsuranceID,WorkerName,WorkerContact,ReferredBy,IsHourly,TimeSlip,PriorityCode,IsActive,CreatedOn,CreatedBy) VALUES (@UserId,@BillTo,@NurseId,@OfChild,@AltId,@ID2,@ID3,@InsuranceID,@WorkerName,@WorkerContact,@ReferredBy,@IsHourly,@TimeSlip,@PriorityCode,@IsActive,@CreatedOn,@CreatedBy)";
 
 
-                    int rowsAffected = cnn.Execute(sqlQuery, _model, transaction);
+                    int rowsAffected = await cnn.ExecuteAsync(sqlQuery, _model, transaction);
                     transaction.Commit();
 
                     if (rowsAffected > 0)
                     {
                         sres.Result = true;
-                        sres.Data = "Sucessfully  Created.";
+                        sres.Data = _model.UserId;
                     }
                     else
                     {
-                        sres.Data = null;
+                        sres.Data = 0;
                         sres.Message = "Failed new creation.";
                     }
                 }
@@ -1552,7 +1552,7 @@ IsActive=@IsActive where ProviderId=@ContactId";
             ServiceResponse<string> result = new ServiceResponse<string>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                var sqlQuery = "EmergInfoProc";
+                var sqlQuery = "Update tblProvider Set IsActive=@IsActive where ProviderId=@ContactId;";
                 var modeMapping = new
                 {
                     @flag = 5,

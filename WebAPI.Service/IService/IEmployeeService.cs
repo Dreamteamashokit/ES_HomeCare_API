@@ -10,7 +10,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
     public interface IEmployeeService
     {
         #region Employee
-        Task<ServiceResponse<string>> AddEmployee(EmployeeModel _model);
+        Task<ServiceResponse<int>> AddEmployee(EmployeeModel _model);
         Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj(ClientFilter model);
         Task<ServiceResponse<IEnumerable<EmployeeList>>> GetEmployeeListObj(int userId);
         Task<ServiceResponse<string>> DeleteEmployee(int UserId);
