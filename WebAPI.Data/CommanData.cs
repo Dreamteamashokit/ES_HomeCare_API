@@ -268,7 +268,7 @@ where y.EmpType=@EmpType;";
                         @TaskCode = _model.TaskCode,
                         @TaskName = _model.TaskName,
                         @TaskDetail = _model.TaskDetail,
-                        @IsActive = _model.IsActive,
+                        @IsActive = (int)Status.Active,
                         @CreatedOn = _model.CreatedOn,
                         @CreatedBy = _model.CreatedBy,
                     });
