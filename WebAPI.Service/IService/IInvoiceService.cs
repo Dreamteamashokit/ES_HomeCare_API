@@ -17,6 +17,5 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<Invoice>> PayInvoice(string InvId);
 
 
-        Task<ServiceResponse<IEnumerable<PayerListViewModel>>> GetAllActivePayers();
     }
 }

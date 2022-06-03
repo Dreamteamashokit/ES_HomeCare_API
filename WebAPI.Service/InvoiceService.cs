@@ -39,9 +39,5 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.PayInvoice(InvId);
         }
 
-        public async Task<ServiceResponse<IEnumerable<PayerListViewModel>>> GetAllActivePayers()
-        {
-            return await data.GetAllActivePayers();
-        }
     }
 }

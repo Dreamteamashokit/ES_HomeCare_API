@@ -53,14 +53,7 @@ namespace ES_HomeCare_API.Controllers
             return Ok(await service.PayInvoice(InvId));
         }
 
-        [HttpPost("GetAllActivePayers")]
-        [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAllActivePayers()
-        {
-            return Ok(await service.GetAllActivePayers());
-        }
-
+        
 
     }
 }
