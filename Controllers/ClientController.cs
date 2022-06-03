@@ -289,7 +289,7 @@ namespace WebAPI_SAMPLE.Controllers
         [HttpPost("addClientContactLog")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SaveClientContactLog([FromBody] ClientContactLog model)
+        public async Task<IActionResult> AddClientContactLog([FromBody] ClientContactLog model)
         {
             model.CreatedOn = DateTime.Now;
             return Ok(await service.SaveClientContactLog(model));
