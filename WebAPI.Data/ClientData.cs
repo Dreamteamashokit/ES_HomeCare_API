@@ -1620,7 +1620,11 @@ IsActive=@IsActive where ProviderId=@ContactId";
             }
             catch (Exception ex)
             {
-                throw ex;
+                //throw ex;
+
+                obj.Data = null;
+                obj.Result = false;
+                obj.Message = ex.Message.ToString();
             }
             return obj;
         }
@@ -1636,7 +1640,7 @@ IsActive=@IsActive where ProviderId=@ContactId";
                     var procedure = "EmergInfoProc";
                     var model = new { @flag = 7, @IsActive = Status.Active, @UserId = userId };
 
-                    IEnumerable<ProviderModel> results;
+                    IEnumerable<ProviderModel> results=null;
 
                     var ItemList = (await connection.QueryAsync(procedure, model, commandType: CommandType.StoredProcedure));
                     if (ItemList.Count() > 0)
@@ -1663,24 +1667,26 @@ IsActive=@IsActive where ProviderId=@ContactId";
                             CreatedOn = x.CreatedOn,
                             CreatedBy = x.CreatedBy
                         });
-
+                        
                     }
-                    else
-                    {
-                        results = null;
-                    }
-
 
                     obj.Data = results;
                     obj.Result = results.Any() ? true : false;
                     obj.Message = results.Any() ? "Data Found." : "No Data found.";
+
+
                 }
 
 
             }
             catch (Exception ex)
             {
-                throw ex;
+                //throw ex;
+
+
+                obj.Data = null;
+                obj.Result = false;
+                obj.Message = ex.Message.ToString();
             }
             return obj;
         }
