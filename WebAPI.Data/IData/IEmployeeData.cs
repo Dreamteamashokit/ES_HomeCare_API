@@ -46,6 +46,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<List<ClientListViewModel>>> GetClientListByempId(int empId);
         Task<ServiceResponse<HHAClockInDetailsModel>> GetClockinDetails(int userId);
         Task<ServiceResponse<string>> HHAClockin(HHAClockInModel hhaClockin);
+        Task<ServiceResponse<string>> AddCategory(CategoryModel model);
+        Task<ServiceResponse<IEnumerable<CategoryModel>>> GetCategoryList();
+        Task<ServiceResponse<IEnumerable<CategoryModel>>> GetSubCategoryList(int categoryId);
 
     }
 }

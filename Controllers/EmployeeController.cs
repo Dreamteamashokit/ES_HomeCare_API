@@ -298,6 +298,33 @@ namespace WebAPI_SAMPLE.Controllers
         }
         #endregion
 
+        #region Category
+        [HttpPost("addCategory")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddCategory([FromBody] CategoryModel model)
+        {
+            model.CreatedOn = DateTime.Now;
+            return Ok(await service.AddCategory(model));
+        }
+
+        [HttpGet("getCategoryList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<CategoryModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<CategoryModel>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetCategoryList()
+        {
+            return Ok(await service.GetCategoryList());
+        }
+
+        [HttpGet("getSubCategoryList/{categoryId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<CategoryModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<CategoryModel>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetSubCategoryList(int categoryId)
+        {
+            return Ok(await service.GetSubCategoryList(categoryId));
+        }
+        #endregion
+
 
         [HttpGet("GetClockinDetails/{userId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientListViewModel>>), StatusCodes.Status200OK)]
