@@ -1,4 +1,6 @@
-﻿namespace ES_HomeCare_API.Model.Client
+﻿using System;
+
+namespace ES_HomeCare_API.Model.Client
 {
     public class ProviderModel : BaseModel
     {
@@ -12,6 +14,7 @@
         public string City { get; set; }
         public string License { get; set; }
         public string LicenseExpires { get; set; }
+        public DateTime? DateExpires { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Fax { get; set; }

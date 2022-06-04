@@ -759,7 +759,6 @@ namespace WebAPI_SAMPLE.Controllers
             try
             {
                 model.CreatedOn = DateTime.Now;
-           
                 return Ok(await service.AddEmergProvider(model));
             }
             catch (Exception ex)
