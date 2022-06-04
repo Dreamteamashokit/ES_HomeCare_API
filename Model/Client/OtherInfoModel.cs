@@ -31,6 +31,10 @@ namespace ES_HomeCare_API.Model.Client
         public string ServiceRequestDate { get; set; }
         public string CareDate { get; set; }
         public string DischargeDate { get; set; }
+
+        public DateTime ServiceRequestDateTime { get; set; }
+        public DateTime CareDateTime { get; set; }
+        public DateTime DischargeDateTime { get; set; }
         public string Notes { get; set; }
         public string Allergies { get; set; }
 

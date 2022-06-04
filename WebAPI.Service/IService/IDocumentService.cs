@@ -14,6 +14,7 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
 
         Task<ServiceResponse<string>> Savefile(UploadFileFolder model);
         Task<ServiceResponse<string>> DeleteFile(DeleteItem item);
+        Task<ServiceResponse<string>> DeleteFolder(long folderId);
 
     }
 }

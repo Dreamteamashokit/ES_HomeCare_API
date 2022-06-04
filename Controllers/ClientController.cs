@@ -292,6 +292,8 @@ namespace WebAPI_SAMPLE.Controllers
         public async Task<IActionResult> SaveClientContactLog([FromBody] ClientContactLog model)
         {
             model.CreatedOn = DateTime.Now;
+
+            model.CallDateTime = model.CallLogDateTime.ParseDateTime();
             return Ok(await service.SaveClientContactLog(model));
         }
 
@@ -321,6 +323,7 @@ namespace WebAPI_SAMPLE.Controllers
         {
             try
             {
+                model.CallDateTime = model.CallLogDateTime.ParseDateTime();
                 return Ok(await service.UpdateClientContactLog(model));
 
             }
@@ -541,7 +544,7 @@ namespace WebAPI_SAMPLE.Controllers
             try
             {
                 model.CreatedOn = DateTime.Now.Date;
-                int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "select"));
+                int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "selectAll"));
                 return Ok(await service.ClientNoteOperation(model, Flag));
             }
             catch (Exception ex)
@@ -558,7 +561,7 @@ namespace WebAPI_SAMPLE.Controllers
             try
             {
                 model.CreatedOn = DateTime.Now.Date;
-                int Flag = 5;
+                int Flag = (int)((SqlQueryType)Enum.Parse(typeof(SqlQueryType), "select"));
                 return Ok(await service.ClientNoteOperation(model, Flag));
             }
             catch (Exception ex)

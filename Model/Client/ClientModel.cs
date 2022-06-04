@@ -38,6 +38,7 @@ namespace ES_HomeCare_API.Model.Client
         public int EmpId { get; set; }
         public string Reason { get; set; }
         public DateTime CallDateTime { get; set; }
+        public string CallLogDateTime { get; set; }
         public DateTime ScheduleDate { get; set; }
         public DateTime FollowUpDate { get; set; }
         public string Issue { get; set; }

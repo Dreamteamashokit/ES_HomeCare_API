@@ -188,6 +188,8 @@ left join tblUser e on y.CreatedBy=e.UserId where x.EmpId = @UserId;";
 
 
 
+
+
         public async Task<ServiceResponse<string>> DeleteFile(DeleteItem item)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -228,6 +230,68 @@ left join tblUser e on y.CreatedBy=e.UserId where x.EmpId = @UserId;";
 
             return sres;
         }
+
+
+
+
+
+        public async Task<ServiceResponse<string>> DeleteFolder(long folderId)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            IDbTransaction transaction = null;
+            try
+            {
+                using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    if (cnn.State != ConnectionState.Open)
+                        cnn.Open();
+                    transaction = cnn.BeginTransaction();
+                    string _query = @"delete from tblEmpDocument   Where FolderId=@FolderId;
+delete from tblFoldermaster  Where FolderId=@FolderId;";
+
+                    int rowsAffected = await cnn.ExecuteAsync(_query, new { @FolderId= folderId }, transaction);
+                    transaction.Commit();
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Record Deleted";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new creation.";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
+                sres.Message = ex.Message;
+                return sres;
+            }
+            finally
+            {
+                if (transaction != null)
+                    transaction.Dispose();
+            }
+            return sres;
+        }
+
+
+
+
+
+
+
+
+
+
+
 
 
     }

@@ -152,5 +152,15 @@ namespace ES_HomeCare_API.Controllers
 
 
 
+        [HttpDelete("deleteFolder")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteFolder(long folderId)
+        {       
+            return Ok(await docSrv.DeleteFolder(folderId));
+        }
+
+
+
     }
 }

@@ -45,6 +45,8 @@ namespace ES_HomeCare_API.Model
         Delete = 3,
         [Description("select")]
         select = 4,
+        [Description("selectAll")]
+        selectAll = 5,
 
     }
 

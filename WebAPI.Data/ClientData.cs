@@ -854,7 +854,7 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
                 {
                     SqlCommand cmd = new SqlCommand("SP_ClientNotesOperation", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
+           
                     cmd.Parameters.AddWithValue("@flag", Flag);
                     cmd.Parameters.AddWithValue("@UserId", Model.UserId);
                     cmd.Parameters.AddWithValue("@NotesTypeId", Model.NotesTypeId);
@@ -891,12 +891,19 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
                         }
                         obj.Result = true;
                     }
+                    else
+                    {
+
+                        obj.Result = false;
+                    }
                     obj.Data = clientsnotes;
                     return obj;
                 }
             }
             catch (Exception ex)
             {
+
+                obj.Result = false;
                 obj.Message = ex.Message;
                 return obj;
             }
@@ -1056,16 +1063,41 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
             {
                 string sql = "Select OtherId,CASA3, ContactId, InsuranceGrp, IsMedications, IsDialysis, IsOxygen, IsAids, IsCourtOrdered, FlowRate, ReunionLocations, LinkedClients, ShelterName, TalCode, Shelter, Facility, Room, ServiceRequestDate, CareDate, DischargeDate, Notes, Allergies from tblOthers(nolock) Where UserId = @UserId";
 
-                var objResult = (await connection.QueryAsync<OtherInfoModel>(sql, new { UserId = UserId })).FirstOrDefault();
-
-
+                var objResult = (await connection.QueryAsync(sql, new { UserId = UserId })).Select(x => new OtherInfoModel
+                {
+                    OtherId = x.OtherId,
+                    EntityId = x.OtherId,
+                    CASA3 = x.CASA3 != null ? x.CASA3 : "",
+                    ContactId = x.ContactId != null ? x.ContactId : 0,
+                    InsuranceGrp = x.InsuranceGrp != null ? x.InsuranceGrp : "",
+                    IsMedications = x.IsMedications != null ? x.IsMedications : false,
+                    IsDialysis = x.IsDialysis != null ? x.IsDialysis : false,
+                    IsOxygen = x.IsOxygen != null ? x.IsOxygen : false,
+                    IsAids = x.IsAids != null ? x.IsAids : false,
+                    IsCourtOrdered = x.IsCourtOrdered != null ? x.IsCourtOrdered : false,
+                    FlowRate = x.FlowRate != null ? x.FlowRate : "",
+                    ReunionLocations = x.ReunionLocations != null ? x.ReunionLocations : "",
+                    LinkedClients = x.LinkedClients != null ? x.LinkedClients : "",
+                    ShelterName = x.ShelterName != null ? x.ShelterName : "",
+                    TalCode = x.TalCode != null ? x.TalCode : "",
+                    Shelter = x.Shelter != null ? x.Shelter : "",
+                    Facility = x.Facility != null ? x.Facility : "",
+                    Room = x.Room != null ? x.Room : "",
+                    ServiceRequestDateTime = x.ServiceRequestDate != null ? x.ServiceRequestDate : DateTime.Now,
+                    CareDateTime = x.CareDate != null ? x.CareDate : DateTime.Now,
+                    DischargeDateTime = x.DischargeDate != null ? x.DischargeDate : DateTime.Now,
+                    Notes = x.Notes != null ? x.Notes : "",
+                    Allergies = x.Allergies != null ? x.Allergies : "",
+                 
+                });
                 if (objResult != null)
                 {
-                    objResult.EntityId = objResult.OtherId;
+                    obj.Data = objResult.FirstOrDefault();
                 }
-
-
-                obj.Data = objResult;
+                else
+                {
+                    obj.Data = null;
+                }
                 obj.Result = objResult != null ? true : false;
                 obj.Message = objResult != null ? "Data Found." : "No Data found.";
             }
@@ -1640,7 +1672,7 @@ IsActive=@IsActive where ProviderId=@ContactId";
                     var procedure = "EmergInfoProc";
                     var model = new { @flag = 7, @IsActive = Status.Active, @UserId = userId };
 
-                    IEnumerable<ProviderModel> results=null;
+                    IEnumerable<ProviderModel> results = null;
 
                     var ItemList = (await connection.QueryAsync(procedure, model, commandType: CommandType.StoredProcedure));
                     if (ItemList.Count() > 0)
@@ -1668,7 +1700,7 @@ IsActive=@IsActive where ProviderId=@ContactId";
                             CreatedOn = x.CreatedOn,
                             CreatedBy = x.CreatedBy
                         });
-                        
+
                     }
 
                     obj.Data = results;

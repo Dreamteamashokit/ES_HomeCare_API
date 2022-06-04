@@ -42,5 +42,10 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.DeleteFile(item);
         }
 
+        public async Task<ServiceResponse<string>> DeleteFolder(long folderId)
+        {
+            return await data.DeleteFolder(folderId);
+        }
+
     }
 }
