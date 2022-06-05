@@ -1059,7 +1059,9 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
         public async Task<ServiceResponse<OtherInfoModel>> GetOtherInfo(int UserId)
         {
             ServiceResponse<OtherInfoModel> obj = new ServiceResponse<OtherInfoModel>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 string sql = "Select OtherId,CASA3, ContactId, InsuranceGrp, IsMedications, IsDialysis, IsOxygen, IsAids, IsCourtOrdered, FlowRate, ReunionLocations, LinkedClients, ShelterName, TalCode, Shelter, Facility, Room, ServiceRequestDate, CareDate, DischargeDate, Notes, Allergies from tblOthers(nolock) Where UserId = @UserId";
 
@@ -1090,16 +1092,25 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
                     Allergies = x.Allergies != null ? x.Allergies : "",
                  
                 });
-                if (objResult != null)
+                if (objResult.Count() > 0)
                 {
                     obj.Data = objResult.FirstOrDefault();
+                    obj.Result = true;
                 }
                 else
                 {
-                    obj.Data = null;
+                    obj.Data = new OtherInfoModel();
+                    obj.Result = false;
                 }
-                obj.Result = objResult != null ? true : false;
-                obj.Message = objResult != null ? "Data Found." : "No Data found.";
+                obj.Message = (objResult.Count() > 0 || objResult!=null) ? "Data Found." : "No Data found.";
+            }
+
+            }
+            catch (Exception ex)
+            {
+                obj.Data = new OtherInfoModel();
+                obj.Result = false;
+                obj.Message = ex.Message;
             }
 
             return obj;

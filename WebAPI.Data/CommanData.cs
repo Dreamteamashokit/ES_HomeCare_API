@@ -53,6 +53,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             }
             catch (Exception ex)
             {
+                sres.Result = false;
                 sres.Message = ex.Message;
                 return sres;
             }
@@ -95,6 +96,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             }
             catch (Exception ex)
             {
+                sres.Result = false;
                 sres.Message = ex.Message;
                 return sres;
             }
@@ -288,6 +290,7 @@ where y.EmpType=@EmpType;";
             }
             catch (Exception ex)
             {
+                sres.Result = false;
                 sres.Message = ex.Message;
                 return sres;
             }
