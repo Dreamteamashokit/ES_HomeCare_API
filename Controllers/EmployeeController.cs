@@ -138,6 +138,18 @@ namespace WebAPI_SAMPLE.Controllers
         {
             return Ok(await service.GetAttendanceList(empId));
         }
+
+
+        [HttpDelete("delAttendance")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DelAttendance(int AttendanceId)
+        {
+            return Ok(await service.DelAttendance(AttendanceId));
+        }
+
+
+
         #endregion
 
         [HttpGet("getAvailabilityList")]

@@ -81,7 +81,10 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         }
 
 
-
+        public async Task<ServiceResponse<string>> DelAttendance(int AttendanceId)
+        {
+            return await data.DelAttendance(AttendanceId);
+        }
 
 
 

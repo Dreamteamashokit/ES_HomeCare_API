@@ -24,7 +24,8 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<string>> AddIncident(IncidentModel _model);
         Task<ServiceResponse<IEnumerable<IncidentModel>>> GetIncidentList(int empId);
         Task<ServiceResponse<string>> AddAttendance(AttendanceModel _model);
-        Task<ServiceResponse<IEnumerable<AttendanceModel>>> GetAttendanceList(int empId);               
+        Task<ServiceResponse<IEnumerable<AttendanceModel>>> GetAttendanceList(int empId);
+        Task<ServiceResponse<string>> DelAttendance(int AttendanceId);
         Task<ServiceResponse<string>> SaveExitEmpStatus(StatusModel EmpId);
         Task<ServiceResponse<IEnumerable<AvailabilityMaster>>> GetAvailabilityList();
         Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList(int empId);

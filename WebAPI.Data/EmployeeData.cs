@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using ES_HomeCare_API.Helper;
 using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.ViewModel.Employee;
@@ -324,18 +325,32 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = "Insert Into tblAttendance (EmpId,Reason,StartDate,EndDate,Notes,CreatedOn,CreatedBy) Values (@UserId,@Reason,@StartDate,@EndDate,@Notes,@CreatedOn,@CreatedBy);";
-                    int rowsAffected = db.Execute(sqlQuery, new
+                    string sqlQuery;
+                    if (_model.EntityId == 0)
                     {
+
+                        sqlQuery = @"Insert Into tblAttendance (EmpId,Reason,StartDate,EndDate,Notes,CreatedOn,CreatedBy,IsActive) 
+					Values (@UserId,@Reason,@StartDate,@EndDate,@Notes,@CreatedOn,@CreatedBy,@IsActive);";
+
+
+                    }
+                    else
+                    {
+                        sqlQuery = @"Update tblAttendance Set Reason=@Reason,StartDate=@StartDate,EndDate=@EndDate,Notes=@Notes,IsActive=@IsActive 
+					Where AttendanceId=@AttendanceId";
+                    }
+                    int rowsAffected =await  db.ExecuteAsync(sqlQuery, new
+                    {
+                        AttendanceId= _model.EntityId,
                         UserId = _model.UserId,
                         Reason = _model.Reason,
-                        StartDate = _model.StartDate,
-                        EndDate = _model.EndDate,
+                        StartDate = _model.StartDate.ParseDate(),
+                        EndDate = _model.EndDate.ParseDate(),
                         Notes = _model.Notes,
                         CreatedOn = _model.CreatedOn,
-                        CreatedBy = _model.CreatedBy
+                        CreatedBy = _model.CreatedBy,
+                        IsActive=  (int)Status.Active
                     });
-
                     if (rowsAffected > 0)
                     {
                         sres.Result = true;
@@ -343,6 +358,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     }
                     else
                     {
+                        sres.Result = false;
                         sres.Data = null;
                         sres.Message = "Failed new creation.";
                     }
@@ -351,12 +367,10 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             }
             catch (Exception ex)
             {
+                sres.Result = false;
+                sres.Data = null;
                 sres.Message = ex.Message;
                 return sres;
-            }
-            finally
-            {
-
             }
             return sres;
         }
@@ -368,9 +382,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "SELECT * FROM tblAttendance Where EmpId=@EmpId;";
+                string sql = "SELECT * FROM tblAttendance Where EmpId=@EmpId and IsActive=@IsActive;";
                 IEnumerable<AttendanceModel> cmeetings = (await connection.QueryAsync<AttendanceModel>(sql,
-                         new { @EmpId = empId }));
+                         new { @EmpId = empId, @IsActive=(int)Status.Active }));
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
@@ -379,6 +393,39 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return obj;
 
         }
+
+        public async Task<ServiceResponse<string>> DelAttendance(int AttendanceId)
+        {
+            ServiceResponse<string> result = new ServiceResponse<string>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                var sqlQuery = "Update tblAttendance Set IsActive=@IsActive where Attendance=@AttendanceId;";
+                var modeMapping = new
+                {
+
+                    @AttendanceId = AttendanceId,
+                    @IsActive = (int)Status.InActive,
+                };
+                int rowsAffected = await connection.ExecuteAsync(sqlQuery, modeMapping);
+                if (rowsAffected > 0)
+                {
+                    result.Result = true;
+                    result.Data = "Sucessfully  Updated.";
+                }
+                else
+                {
+                    result.Data = null;
+                    result.Message = "Failed to Update.";
+                }
+
+            }
+            return result;
+        }
+
+
+
+
+
 
         public async Task<ServiceResponse<string>> SaveExitEmpStatus(StatusModel _model)
         {
