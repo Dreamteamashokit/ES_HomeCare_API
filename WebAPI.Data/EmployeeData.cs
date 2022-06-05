@@ -84,7 +84,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                 var procedure = "[EmpProc]";
                 var values = new { @flag = 1, @IsActive = 1, @UserId = userId };
                 IEnumerable<EmployeeList> results = (await connection.QueryAsync<EmployeeList>(procedure,
-        values, commandType: CommandType.StoredProcedure)).OrderBy(x => x.EmpName.Trim()); 
+        values, commandType: CommandType.StoredProcedure)).OrderBy(x => x.EmpName.Trim());
                 obj.Data = results;
                 obj.Result = results.Any() ? true : false;
                 obj.Message = results.Any() ? "Data Found." : "No Data found.";
@@ -98,18 +98,22 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 string sqlQuery = "EmpProc";
-                var sqlParameter = new { @flag = 3, @IsActive = model.Status, 
-                    @SupervisorId = model.Coordinator, 
-                    @State = model.State, 
-                    @TypeId=model.EmpType };
-               
+                var sqlParameter = new
+                {
+                    @flag = 3,
+                    @IsActive = model.Status,
+                    @SupervisorId = model.Coordinator,
+                    @State = model.State,
+                    @TypeId = model.EmpType
+                };
+
                 IEnumerable<EmployeeList> results = (await connection.QueryAsync<EmployeeList>(sqlQuery,
-    sqlParameter, commandType: CommandType.StoredProcedure)).OrderBy(x => x.EmpName.Trim()); 
+    sqlParameter, commandType: CommandType.StoredProcedure)).OrderBy(x => x.EmpName.Trim());
                 obj.Data = results;
                 obj.Result = results.Any() ? true : false;
                 obj.Message = results.Any() ? "Data Found." : "No Data found.";
 
-            
+
             }
             return obj;
         }
@@ -158,7 +162,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 string sql = "SELECT x.*,y.EmpType,y.DateOfHire,y.DateOfFirstCase,y.Dependents,y.City,y.Country,y.TaxState,y.ZipCode,y.Municipality,y.Notes,p.ItemName as GenderName,q.ItemName as MaritalStatusName,r.ItemName as EthnicityName,s.FirstName+''+s.LastName as Supervisor,t.TypeName as EmpTypeName FROM tblUser x inner join tblEmployee y on x.UserId=y.UserId Left join tblMaster p on x.Gender=p.MasterId Left join tblMaster q on x.MaritalStatus=q.MasterId Left join tblMaster r on x.Ethnicity=r.MasterId Left join tblUser s on  x.SupervisorId=s.UserId Left join tblEmpType t on  y.EmpType=t.TypeId Where x.UserId=@UserId; ";
                 IEnumerable<EmployeeJson> cmeetings = (await connection.QueryAsync<EmployeeJson>(sql,
-                         new { @UserId = UserId })).ToList().OrderBy(x => x.LastName.Trim()); 
+                         new { @UserId = UserId })).ToList().OrderBy(x => x.LastName.Trim());
                 obj.Data = cmeetings.FirstOrDefault();
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
@@ -339,9 +343,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                         sqlQuery = @"Update tblAttendance Set Reason=@Reason,StartDate=@StartDate,EndDate=@EndDate,Notes=@Notes,IsActive=@IsActive 
 					Where AttendanceId=@AttendanceId";
                     }
-                    int rowsAffected =await  db.ExecuteAsync(sqlQuery, new
+                    int rowsAffected = await db.ExecuteAsync(sqlQuery, new
                     {
-                        AttendanceId= _model.EntityId,
+                        AttendanceId = _model.EntityId,
                         UserId = _model.UserId,
                         Reason = _model.Reason,
                         StartDate = _model.StartDate.ParseDate(),
@@ -349,7 +353,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                         Notes = _model.Notes,
                         CreatedOn = _model.CreatedOn,
                         CreatedBy = _model.CreatedBy,
-                        IsActive=  (int)Status.Active
+                        IsActive = (int)Status.Active
                     });
                     if (rowsAffected > 0)
                     {
@@ -384,7 +388,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 string sql = "SELECT * FROM tblAttendance Where EmpId=@EmpId and IsActive=@IsActive;";
                 IEnumerable<AttendanceModel> cmeetings = (await connection.QueryAsync<AttendanceModel>(sql,
-                         new { @EmpId = empId, @IsActive=(int)Status.Active }));
+                         new { @EmpId = empId, @IsActive = (int)Status.Active }));
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
@@ -397,27 +401,39 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         public async Task<ServiceResponse<string>> DelAttendance(int AttendanceId)
         {
             ServiceResponse<string> result = new ServiceResponse<string>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+
+
+            try
             {
-                var sqlQuery = "Update tblAttendance Set IsActive=@IsActive where Attendance=@AttendanceId;";
-                var modeMapping = new
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
+                    var sqlQuery = "Update tblAttendance Set IsActive=@IsActive where AttendanceId=@AttendanceId;";
+                    var modeMapping = new
+                    {
 
-                    @AttendanceId = AttendanceId,
-                    @IsActive = (int)Status.InActive,
-                };
-                int rowsAffected = await connection.ExecuteAsync(sqlQuery, modeMapping);
-                if (rowsAffected > 0)
-                {
-                    result.Result = true;
-                    result.Data = "Sucessfully  Updated.";
-                }
-                else
-                {
-                    result.Data = null;
-                    result.Message = "Failed to Update.";
+                        @AttendanceId = AttendanceId,
+                        @IsActive = (int)Status.InActive,
+                    };
+                    int rowsAffected = await connection.ExecuteAsync(sqlQuery, modeMapping);
+                    if (rowsAffected > 0)
+                    {
+                        result.Result = true;
+                        result.Data = "Sucessfully  Updated.";
+                    }
+                    else
+                    {
+                        result.Data = null;
+                        result.Message = "Failed to Update.";
+                    }
+
                 }
 
+            }
+            catch (Exception ex)
+            {
+                result.Result = false;
+                result.Data = null;
+                result.Message = ex.Message;               
             }
             return result;
         }
@@ -1013,11 +1029,11 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     SqlCommand cmd = new SqlCommand("AddHHAClockInOutDetails", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@UserId", hhaClockin.UserId);
-                    
+
                     cmd.Parameters.AddWithValue("@ClockInTime", Convert.ToDateTime(hhaClockin.ClockInTime));
                     if (hhaClockin.Type == 2)
                     {
-                        cmd.Parameters.AddWithValue("@ClockOutTime",Convert.ToDateTime(hhaClockin.ClockOutTime));
+                        cmd.Parameters.AddWithValue("@ClockOutTime", Convert.ToDateTime(hhaClockin.ClockOutTime));
                     }
                     else
                     {
