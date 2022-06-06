@@ -70,6 +70,14 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             return await data.GetIncidentList(empId);
         }
 
+
+        public async Task<ServiceResponse<string>> DelIncident(int IncidentId)
+        {
+            return await data.DelIncident(IncidentId);
+        }
+
+        
+
         public async Task<ServiceResponse<string>> AddAttendance(AttendanceModel _model)
         {
             return await data.AddAttendance(_model);

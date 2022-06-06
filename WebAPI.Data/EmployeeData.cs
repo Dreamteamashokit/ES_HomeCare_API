@@ -260,6 +260,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         #endregion
 
 
+
         public async Task<ServiceResponse<string>> AddIncident(IncidentModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -267,17 +268,32 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = "Insert Into tblIncident (EmpId,IncidentDate,ClientId,IncidentDetail,CreatedOn,CreatedBy) Values (@EmpId,@IncidentDate,@ClientId,@IncidentDetail,@CreatedOn,@CreatedBy);";
-                    int rowsAffected = db.Execute(sqlQuery, new
+                    string sqlQuery;
+                    if (_model.EntityId == 0)
                     {
-                        EmpId = _model.EmpId,
+
+                        sqlQuery = @"Insert Into tblIncident (EmpId,IncidentDate,ClientId,IncidentDetail,CreatedOn,CreatedBy,IsActive)
+Values (@EmpId,@IncidentDate,@ClientId,@IncidentDetail,@CreatedOn,@CreatedBy,@IsActive);";
+
+
+                    }
+                    else
+                    {
+                        sqlQuery = @"Update tblIncident Set IncidentDate=@IncidentDate,ClientId=@ClientId,IncidentDetail=@IncidentDetail,
+IsActive=@IsActive Where IncidentId=@IncidentId;";
+                    }
+                    int rowsAffected = await db.ExecuteAsync(sqlQuery, new
+                    {
+                        IncidentId = _model.EntityId,
+                        EmpId = _model.UserId,
                         ClientId = _model.ClientId,
-                        IncidentDate = Convert.ToDateTime(_model.IncidentDate),
+                        IncidentDate = _model.IncidentDateTime,
                         IncidentDetail = _model.IncidentDetail,
                         CreatedOn = _model.CreatedOn,
-                        CreatedBy = _model.CreatedBy
-                    });
+                        CreatedBy = _model.CreatedBy,
+                        IsActive = (int)Status.Active
 
+                    });
                     if (rowsAffected > 0)
                     {
                         sres.Result = true;
@@ -285,6 +301,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
                     }
                     else
                     {
+                        sres.Result = false;
                         sres.Data = null;
                         sres.Message = "Failed new creation.";
                     }
@@ -293,15 +310,15 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             }
             catch (Exception ex)
             {
+                sres.Result = false;
+                sres.Data = null;
                 sres.Message = ex.Message;
                 return sres;
             }
-            finally
-            {
-
-            }
             return sres;
         }
+
+
 
         public async Task<ServiceResponse<IEnumerable<IncidentModel>>> GetIncidentList(int empId)
         {
@@ -309,10 +326,19 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
 
-                string sql = "SELECT * FROM tblIncident Where EmpId=@EmpId;";
+                string sql = "SELECT * FROM tblIncident Where EmpId=@EmpId And IsActive=@IsActive;";
 
-                IEnumerable<IncidentModel> cmeetings = (await connection.QueryAsync<IncidentModel>(sql,
-                         new { EmpId = empId }));
+                IEnumerable<IncidentModel> cmeetings = (await connection.QueryAsync(sql,
+                         new { EmpId = empId, @IsActive = (int)Status.Active })).Select(x => new IncidentModel
+                         {
+                             IncidentId = (int)x.IncidentId,
+                             UserId = (int)x.EmpId,
+                             ClientId = (int)x.ClientId,                    
+                             IncidentDetail = x.IncidentDetail != null ? x.IncidentDetail : "",
+                             IsActive = x.IsActive,
+                             IncidentDateTime = x.IncidentDate != null ? x.IncidentDate : DateTime.Now,
+                         });
+
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
@@ -321,6 +347,56 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             return obj;
 
         }
+
+
+
+
+        public async Task<ServiceResponse<string>> DelIncident(int IncidentId)
+        {
+            ServiceResponse<string> result = new ServiceResponse<string>();
+
+
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var sqlQuery = "Update tblIncident Set IsActive=@IsActive where IncidentId=@IncidentId;";
+                    var modeMapping = new
+                    {
+
+                        @IncidentId = IncidentId,
+                        @IsActive = (int)Status.InActive,
+                    };
+                    int rowsAffected = await connection.ExecuteAsync(sqlQuery, modeMapping);
+                    if (rowsAffected > 0)
+                    {
+                        result.Result = true;
+                        result.Data = "Sucessfully  Updated.";
+                    }
+                    else
+                    {
+                        result.Data = null;
+                        result.Message = "Failed to Update.";
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.Result = false;
+                result.Data = null;
+                result.Message = ex.Message;
+            }
+            return result;
+        }
+
+
+
+
+
+
+
 
         public async Task<ServiceResponse<string>> AddAttendance(AttendanceModel _model)
         {
@@ -780,7 +856,7 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
                                   DeclinedCaseId = (long)x.DeclinedCaseId,
                                   UserId = (int)x.EmpId,
                                   ClientId = x.ClientId != null ? (long)x.ClientId : 0,
-                                  CaseTypeId = x.CaseId != null ? (long)x.CaseId : 0,                            
+                                  CaseTypeId = x.CaseId != null ? (long)x.CaseId : 0,
                                   DeclineReason = x.DeclinedReason != null ? x.DeclinedReason : "",
                                   Note = x.Note != null ? x.Note : "",
                                   Day = x.Day != null ? (int)x.Day : 0,

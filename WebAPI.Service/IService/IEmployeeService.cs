@@ -23,6 +23,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<AddressModel>> GetEmpAddress(int empId);
         Task<ServiceResponse<string>> AddIncident(IncidentModel _model);
         Task<ServiceResponse<IEnumerable<IncidentModel>>> GetIncidentList(int empId);
+        Task<ServiceResponse<string>> DelIncident(int IncidentId);
         Task<ServiceResponse<string>> AddAttendance(AttendanceModel _model);
         Task<ServiceResponse<IEnumerable<AttendanceModel>>> GetAttendanceList(int empId);
         Task<ServiceResponse<string>> DelAttendance(int AttendanceId);

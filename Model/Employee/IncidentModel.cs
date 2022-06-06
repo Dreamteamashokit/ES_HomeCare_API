@@ -8,6 +8,7 @@ namespace ES_HomeCare_API.Model.Employee
         public int EmpId { get; set; }
         public int ClientId { get; set; }
         public string IncidentDate { get; set; }
+        public DateTime IncidentDateTime { get; set; }
         public string IncidentDetail { get; set; }
 
       

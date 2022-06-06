@@ -117,6 +117,18 @@ namespace WebAPI_SAMPLE.Controllers
         {
             return Ok(await service.GetIncidentList(empId));
         }
+
+        [HttpDelete("delIncident")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DelIncident(int IncidentId)
+        {
+            return Ok(await service.DelIncident(IncidentId));
+        }
+
+
+
+
         #endregion
 
         #region Attendance
