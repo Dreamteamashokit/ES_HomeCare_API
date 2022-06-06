@@ -92,17 +92,23 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         public async Task<ServiceResponse<string>> DelAttendance(int AttendanceId)
         {
             return await data.DelAttendance(AttendanceId);
-        }
+        }    
 
 
-
-        public async Task<ServiceResponse<string>> SaveExitEmpStatus(StatusModel _obj)
+        public async Task<ServiceResponse<string>> AddEmpStatus(StatusModel _obj)
         {
-            return await data.SaveExitEmpStatus(_obj);
+            return await data.AddEmpStatus(_obj);
         }
 
-
-
+        public async Task<ServiceResponse<IEnumerable<StatusModel>>> GetEmpStatusList(int empId)
+        {
+            return await data.GetEmpStatusList(empId);
+        
+        }
+        public async Task<ServiceResponse<string>> DelEmpStatus(int StatusId)
+        {
+            return await data.DelEmpStatus(StatusId);
+        }
 
         public async Task<ServiceResponse<IEnumerable<AvailabilityMaster>>> GetAvailabilityList()
         {
@@ -110,10 +116,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         }
 
 
-        public async Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList(int empId)
-        {
-            return await data.GetEmpStatusList(empId);
-        }
+       
 
       
 

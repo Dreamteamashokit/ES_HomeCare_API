@@ -125,10 +125,6 @@ namespace WebAPI_SAMPLE.Controllers
         {
             return Ok(await service.DelIncident(IncidentId));
         }
-
-
-
-
         #endregion
 
         #region Attendance
@@ -175,22 +171,29 @@ namespace WebAPI_SAMPLE.Controllers
         [HttpPost("addStatus")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SaveExitEmpStatus([FromBody] StatusModel model)
+        public async Task<IActionResult> AddEmpStatus([FromBody] StatusModel model)
         {
             model.CreatedOn = DateTime.Now;
-            return Ok(await service.SaveExitEmpStatus(model));
+            return Ok(await service.AddEmpStatus(model));
         }
 
 
         [HttpGet("getEmpStatusList/{empId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<AvailabilityStatus>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<AvailabilityStatus>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<StatusModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<StatusModel>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> getEmpStatusList(int empId)
         {
             return Ok(await service.GetEmpStatusList(empId));
         }
 
 
+        [HttpDelete("delEmpStatus")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DelEmpStatus(int StatusId)
+        {
+            return Ok(await service.DelEmpStatus(StatusId));
+        }
 
 
         #region Compliance

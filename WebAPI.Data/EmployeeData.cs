@@ -174,8 +174,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
         #endregion
 
-
-
         #region Address
 
         public async Task<ServiceResponse<string>> AddEmpAddress(AddressModel _model)
@@ -259,8 +257,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
         #endregion
 
-
-
         public async Task<ServiceResponse<string>> AddIncident(IncidentModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -318,8 +314,6 @@ IsActive=@IsActive Where IncidentId=@IncidentId;";
             return sres;
         }
 
-
-
         public async Task<ServiceResponse<IEnumerable<IncidentModel>>> GetIncidentList(int empId)
         {
             ServiceResponse<IEnumerable<IncidentModel>> obj = new ServiceResponse<IEnumerable<IncidentModel>>();
@@ -347,9 +341,6 @@ IsActive=@IsActive Where IncidentId=@IncidentId;";
             return obj;
 
         }
-
-
-
 
         public async Task<ServiceResponse<string>> DelIncident(int IncidentId)
         {
@@ -390,13 +381,6 @@ IsActive=@IsActive Where IncidentId=@IncidentId;";
             }
             return result;
         }
-
-
-
-
-
-
-
 
         public async Task<ServiceResponse<string>> AddAttendance(AttendanceModel _model)
         {
@@ -514,42 +498,49 @@ IsActive=@IsActive Where IncidentId=@IncidentId;";
             return result;
         }
 
-
-
-
-
-
-        public async Task<ServiceResponse<string>> SaveExitEmpStatus(StatusModel _model)
+        public async Task<ServiceResponse<string>> AddEmpStatus(StatusModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
             try
             {
                 using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = "Insert Into tblEmpStatus (EmployeeId,TypeId,ScheduleId," +
-                        "OfficeUserID,Note,OKResume,ReHire,TextCheck,ScreenCheck,EmailCheck,EffectiveDate,ReturnDate,CreatedOn,CreatedBy) " +
-                        "Values(@UserId,@TypeStatusID,@Scheduling,@OfficeUserId,@Note,@Resume,@Rehire,@Text,@Screen," +
-                        "@Email,@EffectiveDate,@ReturnDate,@CreatedOn,@CreatedBy)";
-
-                    int rowsAffected = db.Execute(sqlQuery, new
+                    string sqlQuery;
+                    if (_model.EntityId == 0)
                     {
+
+                        sqlQuery = @"Insert Into tblEmpStatus (EmployeeId,TypeId,ScheduleId,OfficeUserID,Note,OKResume,ReHire,TextCheck,ScreenCheck,
+EmailCheck,EffectiveDate,ReturnDate,CreatedOn,CreatedBy,IsActive) 
+Values (@UserId,@TypeId,@ScheduleId,@OfficeUserId,@Note,@OKResume,@ReHire,@TextCheck,@ScreenCheck,@EmailCheck,
+@EffectiveDate,@ReturnDate,@CreatedOn,@CreatedBy,@IsActive);";
+
+
+                    }
+                    else
+                    {
+                        sqlQuery = @"Update tblEmpStatus Set TypeId=@TypeId,ScheduleId=@ScheduleId,OfficeUserId=@OfficeUserId,Note=@Note,
+OKResume=@OKResume,ReHire=@ReHire,TextCheck=@TextCheck,ScreenCheck=@ScreenCheck,EmailCheck=@EmailCheck,
+EffectiveDate=@EffectiveDate,ReturnDate=@ReturnDate Where StatusId=@StatusId;";
+                    }
+                    int rowsAffected = await db.ExecuteAsync(sqlQuery, new
+                    {
+                        StatusId= _model.EntityId,
                         UserId = _model.UserId,
-                        TypeStatusId = _model.TypeStatusId,
-                        Scheduling = _model.Scheduling,
+                        TypeId = _model.TypeStatusId,
+                        ScheduleId = _model.Scheduling,
                         OfficeUserId = _model.OfficeUserId,
                         Note = _model.Note,
-                        Resume = _model.Resume,
-                        Rehire = _model.Rehire,
-                        Text = _model.Text,
-                        Screen = _model.Screen,
-                        Email = _model.Email,
-                        EffectiveDate = _model.EffectiveDate,
-                        ReturnDate = _model.ReturnDate,
+                        OKResume = _model.Resume,
+                        ReHire = _model.Rehire,
+                        TextCheck = _model.Text,
+                        ScreenCheck = _model.Screen,
+                        EmailCheck = _model.Email,
+                        EffectiveDate = _model.EffectiveDateTime,
+                        ReturnDate = _model.ReturnDateTime,
                         CreatedOn = _model.CreatedOn,
-                        CreatedBy = _model.CreatedBy
-
+                        CreatedBy = _model.CreatedBy,
+                        IsActive = (int)Status.Active
                     });
-
                     if (rowsAffected > 0)
                     {
                         sres.Result = true;
@@ -557,6 +548,7 @@ IsActive=@IsActive Where IncidentId=@IncidentId;";
                     }
                     else
                     {
+                        sres.Result = false;
                         sres.Data = null;
                         sres.Message = "Failed new creation.";
                     }
@@ -565,11 +557,82 @@ IsActive=@IsActive Where IncidentId=@IncidentId;";
             }
             catch (Exception ex)
             {
+                sres.Result = false;
+                sres.Data = null;
                 sres.Message = ex.Message;
-
+                return sres;
             }
-
             return sres;
+        }
+
+        public async Task<ServiceResponse<string>> DelEmpStatus(int StatusId)
+        {
+            ServiceResponse<string> result = new ServiceResponse<string>();
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var sqlQuery = "Update tblEmpStatus Set IsActive=@IsActive where StatusId=@StatusId;";
+                    var modeMapping = new
+                    {
+
+                        @StatusId = StatusId,
+                        @IsActive = (int)Status.InActive,
+                    };
+                    int rowsAffected = await connection.ExecuteAsync(sqlQuery, modeMapping);
+                    if (rowsAffected > 0)
+                    {
+                        result.Result = true;
+                        result.Data = "Sucessfully  Updated.";
+                    }
+                    else
+                    {
+                        result.Data = null;
+                        result.Message = "Failed to Update.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Result = false;
+                result.Data = null;
+                result.Message = ex.Message;
+            }
+            return result;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<StatusModel>>> GetEmpStatusList(int empId)
+        {
+            ServiceResponse<IEnumerable<StatusModel>> obj = new ServiceResponse<IEnumerable<StatusModel>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = @"select y.ItemName as StatusType,x.* from tblEmpStatus x 
+inner join tblMaster y  on x.TypeId = y.MasterId  where x.EmployeeId = @EmpId and x.IsActive = @IsActive; ";
+
+                IEnumerable<StatusModel> resultObj = (await connection.QueryAsync(sql,
+                      new { EmpId = empId, @IsActive = (int)Status.Active })).Select(x => new StatusModel
+                      {
+                          EntityId = (int)x.StatusId,
+                          UserId = (int)x.EmployeeId,
+                          StatusType= x.StatusType != null ? x.StatusType : "",
+                          TypeStatusId = x.TypeId != null ? x.TypeId : 0,
+                          Resume = x.OKResume != null ? x.OKResume : false,
+                          Rehire = x.ReHire != null ? x.ReHire : false,
+                          Note = x.Note != null ? x.Note : "",
+                          Scheduling = x.ScheduleId != null ? x.ScheduleId : 0,
+                          OfficeUserId = x.OfficeUserId != null ? x.OfficeUserId : 0,                      
+                          Text = x.TextCheck != null ? x.TextCheck : false,
+                          Screen = x.ScreenCheck != null ? x.ScreenCheck : false,
+                          Email = x.EmailCheck != null ? x.EmailCheck : false,
+                          EffectiveDateTime = x.EffectiveDate != null ? x.EffectiveDate : DateTime.Now,
+                          ReturnDateTime = x.ReturnDate != null ? x.ReturnDate : DateTime.Now,
+                      });
+                obj.Data = resultObj;
+                obj.Result = resultObj.Any() ? true : false;
+                obj.Message = resultObj.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+
         }
 
         public async Task<ServiceResponse<IEnumerable<AvailabilityMaster>>> GetAvailabilityList()
@@ -579,21 +642,6 @@ IsActive=@IsActive Where IncidentId=@IncidentId;";
             {
                 string sql = "SELECT * FROM tblAvailabilityMaster;";
                 IEnumerable<AvailabilityMaster> cmeetings = (await connection.QueryAsync<AvailabilityMaster>(sql));
-                obj.Data = cmeetings;
-                obj.Result = cmeetings.Any() ? true : false;
-                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
-            }
-            return obj;
-
-        }
-
-        public async Task<ServiceResponse<IEnumerable<AvailabilityStatus>>> GetEmpStatusList(int empId)
-        {
-            ServiceResponse<IEnumerable<AvailabilityStatus>> obj = new ServiceResponse<IEnumerable<AvailabilityStatus>>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-            {
-                string sql = "select ItemName as StatusType,EffectiveDate,ReturnDate,OKResume as Resume,ReHire as Rehire,Note from tblEmpStatus ES inner join tblMaster ESM  on ES.TypeId = ESM.MasterId  where ES.EmployeeId = @EmployeeId ;";
-                IEnumerable<AvailabilityStatus> cmeetings = (await connection.QueryAsync<AvailabilityStatus>(sql, new { EmployeeId = empId }));
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
@@ -923,9 +971,6 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
             }
             return result;
         }
-
-
-
 
         public async Task<ServiceResponse<CaregiverViewModel>> GetCareGiverDetails(int UserId)
         {
