@@ -193,5 +193,20 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.HHAClockin(hhaClockin);
         }
+
+        public async Task<ServiceResponse<string>> AddCategory(CategoryModel _model)
+        {
+            return await data.AddCategory(_model);
+        }
+
+        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetCategoryList()
+        {
+            return await data.GetCategoryList();
+        }
+
+        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetSubCategoryList(int categoryId)
+        {
+            return await data.GetSubCategoryList(categoryId);
+        }
     }
 }
