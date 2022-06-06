@@ -256,23 +256,35 @@ namespace WebAPI_SAMPLE.Controllers
 
         #region Declined Case
 
+
+
+
         [HttpPost("addEmpDeclinedCase")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SaveEmpDeclinedCase([FromBody] EmpDeclinedCase model)
+        public async Task<IActionResult> AddDeclinedCase([FromBody] EmpDeclinedCase model)
         {
             model.CreatedOn = DateTime.Now;
-            return Ok(await service.SaveEmpDeclinedCase(model));
+            return Ok(await service.AddDeclinedCase(model));
+        } 
+
+
+        [HttpDelete("delDeclinedCase")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DelDeclinedCase(int DeclinedCaseId)
+        {
+            return Ok(await service.DelDeclinedCase(DeclinedCaseId));
         }
 
 
         [HttpGet("getEmpDeclinedcase/{empId}")]
         [ProducesResponseType(typeof(ServiceResponse<EmpDeclinedCase>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<EmpDeclinedCase>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetEmpDeclinedcase(int empId)
+        public async Task<IActionResult> GetDeclinedCaseList(int empId)
         {
 
-            return Ok(await service.GetEmpDeclinedcase(empId));
+            return Ok(await service.GetDeclinedCaseList(empId));
         }
 
         #endregion

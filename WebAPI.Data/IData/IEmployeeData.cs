@@ -38,8 +38,9 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<string>> SaveEmpPayRate(EmployeeRateModel Emprate);
         Task<ServiceResponse<List<EmpRate>>> GetEmpPayRate(long EmpId, long ClientId);
 
-        Task<ServiceResponse<string>> SaveEmpDeclinedCase(EmpDeclinedCase client);
-        Task<ServiceResponse<List<EmpDeclinedCase>>> GetEmpDeclinedcase(int EmpId);
+        Task<ServiceResponse<string>> AddDeclinedCase(EmpDeclinedCase _model);
+        Task<ServiceResponse<IEnumerable<EmpDeclinedCase>>> GetDeclinedCaseList(int empId);
+        Task<ServiceResponse<string>> DelDeclinedCase(int DeclinedCaseId);
 
 
         Task<ServiceResponse<CaregiverViewModel>> GetCareGiverDetails(int UserId);

@@ -433,7 +433,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             {
                 result.Result = false;
                 result.Data = null;
-                result.Message = ex.Message;               
+                result.Message = ex.Message;
             }
             return result;
         }
@@ -701,105 +701,154 @@ namespace WebAPI_SAMPLE.WebAPI.Data
             }
         }
 
-        public async Task<ServiceResponse<string>> SaveEmpDeclinedCase(EmpDeclinedCase client)
+        public async Task<ServiceResponse<string>> AddDeclinedCase(EmpDeclinedCase _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
             try
             {
-
-                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-
-                    SqlCommand cmd = new SqlCommand("SP_SaveEmpDeclinedCaseProc", con);
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@EmpId", client.UserId);
-
-                    cmd.Parameters.AddWithValue("@ReportedDate", client.RepotedDate);
-                    cmd.Parameters.AddWithValue("@ClientID", client.ClientId);
-                    cmd.Parameters.AddWithValue("@caseid", client.Casetypeid);
-                    cmd.Parameters.AddWithValue("@DeclinedReason", client.DeclineReason);
-                    cmd.Parameters.AddWithValue("@AssignmentStartDate", client.AssignmentStart);
-                    cmd.Parameters.AddWithValue("@Note", client.Note);
-                    cmd.Parameters.AddWithValue("@Day", client.Day);
-                    cmd.Parameters.AddWithValue("@Week", client.Week);
-                    cmd.Parameters.AddWithValue("@CreatedOn", client.CreatedOn);
-                    cmd.Parameters.AddWithValue("@createdBy", client.CreatedBy);
-
-                    con.Open();
-                    int value = cmd.ExecuteNonQuery();
-                    if (value > 0)
+                    string sqlQuery;
+                    if (_model.EntityId == 0)
                     {
-                        sres.Result = true;
-                        sres.Data = "New Employee Created.";
+
+                        sqlQuery = @"Insert into tblEmpDeclinedCase(EmpId,ReportedDate,ClientId,CaseId,DeclinedReason,
+ AssignmentStartDate,Day,Week,Note, CreatedOn,CreatedBy,IsActive)    
+ values(@EmpId,@ReportedDate,@ClientID,@caseid,@DeclinedReason,
+ @AssignmentStartDate,@Day,@Week,@Note,@CreatedOn,@createdBy,@IsActive)";
+
+
                     }
                     else
                     {
+                        sqlQuery = @"UPDATE tblEmpDeclinedCase SET ReportedDate=@ReportedDate,ClientId=@ClientId,CaseId=@CaseId,
+DeclinedReason=@DeclinedReason,AssignmentStartDate=@AssignmentStartDate,Day=@Day,Week=@Week,
+Note=@Note,CreatedOn=@CreatedOn,CreatedBy=@CreatedBy
+WHERE DeclinedCaseId=@DeclinedCaseId";
+                    }
+                    int rowsAffected = await db.ExecuteAsync(sqlQuery, new
+                    {
+                        @DeclinedCaseId = _model.EntityId,
+                        @EmpId = _model.UserId,
+                        @ReportedDate = _model.ReportedDate.ParseDateTime(),
+                        @ClientID = _model.ClientId,
+                        @caseid = _model.CaseTypeId,
+                        @DeclinedReason = _model.DeclineReason,
+                        @AssignmentStartDate = _model.AssignmentStart.ParseDate(),
+                        @Note = _model.Note,
+                        @Day = _model.Day,
+                        @Week = _model.Week,
+                        @CreatedOn = _model.CreatedOn,
+                        @createdBy = _model.CreatedBy,
+                        IsActive = (int)Status.Active
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        sres.Result = false;
                         sres.Data = null;
-                        sres.Message = "Failed new employee creation.";
+                        sres.Message = "Failed new creation.";
                     }
                 }
 
             }
             catch (Exception ex)
             {
-                return null;
-            }
-            finally
-            {
-
+                sres.Result = false;
+                sres.Data = null;
+                sres.Message = ex.Message;
+                return sres;
             }
             return sres;
         }
 
-        public async Task<ServiceResponse<List<EmpDeclinedCase>>> GetEmpDeclinedcase(int EmpId)
+        public async Task<ServiceResponse<IEnumerable<EmpDeclinedCase>>> GetDeclinedCaseList(int empId)
         {
+            ServiceResponse<IEnumerable<EmpDeclinedCase>> obj = new ServiceResponse<IEnumerable<EmpDeclinedCase>>();
 
-            ServiceResponse<List<EmpDeclinedCase>> obj = new ServiceResponse<List<EmpDeclinedCase>>();
-            List<EmpDeclinedCase> emp = new List<EmpDeclinedCase>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "SELECT * FROM tblEmpDeclinedCase Where EmpId=@EmpId and IsActive=@IsActive;";
+                IEnumerable<EmpDeclinedCase> result = (await connection.QueryAsync(sql,
+                              new { @EmpId = empId, @IsActive = (int)Status.Active })).Select(x => new EmpDeclinedCase
+                              {
+                                  DeclinedCaseId = (long)x.DeclinedCaseId,
+                                  UserId = (int)x.EmpId,
+                                  ClientId = x.ClientId != null ? (long)x.ClientId : 0,
+                                  CaseTypeId = x.CaseId != null ? (long)x.CaseId : 0,                            
+                                  DeclineReason = x.DeclinedReason != null ? x.DeclinedReason : "",
+                                  Note = x.Note != null ? x.Note : "",
+                                  Day = x.Day != null ? (int)x.Day : 0,
+                                  Week = x.Week != null ? (int)x.Week : 0,
+                                  IsActive = x.IsActive,
+                                  AssignmentStartDateTime = x.AssignmentStartDate != null ? x.AssignmentStartDate : DateTime.Now,
+                                  ReportedDateTime = x.ReportedDate != null ? x.ReportedDate : DateTime.Now,
+
+
+                              });
+
+
+
+
+
+
+
+                obj.Data = result;
+                obj.Result = result.Any() ? true : false;
+                obj.Message = result.Any() ? "Data Found." : "No Data found.";
+
+            }
+            return obj;
+
+        }
+
+        public async Task<ServiceResponse<string>> DelDeclinedCase(int DeclinedCaseId)
+        {
+            ServiceResponse<string> result = new ServiceResponse<string>();
+
 
             try
             {
-                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    SqlCommand cmd = new SqlCommand("SP_GetDeclinedCaseProc", con);
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@EmpId", EmpId);
-
-                    DataTable table = new DataTable();
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    da.Fill(table);
-                    if (table.Rows.Count > 0)
+                    var sqlQuery = "Update tblEmpDeclinedCase Set IsActive=@IsActive where DeclinedCaseId=@DeclinedCaseId;";
+                    var modeMapping = new
                     {
-                        for (int i = 0; i < table.Rows.Count; i++)
-                        {
-                            emp.Add(new EmpDeclinedCase
-                            {
-                                RepotedDate = table.Rows[i]["ReportedDate"].ToString(),
-                                ClientName = table.Rows[i]["Name"].ToString(),
-                                CasetypeName = table.Rows[i]["CaseType"].ToString(),
-                                DeclineReason = table.Rows[i]["DeclinedReason"].ToString(),
-                                Day = Convert.ToInt16(table.Rows[i]["Day"].ToString()),
-                                Week = Convert.ToInt16(table.Rows[i]["Week"].ToString()),
-                                AssignmentStart = table.Rows[i]["AssignmentStartDate"].ToString()
-                            });
 
-                        }
-                        obj.Result = true;
+                        @DeclinedCaseId = DeclinedCaseId,
+                        @IsActive = (int)Status.InActive,
+                    };
+                    int rowsAffected = await connection.ExecuteAsync(sqlQuery, modeMapping);
+                    if (rowsAffected > 0)
+                    {
+                        result.Result = true;
+                        result.Data = "Sucessfully  Updated.";
                     }
-                    obj.Data = emp;
-                    return obj;
+                    else
+                    {
+                        result.Data = null;
+                        result.Result = false;
+                        result.Message = "Failed to Update.";
+                    }
+
                 }
+
             }
             catch (Exception ex)
             {
-                obj.Message = ex.Message;
-                return obj;
+                result.Result = false;
+                result.Data = null;
+                result.Message = ex.Message;
             }
-            finally
-            {
-
-            }
+            return result;
         }
+
+
 
 
         public async Task<ServiceResponse<CaregiverViewModel>> GetCareGiverDetails(int UserId)

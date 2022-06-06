@@ -35,8 +35,9 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<List<EmpRate>>> GetEmpPayRate(long EmpId, long ClientId);
 
 
-        Task<ServiceResponse<string>> SaveEmpDeclinedCase(EmpDeclinedCase client);
-        Task<ServiceResponse<List<EmpDeclinedCase>>> GetEmpDeclinedcase(int EmpId);
+        Task<ServiceResponse<string>> AddDeclinedCase(EmpDeclinedCase _model);
+        Task<ServiceResponse<IEnumerable<EmpDeclinedCase>>> GetDeclinedCaseList(int empId);
+        Task<ServiceResponse<string>> DelDeclinedCase(int DeclinedCaseId);
 
         Task<ServiceResponse<CaregiverViewModel>> GetCareGiverDetails(int UserId);
         Task<ServiceResponse<ExternalLoginViewModel>> ExternalLogin(ExternalLoginModel externalLoginModel);

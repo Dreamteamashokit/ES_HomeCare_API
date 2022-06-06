@@ -130,15 +130,32 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.GetEmpPayRate(EmpId, ClientId);
         }
-        public async Task<ServiceResponse<string>> SaveEmpDeclinedCase(EmpDeclinedCase Emprate)
+        public async Task<ServiceResponse<string>> AddDeclinedCase(EmpDeclinedCase _model)
         {
-            return await data.SaveEmpDeclinedCase(Emprate);
+            return await data.AddDeclinedCase(_model);
         }
 
-        public async Task<ServiceResponse<List<EmpDeclinedCase>>> GetEmpDeclinedcase(int EmpId)
+        public async Task<ServiceResponse<IEnumerable<EmpDeclinedCase>>> GetDeclinedCaseList(int empId)
         {
-            return await data.GetEmpDeclinedcase(EmpId);
+            return await data.GetDeclinedCaseList(empId);
         }
+
+
+        public async Task<ServiceResponse<string>> DelDeclinedCase(int DeclinedCaseId)
+        {
+            return await data.DelDeclinedCase(DeclinedCaseId);
+        }
+
+     
+
+
+
+
+
+
+
+
+
 
 
         public async Task<ServiceResponse<CaregiverViewModel>> GetCareGiverDetails(int UserId)

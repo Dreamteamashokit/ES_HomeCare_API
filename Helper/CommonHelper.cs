@@ -48,6 +48,10 @@ namespace ES_HomeCare_API.Helper
             DateTime dte = DateTime.ParseExact(dateTimeStr.Trim(), "dd-MM-yyyy, hh:mm:ss tt", CultureInfo.InvariantCulture);
             return dte;
         }
+
+
+
+
         
 
         public static string TimeHelper(this TimeSpan timeSpan)
