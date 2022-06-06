@@ -162,6 +162,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                     cmd.Parameters.AddWithValue("@Rateid", payerRateModel.Rateid);
                     cmd.Parameters.AddWithValue("@Payerid", payerRateModel.Payerid);
                     cmd.Parameters.AddWithValue("@ServiceCode", payerRateModel.ServiceCode);
+                    cmd.Parameters.AddWithValue("@Type", payerRateModel.Type);
                     cmd.Parameters.AddWithValue("@BillCode", payerRateModel.BillCode);
                     cmd.Parameters.AddWithValue("@RevenueCode", payerRateModel.RevenueCode);
                     cmd.Parameters.AddWithValue("@TaxRate", payerRateModel.TaxRate);
@@ -170,6 +171,14 @@ namespace ES_HomeCare_API.WebAPI.Data
                     cmd.Parameters.AddWithValue("@Hourly", payerRateModel.Hourly);
                     cmd.Parameters.AddWithValue("@Livein", payerRateModel.Livein);
                     cmd.Parameters.AddWithValue("@Visit", payerRateModel.Visit);
+                    cmd.Parameters.AddWithValue("@Unit", payerRateModel.Unit);
+                    cmd.Parameters.AddWithValue("@Modifiers1", payerRateModel.Modifiers1);
+                    cmd.Parameters.AddWithValue("@Modifiers2", payerRateModel.Modifiers2);
+                    cmd.Parameters.AddWithValue("@Modifiers3", payerRateModel.Modifiers3);
+                    cmd.Parameters.AddWithValue("@Modifiers4", payerRateModel.Modifiers4);
+                    cmd.Parameters.AddWithValue("@PlaceOfService", payerRateModel.PlaceOfService);
+                    cmd.Parameters.AddWithValue("@MutualGroup", payerRateModel.MutualGroup);
+
                     cmd.Parameters.AddWithValue("@Notes", payerRateModel.Notes);
                     cmd.Parameters.AddWithValue("@CreatedBy", payerRateModel.CreatedBy);
 
@@ -321,9 +330,9 @@ namespace ES_HomeCare_API.WebAPI.Data
                                 HoursAuthorizedPerMonth = table.Rows[i]["HoursAuthorizedPerWeek"].ToString(),
                                 HoursAuthorizedEntirePeriod = table.Rows[i]["HoursAuthorizedPerWeek"].ToString(),
                                 ServiceCode = Convert.ToInt32(table.Rows[i]["ServiceCode"]),
-                                OccurencesAuthorizedPerWeek = table.Rows[i]["HoursAuthorizedPerWeek"].ToString(),
-                                OccurencesAuthorizedPerMonth = table.Rows[i]["HoursAuthorizedPerWeek"].ToString(),
-                                OccurencesAuthorizedEntirePeriod = table.Rows[i]["HoursAuthorizedPerWeek"].ToString(),
+                                OccurencesAuthorizedPerWeek = table.Rows[i]["OccurencesAuthorizedPerWeek"].ToString(),
+                                OccurencesAuthorizedPerMonth = table.Rows[i]["OccurencesAuthorizedPerMonth"].ToString(),
+                                OccurencesAuthorizedEntirePeriod = table.Rows[i]["OccurencesAuthorizedEntirePeriod"].ToString(),
                                 DaysOfWeekNotes = table.Rows[i]["DaysOfWeekNotes"].ToString(),
                                 BRServiceCode_SAT = Convert.ToInt32(table.Rows[i]["BRServiceCode_SAT"]),
                                 BRServiceCode_SUN = Convert.ToInt32(table.Rows[i]["BRServiceCode_SUN"]),
