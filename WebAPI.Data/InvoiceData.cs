@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Stripe;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
@@ -370,6 +371,76 @@ namespace ES_HomeCare_API.WebAPI.Data
         }
     
 
+        public async Task<ServiceResponse<IList<BillingViewModel>>> GetActiveBillAndExpiredBill(bool status)
+        {
+            ServiceResponse<IList<BillingViewModel>> obj = new ServiceResponse<IList<BillingViewModel>>();
+            IList<BillingViewModel> objBillingList = null;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("GetActiveBillAndExpiredBill", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Status", status);
 
+                    DataTable table = new DataTable();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(table);
+                    if (table.Rows.Count > 0)
+                    {
+                        objBillingList = new List<BillingViewModel>();
+                        for (int i = 0; i < table.Rows.Count; i++)
+                        {
+                            objBillingList.Add(new BillingViewModel
+                            {
+                                BillingId = Convert.ToInt32(table.Rows[i]["BillingId"]),
+                                PayerId = Convert.ToInt32(table.Rows[i]["PayerId"]),
+                                ContractClientId = Convert.ToInt32(table.Rows[i]["ContractClientId"]),
+                                AuthorizationNumber = table.Rows[i]["AuthorizationNumber"].ToString(),
+                                FromDate = Convert.ToDateTime(table.Rows[i]["FromDate"]),
+                                ToDate = Convert.ToDateTime(table.Rows[i]["ToDate"]),
+                                HoursAuthorizedPerWeek = table.Rows[i]["HoursAuthorizedPerWeek"].ToString(),
+                                HoursAuthorizedPerMonth = table.Rows[i]["HoursAuthorizedPerWeek"].ToString(),
+                                HoursAuthorizedEntirePeriod = table.Rows[i]["HoursAuthorizedPerWeek"].ToString(),
+                                ServiceCode = Convert.ToInt32(table.Rows[i]["ServiceCode"]),
+                                OccurencesAuthorizedPerWeek = table.Rows[i]["OccurencesAuthorizedPerWeek"].ToString(),
+                                OccurencesAuthorizedPerMonth = table.Rows[i]["OccurencesAuthorizedPerMonth"].ToString(),
+                                OccurencesAuthorizedEntirePeriod = table.Rows[i]["OccurencesAuthorizedEntirePeriod"].ToString(),
+                                DaysOfWeekNotes = table.Rows[i]["DaysOfWeekNotes"].ToString(),
+                                BRServiceCode_SAT = Convert.ToInt32(table.Rows[i]["BRServiceCode_SAT"]),
+                                BRServiceCode_SUN = Convert.ToInt32(table.Rows[i]["BRServiceCode_SUN"]),
+                                BRServiceCode_MON = Convert.ToInt32(table.Rows[i]["BRServiceCode_MON"]),
+                                BRServiceCode_TUE = Convert.ToInt32(table.Rows[i]["BRServiceCode_TUE"]),
+                                BRServiceCode_WED = Convert.ToInt32(table.Rows[i]["BRServiceCode_WED"]),
+                                BRServiceCode_THU = Convert.ToInt32(table.Rows[i]["BRServiceCode_THU"]),
+                                BRServiceCode_FRI = Convert.ToInt32(table.Rows[i]["BRServiceCode_FRI"]),
+                                Quantity_SAT = Convert.ToInt32(table.Rows[i]["Quantity_SAT"]),
+                                Quantity_SUN = Convert.ToInt32(table.Rows[i]["Quantity_SUN"]),
+                                Quantity_MON = Convert.ToInt32(table.Rows[i]["Quantity_MON"]),
+                                Quantity_TUE = Convert.ToInt32(table.Rows[i]["Quantity_TUE"]),
+                                Quantity_WED = Convert.ToInt32(table.Rows[i]["Quantity_WED"]),
+                                Quantity_THU = Convert.ToInt32(table.Rows[i]["Quantity_THU"]),
+                                Quantity_FRI = Convert.ToInt32(table.Rows[i]["Quantity_FRI"]),
+                                PeriodEpisode_Notes = table.Rows[i]["PeriodEpisode_Notes"].ToString()
+                            });
+                        }
+                        obj.Data = objBillingList;
+                        obj.Result = true;
+                        obj.Message = "Billing List retrive successfull.";
+                    }
+                    else
+                    {
+                        obj.Result = true;
+                        obj.Message = "Billing records not exists.";
+                    }
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@
 using ES_HomeCare_API.Model.Billing;
 using ES_HomeCare_API.ViewModel.Invoice;
 using Stripe;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
 
@@ -18,5 +19,6 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<string>> AddUpdateBilling(BillingModel billingModel);
         Task<ServiceResponse<string>> DeleteBillng(long billingId);
         Task<ServiceResponse<BillingViewModel>> GetBillingDetailsByBillingId(long billingId);
+        Task<ServiceResponse<IList<BillingViewModel>>> GetActiveBillAndExpiredBill(bool status);
     }
 }

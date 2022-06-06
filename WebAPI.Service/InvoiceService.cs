@@ -59,5 +59,10 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             return await data.GetBillingDetailsByBillingId(billingId);
         }
+
+        public async Task<ServiceResponse<IList<BillingViewModel>>> GetActiveBillAndExpiredBill(bool status)
+        {
+            return await data.GetActiveBillAndExpiredBill(status);
+        }
     }
 }
