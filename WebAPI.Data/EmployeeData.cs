@@ -407,7 +407,7 @@ IsActive=@IsActive Where IncidentId=@IncidentId;";
                     {
                         AttendanceId = _model.EntityId,
                         UserId = _model.UserId,
-                        Reason = _model.Reason,
+                        Reason = _model.ReasonId,
                         StartDate = _model.StartDate.ParseDate(),
                         EndDate = _model.EndDate.ParseDate(),
                         Notes = _model.Notes,
@@ -446,7 +446,8 @@ IsActive=@IsActive Where IncidentId=@IncidentId;";
 
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "SELECT * FROM tblAttendance Where EmpId=@EmpId and IsActive=@IsActive;";
+                string sql = @"select y.ItemName as ReasonName,x.* from tblAttendance x 
+inner join tblMaster y  on x.Reason = y.MasterId  where x.EmpId = @EmpId and x.IsActive = @IsActive";
                 IEnumerable<AttendanceModel> cmeetings = (await connection.QueryAsync<AttendanceModel>(sql,
                          new { @EmpId = empId, @IsActive = (int)Status.Active }));
                 obj.Data = cmeetings;
