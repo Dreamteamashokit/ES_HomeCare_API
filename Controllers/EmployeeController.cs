@@ -79,7 +79,7 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.GetEmployeeListObj(model));
         }
 
-        
+
 
 
         [HttpGet("deleteEmployee/{empId}")]
@@ -247,24 +247,35 @@ namespace WebAPI_SAMPLE.Controllers
 
 
 
-        #region Rate
+        #region EmpRate
+
+
         [HttpPost("addRate")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SaveEmpRate([FromBody] EmployeeRateModel model)
+        public async Task<IActionResult> AddEmpRate([FromBody] EmployeeRateModel model)
         {
             model.CreatedOn = DateTime.Now;
-            return Ok(await service.SaveEmpPayRate(model));
+            return Ok(await service.AddEmpRate(model));
         }
 
 
         [HttpGet("getEmpRate/{empId}")]
-        [ProducesResponseType(typeof(ServiceResponse<EmpRate>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<EmpRate>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> getEmpRate(long empId)
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<EmployeeRateModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<EmployeeRateModel>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> getEmpRate(int empId)
         {
 
-            return Ok(await service.GetEmpPayRate(empId, 0));
+            return Ok(await service.GetEmpPayRate(empId));
+        }
+
+
+        [HttpDelete("delEmpPayRate")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DelEmpPayRate(int RateId)
+        {
+            return Ok(await service.DelEmpPayRate(RateId));
         }
 
         #endregion
@@ -281,7 +292,7 @@ namespace WebAPI_SAMPLE.Controllers
         {
             model.CreatedOn = DateTime.Now;
             return Ok(await service.AddDeclinedCase(model));
-        } 
+        }
 
 
         [HttpDelete("delDeclinedCase")]

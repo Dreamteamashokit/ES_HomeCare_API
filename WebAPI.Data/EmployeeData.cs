@@ -327,7 +327,7 @@ IsActive=@IsActive Where IncidentId=@IncidentId;";
                          {
                              IncidentId = (int)x.IncidentId,
                              UserId = (int)x.EmpId,
-                             ClientId = (int)x.ClientId,                    
+                             ClientId = (int)x.ClientId,
                              IncidentDetail = x.IncidentDetail != null ? x.IncidentDetail : "",
                              IsActive = x.IsActive,
                              IncidentDateTime = x.IncidentDate != null ? x.IncidentDate : DateTime.Now,
@@ -525,7 +525,7 @@ EffectiveDate=@EffectiveDate,ReturnDate=@ReturnDate Where StatusId=@StatusId;";
                     }
                     int rowsAffected = await db.ExecuteAsync(sqlQuery, new
                     {
-                        StatusId= _model.EntityId,
+                        StatusId = _model.EntityId,
                         UserId = _model.UserId,
                         TypeId = _model.TypeStatusId,
                         ScheduleId = _model.Scheduling,
@@ -615,13 +615,13 @@ inner join tblMaster y  on x.TypeId = y.MasterId  where x.EmployeeId = @EmpId an
                       {
                           EntityId = (int)x.StatusId,
                           UserId = (int)x.EmployeeId,
-                          StatusType= x.StatusType != null ? x.StatusType : "",
+                          StatusType = x.StatusType != null ? x.StatusType : "",
                           TypeStatusId = x.TypeId != null ? x.TypeId : 0,
                           Resume = x.OKResume != null ? x.OKResume : false,
                           Rehire = x.ReHire != null ? x.ReHire : false,
                           Note = x.Note != null ? x.Note : "",
                           Scheduling = x.ScheduleId != null ? x.ScheduleId : 0,
-                          OfficeUserId = x.OfficeUserId != null ? x.OfficeUserId : 0,                      
+                          OfficeUserId = x.OfficeUserId != null ? x.OfficeUserId : 0,
                           Text = x.TextCheck != null ? x.TextCheck : false,
                           Screen = x.ScreenCheck != null ? x.ScreenCheck : false,
                           Email = x.EmailCheck != null ? x.EmailCheck : false,
@@ -706,7 +706,6 @@ inner join tblMaster y  on x.TypeId = y.MasterId  where x.EmployeeId = @EmpId an
             {
 
                 string sql = "SELECT * FROM tblCompliance Where EmpId=@EmpId;";
-
                 IEnumerable<ComplianceModel> cmeetings = (await connection.QueryAsync<ComplianceModel>(sql,
                          new { EmpId = empId }));
                 obj.Data = cmeetings;
@@ -718,112 +717,126 @@ inner join tblMaster y  on x.TypeId = y.MasterId  where x.EmployeeId = @EmpId an
 
         }
 
-        public async Task<ServiceResponse<string>> SaveEmpPayRate(EmployeeRateModel client)
+        public async Task<ServiceResponse<string>> AddEmpRate(EmployeeRateModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
             try
             {
-
-                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-
-                    SqlCommand cmd = new SqlCommand("SP_SaveEmpPayRateProc", con);
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                    cmd.Parameters.AddWithValue("@EmployeeId", client.UserId);
-                    cmd.Parameters.AddWithValue("@ClientID", client.ClientId);
-                    cmd.Parameters.AddWithValue("@EffectiveDate", client.EffectiveDate);
-                    cmd.Parameters.AddWithValue("@EndDate", client.EndDate);
-                    cmd.Parameters.AddWithValue("@Description", client.Description);
-                    cmd.Parameters.AddWithValue("@Note", client.Note);
-                    cmd.Parameters.AddWithValue("@Hourly", client.Hourly);
-                    cmd.Parameters.AddWithValue("@LiveIn", client.Livein);
-                    cmd.Parameters.AddWithValue("@Visit", client.Visit);
-                    cmd.Parameters.AddWithValue("@OverHourly", client.OverHourly);
-                    cmd.Parameters.AddWithValue("@OverLiveIn", client.OverLivein);
-                    cmd.Parameters.AddWithValue("@OverVisit", client.OverVisit);
-                    cmd.Parameters.AddWithValue("@IncludedHour", client.OptionalHour);
-                    cmd.Parameters.AddWithValue("@AdditionalHour", client.OptionalAddHour);
-                    cmd.Parameters.AddWithValue("@Mileage", client.Mileage);
-                    cmd.Parameters.AddWithValue("@TravelTime", client.TravelTime);
-                    cmd.Parameters.AddWithValue("@Gas", client.Gas);
-                    cmd.Parameters.AddWithValue("@Extra", client.Extra);
-                    //cmd.Parameters.AddWithValue("@Casetype", client.ca);
-                    //cmd.Parameters.AddWithValue("@Result", client.EmgContact);
-                    cmd.Parameters.AddWithValue("@CreatedOn", client.CreatedOn);
-                    cmd.Parameters.AddWithValue("@createdBy", client.CreatedBy);
-
-                    con.Open();
-                    int value = cmd.ExecuteNonQuery();
-                    if (value > 0)
+                    string sqlQuery;
+                    if (_model.EntityId == 0)
                     {
-                        sres.Result = true;
-                        sres.Data = "New Employee Created.";
+                        sqlQuery = @"INSERT INTO tblEmpRate(EmpId, EffectiveDate, EndDate, ClientId, Description, Notes, Hourly, LiveIn
+, Visit, OverHourly, OverLiveIn, OverVisit,  CreatedOn, CreatedBy, IsActive,PayerId)
+VALUES(@EmpId, @EffectiveDate, @EndDate, @ClientId, @Description, @Notes, @Hourly, @LiveIn
+, @Visit, @OverHourly, @OverLiveIn, @OverVisit, @CreatedOn, @CreatedBy, @IsActive,@PayerId);";
+
+
                     }
                     else
                     {
+                        sqlQuery = @"Update tblEmpRate Set EffectiveDate=@EffectiveDate,EndDate=@EndDate,ClientId=@ClientId,Description=@Description,Notes=@Notes 
+,Hourly=@Hourly,LiveIn=@LiveIn,Visit=@Visit,OverHourly=@OverHourly,OverLiveIn=@OverLiveIn,OverVisit=@OverVisit,PayerId=@PayerId Where RateId=@RateId";
+                    }
+                    int rowsAffected = await db.ExecuteAsync(sqlQuery, new
+                    {
+                        RateId = _model.EntityId,
+                        PayerId= _model.PayerId,
+                        EmpId = _model.EmpId,
+                        ClientId = _model.ClientId,
+                        EffectiveDate = _model.EffectiveDateTime.ParseDate(),
+                        EndDate = _model.EndDateTime.ParseDate(),
+                        Description = _model.Description,
+                        Notes = _model.Note,
+                        Hourly = _model.Hourly,
+                        LiveIn = _model.LiveIn,
+                        Visit = _model.Visit,
+                        OverHourly = _model.OverHourly,
+                        OverLiveIn = _model.OverLiveIn,
+                        OverVisit = _model.OverVisit,
+                        CreatedOn = _model.CreatedOn,
+                        CreatedBy = _model.CreatedBy,
+                        IsActive = (int)Status.Active
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        sres.Result = false;
                         sres.Data = null;
-                        sres.Message = "Failed new employee creation.";
+                        sres.Message = "Failed new creation.";
                     }
                 }
 
             }
             catch (Exception ex)
             {
-                return null;
-            }
-            finally
-            {
-
+                sres.Result = false;
+                sres.Data = null;
+                sres.Message = ex.Message;
+                return sres;
             }
             return sres;
         }
 
-        public async Task<ServiceResponse<List<EmpRate>>> GetEmpPayRate(long EmpId, long ClientId)
+        public async Task<ServiceResponse<IEnumerable<EmployeeRateModel>>> GetEmpPayRate(int empId)
         {
+            ServiceResponse<IEnumerable<EmployeeRateModel>> obj = new ServiceResponse<IEnumerable<EmployeeRateModel>>();
 
-            ServiceResponse<List<EmpRate>> obj = new ServiceResponse<List<EmpRate>>();
-            List<EmpRate> emp = new List<EmpRate>();
 
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = @"Select * from tblEmpRate Where EmpId=@EmpId and IsActive=@IsActive;";
+                IEnumerable<EmployeeRateModel> result = (await connection.QueryAsync<EmployeeRateModel>(sql,
+                         new { @EmpId = empId, @IsActive = (int)Status.Active }));
+                obj.Data = result;
+                obj.Result = result.Any() ? true : false;
+                obj.Message = result.Any() ? "Data Found." : "No Data found.";
+
+            }
+            return obj;
+
+        }
+
+        public async Task<ServiceResponse<string>> DelEmpPayRate(int RateId)
+        {
+            ServiceResponse<string> result = new ServiceResponse<string>();
             try
             {
-                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    SqlCommand cmd = new SqlCommand("SP_GetPayRateProc", con);
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@EmployeeId", EmpId);
-                    cmd.Parameters.AddWithValue("@ClientID", ClientId);
-                    DataTable table = new DataTable();
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    da.Fill(table);
-                    if (table.Rows.Count > 0)
+                    var sqlQuery = "Update tblEmpRate Set IsActive=@IsActive where RateId=@RateId;";
+                    var modeMapping = new
                     {
-                        for (int i = 0; i < table.Rows.Count; i++)
-                        {
-                            emp.Add(new EmpRate
-                            {
-                                Discription = table.Rows[i]["Description"].ToString(),
-                                EffectiveDates = table.Rows[i]["EffectiveDate"].ToString(),
-                                OverTimeRate = table.Rows[i]["OverTime"].ToString(),
-                                Ragularrate = table.Rows[i]["Regulartime"].ToString()
-                            });
 
-                        }
-                        obj.Result = true;
+                        @RateId = RateId,
+                        @IsActive = (int)Status.InActive,
+                    };
+                    int rowsAffected = await connection.ExecuteAsync(sqlQuery, modeMapping);
+                    if (rowsAffected > 0)
+                    {
+                        result.Result = true;
+                        result.Data = "Sucessfully  Updated.";
                     }
-                    obj.Data = emp;
-                    return obj;
+                    else
+                    {
+                        result.Data = null;
+                        result.Message = "Failed to Update.";
+                    }
                 }
             }
             catch (Exception ex)
             {
-                obj.Message = ex.Message;
-                return obj;
+                result.Result = false;
+                result.Data = null;
+                result.Message = ex.Message;
             }
-            finally
-            {
-
-            }
+            return result;
         }
 
         public async Task<ServiceResponse<string>> AddDeclinedCase(EmpDeclinedCase _model)
@@ -931,7 +944,6 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
             return obj;
 
         }
-
         public async Task<ServiceResponse<string>> DelDeclinedCase(int DeclinedCaseId)
         {
             ServiceResponse<string> result = new ServiceResponse<string>();
