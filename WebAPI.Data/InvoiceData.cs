@@ -179,7 +179,6 @@ namespace ES_HomeCare_API.WebAPI.Data
                     cmd.Parameters.AddWithValue("@Modifiers4", payerRateModel.Modifiers4);
                     cmd.Parameters.AddWithValue("@PlaceOfService", payerRateModel.PlaceOfService);
                     cmd.Parameters.AddWithValue("@MutualGroup", payerRateModel.MutualGroup);
-
                     cmd.Parameters.AddWithValue("@Notes", payerRateModel.Notes);
                     cmd.Parameters.AddWithValue("@CreatedBy", payerRateModel.CreatedBy);
 
@@ -216,7 +215,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@BillingId", billingModel.BillingId);
                     cmd.Parameters.AddWithValue("@PayerId", billingModel.PayerId);
-                    cmd.Parameters.AddWithValue("@ContractClientId", billingModel.ServiceCode);
+                    cmd.Parameters.AddWithValue("@ContractClientId", billingModel.ContractClientId);
                     cmd.Parameters.AddWithValue("@AuthorizationNumber", billingModel.AuthorizationNumber);
                     cmd.Parameters.AddWithValue("@FromDate", billingModel.FromDate);
                     cmd.Parameters.AddWithValue("@ToDate", billingModel.ToDate);
@@ -283,13 +282,13 @@ namespace ES_HomeCare_API.WebAPI.Data
                         con.Open();
                         int value = cmd.ExecuteNonQuery();
                         sres.Result = true;
-                        sres.Data = "Delete Billing detail successfull.";
+                        sres.Data = "Billing detail Deleted successfull.";
                     }
                 }
                 else
                 {
                     sres.Result = false;
-                    sres.Data = "Billing detail does not exists.";
+                    sres.Data = "Billing does not exists.";
                 }
             }
             catch (Exception ex)
@@ -424,9 +423,17 @@ namespace ES_HomeCare_API.WebAPI.Data
                                 PeriodEpisode_Notes = table.Rows[i]["PeriodEpisode_Notes"].ToString()
                             });
                         }
+
                         obj.Data = objBillingList;
                         obj.Result = true;
-                        obj.Message = "Billing List retrive successfull.";
+                        if (status)
+                        {
+                            obj.Message = "Active billing list retrive successfull.";
+                        }
+                        else
+                        {
+                            obj.Message = "Expired billing list retrive successfull.";
+                        }
                     }
                     else
                     {
