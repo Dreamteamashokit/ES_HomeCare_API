@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Billing;
 using ES_HomeCare_API.ViewModel.Invoice;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +8,7 @@ using Newtonsoft.Json;
 using Stripe;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
@@ -148,28 +150,297 @@ namespace ES_HomeCare_API.WebAPI.Data
             return obj;
         }
 
-        public async Task<ServiceResponse<IEnumerable<PayerListViewModel>>> GetAllActivePayers()
+
+        public async Task<ServiceResponse<string>> AddUpdatePayerRate(PayerRateModel payerRateModel)
         {
-            ServiceResponse<IEnumerable<PayerListViewModel>> obj = new ServiceResponse<IEnumerable<PayerListViewModel>>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
             {
-
-                string sql = "SELECT TP.PayerId,TP.PayerName FROM TBLPAYER TP WHERE ISACTIVE = 1";
-
-                IEnumerable<PayerListViewModel> payerList = (await connection.QueryAsync<PayerListViewModel>(sql, ""));
-                obj.Data = payerList;
-                if (payerList != null)
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    obj.Result = true;
-                    obj.Message = "Data Found.";
+                    SqlCommand cmd = new SqlCommand("AddUpdateRates", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Rateid", payerRateModel.Rateid);
+                    cmd.Parameters.AddWithValue("@Payerid", payerRateModel.Payerid);
+                    cmd.Parameters.AddWithValue("@ServiceCode", payerRateModel.ServiceCode);
+                    cmd.Parameters.AddWithValue("@Type", payerRateModel.Type);
+                    cmd.Parameters.AddWithValue("@BillCode", payerRateModel.BillCode);
+                    cmd.Parameters.AddWithValue("@RevenueCode", payerRateModel.RevenueCode);
+                    cmd.Parameters.AddWithValue("@TaxRate", payerRateModel.TaxRate);
+                    cmd.Parameters.AddWithValue("@ValidFrom", payerRateModel.ValidFrom);
+                    cmd.Parameters.AddWithValue("@ValidTo", payerRateModel.ValidTo);
+                    cmd.Parameters.AddWithValue("@Hourly", payerRateModel.Hourly);
+                    cmd.Parameters.AddWithValue("@Livein", payerRateModel.Livein);
+                    cmd.Parameters.AddWithValue("@Visit", payerRateModel.Visit);
+                    cmd.Parameters.AddWithValue("@Unit", payerRateModel.Unit);
+                    cmd.Parameters.AddWithValue("@Modifiers1", payerRateModel.Modifiers1);
+                    cmd.Parameters.AddWithValue("@Modifiers2", payerRateModel.Modifiers2);
+                    cmd.Parameters.AddWithValue("@Modifiers3", payerRateModel.Modifiers3);
+                    cmd.Parameters.AddWithValue("@Modifiers4", payerRateModel.Modifiers4);
+                    cmd.Parameters.AddWithValue("@PlaceOfService", payerRateModel.PlaceOfService);
+                    cmd.Parameters.AddWithValue("@MutualGroup", payerRateModel.MutualGroup);
+
+                    cmd.Parameters.AddWithValue("@Notes", payerRateModel.Notes);
+                    cmd.Parameters.AddWithValue("@CreatedBy", payerRateModel.CreatedBy);
+
+                    con.Open();
+                    int value = cmd.ExecuteNonQuery();
+                    if (payerRateModel.Rateid > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Rate Updated Successfull.";
+                    }
+                    else
+                    {
+                        sres.Result = true;
+                        sres.Data = "New Rate Created.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return sres;
+        }
+
+
+        public async Task<ServiceResponse<string>> AddUpdateBilling(BillingModel billingModel)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("AddUpdateBilling", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@BillingId", billingModel.BillingId);
+                    cmd.Parameters.AddWithValue("@PayerId", billingModel.PayerId);
+                    cmd.Parameters.AddWithValue("@ContractClientId", billingModel.ServiceCode);
+                    cmd.Parameters.AddWithValue("@AuthorizationNumber", billingModel.AuthorizationNumber);
+                    cmd.Parameters.AddWithValue("@FromDate", billingModel.FromDate);
+                    cmd.Parameters.AddWithValue("@ToDate", billingModel.ToDate);
+                    cmd.Parameters.AddWithValue("@HoursAuthorizedPerWeek", billingModel.HoursAuthorizedPerWeek);
+                    cmd.Parameters.AddWithValue("@HoursAuthorizedPerMonth", billingModel.HoursAuthorizedPerMonth);
+                    cmd.Parameters.AddWithValue("@HoursAuthorizedEntirePeriod", billingModel.HoursAuthorizedEntirePeriod);
+                    cmd.Parameters.AddWithValue("@ServiceCode", billingModel.ServiceCode);
+                    cmd.Parameters.AddWithValue("@OccurencesAuthorizedPerWeek", billingModel.OccurencesAuthorizedPerWeek);
+                    cmd.Parameters.AddWithValue("@OccurencesAuthorizedPerMonth", billingModel.OccurencesAuthorizedPerMonth);
+                    cmd.Parameters.AddWithValue("@OccurencesAuthorizedEntirePeriod", billingModel.OccurencesAuthorizedEntirePeriod);
+                    cmd.Parameters.AddWithValue("@DaysOfWeekNotes", billingModel.DaysOfWeekNotes);
+                    cmd.Parameters.AddWithValue("@BRServiceCode_SAT", billingModel.BRServiceCode_SAT);
+                    cmd.Parameters.AddWithValue("@BRServiceCode_SUN", billingModel.BRServiceCode_SUN);
+                    cmd.Parameters.AddWithValue("@BRServiceCode_MON", billingModel.BRServiceCode_MON);
+                    cmd.Parameters.AddWithValue("@BRServiceCode_TUE", billingModel.BRServiceCode_THU);
+                    cmd.Parameters.AddWithValue("@BRServiceCode_WED", billingModel.BRServiceCode_WED);
+                    cmd.Parameters.AddWithValue("@BRServiceCode_THU", billingModel.BRServiceCode_THU);
+                    cmd.Parameters.AddWithValue("@BRServiceCode_FRI", billingModel.BRServiceCode_FRI);
+                    cmd.Parameters.AddWithValue("@Quantity_SAT", billingModel.Quantity_SAT);
+                    cmd.Parameters.AddWithValue("@Quantity_SUN", billingModel.Quantity_SUN);
+                    cmd.Parameters.AddWithValue("@Quantity_MON", billingModel.Quantity_MON);
+                    cmd.Parameters.AddWithValue("@Quantity_TUE", billingModel.Quantity_TUE);
+                    cmd.Parameters.AddWithValue("@Quantity_WED", billingModel.Quantity_WED);
+                    cmd.Parameters.AddWithValue("@Quantity_THU", billingModel.Quantity_THU);
+                    cmd.Parameters.AddWithValue("@Quantity_FRI", billingModel.Quantity_FRI);
+                    cmd.Parameters.AddWithValue("@PeriodEpisode_Notes", billingModel.PeriodEpisode_Notes);
+                    cmd.Parameters.AddWithValue("@CreatedBy", billingModel.CreatedBy);
+
+                    con.Open();
+                    int value = cmd.ExecuteNonQuery();
+                    if (billingModel.BillingId > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Billing details updated Successfull.";
+                    }
+                    else
+                    {
+                        sres.Result = true;
+                        sres.Data = "New Billing Created.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return sres;
+        }
+
+
+        public async Task<ServiceResponse<string>> DeleteBillng(long billingId)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                var existsBilling = await GetBillingDetailsByBillingId(billingId);
+                if(existsBilling != null && existsBilling.Result == true && existsBilling.Data != null)
+                {
+                    using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                    {
+                        SqlCommand cmd = new SqlCommand("DeleteBilling", con);
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@BillingId", billingId);
+                        con.Open();
+                        int value = cmd.ExecuteNonQuery();
+                        sres.Result = true;
+                        sres.Data = "Delete Billing detail successfull.";
+                    }
                 }
                 else
                 {
-                    obj.Result = false;
-                    obj.Message = "No Data found.";
+                    sres.Result = false;
+                    sres.Data = "Billing detail does not exists.";
                 }
             }
-            return obj;
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return sres;
+        }
+
+
+        public async Task<ServiceResponse<BillingViewModel>> GetBillingDetailsByBillingId(long billingId)
+        {
+            ServiceResponse<BillingViewModel> obj = new ServiceResponse<BillingViewModel>();
+            
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("GetBillingDetailsByBillingId", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@BillingId", billingId);
+
+                    DataTable table = new DataTable();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(table);
+                    if (table.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < table.Rows.Count; i++)
+                        {
+                            obj.Data = new BillingViewModel
+                            {
+                                BillingId = Convert.ToInt32(table.Rows[i]["BillingId"]),
+                                PayerId = Convert.ToInt32(table.Rows[i]["PayerId"]),
+                                ContractClientId = Convert.ToInt32(table.Rows[i]["ContractClientId"]),
+                                AuthorizationNumber = table.Rows[i]["AuthorizationNumber"].ToString(),
+                                FromDate = Convert.ToDateTime(table.Rows[i]["FromDate"]),
+                                ToDate = Convert.ToDateTime(table.Rows[i]["ToDate"]),
+                                HoursAuthorizedPerWeek = table.Rows[i]["HoursAuthorizedPerWeek"].ToString(),
+                                HoursAuthorizedPerMonth = table.Rows[i]["HoursAuthorizedPerWeek"].ToString(),
+                                HoursAuthorizedEntirePeriod = table.Rows[i]["HoursAuthorizedPerWeek"].ToString(),
+                                ServiceCode = Convert.ToInt32(table.Rows[i]["ServiceCode"]),
+                                OccurencesAuthorizedPerWeek = table.Rows[i]["OccurencesAuthorizedPerWeek"].ToString(),
+                                OccurencesAuthorizedPerMonth = table.Rows[i]["OccurencesAuthorizedPerMonth"].ToString(),
+                                OccurencesAuthorizedEntirePeriod = table.Rows[i]["OccurencesAuthorizedEntirePeriod"].ToString(),
+                                DaysOfWeekNotes = table.Rows[i]["DaysOfWeekNotes"].ToString(),
+                                BRServiceCode_SAT = Convert.ToInt32(table.Rows[i]["BRServiceCode_SAT"]),
+                                BRServiceCode_SUN = Convert.ToInt32(table.Rows[i]["BRServiceCode_SUN"]),
+                                BRServiceCode_MON = Convert.ToInt32(table.Rows[i]["BRServiceCode_MON"]),
+                                BRServiceCode_TUE = Convert.ToInt32(table.Rows[i]["BRServiceCode_TUE"]),
+                                BRServiceCode_WED = Convert.ToInt32(table.Rows[i]["BRServiceCode_WED"]),
+                                BRServiceCode_THU = Convert.ToInt32(table.Rows[i]["BRServiceCode_THU"]),
+                                BRServiceCode_FRI = Convert.ToInt32(table.Rows[i]["BRServiceCode_FRI"]),
+                                Quantity_SAT = Convert.ToInt32(table.Rows[i]["Quantity_SAT"]),
+                                Quantity_SUN = Convert.ToInt32(table.Rows[i]["Quantity_SUN"]),
+                                Quantity_MON = Convert.ToInt32(table.Rows[i]["Quantity_MON"]),
+                                Quantity_TUE = Convert.ToInt32(table.Rows[i]["Quantity_TUE"]),
+                                Quantity_WED = Convert.ToInt32(table.Rows[i]["Quantity_WED"]),
+                                Quantity_THU = Convert.ToInt32(table.Rows[i]["Quantity_THU"]),
+                                Quantity_FRI = Convert.ToInt32(table.Rows[i]["Quantity_FRI"]),
+                                PeriodEpisode_Notes = table.Rows[i]["PeriodEpisode_Notes"].ToString()
+                            };
+                            obj.Result = true;
+                            obj.Message = "Billing details retrive successfull.";
+                        }
+                    }
+                    else
+                    {
+                        obj.Result = true;
+                        obj.Message = "Billing details does not exists.";
+                    }
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+        }
+    
+
+        public async Task<ServiceResponse<IList<BillingViewModel>>> GetActiveBillAndExpiredBill(bool status)
+        {
+            ServiceResponse<IList<BillingViewModel>> obj = new ServiceResponse<IList<BillingViewModel>>();
+            IList<BillingViewModel> objBillingList = null;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("GetActiveBillAndExpiredBill", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Status", status);
+
+                    DataTable table = new DataTable();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(table);
+                    if (table.Rows.Count > 0)
+                    {
+                        objBillingList = new List<BillingViewModel>();
+                        for (int i = 0; i < table.Rows.Count; i++)
+                        {
+                            objBillingList.Add(new BillingViewModel
+                            {
+                                BillingId = Convert.ToInt32(table.Rows[i]["BillingId"]),
+                                PayerId = Convert.ToInt32(table.Rows[i]["PayerId"]),
+                                ContractClientId = Convert.ToInt32(table.Rows[i]["ContractClientId"]),
+                                AuthorizationNumber = table.Rows[i]["AuthorizationNumber"].ToString(),
+                                FromDate = Convert.ToDateTime(table.Rows[i]["FromDate"]),
+                                ToDate = Convert.ToDateTime(table.Rows[i]["ToDate"]),
+                                HoursAuthorizedPerWeek = table.Rows[i]["HoursAuthorizedPerWeek"].ToString(),
+                                HoursAuthorizedPerMonth = table.Rows[i]["HoursAuthorizedPerWeek"].ToString(),
+                                HoursAuthorizedEntirePeriod = table.Rows[i]["HoursAuthorizedPerWeek"].ToString(),
+                                ServiceCode = Convert.ToInt32(table.Rows[i]["ServiceCode"]),
+                                OccurencesAuthorizedPerWeek = table.Rows[i]["OccurencesAuthorizedPerWeek"].ToString(),
+                                OccurencesAuthorizedPerMonth = table.Rows[i]["OccurencesAuthorizedPerMonth"].ToString(),
+                                OccurencesAuthorizedEntirePeriod = table.Rows[i]["OccurencesAuthorizedEntirePeriod"].ToString(),
+                                DaysOfWeekNotes = table.Rows[i]["DaysOfWeekNotes"].ToString(),
+                                BRServiceCode_SAT = Convert.ToInt32(table.Rows[i]["BRServiceCode_SAT"]),
+                                BRServiceCode_SUN = Convert.ToInt32(table.Rows[i]["BRServiceCode_SUN"]),
+                                BRServiceCode_MON = Convert.ToInt32(table.Rows[i]["BRServiceCode_MON"]),
+                                BRServiceCode_TUE = Convert.ToInt32(table.Rows[i]["BRServiceCode_TUE"]),
+                                BRServiceCode_WED = Convert.ToInt32(table.Rows[i]["BRServiceCode_WED"]),
+                                BRServiceCode_THU = Convert.ToInt32(table.Rows[i]["BRServiceCode_THU"]),
+                                BRServiceCode_FRI = Convert.ToInt32(table.Rows[i]["BRServiceCode_FRI"]),
+                                Quantity_SAT = Convert.ToInt32(table.Rows[i]["Quantity_SAT"]),
+                                Quantity_SUN = Convert.ToInt32(table.Rows[i]["Quantity_SUN"]),
+                                Quantity_MON = Convert.ToInt32(table.Rows[i]["Quantity_MON"]),
+                                Quantity_TUE = Convert.ToInt32(table.Rows[i]["Quantity_TUE"]),
+                                Quantity_WED = Convert.ToInt32(table.Rows[i]["Quantity_WED"]),
+                                Quantity_THU = Convert.ToInt32(table.Rows[i]["Quantity_THU"]),
+                                Quantity_FRI = Convert.ToInt32(table.Rows[i]["Quantity_FRI"]),
+                                PeriodEpisode_Notes = table.Rows[i]["PeriodEpisode_Notes"].ToString()
+                            });
+                        }
+                        obj.Data = objBillingList;
+                        obj.Result = true;
+                        obj.Message = "Billing List retrive successfull.";
+                    }
+                    else
+                    {
+                        obj.Result = true;
+                        obj.Message = "Billing records not exists.";
+                    }
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
         }
     }
 }

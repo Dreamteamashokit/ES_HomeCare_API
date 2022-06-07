@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ES_HomeCare_API.Model;
+using ES_HomeCare_API.Model.Billing;
+using ES_HomeCare_API.ViewModel.Invoice;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -53,14 +55,48 @@ namespace ES_HomeCare_API.Controllers
             return Ok(await service.PayInvoice(InvId));
         }
 
-        [HttpPost("GetAllActivePayers")]
+        [HttpPost("AddUpdatePayerRate")]
         [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAllActivePayers()
+        public async Task<IActionResult> AddUpdatePayerRate(PayerRateModel payerRateModel)
         {
-            return Ok(await service.GetAllActivePayers());
+            return Ok(await service.AddUpdatePayerRate(payerRateModel));
         }
 
 
+        [HttpPost("AddUpdateBilling")]
+        [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddUpdateBilling(BillingModel billingModel)
+        {
+            return Ok(await service.AddUpdateBilling(billingModel));
+        }
+
+
+        [HttpDelete("DeleteBillng")]
+        [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteBillng(long billingId)
+        {
+            return Ok(await service.DeleteBillng(billingId));
+        }
+
+
+        [HttpPost("GetBillingDetailsByBillingId/{billingId}")]
+        [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetBillingDetailsByBillingId(long billingId)
+        {
+            return Ok(await service.GetBillingDetailsByBillingId(billingId));
+        }
+
+
+        [HttpPost("GetActiveBillAndExpiredBill/{status}")]
+        [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetActiveBillAndExpiredBill(bool status)
+        {
+            return Ok(await service.GetActiveBillAndExpiredBill(status));
+        }
     }
 }
