@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ES_HomeCare_API.Helper;
+﻿using ES_HomeCare_API.Helper;
 using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.ViewModel.Employee;
-using ES_HomeCare_API.WebAPI.Service;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
 using WebAPI_SAMPLE.WebAPI.Service.IService;
 
@@ -336,34 +334,7 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.GetClientListByempId(empId));
         }
         #endregion
-
-        #region Category
-        [HttpPost("addCategory")]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddCategory([FromBody] CategoryModel model)
-        {
-            model.CreatedOn = DateTime.Now;
-            return Ok(await service.AddCategory(model));
-        }
-
-        [HttpGet("getCategoryList")]
-        [ProducesResponseType(typeof(ServiceResponse<List<CategoryModel>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<CategoryModel>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetCategoryList()
-        {
-            return Ok(await service.GetCategoryList());
-        }
-
-        [HttpGet("getSubCategoryList/{categoryId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<CategoryModel>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<CategoryModel>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetSubCategoryList(int categoryId)
-        {
-            return Ok(await service.GetSubCategoryList(categoryId));
-        }
-        #endregion
-
+        
 
         [HttpGet("GetClockinDetails/{userId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientListViewModel>>), StatusCodes.Status200OK)]

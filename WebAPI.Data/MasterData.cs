@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using ES_HomeCare_API.Model.Client;
 using ES_HomeCare_API.Model.Common;
+using ES_HomeCare_API.Model.Master;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -149,5 +150,113 @@ namespace ES_HomeCare_API.WebAPI.Data
             return obj;
         }
 
+        public async Task<ServiceResponse<string>> AddCategory(CategoryModel _model)
+        {
+            ServiceResponse<string> addCategoryResponse = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sqlQuery = "Insert Into tblCategoryMaster (CategoryName, ParentCategoryId) Values(@CategoryName, @ParentCategoryId)";
+
+                    int rowsAffected = db.Execute(sqlQuery, new
+                    {
+                        CategoryName = _model.CategoryName,
+                        ParentCategoryId = _model.ParentCategoryId
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        addCategoryResponse.Result = true;
+                        addCategoryResponse.Data = "Sucessfully Created.";
+                    }
+                    else
+                    {
+                        addCategoryResponse.Data = null;
+                        addCategoryResponse.Message = "Failed new creation.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                addCategoryResponse.Message = ex.Message;
+            }
+
+            return addCategoryResponse;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetParentCategoryList()
+        {
+            ServiceResponse<IEnumerable<CategoryModel>> objCategoryListResponse = new ServiceResponse<IEnumerable<CategoryModel>>();
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sqlQuery = "SELECT CategoryId, CategoryName from tblCategoryMaster " +
+                        " where ParentCategoryId = null or ParentCategoryId = 0;";
+                    IEnumerable<CategoryModel> resObj = await connection.QueryAsync<CategoryModel>(sqlQuery);
+
+                    objCategoryListResponse.Data = resObj.ToList();
+                    objCategoryListResponse.Result = resObj.Any() ? true : false;
+                    objCategoryListResponse.Message = resObj.Any() ? "Data Found." : "No Data found.";
+
+                }
+                return objCategoryListResponse;
+            }
+            catch (Exception ex)
+            {
+                objCategoryListResponse.Message = ex.Message;
+                return objCategoryListResponse;
+            }
+        }
+
+        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetMasterCategoryList()
+        {
+            ServiceResponse<IEnumerable<CategoryModel>> objCategoryListResponse = new ServiceResponse<IEnumerable<CategoryModel>>();
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sqlQuery = "SELECT category.CategoryId, category.CategoryName, category.ParentCategoryId, parent.CategoryName as ParentCategoryName " +
+                        "from tblCategoryMaster category LEFT JOIN tblCategoryMaster as parent ON category.ParentCategoryId = parent.CategoryId;";
+                    IEnumerable<CategoryModel> resObj = await connection.QueryAsync<CategoryModel>(sqlQuery);
+
+                    objCategoryListResponse.Data = resObj.ToList();
+                    objCategoryListResponse.Result = resObj.Any() ? true : false;
+                    objCategoryListResponse.Message = resObj.Any() ? "Data Found." : "No Data found.";
+                }
+                return objCategoryListResponse;
+            }
+            catch (Exception ex)
+            {
+                objCategoryListResponse.Message = ex.Message;
+                return objCategoryListResponse;
+            }
+        }
+
+        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetSubCategoryList(int categoryId)
+        {
+            ServiceResponse<IEnumerable<CategoryModel>> objCategoryListResponse = new ServiceResponse<IEnumerable<CategoryModel>>();
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sqlQuery = "SELECT category.CategoryId, category.CategoryName, category.ParentCategoryId, parent.CategoryName as ParentCategoryName from tblCategoryMaster category " +
+                        " LEFT JOIN tblCategoryMaster as parent ON category.ParentCategoryId = parent.CategoryId and category.ParentCategoryId = @ParentCategoryId;";
+                    IEnumerable<CategoryModel> resObj = await connection.QueryAsync<CategoryModel>(sqlQuery,
+                         new { @ParentCategoryId = categoryId });
+
+                    objCategoryListResponse.Data = resObj.ToList();
+                    objCategoryListResponse.Result = resObj.Any() ? true : false;
+                    objCategoryListResponse.Message = resObj.Any() ? "Data Found." : "No Data found.";
+                }
+                return objCategoryListResponse;
+            }
+            catch (Exception ex)
+            {
+                objCategoryListResponse.Message = ex.Message;
+                return objCategoryListResponse;
+            }
+        }
     }
 }

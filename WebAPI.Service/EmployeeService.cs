@@ -1,9 +1,7 @@
 ﻿using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.ViewModel.Employee;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
 using WebAPI_SAMPLE.WebAPI.Data.IData;
@@ -192,21 +190,6 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         public async Task<ServiceResponse<string>> HHAClockin(HHAClockInModel hhaClockin)
         {
             return await data.HHAClockin(hhaClockin);
-        }
-
-        public async Task<ServiceResponse<string>> AddCategory(CategoryModel _model)
-        {
-            return await data.AddCategory(_model);
-        }
-
-        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetCategoryList()
-        {
-            return await data.GetCategoryList();
-        }
-
-        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetSubCategoryList(int categoryId)
-        {
-            return await data.GetSubCategoryList(categoryId);
-        }
+        }        
     }
 }

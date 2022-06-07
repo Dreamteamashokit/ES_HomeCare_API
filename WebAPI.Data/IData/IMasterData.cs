@@ -1,8 +1,7 @@
 ﻿using ES_HomeCare_API.Model.Client;
 using ES_HomeCare_API.Model.Common;
-using System;
+using ES_HomeCare_API.Model.Master;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
 
@@ -14,5 +13,9 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
         Task<ServiceResponse<IEnumerable<DiagnosisItem>>> GetDiagnosis();
         Task<ServiceResponse<string>> UpdateTask(TaskModel item);
         Task<ServiceResponse<string>> ActiveTask(int TaskId, int Status);
+        Task<ServiceResponse<string>> AddCategory(CategoryModel model);
+        Task<ServiceResponse<IEnumerable<CategoryModel>>> GetParentCategoryList();
+        Task<ServiceResponse<IEnumerable<CategoryModel>>> GetSubCategoryList(int categoryId);
+        Task<ServiceResponse<IEnumerable<CategoryModel>>> GetMasterCategoryList();
     }
 }
