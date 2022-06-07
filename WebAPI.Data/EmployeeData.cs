@@ -407,7 +407,7 @@ IsActive=@IsActive Where IncidentId=@IncidentId;";
                     {
                         AttendanceId = _model.EntityId,
                         UserId = _model.UserId,
-                        Reason = _model.ReasonId,
+                        Reason = _model.Reason,
                         StartDate = _model.StartDate.ParseDate(),
                         EndDate = _model.EndDate.ParseDate(),
                         Notes = _model.Notes,
