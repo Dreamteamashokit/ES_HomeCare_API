@@ -705,7 +705,12 @@ inner join tblMaster y  on x.TypeId = y.MasterId  where x.EmployeeId = @EmpId an
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
 
-                string sql = "SELECT * FROM tblCompliance Where EmpId=@EmpId;";
+                string sql = "SELECT comp.ComplianceId, comp.EmpId, comp.DueDate, comp.CompletedOn, cata.ParentCategoryName as Category, " +
+                    "cata.CategoryName as Code, comp.Result, comp.Nurse, comp.Notes, comp.CreatedOn, comp.CreatedBy, comp.IsActive, comp.IsCompleted, " +
+                    "comp.CategoryId FROM tblCompliance comp join (SELECT category.CategoryId, category.CategoryName, " +
+                    "parent.CategoryName as ParentCategoryName from tblCategoryMaster category LEFT JOIN tblCategoryMaster as parent " +
+                    "ON category.ParentCategoryId = parent.CategoryId) as cata on comp.Code = cata.CategoryId Where EmpId=@EmpId;";
+
                 IEnumerable<ComplianceModel> cmeetings = (await connection.QueryAsync<ComplianceModel>(sql,
                          new { EmpId = empId }));
                 obj.Data = cmeetings;
