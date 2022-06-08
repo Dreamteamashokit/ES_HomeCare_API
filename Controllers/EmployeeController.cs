@@ -213,6 +213,21 @@ namespace WebAPI_SAMPLE.Controllers
         {
             return Ok(await service.GetComplianceList(empId));
         }
+
+        [HttpPost("updateCompliance")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateCompliance([FromBody] ComplianceModel model)
+        {
+            try
+            {
+                return Ok(await service.UpdateCompliance(model));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         #endregion
 
 
@@ -267,6 +282,13 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.GetEmpPayRate(empId));
         }
 
+        [HttpDelete("deleteCompliance")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteCompliance(int complianceId)
+        {
+            return Ok(await service.DeleteCompliance(complianceId));
+        }
 
         [HttpDelete("delEmpPayRate")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]

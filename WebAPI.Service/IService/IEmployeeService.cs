@@ -36,6 +36,8 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<IEnumerable<ComplianceModel>>> GetComplianceList(int empId);
         Task<ServiceResponse<string>> AddEmpRate(EmployeeRateModel _model);
         Task<ServiceResponse<IEnumerable<EmployeeRateModel>>> GetEmpPayRate(int empId);
+        Task<ServiceResponse<string>> DeleteCompliance(int complianceId);
+        Task<ServiceResponse<string>> UpdateCompliance(ComplianceModel item);
         Task<ServiceResponse<string>> DelEmpPayRate(int RateId);
 
 

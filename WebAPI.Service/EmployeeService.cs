@@ -139,6 +139,16 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             return await data.GetEmpPayRate(empId);
         }
 
+        public async Task<ServiceResponse<string>> DeleteCompliance(int complianceId)
+        {
+            return await data.DeleteCompliance(complianceId);
+        }
+
+        public async Task<ServiceResponse<string>> UpdateCompliance(ComplianceModel model)
+        {
+            return await data.UpdateCompliance(model);
+        }
+
         public async Task<ServiceResponse<string>> DelEmpPayRate(int RateId)
         {
             return await data.DelEmpPayRate(RateId);

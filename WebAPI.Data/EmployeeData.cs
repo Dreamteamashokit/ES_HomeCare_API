@@ -705,7 +705,12 @@ inner join tblMaster y  on x.TypeId = y.MasterId  where x.EmployeeId = @EmpId an
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
 
-                string sql = "SELECT * FROM tblCompliance Where EmpId=@EmpId;";
+                string sql = "SELECT comp.ComplianceId, comp.EmpId, comp.DueDate, comp.CompletedOn, cata.ParentCategoryName as Category, " +
+                    "cata.CategoryName as Code, comp.Result, comp.Nurse, comp.Notes, comp.CreatedOn, comp.CreatedBy, comp.IsActive, comp.IsCompleted, " +
+                    "comp.CategoryId FROM tblCompliance comp join (SELECT category.CategoryId, category.CategoryName, " +
+                    "parent.CategoryName as ParentCategoryName from tblCategoryMaster category LEFT JOIN tblCategoryMaster as parent " +
+                    "ON category.ParentCategoryId = parent.CategoryId) as cata on comp.Code = cata.CategoryId Where EmpId=@EmpId;";
+
                 IEnumerable<ComplianceModel> cmeetings = (await connection.QueryAsync<ComplianceModel>(sql,
                          new { EmpId = empId }));
                 obj.Data = cmeetings;
@@ -801,6 +806,81 @@ VALUES(@EmpId, @EffectiveDate, @EndDate, @ClientId, @Description, @Notes, @Hourl
             }
             return obj;
 
+        }
+
+        public async Task<ServiceResponse<string>> DeleteCompliance(int complianceId)
+        {
+            ServiceResponse<string> result = new ServiceResponse<string>();
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var sqlQuery = "Update tblCompliance Set IsActive=@IsActive where ComplianceId=@ComplianceId;";
+                    var modeMapping = new
+                    {
+                        @ComplianceId = complianceId,
+                        @IsActive = (int)Status.InActive,
+                    };
+                    int rowsAffected = await connection.ExecuteAsync(sqlQuery, modeMapping);
+                    if (rowsAffected > 0)
+                    {
+                        result.Result = true;
+                        result.Data = "Sucessfully  Updated.";
+                    }
+                    else
+                    {
+                        result.Data = null;
+                        result.Message = "Failed to Update.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Result = false;
+                result.Data = null;
+                result.Message = ex.Message;
+            }
+            return result;
+        }
+
+        public async Task<ServiceResponse<string>> UpdateCompliance(ComplianceModel model)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var sqlqry = "Update tblCompliance SET DueDate = @DueDate, CompletedOn = @CompletedOn, Category = @Category, " +
+                        "Code = @Code, Notes = @Notes Where ComplianceId = @ComplianceId";
+                    int rowsAffected = await connection.ExecuteAsync(sqlqry, new
+                    {
+                        @DueDate = model.DueDate,
+                        @CompletedOn = model.CompletedOn,
+                        @Category = model.Category,
+                        @Code = model.Code,
+                        @Notes = model.Notes,
+                        @ComplianceId = model.ComplianceId,
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        obj.Result = true;
+                        obj.Data = "Updated Successfully";
+                    }
+                    else
+                    {
+                        obj.Data = null;
+                        obj.Message = "Updation Failed.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+
+            return obj;
         }
 
         public async Task<ServiceResponse<string>> DelEmpPayRate(int RateId)
