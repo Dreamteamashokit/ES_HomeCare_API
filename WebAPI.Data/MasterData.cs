@@ -239,16 +239,19 @@ namespace ES_HomeCare_API.WebAPI.Data
             ServiceResponse<IEnumerable<CategoryModel>> objCategoryListResponse = new ServiceResponse<IEnumerable<CategoryModel>>();
             try
             {
-                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                if (categoryId > 0)
                 {
-                    string sqlQuery = "SELECT category.CategoryId, category.CategoryName, category.ParentCategoryId, parent.CategoryName as ParentCategoryName from tblCategoryMaster category " +
-                        " LEFT JOIN tblCategoryMaster as parent ON category.ParentCategoryId = parent.CategoryId and category.ParentCategoryId = @ParentCategoryId;";
-                    IEnumerable<CategoryModel> resObj = await connection.QueryAsync<CategoryModel>(sqlQuery,
-                         new { @ParentCategoryId = categoryId });
+                    using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                    {
+                        string sqlQuery = "SELECT category.CategoryId, category.CategoryName, category.ParentCategoryId, parent.CategoryName as ParentCategoryName from tblCategoryMaster category " +
+                            " LEFT JOIN tblCategoryMaster as parent ON category.ParentCategoryId = parent.CategoryId where category.ParentCategoryId = @ParentCategoryId;";
+                        IEnumerable<CategoryModel> resObj = await connection.QueryAsync<CategoryModel>(sqlQuery,
+                             new { @ParentCategoryId = categoryId });
 
-                    objCategoryListResponse.Data = resObj.ToList();
-                    objCategoryListResponse.Result = resObj.Any() ? true : false;
-                    objCategoryListResponse.Message = resObj.Any() ? "Data Found." : "No Data found.";
+                        objCategoryListResponse.Data = resObj.ToList();
+                        objCategoryListResponse.Result = resObj.Any() ? true : false;
+                        objCategoryListResponse.Message = resObj.Any() ? "Data Found." : "No Data found.";
+                    }
                 }
                 return objCategoryListResponse;
             }
