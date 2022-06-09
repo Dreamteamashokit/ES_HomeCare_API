@@ -97,10 +97,14 @@ namespace WebAPI_SAMPLE.WebAPI.Data
         public async Task<ServiceResponse<string>> SaveClientStatus(ClientStatus _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
+            IDbTransaction transaction = null;
             try
             {
                 using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
+                    if (db.State != ConnectionState.Open)
+                        db.Open();
+                    transaction = db.BeginTransaction();
                     string sqlQuery = @"Insert Into tblClientSatus (ActivityID,StatusDate,ReferralCodeId,note,clientId,OfficeUserId,ReferaalUserID,TextCheck,ScreenCheck,EmailCheck,Createdon,CreatedBy,IsActive) 
 Values(@ActivityID,@StatusDate,@ReferralCodeId,@note,@clientId,@OfficeUserId,@ReferaalUserID,@Text,@Screen,@Email,@CreatedOn,@CreatedBy,@IsActive)";
 
@@ -120,10 +124,26 @@ Values(@ActivityID,@StatusDate,@ReferralCodeId,@note,@clientId,@OfficeUserId,@Re
                         CreatedBy = _model.CreatedBy,
                         IsActive = _model.IsActive
 
-                    });
+                    }, transaction);
 
                     if (rowsAffected > 0)
                     {
+                        if (_model.ActivityId == 28 || _model.ActivityId == 29 || _model.ActivityId == 32 || _model.ActivityId == 33)
+                        {
+                            string userSql = @"Update tblUser Set IsActive=@IsActive Where UserId=@UserId";
+                            db.Execute(userSql, new
+                            {
+                                @IsActive = (int)Status.Active,
+                                @UserId = _model.ClientId
+                            }, transaction);
+                            string clientSql = @"Update tblClient Set IsActive=@IsActive Where UserId=@UserId";
+                            db.Execute(clientSql, new
+                            {
+                                @IsActive = (int)Status.Active,
+                                @UserId = _model.ClientId
+                            }, transaction);
+
+                        }
                         sres.Result = true;
                         sres.Data = "Sucessfully  Created.";
                     }
@@ -138,7 +158,15 @@ Values(@ActivityID,@StatusDate,@ReferralCodeId,@note,@clientId,@OfficeUserId,@Re
             catch (Exception ex)
             {
                 sres.Message = ex.Message;
-
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
+            }
+            finally
+            {
+                if (transaction != null)
+                    transaction.Dispose();
             }
 
             return sres;
@@ -166,6 +194,7 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
         public async Task<ServiceResponse<string>> UpdateClientStatus(ClientStatusModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
+            IDbTransaction transaction = null;
             try
             {
                 using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
@@ -180,10 +209,27 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
                         StatusId = _model.StatusId,
                         note = _model.Note,
 
-                    });
+                    }, transaction);
 
                     if (rowsAffected > 0)
                     {
+                        if (_model.ActivityId == 28 || _model.ActivityId == 29 || _model.ActivityId == 32 || _model.ActivityId == 33)
+                        {
+                            string userSql = @"Update tblUser Set IsActive=@IsActive Where UserId=@UserId";
+                            db.Execute(userSql, new
+                            {
+                                @IsActive = (int)Status.Active,
+                                @UserId = _model.UserId
+                            }, transaction);
+                            string clientSql = @"Update tblClient Set IsActive=@IsActive Where UserId=@UserId";
+                            db.Execute(clientSql, new
+                            {
+                                @IsActive = (int)Status.Active,
+                                @UserId = _model.UserId
+                            }, transaction);
+
+                        }
+
                         sres.Result = true;
                         sres.Data = "Sucessfully  Updated.";
                     }
@@ -198,7 +244,16 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
             catch (Exception ex)
             {
                 sres.Message = ex.Message;
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
 
+            }
+            finally
+            {
+                if (transaction != null)
+                    transaction.Dispose();
             }
 
             return sres;
@@ -240,9 +295,6 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
 
             return sres;
         }
-
-
-
 
         public async Task<ServiceResponse<List<Medicationcs>>> ClientMedicationcs(Medicationcs Model, int Flag)
         {
@@ -854,7 +906,7 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
                 {
                     SqlCommand cmd = new SqlCommand("SP_ClientNotesOperation", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-           
+
                     cmd.Parameters.AddWithValue("@flag", Flag);
                     cmd.Parameters.AddWithValue("@UserId", Model.UserId);
                     cmd.Parameters.AddWithValue("@NotesTypeId", Model.NotesTypeId);
@@ -1062,48 +1114,48 @@ Where x.clientId=@ClientId and x.IsActive=@IsActive";
             try
             {
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-            {
-                string sql = "Select OtherId,CASA3, ContactId, InsuranceGrp, IsMedications, IsDialysis, IsOxygen, IsAids, IsCourtOrdered, FlowRate, ReunionLocations, LinkedClients, ShelterName, TalCode, Shelter, Facility, Room, ServiceRequestDate, CareDate, DischargeDate, Notes, Allergies from tblOthers(nolock) Where UserId = @UserId";
+                {
+                    string sql = "Select OtherId,CASA3, ContactId, InsuranceGrp, IsMedications, IsDialysis, IsOxygen, IsAids, IsCourtOrdered, FlowRate, ReunionLocations, LinkedClients, ShelterName, TalCode, Shelter, Facility, Room, ServiceRequestDate, CareDate, DischargeDate, Notes, Allergies from tblOthers(nolock) Where UserId = @UserId";
 
-                var objResult = (await connection.QueryAsync(sql, new { UserId = UserId })).Select(x => new OtherInfoModel
-                {
-                    OtherId = x.OtherId,
-                    EntityId = x.OtherId,
-                    CASA3 = x.CASA3 != null ? x.CASA3 : "",
-                    ContactId = x.ContactId != null ? x.ContactId : 0,
-                    InsuranceGrp = x.InsuranceGrp != null ? x.InsuranceGrp : "",
-                    IsMedications = x.IsMedications != null ? x.IsMedications : false,
-                    IsDialysis = x.IsDialysis != null ? x.IsDialysis : false,
-                    IsOxygen = x.IsOxygen != null ? x.IsOxygen : false,
-                    IsAids = x.IsAids != null ? x.IsAids : false,
-                    IsCourtOrdered = x.IsCourtOrdered != null ? x.IsCourtOrdered : false,
-                    FlowRate = x.FlowRate != null ? x.FlowRate : "",
-                    ReunionLocations = x.ReunionLocations != null ? x.ReunionLocations : "",
-                    LinkedClients = x.LinkedClients != null ? x.LinkedClients : "",
-                    ShelterName = x.ShelterName != null ? x.ShelterName : "",
-                    TalCode = x.TalCode != null ? x.TalCode : "",
-                    Shelter = x.Shelter != null ? x.Shelter : "",
-                    Facility = x.Facility != null ? x.Facility : "",
-                    Room = x.Room != null ? x.Room : "",
-                    ServiceRequestDateTime = x.ServiceRequestDate != null ? x.ServiceRequestDate : DateTime.Now,
-                    CareDateTime = x.CareDate != null ? x.CareDate : DateTime.Now,
-                    DischargeDateTime = x.DischargeDate != null ? x.DischargeDate : DateTime.Now,
-                    Notes = x.Notes != null ? x.Notes : "",
-                    Allergies = x.Allergies != null ? x.Allergies : "",
-                 
-                });
-                if (objResult.Count() > 0)
-                {
-                    obj.Data = objResult.FirstOrDefault();
-                    obj.Result = true;
+                    var objResult = (await connection.QueryAsync(sql, new { UserId = UserId })).Select(x => new OtherInfoModel
+                    {
+                        OtherId = x.OtherId,
+                        EntityId = x.OtherId,
+                        CASA3 = x.CASA3 != null ? x.CASA3 : "",
+                        ContactId = x.ContactId != null ? x.ContactId : 0,
+                        InsuranceGrp = x.InsuranceGrp != null ? x.InsuranceGrp : "",
+                        IsMedications = x.IsMedications != null ? x.IsMedications : false,
+                        IsDialysis = x.IsDialysis != null ? x.IsDialysis : false,
+                        IsOxygen = x.IsOxygen != null ? x.IsOxygen : false,
+                        IsAids = x.IsAids != null ? x.IsAids : false,
+                        IsCourtOrdered = x.IsCourtOrdered != null ? x.IsCourtOrdered : false,
+                        FlowRate = x.FlowRate != null ? x.FlowRate : "",
+                        ReunionLocations = x.ReunionLocations != null ? x.ReunionLocations : "",
+                        LinkedClients = x.LinkedClients != null ? x.LinkedClients : "",
+                        ShelterName = x.ShelterName != null ? x.ShelterName : "",
+                        TalCode = x.TalCode != null ? x.TalCode : "",
+                        Shelter = x.Shelter != null ? x.Shelter : "",
+                        Facility = x.Facility != null ? x.Facility : "",
+                        Room = x.Room != null ? x.Room : "",
+                        ServiceRequestDateTime = x.ServiceRequestDate != null ? x.ServiceRequestDate : DateTime.Now,
+                        CareDateTime = x.CareDate != null ? x.CareDate : DateTime.Now,
+                        DischargeDateTime = x.DischargeDate != null ? x.DischargeDate : DateTime.Now,
+                        Notes = x.Notes != null ? x.Notes : "",
+                        Allergies = x.Allergies != null ? x.Allergies : "",
+
+                    });
+                    if (objResult.Count() > 0)
+                    {
+                        obj.Data = objResult.FirstOrDefault();
+                        obj.Result = true;
+                    }
+                    else
+                    {
+                        obj.Data = new OtherInfoModel();
+                        obj.Result = false;
+                    }
+                    obj.Message = (objResult.Count() > 0 || objResult != null) ? "Data Found." : "No Data found.";
                 }
-                else
-                {
-                    obj.Data = new OtherInfoModel();
-                    obj.Result = false;
-                }
-                obj.Message = (objResult.Count() > 0 || objResult!=null) ? "Data Found." : "No Data found.";
-            }
 
             }
             catch (Exception ex)
