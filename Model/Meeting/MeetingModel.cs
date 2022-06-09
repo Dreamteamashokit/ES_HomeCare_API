@@ -7,7 +7,7 @@ namespace ES_HomeCare_API.Model.Meeting
 {
     public class MeetingModel : BaseModel
     {
-        public int MeetingId { get; set; }
+        public long MeetingId { get; set; }
         public int ClientId { get; set; }
         public int EmpId { get; set; }
         public List<int> EmpList { get; set; }

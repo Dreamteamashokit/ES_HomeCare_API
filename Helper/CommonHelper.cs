@@ -16,7 +16,7 @@ namespace ES_HomeCare_API.Helper
             return output.Subtract(output.Date);
         }
 
-        static public TimeSpan ParseTime(this string strTime,string format)
+        static public TimeSpan ParseTime(this string strTime, string format)
         {
             DateTime output;
             var ok = DateTime.TryParseExact(strTime, format, CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out output);
@@ -25,11 +25,25 @@ namespace ES_HomeCare_API.Helper
 
         public static DateTime ParseDate(this string dateStr)
         {
+            
+            if (!string.IsNullOrEmpty(dateStr))
+            {
+                DateTime dte = DateTime.ParseExact(dateStr.Trim(), "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                return dte;
 
-            string dateTimeStr = dateStr;
-            DateTime dte = DateTime.ParseExact(dateTimeStr.Trim(), "dd-MM-yyyy", CultureInfo.InvariantCulture);
-            return dte;
+            }
+            else
+            {
+
+                return DateTime.Now;
+            }
+
         }
+
+
+
+
+
 
 
         public static DateTime ParseDate(this string dateStr, string format)
@@ -52,7 +66,7 @@ namespace ES_HomeCare_API.Helper
 
 
 
-        
+
 
         public static string TimeHelper(this TimeSpan timeSpan)
         {

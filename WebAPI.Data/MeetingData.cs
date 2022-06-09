@@ -96,19 +96,21 @@ namespace ES_HomeCare_API.WebAPI.Data
         {
             ServiceResponse<string> obj = new ServiceResponse<string>();
             try
-            {             
+            {
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
                     string sql = "MeetingProc";
-                    var sqlParameter = new { @flag = 1,
-                        @ClientId = model.ClientId, 
+                    var sqlParameter = new
+                    {
+                        @flag = 1,
+                        @ClientId = model.ClientId,
                         @EmpId = model.EmpId,
                         @FromDate = model.FromDate,
                         @ToDate = model.ToDate,
                         @StartTime = model.StartTime,
                         @EndTime = model.EndTime,
                         @MeetingPoint = model.MeetingNote,
-                        @IsStatus=model.IsStatus,
+                        @IsStatus = model.IsStatus,
                         @CreatedOn = model.CreatedOn,
                         @CreatedBy = model.CreatedBy,
                     };
@@ -136,12 +138,62 @@ namespace ES_HomeCare_API.WebAPI.Data
                 obj.Message = ex.Message;
                 return obj;
             }
-          
+
         }
 
 
 
 
+        public async Task<ServiceResponse<string>> UpdateMeeting(MeetingModel model)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sql = "MeetingProc";
+                    var sqlParameter = new
+                    {
+                        @flag = (model.MeetingId == 0 ? 2 : 3),
+                        @MeetingId = model.MeetingId,
+                        @ClientId = model.ClientId,
+                        @EmpId = model.EmpId,
+                        @MeetingDate = model.MeetingDate,
+                        @FromDate = model.FromDate,
+                        @ToDate = model.ToDate,
+                        @StartTime = model.StartTime,
+                        @EndTime = model.EndTime,
+                        @MeetingPoint = model.MeetingNote,
+                        @IsStatus = model.IsStatus,
+                        @CreatedOn = model.CreatedOn,
+                        @CreatedBy = model.CreatedBy,
+                    };
+                    int rowsAffected = (await connection.ExecuteAsync(sql, sqlParameter, commandType: CommandType.StoredProcedure));
+
+                    if (rowsAffected > 0)
+                    {
+                        obj.Result = true;
+                        obj.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        obj.Result = false;
+                        obj.Data = null;
+                        obj.Message = "Failed new creation.";
+                    }
+                }
+                return obj;
+
+            }
+            catch (Exception ex)
+            {
+
+                obj.Result = false;
+                obj.Message = ex.Message;
+                return obj;
+            }
+
+        }
 
 
         public async Task<ServiceResponse<IEnumerable<EmpMeeting>>> GetEmpMeetingList(int empId)
@@ -201,25 +253,25 @@ Left join tblAddress xy on x.UserId=xy.UserId ORDER BY TRIM(x.LastName)";
 
                 //Using Query Syntax
                 var GroupByQS = (from mom in result
-                                group mom by new { mom.ClientId, mom.FirstName, mom.MiddleName, mom.LastName, mom.CellPhone, } into momGroup
-                                orderby momGroup.Key.ClientId descending
-                                select new ClientMeeting
-                                {
-                                    ClientId = momGroup.Key.ClientId,
-                                    FirstName = momGroup.Key.FirstName,
-                                    MiddleName = momGroup.Key.MiddleName,
-                                    LastName = momGroup.Key.LastName,
-                                    Contact = momGroup.Key.CellPhone,
-                                    Meetings = momGroup.Where(x => x.MeetingId != 0).Select(x => new ClMeeting
-                                    {
-                                        EmpId = x.EmpId != null ? x.EmpId : 0,
-                                        EmpName = x.EmpName != null ? x.EmpName : "Test Name",
-                                        MeetingId = x.MeetingId,
-                                        MeetingDate = x.MeetingDate,
-                                        StartTime = ((TimeSpan)x.StartTime).TimeHelper(),
-                                        EndTime = ((TimeSpan)x.EndTime).TimeHelper(),
-                                    })
-                                }).OrderBy(x=>x.LastName.Trim());
+                                 group mom by new { mom.ClientId, mom.FirstName, mom.MiddleName, mom.LastName, mom.CellPhone, } into momGroup
+                                 orderby momGroup.Key.ClientId descending
+                                 select new ClientMeeting
+                                 {
+                                     ClientId = momGroup.Key.ClientId,
+                                     FirstName = momGroup.Key.FirstName,
+                                     MiddleName = momGroup.Key.MiddleName,
+                                     LastName = momGroup.Key.LastName,
+                                     Contact = momGroup.Key.CellPhone,
+                                     Meetings = momGroup.Where(x => x.MeetingId != 0).Select(x => new ClMeeting
+                                     {
+                                         EmpId = x.EmpId != null ? x.EmpId : 0,
+                                         EmpName = x.EmpName != null ? x.EmpName : "Test Name",
+                                         MeetingId = x.MeetingId,
+                                         MeetingDate = x.MeetingDate,
+                                         StartTime = ((TimeSpan)x.StartTime).TimeHelper(),
+                                         EndTime = ((TimeSpan)x.EndTime).TimeHelper(),
+                                     })
+                                 }).OrderBy(x => x.LastName.Trim());
 
 
                 obj.Data = GroupByQS;
@@ -239,25 +291,25 @@ Left join tblAddress xy on x.UserId=xy.UserId ORDER BY TRIM(x.LastName)";
                 var result = (await connection.QueryAsync(sql, sqlParameter, commandType: CommandType.StoredProcedure)).ToList();
                 //Using Query Syntax
                 var GroupByQS = (from mom in result
-                                group mom by new { mom.ClientId, mom.FirstName, mom.MiddleName, mom.LastName, mom.CellPhone, } into momGroup
-                                orderby momGroup.Key.ClientId descending
-                                select new ClientMeeting
-                                {
-                                    ClientId = momGroup.Key.ClientId,
-                                    FirstName = momGroup.Key.FirstName,
-                                    MiddleName = momGroup.Key.MiddleName,
-                                    LastName = momGroup.Key.LastName,
-                                    Contact = momGroup.Key.CellPhone,
-                                    Meetings = momGroup.Where(x => x.MeetingId != 0).Select(x => new ClMeeting
-                                    {
-                                        EmpId = x.EmpId != null ? x.EmpId : 0,
-                                        EmpName = x.EmpName != null ? x.EmpName : "Test Name",
-                                        MeetingId = x.MeetingId,
-                                        MeetingDate = x.MeetingDate,
-                                        StartTime = ((TimeSpan)x.StartTime).TimeHelper(),
-                                        EndTime = ((TimeSpan)x.EndTime).TimeHelper(),
-                                    })
-                                }).OrderBy(x => x.LastName.Trim()); 
+                                 group mom by new { mom.ClientId, mom.FirstName, mom.MiddleName, mom.LastName, mom.CellPhone, } into momGroup
+                                 orderby momGroup.Key.ClientId descending
+                                 select new ClientMeeting
+                                 {
+                                     ClientId = momGroup.Key.ClientId,
+                                     FirstName = momGroup.Key.FirstName,
+                                     MiddleName = momGroup.Key.MiddleName,
+                                     LastName = momGroup.Key.LastName,
+                                     Contact = momGroup.Key.CellPhone,
+                                     Meetings = momGroup.Where(x => x.MeetingId != 0).Select(x => new ClMeeting
+                                     {
+                                         EmpId = x.EmpId != null ? x.EmpId : 0,
+                                         EmpName = x.EmpName != null ? x.EmpName : "Test Name",
+                                         MeetingId = x.MeetingId,
+                                         MeetingDate = x.MeetingDate,
+                                         StartTime = ((TimeSpan)x.StartTime).TimeHelper(),
+                                         EndTime = ((TimeSpan)x.EndTime).TimeHelper(),
+                                     })
+                                 }).OrderBy(x => x.LastName.Trim());
 
 
                 obj.Data = GroupByQS;
@@ -301,9 +353,9 @@ Where p.MeetingId=@MeetingId;";
                                              EndTime = ((TimeSpan)momGroup.FirstOrDefault().EndTime).TimeHelper(),
                                              Employee = new UserView()
                                              {
-                                               
+
                                                  Id = momGroup.FirstOrDefault().EmpId,
-                                                // UserType = momGroup.FirstOrDefault().empUserType,
+                                                 // UserType = momGroup.FirstOrDefault().empUserType,
                                                  FirstName = momGroup.FirstOrDefault().empFName,
                                                  MiddleName = momGroup.FirstOrDefault().empMName,
                                                  LastName = momGroup.FirstOrDefault().empLName,
@@ -329,11 +381,11 @@ Where p.MeetingId=@MeetingId;";
                                              {
 
                                                  Id = momGroup.FirstOrDefault().ClientId,
-                                                // UserType = momGroup.FirstOrDefault().UserType,
+                                                 // UserType = momGroup.FirstOrDefault().UserType,
                                                  FirstName = momGroup.FirstOrDefault().FirstName,
                                                  MiddleName = momGroup.FirstOrDefault().MiddleName,
                                                  LastName = momGroup.FirstOrDefault().LastName,
-                                                 CellPhone= momGroup.FirstOrDefault().CellPhone,
+                                                 CellPhone = momGroup.FirstOrDefault().CellPhone,
                                                  Email = momGroup.FirstOrDefault().Email,
                                                  HomePhone = momGroup.FirstOrDefault().HomePhone,
                                                  EmergPhone = momGroup.FirstOrDefault().EmgPhone,
@@ -342,7 +394,7 @@ Where p.MeetingId=@MeetingId;";
                                                  Address = new AddressView()
                                                  {
                                                      LocationDetail = momGroup.FirstOrDefault().Address,
-                                                     Owner= momGroup.FirstOrDefault().Owner,
+                                                     Owner = momGroup.FirstOrDefault().Owner,
                                                      FlatNo = momGroup.FirstOrDefault().FlatNo,
                                                      Country = momGroup.FirstOrDefault().Country,
                                                      State = momGroup.FirstOrDefault().State,
@@ -352,7 +404,7 @@ Where p.MeetingId=@MeetingId;";
 
                                              },
                                              IsStatus = momGroup.FirstOrDefault().IsStatus,
-                                             Notes = momGroup.Select(x => (string)x.MeetingPoint).Where(x=>x!=null).Distinct().ToList()
+                                             Notes = momGroup.Select(x => (string)x.MeetingPoint).Where(x => x != null).Distinct().ToList()
                                          }).FirstOrDefault();
 
                 obj.Data = objResult;
@@ -362,47 +414,7 @@ Where p.MeetingId=@MeetingId;";
             return obj;
         }
 
-        public async Task<ServiceResponse<string>> UpdateMeeting(MeetingModel _model)
-        {
-            ServiceResponse<string> sres = new ServiceResponse<string>();
-            try
-            {
-                using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-                {
-                    string updateQuery = "Update tblMeeting SET ClientId=@ClientId,StartTime=@StartTime,EndTime=@EndTime Where MeetingId=@MeetingId";
 
-                    var result = cnn.Execute(updateQuery, new
-                    {
-                        _model.ClientId,
-                        _model.StartTime,
-                        _model.EndTime,
-                        _model.MeetingId,
-                    });
-
-                    if (result > 0)
-                    {
-                        sres.Result = true;
-                        sres.Data = "Sucessfully  Updated.";
-                    }
-                    else
-                    {
-                        sres.Data = null;
-                        sres.Message = "Failed new creation.";
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-                sres.Message = ex.Message;
-                return sres;
-            }
-            finally
-            {
-
-            }
-            return sres;
-        }
 
         public async Task<ServiceResponse<string>> PostNote(NotesModel _model)
         {
@@ -497,7 +509,7 @@ Where p.MeetingId=@MeetingId;";
                 var sqlParameter = new { @flag = 2, @ClientId = ClientId };
                 var result = (await connection.QueryAsync(sql, sqlParameter, commandType: CommandType.StoredProcedure)).Select(mom => new MeetingView
                 {
-                    MeetingId = mom.MeetingId,       
+                    MeetingId = mom.MeetingId,
                     MeetingDate = ((DateTime)mom.MeetingDate).ToString("dd-MMM-yy"),
                     StartTime = ((TimeSpan)mom.StartTime).TimeHelper(),
                     EndTime = ((TimeSpan)mom.EndTime).TimeHelper(),
@@ -509,7 +521,7 @@ Where p.MeetingId=@MeetingId;";
                         LastName = mom.ELastname,
                         CellPhone = mom.ECellPhone,
                     }
-                }).ToList().OrderBy(x=>x.MeetingDate.ParseDate("dd-MMM-yy"));
+                }).ToList().OrderBy(x => x.MeetingDate.ParseDate("dd-MMM-yy"));
                 obj.Data = result;
                 obj.Result = result.Any() ? true : false;
                 obj.Message = result.Any() ? "Data Found." : "No Data found.";
@@ -527,7 +539,7 @@ Where p.MeetingId=@MeetingId;";
                 string sql = @"Select p.MeetingId ,p.LogMsg,q.FirstName,q.MiddleName,q.LastName,p.CreatedOn from tblMeetingLog p inner join tblUser q on p.CreatedBy=q.UserId
 			where p.MeetingId =@MeetingId
 			Order by p.CreatedOn";
-       
+
                 var result = (await connection.QueryAsync(sql, new { @MeetingId = MeetingId })).Select(mom => new MeetingLog
                 {
                     MeetingId = mom.MeetingId,
@@ -535,7 +547,7 @@ Where p.MeetingId=@MeetingId;";
                     CreatedOn = mom.CreatedOn,
                     CreatedBy = new NameClass
                     {
-                     
+
                         FirstName = mom.FirstName,
                         MiddleName = mom.MiddleName,
                         LastName = mom.LastName,
@@ -548,7 +560,7 @@ Where p.MeetingId=@MeetingId;";
             return obj;
         }
 
-        
+
 
 
 

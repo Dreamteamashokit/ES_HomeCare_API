@@ -40,11 +40,11 @@ namespace ES_HomeCare_API.Controllers
                     MeetingDate = model.MeetingDate.ParseDate(),
                     MeetingNote = model.MeetingNote,
                     ClientId = model.ClientId,
-                    EmpId = model.EmpId,                    
+                    EmpId = model.EmpId,
                     StartTime = model.StartTime.ParseTime(),
                     EndTime = model.EndTime.ParseTime(),
                     EmpList = model.EmpList,
-                    IsStatus= (short)MeetingEnum.Active,
+                    IsStatus = (short)MeetingEnum.Active,
                     CreatedBy = model.UserId,
                     CreatedOn = DateTime.Now
                 };
@@ -158,14 +158,20 @@ namespace ES_HomeCare_API.Controllers
             {
                 MeetingModel obj = new MeetingModel()
                 {
-                 
+                    MeetingId = model.MeetingId,
+                    MeetingDate = model.MeetingDate.ParseDate(),
+                    MeetingNote = model.MeetingNote,
+                    FromDate = model.FromDate.ParseDate(),
+                    ToDate = model.ToDate.ParseDate(),
                     ClientId = model.ClientId,
+                    EmpId = model.EmpId,
                     StartTime = model.StartTime.ParseTime(),
                     EndTime = model.EndTime.ParseTime(),
+                    IsStatus = (short)MeetingEnum.Active,
                     CreatedBy = model.UserId,
                     CreatedOn = DateTime.Now
                 };
-                return Ok(await mtgSrv.AddMeeting(obj));
+                return Ok(await mtgSrv.UpdateMeeting(obj));
             }
             catch (Exception ex)
             {
