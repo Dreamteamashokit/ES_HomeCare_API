@@ -98,5 +98,15 @@ namespace ES_HomeCare_API.Controllers
         {
             return Ok(await service.GetActiveBillAndExpiredBill(status));
         }
+
+
+        [HttpPost("GetServiceCodeByPayerId/{payerId}")]
+        [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetServiceCodeByPayerId(long payerId)
+        {
+            return Ok(await service.GetServiceCodeByPayerId(payerId));
+        }
+
     }
 }

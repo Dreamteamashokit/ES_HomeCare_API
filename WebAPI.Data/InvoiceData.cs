@@ -272,7 +272,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             try
             {
                 var existsBilling = await GetBillingDetailsByBillingId(billingId);
-                if(existsBilling != null && existsBilling.Result == true && existsBilling.Data != null)
+                if (existsBilling != null && existsBilling.Result == true && existsBilling.Data != null)
                 {
                     using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                     {
@@ -302,7 +302,7 @@ namespace ES_HomeCare_API.WebAPI.Data
         public async Task<ServiceResponse<BillingViewModel>> GetBillingDetailsByBillingId(long billingId)
         {
             ServiceResponse<BillingViewModel> obj = new ServiceResponse<BillingViewModel>();
-            
+
             try
             {
                 using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
@@ -368,7 +368,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                 return obj;
             }
         }
-    
+
 
         public async Task<ServiceResponse<IList<BillingViewModel>>> GetActiveBillAndExpiredBill(bool status)
         {
@@ -439,6 +439,55 @@ namespace ES_HomeCare_API.WebAPI.Data
                     {
                         obj.Result = true;
                         obj.Message = "Billing records not exists.";
+                    }
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+        }
+
+
+        public async Task<ServiceResponse<IList<PayerServiceCodeModel>>> GetServiceCodeByPayerId(long payerId)
+        {
+            ServiceResponse<IList<PayerServiceCodeModel>> obj = new ServiceResponse<IList<PayerServiceCodeModel>>();
+            IList<PayerServiceCodeModel> objServiceCOdeList = null;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("GetServiceCodeByPayerId", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@PayerId", payerId);
+
+                    DataTable table = new DataTable();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(table);
+                    if (table.Rows.Count > 0)
+                    {
+                        objServiceCOdeList = new List<PayerServiceCodeModel>();
+                        for (int i = 0; i < table.Rows.Count; i++)
+                        {
+                            objServiceCOdeList.Add(new PayerServiceCodeModel
+                            {
+                                RateId = Convert.ToInt32(table.Rows[i]["RateId"]),
+                                PayerId = Convert.ToInt32(table.Rows[i]["PayerId"]),
+                                ServiceCode = table.Rows[i]["ServiceCode"].ToString(),
+                            });
+                        }
+
+                        obj.Data = objServiceCOdeList;
+                        obj.Result = true;
+                        obj.Message = "ServiceCode list retrive successfull.";
+
+                    }
+                    else
+                    {
+                        obj.Result = true;
+                        obj.Message = "ServiceCode does not exists.";
                     }
                     return obj;
                 }
