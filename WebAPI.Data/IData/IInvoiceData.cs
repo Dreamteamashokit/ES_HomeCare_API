@@ -20,5 +20,6 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
         Task<ServiceResponse<string>> DeleteBillng(long billingId);
         Task<ServiceResponse<BillingViewModel>> GetBillingDetailsByBillingId(long billingId);
         Task<ServiceResponse<IList<BillingViewModel>>> GetActiveBillAndExpiredBill(bool status);
+        Task<ServiceResponse<IList<PayerServiceCodeModel>>> GetServiceCodeByPayerId(long payerId);
     }
 }
