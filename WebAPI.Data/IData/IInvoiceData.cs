@@ -21,5 +21,7 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
         Task<ServiceResponse<BillingViewModel>> GetBillingDetailsByBillingId(long billingId);
         Task<ServiceResponse<IList<BillingViewModel>>> GetActiveBillAndExpiredBill(bool status);
         Task<ServiceResponse<IList<PayerServiceCodeModel>>> GetServiceCodeByPayerId(long payerId);
+        Task<ServiceResponse<IList<PayerRateViewModel>>> GetPayerRateList();
+        Task<ServiceResponse<PayerRateViewModel>> GetPayerRateDetails(int rateId);
     }
 }
