@@ -64,5 +64,10 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             return await data.GetActiveBillAndExpiredBill(status);
         }
+
+        public async Task<ServiceResponse<IList<PayerServiceCodeModel>>> GetServiceCodeByPayerId(long payerId)
+        {
+            return await data.GetServiceCodeByPayerId(payerId);
+        }
     }
 }

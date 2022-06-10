@@ -9,9 +9,7 @@
         public string Code { get; set; }
         public string Result { get; set; }
         public int Nurse { get; set; }
-        public string Notes { get; set; }
-
-        
+        public string Notes { get; set; } 
 
 
 

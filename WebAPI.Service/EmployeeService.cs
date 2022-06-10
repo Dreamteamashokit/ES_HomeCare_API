@@ -144,6 +144,12 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             return await data.DeleteCompliance(complianceId);
         }
 
+        public async Task<ServiceResponse<ComplianceModel>> GetComplianceData(int complianceId)
+        {
+            return await data.GetComplianceData(complianceId);
+        }
+
+
         public async Task<ServiceResponse<string>> UpdateCompliance(ComplianceModel model)
         {
             return await data.UpdateCompliance(model);
