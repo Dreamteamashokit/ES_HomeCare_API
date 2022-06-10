@@ -519,44 +519,41 @@ namespace ES_HomeCare_API.WebAPI.Data
                         objPayerRateList = new List<PayerRateViewModel>();
                         for (int i = 0; i < table.Rows.Count; i++)
                         {
-                            PayerRateViewModel objRate = new PayerRateViewModel();
-                            objRate.RateId = Convert.ToInt32(table.Rows[i]["RateId"]);
-                            objRate.PayerId = table.Rows[i]["Type"] == null ? 0 : Convert.ToInt32(table.Rows[i]["PayerId"]);
-                            objRate.ServiceCode = table.Rows[i]["ServiceCode"].ToString();
+                            PayerRateViewModel objPayerRate = new PayerRateViewModel();
+                            objPayerRate.RateId = Convert.ToInt32(table.Rows[i]["RateId"]);
+                            objPayerRate.PayerId = table.Rows[i]["PayerId"] == null ? 0 : Convert.ToInt32(table.Rows[i]["PayerId"]);
+                            objPayerRate.PayerName = table.Rows[i]["PayerName"].ToString();
+                            objPayerRate.ServiceCode = table.Rows[i]["ServiceCode"].ToString();
                             if (table.Rows[i]["Type"] != null && table.Rows[i]["Type"] != DBNull.Value)
                             {
-                                objRate.Type = Convert.ToInt32(table.Rows[i]["Type"]);
+                                objPayerRate.Type = Convert.ToInt32(table.Rows[i]["Type"]);
                             }
-                            else { objRate.Type = 0; }
+                            else { objPayerRate.Type = 0; }
 
-                            objRate.BillCode = table.Rows[i]["BillCode"].ToString();
-                            objRate.RevenueCode = table.Rows[i]["RevenueCode"].ToString();
-                            if (table.Rows[i]["TaxRate"] != null && table.Rows[i]["TaxRate"] != DBNull.Value)
+                            objPayerRate.BillCode = table.Rows[i]["BillCode"].ToString();
+                            objPayerRate.RevenueCode = table.Rows[i]["RevenueCode"].ToString();
+                            if (table.Rows[i]["Rate"] != null && table.Rows[i]["Rate"] != DBNull.Value)
                             {
-                                objRate.TaxRate = Convert.ToInt32(table.Rows[i]["TaxRate"]);
+                                objPayerRate.TaxRate = Convert.ToInt32(table.Rows[i]["Rate"]);
                             }
-                            else { objRate.TaxRate = 0; }
+                            else { objPayerRate.TaxRate = 0; }
 
-                            objRate.ValidFrom = string.IsNullOrEmpty(table.Rows[i]["ValidFrom"].ToString()) ? (DateTime?)null : Convert.ToDateTime(table.Rows[i]["ValidFrom"]);
-                            objRate.ValidTo = string.IsNullOrEmpty(table.Rows[i]["ValidTo"].ToString()) ? (DateTime?)null : Convert.ToDateTime(table.Rows[i]["ValidTo"]);
-                            objRate.Hourly = table.Rows[i]["Hourly"] == null ? 0 : Convert.ToDecimal(table.Rows[i]["Hourly"]);
-                            objRate.LiveIn = table.Rows[i]["LiveIn"] == null ? 0 : Convert.ToDecimal(table.Rows[i]["LiveIn"]);
-                            objRate.Visit = table.Rows[i]["Visit"] == null ? 0 : Convert.ToDecimal(table.Rows[i]["Visit"]);
-                            objRate.Unit = table.Rows[i]["Unit"].ToString();
-                            objRate.Modifiers1 = table.Rows[i]["Modifiers1"].ToString();
-                            objRate.Modifiers2 = table.Rows[i]["Modifiers2"].ToString();
-                            objRate.Modifiers3 = table.Rows[i]["Modifiers3"].ToString();
-                            objRate.Modifiers4 = table.Rows[i]["Modifiers4"].ToString();
-                            objRate.PlaceOfService = table.Rows[i]["PlaceOfService"].ToString();
-                            if (table.Rows[i]["MutualGroup"] != null && table.Rows[i]["MutualGroup"] != DBNull.Value)
-                            {
-                                objRate.MutualGroup = Convert.ToBoolean(table.Rows[i]["MutualGroup"]);
-                            }
-                            else { objRate.MutualGroup = false; }
-                            objRate.Notes = table.Rows[i]["Notes"].ToString();
-                            objRate.IsActive = Convert.ToInt16(table.Rows[i]["IsActive"]);
-
-                            objPayerRateList.Add(objRate);
+                            objPayerRate.ValidFrom = string.IsNullOrEmpty(table.Rows[i]["ValidFrom"].ToString()) ? (DateTime?)null : Convert.ToDateTime(table.Rows[i]["ValidFrom"]);
+                            objPayerRate.ValidTo = string.IsNullOrEmpty(table.Rows[i]["ValidTo"].ToString()) ? (DateTime?)null : Convert.ToDateTime(table.Rows[i]["ValidTo"]);
+                            objPayerRate.Hourly = table.Rows[i]["Hourly"] == null ? 0 : Convert.ToDecimal(table.Rows[i]["Hourly"]);
+                            objPayerRate.LiveIn = table.Rows[i]["LiveIn"] == null ? 0 : Convert.ToDecimal(table.Rows[i]["LiveIn"]);
+                            objPayerRate.Visit = table.Rows[i]["Visit"] == null ? 0 : Convert.ToDecimal(table.Rows[i]["Visit"]);
+                            objPayerRate.Unit = table.Rows[i]["Unit"].ToString();
+                            objPayerRate.Modifiers1 = table.Rows[i]["Modifiers1"].ToString();
+                            objPayerRate.Modifiers2 = table.Rows[i]["Modifiers2"].ToString();
+                            objPayerRate.Modifiers3 = table.Rows[i]["Modifiers3"].ToString();
+                            objPayerRate.Modifiers4 = table.Rows[i]["Modifiers4"].ToString();
+                            objPayerRate.MutualGroup = table.Rows[i]["MutualGroup"].ToString();
+                            objPayerRate.Notes = table.Rows[i]["Notes"].ToString();
+                            objPayerRate.IsActive = Convert.ToInt16(table.Rows[i]["IsActive"]);
+                            objPayerRate.CreatedBy = table.Rows[i]["CreatedBy"].ToString();
+                            objPayerRate.CreatedOn = Convert.ToDateTime(table.Rows[i]["CreatedOn"].ToString());
+                            objPayerRateList.Add(objPayerRate);
                         }
 
                         obj.Data = objPayerRateList;
@@ -602,7 +599,8 @@ namespace ES_HomeCare_API.WebAPI.Data
                         {
 
                             objPayerRate.RateId = Convert.ToInt32(table.Rows[i]["RateId"]);
-                            objPayerRate.PayerId = table.Rows[i]["Type"] == null ? 0 : Convert.ToInt32(table.Rows[i]["PayerId"]);
+                            objPayerRate.PayerId = table.Rows[i]["PayerId"] == null ? 0 : Convert.ToInt32(table.Rows[i]["PayerId"]);
+                            objPayerRate.PayerName = table.Rows[i]["PayerName"].ToString();
                             objPayerRate.ServiceCode = table.Rows[i]["ServiceCode"].ToString();
                             if (table.Rows[i]["Type"] != null && table.Rows[i]["Type"] != DBNull.Value)
                             {
@@ -612,9 +610,9 @@ namespace ES_HomeCare_API.WebAPI.Data
 
                             objPayerRate.BillCode = table.Rows[i]["BillCode"].ToString();
                             objPayerRate.RevenueCode = table.Rows[i]["RevenueCode"].ToString();
-                            if (table.Rows[i]["TaxRate"] != null && table.Rows[i]["TaxRate"] != DBNull.Value)
+                            if (table.Rows[i]["Rate"] != null && table.Rows[i]["Rate"] != DBNull.Value)
                             {
-                                objPayerRate.TaxRate = Convert.ToInt32(table.Rows[i]["TaxRate"]);
+                                objPayerRate.TaxRate = Convert.ToInt32(table.Rows[i]["Rate"]);
                             }
                             else { objPayerRate.TaxRate = 0; }
 
@@ -628,14 +626,11 @@ namespace ES_HomeCare_API.WebAPI.Data
                             objPayerRate.Modifiers2 = table.Rows[i]["Modifiers2"].ToString();
                             objPayerRate.Modifiers3 = table.Rows[i]["Modifiers3"].ToString();
                             objPayerRate.Modifiers4 = table.Rows[i]["Modifiers4"].ToString();
-                            objPayerRate.PlaceOfService = table.Rows[i]["PlaceOfService"].ToString();
-                            if (table.Rows[i]["MutualGroup"] != null && table.Rows[i]["MutualGroup"] != DBNull.Value)
-                            {
-                                objPayerRate.MutualGroup = Convert.ToBoolean(table.Rows[i]["MutualGroup"]);
-                            }
-                            else { objPayerRate.MutualGroup = false; }
+                            objPayerRate.MutualGroup = table.Rows[i]["MutualGroup"].ToString();
                             objPayerRate.Notes = table.Rows[i]["Notes"].ToString();
                             objPayerRate.IsActive = Convert.ToInt16(table.Rows[i]["IsActive"]);
+                            objPayerRate.CreatedBy = table.Rows[i]["CreatedBy"].ToString();
+                            objPayerRate.CreatedOn = Convert.ToDateTime(table.Rows[i]["CreatedOn"].ToString());
                         }
 
                         obj.Data = objPayerRate;

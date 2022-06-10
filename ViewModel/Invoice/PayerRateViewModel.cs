@@ -6,6 +6,7 @@ namespace ES_HomeCare_API.ViewModel.Invoice
     {
         public int RateId { get; set; }
         public int PayerId { get; set; }
+        public string PayerName { get; set; }
         public string ServiceCode { get; set; }
         public long Type { get; set; }
         public string BillCode { get; set; }
@@ -22,8 +23,10 @@ namespace ES_HomeCare_API.ViewModel.Invoice
         public string Modifiers3 { get; set; }
         public string Modifiers4 { get; set; }
         public string PlaceOfService { get; set; }
-        public bool MutualGroup { get; set; }
+        public string MutualGroup { get; set; }
         public string Notes { get; set; }
         public int IsActive { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 }
