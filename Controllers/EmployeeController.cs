@@ -228,6 +228,14 @@ namespace WebAPI_SAMPLE.Controllers
                 throw ex;
             }
         }
+
+        [HttpGet("getComplianceData/{complianceId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ComplianceModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ComplianceModel>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetComplianceData(int complianceId)
+        {
+            return Ok(await service.GetComplianceData(complianceId));
+        }
         #endregion
 
 

@@ -658,11 +658,12 @@ inner join tblMaster y  on x.TypeId = y.MasterId  where x.EmployeeId = @EmpId an
             {
                 using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = "Insert Into tblCompliance (EmpId,DueDate,CompletedOn,Category,Code,Result,Nurse,Notes,CreatedOn,CreatedBy) Values (@UserId,@DueDate,@CompletedOn,@Category,@Code,@Result,@Nurse,@Notes,@CreatedOn,@CreatedBy);";
+                    string sqlQuery = "Insert Into tblCompliance (EmpId,DueDate,CompletedOn,Category,Code,Result,Nurse,Notes,CreatedOn,CreatedBy,IsActive) Values (@EmpId,@DueDate,@CompletedOn,@Category,@Code,@Result,@Nurse,@Notes,@CreatedOn,@CreatedBy, @IsActive);";
+                    
 
                     int rowsAffected = db.Execute(sqlQuery, new
                     {
-                        UserId = _model.UserId,
+                        EmpId = _model.UserId,
                         DueDate = Convert.ToDateTime(_model.DueDate),
                         CompletedOn = Convert.ToDateTime(_model.CompletedOn),
                         Category = _model.Category,
@@ -671,7 +672,8 @@ inner join tblMaster y  on x.TypeId = y.MasterId  where x.EmployeeId = @EmpId an
                         Notes = _model.Notes,
                         Nurse = _model.Nurse,
                         CreatedOn = _model.CreatedOn,
-                        CreatedBy = _model.CreatedBy
+                        CreatedBy = _model.CreatedBy,
+                        IsActive = (int)Status.Active
                     });
 
                     if (rowsAffected > 0)
@@ -705,14 +707,14 @@ inner join tblMaster y  on x.TypeId = y.MasterId  where x.EmployeeId = @EmpId an
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
 
-                string sql = "SELECT comp.ComplianceId, comp.EmpId, comp.DueDate, comp.CompletedOn, cata.ParentCategoryName as Category, " +
-                    "cata.CategoryName as Code, comp.Result, comp.Nurse, comp.Notes, comp.CreatedOn, comp.CreatedBy, comp.IsActive, comp.IsCompleted, " +
-                    "comp.CategoryId FROM tblCompliance comp join (SELECT category.CategoryId, category.CategoryName, " +
-                    "parent.CategoryName as ParentCategoryName from tblCategoryMaster category LEFT JOIN tblCategoryMaster as parent " +
-                    "ON category.ParentCategoryId = parent.CategoryId) as cata on comp.Code = cata.CategoryId Where EmpId=@EmpId;";
+                string sql = "SELECT comp.ComplianceId, comp.EmpId, comp.DueDate, comp.CompletedOn, ISNULL(cata.ParentCategoryName, '') as Category, " +
+                    "ISNULL(cata.CategoryName, '') as Code, comp.Result, comp.Nurse, comp.Notes, comp.CreatedOn, comp.CreatedBy, comp.IsActive, comp.IsCompleted, " +
+                    "comp.CategoryId FROM tblCompliance comp join (SELECT category.CategoryId, ISNULL(category.CategoryName, '') as CategoryName, " +
+                    "ISNULL(parent.CategoryName, '') as ParentCategoryName from tblCategoryMaster category LEFT JOIN tblCategoryMaster as parent " +
+                    "ON category.ParentCategoryId = parent.CategoryId) as cata on comp.Code = cata.CategoryId Where EmpId=@EmpId and IsActive=@IsActive;";
 
                 IEnumerable<ComplianceModel> cmeetings = (await connection.QueryAsync<ComplianceModel>(sql,
-                         new { EmpId = empId }));
+                         new { EmpId = empId, @IsActive = (int)Status.Active }));
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
@@ -720,6 +722,27 @@ inner join tblMaster y  on x.TypeId = y.MasterId  where x.EmployeeId = @EmpId an
             }
             return obj;
 
+        }
+
+        public async Task<ServiceResponse<ComplianceModel>> GetComplianceData(int complianceId)
+        {
+            ServiceResponse<ComplianceModel> obj = new ServiceResponse<ComplianceModel>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+
+                string sql = "SELECT top 1 comp.ComplianceId, comp.EmpId, comp.DueDate, comp.CompletedOn, cata.ParentCategoryName as Category, " +
+                    "cata.CategoryName as Code, comp.Result, comp.Nurse, comp.Notes, comp.CreatedOn, comp.CreatedBy, comp.IsActive, comp.IsCompleted, " +
+                    "comp.CategoryId FROM tblCompliance comp join (SELECT category.CategoryId, category.CategoryName, " +
+                    "parent.CategoryName as ParentCategoryName from tblCategoryMaster category LEFT JOIN tblCategoryMaster as parent " +
+                    "ON category.ParentCategoryId = parent.CategoryId) as cata on comp.Code = cata.CategoryId Where comp.ComplianceId=@complianceId and IsActive=@IsActive;";
+
+                ComplianceModel cmpModel = (await connection.QueryAsync<ComplianceModel>(sql,
+                         new { complianceId = complianceId, @IsActive = (int)Status.Active })).FirstOrDefault();
+                obj.Data = cmpModel;
+                obj.Result = cmpModel?.ComplianceId == complianceId ? true : false;
+                obj.Message = cmpModel?.ComplianceId == complianceId ? "Data Found." : "No Data found.";
+            }
+            return obj;
         }
 
         public async Task<ServiceResponse<string>> AddEmpRate(EmployeeRateModel _model)
@@ -852,12 +875,16 @@ VALUES(@EmpId, @EffectiveDate, @EndDate, @ClientId, @Description, @Notes, @Hourl
                 {
                     var sqlqry = "Update tblCompliance SET DueDate = @DueDate, CompletedOn = @CompletedOn, Category = @Category, " +
                         "Code = @Code, Notes = @Notes Where ComplianceId = @ComplianceId";
+
+                    string? category = int.TryParse(model.Category, out int res) ? model.Category : null;
+                    string? code = int.TryParse(model.Code, out int codeRes) ? model.Code : null;
+
                     int rowsAffected = await connection.ExecuteAsync(sqlqry, new
                     {
                         @DueDate = model.DueDate,
                         @CompletedOn = model.CompletedOn,
-                        @Category = model.Category,
-                        @Code = model.Code,
+                        @Category = category,
+                        @Code = code,
                         @Notes = model.Notes,
                         @ComplianceId = model.ComplianceId,
                     });
