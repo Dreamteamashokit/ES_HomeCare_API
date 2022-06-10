@@ -69,5 +69,15 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             return await data.GetServiceCodeByPayerId(payerId);
         }
+
+        public async Task<ServiceResponse<IList<PayerRateViewModel>>> GetPayerRateList()
+        {
+            return await data.GetPayerRateList();
+        }
+
+        public async Task<ServiceResponse<PayerRateViewModel>> GetPayerRateDetails(int rateId)
+        {
+            return await data.GetPayerRateDetails(rateId);
+        }
     }
 }

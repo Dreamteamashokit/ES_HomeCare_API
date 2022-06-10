@@ -108,5 +108,22 @@ namespace ES_HomeCare_API.Controllers
             return Ok(await service.GetServiceCodeByPayerId(payerId));
         }
 
+
+        [HttpGet("GetPayerRateList")]
+        [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetPayerRateList()
+        {
+            return Ok(await service.GetPayerRateList());
+        }
+
+
+        [HttpPost("GetPayerRateDetails/{rateId}")]
+        [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetPayerRateDetails(int rateId)
+        {
+            return Ok(await service.GetPayerRateDetails(rateId));
+        }
     }
 }
