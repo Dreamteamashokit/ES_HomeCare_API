@@ -172,7 +172,14 @@ namespace ES_HomeCare_API.WebAPI.Data
                     cmd.Parameters.AddWithValue("@Hourly", payerRateModel.Hourly);
                     cmd.Parameters.AddWithValue("@Livein", payerRateModel.Livein);
                     cmd.Parameters.AddWithValue("@Visit", payerRateModel.Visit);
-                    cmd.Parameters.AddWithValue("@Unit", payerRateModel.Unit);
+                    if (payerRateModel.Unit != null)
+                    {
+                        cmd.Parameters.AddWithValue("@Unit", payerRateModel.Unit);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@Unit", "");
+                    }
                     cmd.Parameters.AddWithValue("@Modifiers1", payerRateModel.Modifiers1);
                     cmd.Parameters.AddWithValue("@Modifiers2", payerRateModel.Modifiers2);
                     cmd.Parameters.AddWithValue("@Modifiers3", payerRateModel.Modifiers3);
