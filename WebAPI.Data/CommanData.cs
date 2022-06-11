@@ -69,8 +69,6 @@ namespace ES_HomeCare_API.WebAPI.Data
                 using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
                     string sqlQuery = "Insert Into tblMaster (MasterType,ItemId,ItemName,IsActive) values(@MasterType,@ItemId,@ItemName,@IsActive);";
-
-
                     int rowsAffected = cnn.Execute(sqlQuery, new
                     {
                         @MasterType = _model.MasterType,
@@ -78,9 +76,6 @@ namespace ES_HomeCare_API.WebAPI.Data
                         @ItemName = _model.ItemName,
                         @IsActive = true
                     });
-
-
-
                     if (rowsAffected > 0)
                     {
                         sres.Result = true;
@@ -92,7 +87,6 @@ namespace ES_HomeCare_API.WebAPI.Data
                         sres.Message = "Failed new creation.";
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -100,7 +94,6 @@ namespace ES_HomeCare_API.WebAPI.Data
                 sres.Message = ex.Message;
                 return sres;
             }
-
             return sres;
         }
 

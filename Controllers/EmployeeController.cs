@@ -206,36 +206,22 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.AddCompliance(model));
         }
 
-        [HttpGet("getComplianceList/{empId}")]
+        [HttpGet("getComplianceList/{UserId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ComplianceModel>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ComplianceModel>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetComplianceList(int empId)
+        public async Task<IActionResult> GetComplianceList(int UserId)
         {
-            return Ok(await service.GetComplianceList(empId));
+            return Ok(await service.GetComplianceList(UserId));
         }
 
-        [HttpPost("updateCompliance")]
+        [HttpDelete("deleteCompliance")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateCompliance([FromBody] ComplianceModel model)
+        public async Task<IActionResult> DeleteCompliance(int complianceId)
         {
-            try
-            {
-                return Ok(await service.UpdateCompliance(model));
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return Ok(await service.DeleteCompliance(complianceId));
         }
 
-        [HttpGet("getComplianceData/{complianceId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<ComplianceModel>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<ComplianceModel>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetComplianceData(int complianceId)
-        {
-            return Ok(await service.GetComplianceData(complianceId));
-        }
         #endregion
 
 
@@ -288,14 +274,6 @@ namespace WebAPI_SAMPLE.Controllers
         {
 
             return Ok(await service.GetEmpPayRate(empId));
-        }
-
-        [HttpDelete("deleteCompliance")]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteCompliance(int complianceId)
-        {
-            return Ok(await service.DeleteCompliance(complianceId));
         }
 
         [HttpDelete("delEmpPayRate")]

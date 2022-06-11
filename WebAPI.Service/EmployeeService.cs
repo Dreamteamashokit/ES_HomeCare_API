@@ -61,31 +61,24 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.AddIncident(_model);
         }
-
-
         public async Task<ServiceResponse<IEnumerable<IncidentModel>>> GetIncidentList(int empId)
         {
             return await data.GetIncidentList(empId);
         }
-
-
         public async Task<ServiceResponse<string>> DelIncident(int IncidentId)
         {
             return await data.DelIncident(IncidentId);
         }
-
         
 
         public async Task<ServiceResponse<string>> AddAttendance(AttendanceModel _model)
         {
             return await data.AddAttendance(_model);
         }
-
         public async Task<ServiceResponse<IEnumerable<AttendanceModel>>> GetAttendanceList(int empId)
         {
             return await data.GetAttendanceList(empId);
         }
-
 
         public async Task<ServiceResponse<string>> DelAttendance(int AttendanceId)
         {
@@ -97,7 +90,6 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.AddEmpStatus(_obj);
         }
-
         public async Task<ServiceResponse<IEnumerable<StatusModel>>> GetEmpStatusList(int empId)
         {
             return await data.GetEmpStatusList(empId);
@@ -111,23 +103,7 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         public async Task<ServiceResponse<IEnumerable<AvailabilityMaster>>> GetAvailabilityList()
         {
             return await data.GetAvailabilityList();
-        }
-
-
-       
-
-      
-
-
-        public async Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model)
-        {
-            return await data.AddCompliance(_model);
-        }
-
-        public async Task<ServiceResponse<IEnumerable<ComplianceModel>>> GetComplianceList(int empId)
-        {
-            return await data.GetComplianceList(empId);
-        }
+        }    
 
         public async Task<ServiceResponse<string>> AddEmpRate(EmployeeRateModel _model)
         {
@@ -138,54 +114,35 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.GetEmpPayRate(empId);
         }
-
-        public async Task<ServiceResponse<string>> DeleteCompliance(int complianceId)
-        {
-            return await data.DeleteCompliance(complianceId);
-        }
-
-        public async Task<ServiceResponse<ComplianceModel>> GetComplianceData(int complianceId)
-        {
-            return await data.GetComplianceData(complianceId);
-        }
-
-
-        public async Task<ServiceResponse<string>> UpdateCompliance(ComplianceModel model)
-        {
-            return await data.UpdateCompliance(model);
-        }
-
         public async Task<ServiceResponse<string>> DelEmpPayRate(int RateId)
         {
             return await data.DelEmpPayRate(RateId);
         }
-
         public async Task<ServiceResponse<string>> AddDeclinedCase(EmpDeclinedCase _model)
         {
             return await data.AddDeclinedCase(_model);
         }
-
         public async Task<ServiceResponse<IEnumerable<EmpDeclinedCase>>> GetDeclinedCaseList(int empId)
         {
             return await data.GetDeclinedCaseList(empId);
         }
-
-
         public async Task<ServiceResponse<string>> DelDeclinedCase(int DeclinedCaseId)
         {
             return await data.DelDeclinedCase(DeclinedCaseId);
         }
 
-     
-
-
-
-
-
-
-
-
-
+        public async Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model)
+        {
+            return await data.AddCompliance(_model);
+        }
+        public async Task<ServiceResponse<IEnumerable<ComplianceModel>>> GetComplianceList(int empId)
+        {
+            return await data.GetComplianceList(empId);
+        }
+        public async Task<ServiceResponse<string>> DeleteCompliance(int complianceId)
+        {
+            return await data.DeleteCompliance(complianceId);
+        }
 
 
         public async Task<ServiceResponse<CaregiverViewModel>> GetCareGiverDetails(int UserId)

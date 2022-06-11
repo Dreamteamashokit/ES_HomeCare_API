@@ -12,11 +12,13 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
     {
         Task<ServiceResponse<string>> CreateDiagnosis(DiagnosisItem _model);
         Task<ServiceResponse<IEnumerable<DiagnosisItem>>> GetDiagnosis();
+
         Task<ServiceResponse<string>> UpdateTask(TaskModel item);
         Task<ServiceResponse<string>> ActiveTask(int TaskId, int Status);
-        Task<ServiceResponse<string>> AddCategory(CategoryModel model);
-        Task<ServiceResponse<IEnumerable<CategoryModel>>> GetParentCategoryList();
-        Task<ServiceResponse<IEnumerable<CategoryModel>>> GetSubCategoryList(int categoryId);
-        Task<ServiceResponse<IEnumerable<CategoryModel>>> GetMasterCategoryList();
+
+        Task<ServiceResponse<string>> AddCMPLCategory(CategoryModel _model);
+        Task<ServiceResponse<IEnumerable<CategoryModel>>> GetCMPLCategoryList();
+        Task<ServiceResponse<IEnumerable<CategoryModel>>> GetCMPLCategoryList(int CategoryId);
+        Task<ServiceResponse<string>> DelCMPLCategory(int CategoryId);
     }
 }

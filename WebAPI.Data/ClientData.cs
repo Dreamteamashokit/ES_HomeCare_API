@@ -1638,10 +1638,6 @@ IsActive=@IsActive where ProviderId=@ContactId";
             return result;
         }
 
-
-
-
-
         public async Task<ServiceResponse<string>> DelEmergProvider(int ProviderId)
         {
             ServiceResponse<string> result = new ServiceResponse<string>();
@@ -1727,7 +1723,6 @@ IsActive=@IsActive where ProviderId=@ContactId";
         public async Task<ServiceResponse<IEnumerable<ProviderModel>>> GetEmergProvider(int userId)
         {
             ServiceResponse<IEnumerable<ProviderModel>> obj = new ServiceResponse<IEnumerable<ProviderModel>>();
-
             try
             {
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))

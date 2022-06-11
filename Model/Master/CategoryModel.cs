@@ -4,7 +4,8 @@
     {
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
-        public string ParentCategoryId { get; set; }
-        public string ParentCategoryName { get; set; }
+        public int? ParentId { get; set; }
+        public string ParentName { get; set; }
+
     }
 }

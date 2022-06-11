@@ -87,39 +87,45 @@ namespace ES_HomeCare_API.Controllers
             }
         }
 
-        #region Category
-        [HttpPost("addCategory")]
+
+
+
+        #region CMPLCategory
+
+        [HttpPost("addCMPLCategory")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddCategory([FromBody] CategoryModel model)
+        public async Task<IActionResult> AddCMPLCategory([FromBody] CategoryModel model)
         {
             model.CreatedOn = DateTime.Now;
-            return Ok(await mstrSrv.AddCategory(model));
+            return Ok(await mstrSrv.AddCMPLCategory(model));
         }
 
-        [HttpGet("getParentCategoryList")]
+        [HttpGet("getCMPLCategoryList")]
         [ProducesResponseType(typeof(ServiceResponse<List<CategoryModel>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<CategoryModel>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetParentCategoryList()
+        public async Task<IActionResult> GetCMPLCategoryList()
         {
-            return Ok(await mstrSrv.GetParentCategoryList());
+            return Ok(await mstrSrv.GetCMPLCategoryList());
         }
 
-        [HttpGet("getMasterCategoryList")]
+        [HttpGet("getCMPLCategoryList/{CategoryId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<CategoryModel>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<CategoryModel>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetMasterCategoryList()
+        public async Task<IActionResult> GetCMPLCategoryList(int CategoryId)
         {
-            return Ok(await mstrSrv.GetMasterCategoryList());
+            return Ok(await mstrSrv.GetCMPLCategoryList(CategoryId));
         }
 
-        [HttpGet("getSubCategoryList/{categoryId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<CategoryModel>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<CategoryModel>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetSubCategoryList(int categoryId)
+
+        [HttpDelete("delCMPLCategory")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DelCMPLCategory(int CategoryId)
         {
-            return Ok(await mstrSrv.GetSubCategoryList(categoryId));
+            return Ok(await mstrSrv.DelCMPLCategory(CategoryId));
         }
+
         #endregion
 
     }

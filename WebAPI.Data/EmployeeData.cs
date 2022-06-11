@@ -257,6 +257,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
         #endregion
 
+        #region Incident
         public async Task<ServiceResponse<string>> AddIncident(IncidentModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -381,7 +382,9 @@ IsActive=@IsActive Where IncidentId=@IncidentId;";
             }
             return result;
         }
+        #endregion
 
+        #region Absense
         public async Task<ServiceResponse<string>> AddAttendance(AttendanceModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -498,7 +501,9 @@ inner join tblMaster y  on x.Reason = y.MasterId  where x.EmpId = @EmpId and x.I
             }
             return result;
         }
+        #endregion
 
+        #region EmpStatus
         public async Task<ServiceResponse<string>> AddEmpStatus(StatusModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -635,7 +640,9 @@ inner join tblMaster y  on x.TypeId = y.MasterId  where x.EmployeeId = @EmpId an
             return obj;
 
         }
+        #endregion
 
+        #region Absense
         public async Task<ServiceResponse<IEnumerable<AvailabilityMaster>>> GetAvailabilityList()
         {
             ServiceResponse<IEnumerable<AvailabilityMaster>> obj = new ServiceResponse<IEnumerable<AvailabilityMaster>>();
@@ -651,100 +658,11 @@ inner join tblMaster y  on x.TypeId = y.MasterId  where x.EmployeeId = @EmpId an
 
         }
 
-        public async Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model)
-        {
-            ServiceResponse<string> sres = new ServiceResponse<string>();
-            try
-            {
-                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-                {
-                    string sqlQuery = "Insert Into tblCompliance (EmpId,DueDate,CompletedOn,Category,Code,Result,Nurse,Notes,CreatedOn,CreatedBy,IsActive) Values (@EmpId,@DueDate,@CompletedOn,@Category,@Code,@Result,@Nurse,@Notes,@CreatedOn,@CreatedBy, @IsActive);";
-                    
+ 
 
-                    int rowsAffected = db.Execute(sqlQuery, new
-                    {
-                        EmpId = _model.UserId,
-                        DueDate = Convert.ToDateTime(_model.DueDate),
-                        CompletedOn = Convert.ToDateTime(_model.CompletedOn),
-                        Category = _model.Category,
-                        Code = _model.Code,
-                        Result = _model.Result,
-                        Notes = _model.Notes,
-                        Nurse = _model.Nurse,
-                        CreatedOn = _model.CreatedOn,
-                        CreatedBy = _model.CreatedBy,
-                        IsActive = (int)Status.Active
-                    });
+        #endregion
 
-                    if (rowsAffected > 0)
-                    {
-                        sres.Result = true;
-                        sres.Data = "Sucessfully  Created.";
-                    }
-                    else
-                    {
-                        sres.Data = null;
-                        sres.Message = "Failed new creation.";
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-                sres.Message = ex.Message;
-                return sres;
-            }
-            finally
-            {
-
-            }
-            return sres;
-        }
-
-        public async Task<ServiceResponse<IEnumerable<ComplianceModel>>> GetComplianceList(int empId)
-        {
-            ServiceResponse<IEnumerable<ComplianceModel>> obj = new ServiceResponse<IEnumerable<ComplianceModel>>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-            {
-
-                string sql = "SELECT comp.ComplianceId, comp.EmpId, comp.DueDate, comp.CompletedOn, ISNULL(cata.ParentCategoryName, '') as Category, " +
-                    "ISNULL(cata.CategoryName, '') as Code, comp.Result, comp.Nurse, comp.Notes, comp.CreatedOn, comp.CreatedBy, comp.IsActive, comp.IsCompleted, " +
-                    "comp.CategoryId FROM tblCompliance comp join (SELECT category.CategoryId, ISNULL(category.CategoryName, '') as CategoryName, " +
-                    "ISNULL(parent.CategoryName, '') as ParentCategoryName from tblCategoryMaster category LEFT JOIN tblCategoryMaster as parent " +
-                    "ON category.ParentCategoryId = parent.CategoryId) as cata on comp.Code = cata.CategoryId Where EmpId=@EmpId and IsActive=@IsActive;";
-
-                IEnumerable<ComplianceModel> cmeetings = (await connection.QueryAsync<ComplianceModel>(sql,
-                         new { EmpId = empId, @IsActive = (int)Status.Active }));
-                obj.Data = cmeetings;
-                obj.Result = cmeetings.Any() ? true : false;
-                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
-
-            }
-            return obj;
-
-        }
-
-        public async Task<ServiceResponse<ComplianceModel>> GetComplianceData(int complianceId)
-        {
-            ServiceResponse<ComplianceModel> obj = new ServiceResponse<ComplianceModel>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-            {
-
-                string sql = "SELECT top 1 comp.ComplianceId, comp.EmpId, comp.DueDate, comp.CompletedOn, cata.ParentCategoryName as Category, " +
-                    "cata.CategoryName as Code, comp.Result, comp.Nurse, comp.Notes, comp.CreatedOn, comp.CreatedBy, comp.IsActive, comp.IsCompleted, " +
-                    "comp.CategoryId FROM tblCompliance comp join (SELECT category.CategoryId, category.CategoryName, " +
-                    "parent.CategoryName as ParentCategoryName from tblCategoryMaster category LEFT JOIN tblCategoryMaster as parent " +
-                    "ON category.ParentCategoryId = parent.CategoryId) as cata on comp.Code = cata.CategoryId Where comp.ComplianceId=@complianceId and IsActive=@IsActive;";
-
-                ComplianceModel cmpModel = (await connection.QueryAsync<ComplianceModel>(sql,
-                         new { complianceId = complianceId, @IsActive = (int)Status.Active })).FirstOrDefault();
-                obj.Data = cmpModel;
-                obj.Result = cmpModel?.ComplianceId == complianceId ? true : false;
-                obj.Message = cmpModel?.ComplianceId == complianceId ? "Data Found." : "No Data found.";
-            }
-            return obj;
-        }
-
+        #region EmpRate
         public async Task<ServiceResponse<string>> AddEmpRate(EmployeeRateModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -830,86 +748,6 @@ VALUES(@EmpId, @EffectiveDate, @EndDate, @ClientId, @Description, @Notes, @Hourl
             return obj;
 
         }
-
-        public async Task<ServiceResponse<string>> DeleteCompliance(int complianceId)
-        {
-            ServiceResponse<string> result = new ServiceResponse<string>();
-            try
-            {
-                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-                {
-                    var sqlQuery = "Update tblCompliance Set IsActive=@IsActive where ComplianceId=@ComplianceId;";
-                    var modeMapping = new
-                    {
-                        @ComplianceId = complianceId,
-                        @IsActive = (int)Status.InActive,
-                    };
-                    int rowsAffected = await connection.ExecuteAsync(sqlQuery, modeMapping);
-                    if (rowsAffected > 0)
-                    {
-                        result.Result = true;
-                        result.Data = "Sucessfully  Updated.";
-                    }
-                    else
-                    {
-                        result.Data = null;
-                        result.Message = "Failed to Update.";
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                result.Result = false;
-                result.Data = null;
-                result.Message = ex.Message;
-            }
-            return result;
-        }
-
-        public async Task<ServiceResponse<string>> UpdateCompliance(ComplianceModel model)
-        {
-            ServiceResponse<string> obj = new ServiceResponse<string>();
-            try
-            {
-                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-                {
-                    var sqlqry = "Update tblCompliance SET DueDate = @DueDate, CompletedOn = @CompletedOn, Category = @Category, " +
-                        "Code = @Code, Notes = @Notes Where ComplianceId = @ComplianceId";
-
-                    string? category = int.TryParse(model.Category, out int res) ? model.Category : null;
-                    string? code = int.TryParse(model.Code, out int codeRes) ? model.Code : null;
-
-                    int rowsAffected = await connection.ExecuteAsync(sqlqry, new
-                    {
-                        @DueDate = model.DueDate,
-                        @CompletedOn = model.CompletedOn,
-                        @Category = category,
-                        @Code = code,
-                        @Notes = model.Notes,
-                        @ComplianceId = model.ComplianceId,
-                    });
-
-                    if (rowsAffected > 0)
-                    {
-                        obj.Result = true;
-                        obj.Data = "Updated Successfully";
-                    }
-                    else
-                    {
-                        obj.Data = null;
-                        obj.Message = "Updation Failed.";
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                obj.Message = ex.Message;
-                return obj;
-            }
-
-            return obj;
-        }
-
         public async Task<ServiceResponse<string>> DelEmpPayRate(int RateId)
         {
             ServiceResponse<string> result = new ServiceResponse<string>();
@@ -946,6 +784,134 @@ VALUES(@EmpId, @EffectiveDate, @EndDate, @ClientId, @Description, @Notes, @Hourl
             return result;
         }
 
+        #endregion
+
+        #region Compliance
+        public async Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+
+                    string sqlQuery;
+                    if (_model.ComplianceId == 0)
+                    {
+
+                        sqlQuery = @"INSERT INTO tblCompliance
+(UserId,DueDate,CompletedOn,CategoryId,Nurse,Code,Result,Notes,IsCompleted,IsActive,CreatedOn,CreatedBy)
+VALUES(@UserId,@DueDate,@CompletedOn,@CategoryId,@Nurse,@Code,@Result,@Notes,@IsCompleted,@IsActive,@CreatedOn,@CreatedBy)";
+
+                    }
+                    else
+                    {
+                        sqlQuery = @"Update tblCompliance SET DueDate = @DueDate, CompletedOn = @CompletedOn, CategoryId = @CategoryId,Code = @Code, Notes = @Notes,IsCompleted =@IsCompleted
+Where ComplianceId = @ComplianceId;";
+                    }
+
+                    int rowsAffected = await db.ExecuteAsync(sqlQuery, new
+                    {
+                        ComplianceId=_model.ComplianceId,
+                        UserId = _model.UserId,
+                        Nurse = _model.Nurse,
+                        DueDate = _model.DueDate,
+                        CompletedOn = _model.CompletedOn,
+                        CategoryId = _model.Category,
+                        Code = _model.Code,
+                        Result = _model.Result,
+                        Notes = _model.Notes,
+                        IsCompleted = _model.IsCompleted,
+                        IsActive = (int)Status.Active,
+                        CreatedOn = _model.CreatedOn,
+                        CreatedBy = _model.CreatedBy,
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new creation.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+                return sres;
+            }
+            finally
+            {
+            }
+            return sres;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ComplianceModel>>> GetComplianceList(int UserId)
+        {
+            ServiceResponse<IEnumerable<ComplianceModel>> obj = new ServiceResponse<IEnumerable<ComplianceModel>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+
+                string sql = @"SELECT x.*,y.CategoryName,z.CategoryName as Category  FROM tblCompliance x
+LEFT JOIN tblCategoryMaster y on x.CategoryId = y.CategoryId
+LEFT JOIN tblCategoryMaster z on y.ParentId = z.CategoryId
+Where x.UserId = @UserId and x.IsActive = @IsActive; ";
+
+                IEnumerable<ComplianceModel> dataResult = (await connection.QueryAsync<ComplianceModel>(sql,
+                         new { @UserId = UserId, @IsActive = (int)Status.Active }));
+                obj.Data = dataResult;
+                obj.Result = dataResult.Any() ? true : false;
+                obj.Message = dataResult.Any() ? "Data Found." : "No Data found.";
+
+            }
+            return obj;
+
+        }
+
+        public async Task<ServiceResponse<string>> DeleteCompliance(int complianceId)
+        {
+            ServiceResponse<string> result = new ServiceResponse<string>();
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var sqlQuery = "Update tblCompliance Set IsActive=@IsActive where ComplianceId=@ComplianceId;";
+                    var modeMapping = new
+                    {
+                        @ComplianceId = complianceId,
+                        @IsActive = (int)Status.InActive,
+                    };
+                    int rowsAffected = await connection.ExecuteAsync(sqlQuery, modeMapping);
+                    if (rowsAffected > 0)
+                    {
+                        result.Result = true;
+                        result.Data = "Sucessfully  Delete.";
+                    }
+                    else
+                    {
+                        result.Result = false;
+                        result.Data = null;
+                        result.Message = "Failed to Delete.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Result = false;
+                result.Data = null;
+                result.Message = ex.Message;
+            }
+            return result;
+        }
+
+    
+        #endregion
+
+        #region DeclinedCase
         public async Task<ServiceResponse<string>> AddDeclinedCase(EmpDeclinedCase _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -1091,7 +1057,9 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
             }
             return result;
         }
+        #endregion
 
+       
         public async Task<ServiceResponse<CaregiverViewModel>> GetCareGiverDetails(int UserId)
         {
             ServiceResponse<CaregiverViewModel> obj = new ServiceResponse<CaregiverViewModel>();

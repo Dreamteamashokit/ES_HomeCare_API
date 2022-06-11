@@ -40,24 +40,25 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.ActiveTask(TaskId, Status);
         }
 
-        public async Task<ServiceResponse<string>> AddCategory(CategoryModel _model)
+        public async Task<ServiceResponse<string>> AddCMPLCategory(CategoryModel _model)
         {
-            return await data.AddCategory(_model);
+            return await data.AddCMPLCategory(_model);
+        }  
+
+        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetCMPLCategoryList(int CategoryId)
+        {
+            return await data.GetCMPLCategoryList(CategoryId);
         }
 
-        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetParentCategoryList()
+        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetCMPLCategoryList()
         {
-            return await data.GetParentCategoryList();
+            return await data.GetCMPLCategoryList();
         }
 
-        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetSubCategoryList(int categoryId)
+        public async Task<ServiceResponse<string>> DelCMPLCategory(int CategoryId)
         {
-            return await data.GetSubCategoryList(categoryId);
+            return await data.DelCMPLCategory(CategoryId);
         }
 
-        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetMasterCategoryList()
-        {
-            return await data.GetMasterCategoryList();
-        }
     }
 }

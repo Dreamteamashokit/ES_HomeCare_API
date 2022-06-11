@@ -21,30 +21,33 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
 
         Task<ServiceResponse<string>> AddEmpAddress(AddressModel _model);
         Task<ServiceResponse<AddressModel>> GetEmpAddress(int empId);
+
         Task<ServiceResponse<string>> AddIncident(IncidentModel _model);
         Task<ServiceResponse<IEnumerable<IncidentModel>>> GetIncidentList(int empId);
         Task<ServiceResponse<string>> DelIncident(int IncidentId);
+
         Task<ServiceResponse<string>> AddAttendance(AttendanceModel _model);
         Task<ServiceResponse<IEnumerable<AttendanceModel>>> GetAttendanceList(int empId);
         Task<ServiceResponse<string>> DelAttendance(int AttendanceId);
+
         Task<ServiceResponse<string>> AddEmpStatus(StatusModel _model);
         Task<ServiceResponse<IEnumerable<StatusModel>>> GetEmpStatusList(int empId);
         Task<ServiceResponse<string>> DelEmpStatus(int StatusId);
+
         Task<ServiceResponse<IEnumerable<AvailabilityMaster>>> GetAvailabilityList();
 
-        Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model);
-        Task<ServiceResponse<IEnumerable<ComplianceModel>>> GetComplianceList(int empId);
         Task<ServiceResponse<string>> AddEmpRate(EmployeeRateModel _model);
         Task<ServiceResponse<IEnumerable<EmployeeRateModel>>> GetEmpPayRate(int empId);
-        Task<ServiceResponse<string>> DeleteCompliance(int complianceId);
-        Task<ServiceResponse<ComplianceModel>> GetComplianceData(int complianceId);
-        Task<ServiceResponse<string>> UpdateCompliance(ComplianceModel item);
         Task<ServiceResponse<string>> DelEmpPayRate(int RateId);
-
 
         Task<ServiceResponse<string>> AddDeclinedCase(EmpDeclinedCase _model);
         Task<ServiceResponse<IEnumerable<EmpDeclinedCase>>> GetDeclinedCaseList(int empId);
         Task<ServiceResponse<string>> DelDeclinedCase(int DeclinedCaseId);
+
+        Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model);
+        Task<ServiceResponse<IEnumerable<ComplianceModel>>> GetComplianceList(int UserId);
+        Task<ServiceResponse<string>> DeleteCompliance(int complianceId);
+
 
         Task<ServiceResponse<CaregiverViewModel>> GetCareGiverDetails(int UserId);
         Task<ServiceResponse<ExternalLoginViewModel>> ExternalLogin(ExternalLoginModel externalLoginModel);
