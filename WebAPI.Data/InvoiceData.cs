@@ -533,9 +533,9 @@ namespace ES_HomeCare_API.WebAPI.Data
                             objPayerRate.ServiceCode = table.Rows[i]["ServiceCode"].ToString();
                             if (table.Rows[i]["Type"] != null && table.Rows[i]["Type"] != DBNull.Value)
                             {
-                                objPayerRate.Type = Convert.ToInt32(table.Rows[i]["Type"]);
+                                objPayerRate.Type = table.Rows[i]["Type"].ToString();
                             }
-                            else { objPayerRate.Type = 0; }
+                            else { objPayerRate.Type = ""; }
 
                             objPayerRate.BillCode = table.Rows[i]["BillCode"].ToString();
                             objPayerRate.RevenueCode = table.Rows[i]["RevenueCode"].ToString();
@@ -545,8 +545,17 @@ namespace ES_HomeCare_API.WebAPI.Data
                             }
                             else { objPayerRate.TaxRate = 0; }
 
-                            objPayerRate.ValidFrom = string.IsNullOrEmpty(table.Rows[i]["ValidFrom"].ToString()) ? (DateTime?)null : Convert.ToDateTime(table.Rows[i]["ValidFrom"]);
-                            objPayerRate.ValidTo = string.IsNullOrEmpty(table.Rows[i]["ValidTo"].ToString()) ? (DateTime?)null : Convert.ToDateTime(table.Rows[i]["ValidTo"]);
+                            if (table.Rows[i]["ValidFrom"] != null && table.Rows[i]["ValidFrom"] != DBNull.Value)
+                            {
+                                objPayerRate.ValidFrom = table.Rows[i]["ValidFrom"].ToString();
+                            }
+                            else { objPayerRate.ValidFrom = ""; }
+                            if (table.Rows[i]["ValidTo"] != null && table.Rows[i]["ValidTo"] != DBNull.Value)
+                            {
+                                objPayerRate.ValidTo = table.Rows[i]["ValidTo"].ToString();
+                            }
+                            else { objPayerRate.ValidTo = ""; }
+
                             objPayerRate.Hourly = table.Rows[i]["Hourly"] == null ? 0 : Convert.ToDecimal(table.Rows[i]["Hourly"]);
                             objPayerRate.LiveIn = table.Rows[i]["LiveIn"] == null ? 0 : Convert.ToDecimal(table.Rows[i]["LiveIn"]);
                             objPayerRate.Visit = table.Rows[i]["Visit"] == null ? 0 : Convert.ToDecimal(table.Rows[i]["Visit"]);
@@ -560,6 +569,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                             objPayerRate.IsActive = Convert.ToInt16(table.Rows[i]["IsActive"]);
                             objPayerRate.CreatedBy = table.Rows[i]["CreatedBy"].ToString();
                             objPayerRate.CreatedOn = Convert.ToDateTime(table.Rows[i]["CreatedOn"].ToString());
+                            objPayerRate.PlaceOfService = table.Rows[i]["PlaceOfService"].ToString();
                             objPayerRateList.Add(objPayerRate);
                         }
 
@@ -611,9 +621,9 @@ namespace ES_HomeCare_API.WebAPI.Data
                             objPayerRate.ServiceCode = table.Rows[i]["ServiceCode"].ToString();
                             if (table.Rows[i]["Type"] != null && table.Rows[i]["Type"] != DBNull.Value)
                             {
-                                objPayerRate.Type = Convert.ToInt32(table.Rows[i]["Type"]);
+                                objPayerRate.Type = table.Rows[i]["Type"].ToString();
                             }
-                            else { objPayerRate.Type = 0; }
+                            else { objPayerRate.Type = ""; }
 
                             objPayerRate.BillCode = table.Rows[i]["BillCode"].ToString();
                             objPayerRate.RevenueCode = table.Rows[i]["RevenueCode"].ToString();
@@ -623,8 +633,17 @@ namespace ES_HomeCare_API.WebAPI.Data
                             }
                             else { objPayerRate.TaxRate = 0; }
 
-                            objPayerRate.ValidFrom = string.IsNullOrEmpty(table.Rows[i]["ValidFrom"].ToString()) ? (DateTime?)null : Convert.ToDateTime(table.Rows[i]["ValidFrom"]);
-                            objPayerRate.ValidTo = string.IsNullOrEmpty(table.Rows[i]["ValidTo"].ToString()) ? (DateTime?)null : Convert.ToDateTime(table.Rows[i]["ValidTo"]);
+                            if (table.Rows[i]["ValidFrom"] != null && table.Rows[i]["ValidFrom"] != DBNull.Value)
+                            {
+                                objPayerRate.ValidFrom = table.Rows[i]["ValidFrom"].ToString();
+                            }
+                            else { objPayerRate.ValidFrom = ""; }
+                            if (table.Rows[i]["ValidTo"] != null && table.Rows[i]["ValidTo"] != DBNull.Value)
+                            {
+                                objPayerRate.ValidTo = table.Rows[i]["ValidTo"].ToString();
+                            }
+                            else { objPayerRate.ValidTo = ""; }
+
                             objPayerRate.Hourly = table.Rows[i]["Hourly"] == null ? 0 : Convert.ToDecimal(table.Rows[i]["Hourly"]);
                             objPayerRate.LiveIn = table.Rows[i]["LiveIn"] == null ? 0 : Convert.ToDecimal(table.Rows[i]["LiveIn"]);
                             objPayerRate.Visit = table.Rows[i]["Visit"] == null ? 0 : Convert.ToDecimal(table.Rows[i]["Visit"]);
@@ -637,6 +656,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                             objPayerRate.Notes = table.Rows[i]["Notes"].ToString();
                             objPayerRate.IsActive = Convert.ToInt16(table.Rows[i]["IsActive"]);
                             objPayerRate.CreatedBy = table.Rows[i]["CreatedBy"].ToString();
+                            objPayerRate.PlaceOfService = table.Rows[i]["PlaceOfService"].ToString();
                             objPayerRate.CreatedOn = Convert.ToDateTime(table.Rows[i]["CreatedOn"].ToString());
                         }
 
