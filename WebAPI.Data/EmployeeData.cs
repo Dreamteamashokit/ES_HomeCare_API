@@ -800,13 +800,13 @@ VALUES(@EmpId, @EffectiveDate, @EndDate, @ClientId, @Description, @Notes, @Hourl
                     {
 
                         sqlQuery = @"INSERT INTO tblCompliance
-(UserId,DueDate,CompletedOn,CategoryId,Nurse,Code,Result,Notes,IsCompleted,IsActive,CreatedOn,CreatedBy)
-VALUES(@UserId,@DueDate,@CompletedOn,@CategoryId,@Nurse,@Code,@Result,@Notes,@IsCompleted,@IsActive,@CreatedOn,@CreatedBy)";
+(UserId,DueDate,CompletedOn,CategoryId,Nurse,CodeId,Result,Notes,IsCompleted,IsActive,CreatedOn,CreatedBy)
+VALUES(@UserId,@DueDate,@CompletedOn,@CategoryId,@Nurse,@CodeId,@Result,@Notes,@IsCompleted,@IsActive,@CreatedOn,@CreatedBy)";
 
                     }
                     else
                     {
-                        sqlQuery = @"Update tblCompliance SET DueDate = @DueDate, CompletedOn = @CompletedOn, CategoryId = @CategoryId,Code = @Code, Notes = @Notes,IsCompleted =@IsCompleted
+                        sqlQuery = @"Update tblCompliance SET DueDate = @DueDate, CompletedOn = @CompletedOn, CategoryId = @CategoryId,CodeId = @CodeId, Notes = @Notes,IsCompleted =@IsCompleted
 Where ComplianceId = @ComplianceId;";
                     }
 
@@ -818,7 +818,7 @@ Where ComplianceId = @ComplianceId;";
                         DueDate = _model.DueDate,
                         CompletedOn = _model.CompletedOn,
                         CategoryId = _model.CategoryId,
-                        Code = _model.CodeId,
+                        CodeId = _model.CodeId,
                         Result = _model.Result,
                         Notes = _model.Notes,
                         IsCompleted = _model.IsCompleted,
@@ -858,7 +858,7 @@ Where ComplianceId = @ComplianceId;";
 
                 string sql = @"SELECT x.*,y.CategoryName as Category,z.CategoryName as Code  FROM tblCompliance x
 LEFT JOIN tblCategoryMaster y on x.CategoryId = y.CategoryId
-LEFT JOIN tblCategoryMaster z on x.Code = z.CategoryId
+LEFT JOIN tblCategoryMaster z on x.CodeId = z.CategoryId
 Where x.UserId = @UserId and x.IsActive = @IsActive; ";
 
                 IEnumerable<ComplianceModel> dataResult = (await connection.QueryAsync<ComplianceModel>(sql,
