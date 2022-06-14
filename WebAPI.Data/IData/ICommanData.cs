@@ -37,6 +37,8 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
 
         Task<ServiceResponse<ClientGeoProvisions>> GetUsersGeoProvision(int UserId);
 
+        Task<ServiceResponse<IEnumerable<ItemList>>> GetCMPLCategoryList(int CategoryId);
+
     }
 
 

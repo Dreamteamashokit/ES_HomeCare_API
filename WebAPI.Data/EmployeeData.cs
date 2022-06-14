@@ -817,8 +817,8 @@ Where ComplianceId = @ComplianceId;";
                         Nurse = _model.Nurse,
                         DueDate = _model.DueDate,
                         CompletedOn = _model.CompletedOn,
-                        CategoryId = _model.Category,
-                        Code = _model.Code,
+                        CategoryId = _model.CategoryId,
+                        Code = _model.CodeId,
                         Result = _model.Result,
                         Notes = _model.Notes,
                         IsCompleted = _model.IsCompleted,
@@ -856,9 +856,9 @@ Where ComplianceId = @ComplianceId;";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
 
-                string sql = @"SELECT x.*,y.CategoryName,z.CategoryName as Category  FROM tblCompliance x
+                string sql = @"SELECT x.*,y.CategoryName as Category,z.CategoryName as Code  FROM tblCompliance x
 LEFT JOIN tblCategoryMaster y on x.CategoryId = y.CategoryId
-LEFT JOIN tblCategoryMaster z on y.ParentId = z.CategoryId
+LEFT JOIN tblCategoryMaster z on x.Code = z.CategoryId
 Where x.UserId = @UserId and x.IsActive = @IsActive; ";
 
                 IEnumerable<ComplianceModel> dataResult = (await connection.QueryAsync<ComplianceModel>(sql,

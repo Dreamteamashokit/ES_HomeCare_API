@@ -124,5 +124,11 @@ namespace ES_HomeCare_API.WebAPI.Service
         }
 
 
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetCMPLCategoryList(int CategoryId)
+        {
+            return await data.GetCMPLCategoryList(CategoryId);
+        }
+
+
         }
 }

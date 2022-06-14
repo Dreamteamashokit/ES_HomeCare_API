@@ -34,5 +34,7 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<IEnumerable<ItemList>>> GetPayers();
         Task<ServiceResponse<IEnumerable<ItemList>>> GetUsers(int type);
         Task<ServiceResponse<ClientGeoProvisions>> GetUsersGeoProvision(int UserId);
+
+        Task<ServiceResponse<IEnumerable<ItemList>>> GetCMPLCategoryList(int CategoryId);
     }
 }

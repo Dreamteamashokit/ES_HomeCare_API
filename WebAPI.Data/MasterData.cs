@@ -203,8 +203,8 @@ VALUES(@CategoryName,@ParentId,@IsActive,@CreatedOn,@CreatedBy)";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
                     string sqlQuery = @"SELECT category.CategoryId, category.CategoryName, ISNULL(category.ParentId,0) as ParentId , ISNULL(parent.CategoryName,'RootCategory') as ParentName 
-from tblCategoryMaster category LEFT JOIN tblCategoryMaster as parent ON category.ParentId = parent.CategoryId Where IsActive=@IsActive;";
-                    IEnumerable<CategoryModel> resObj = await connection.QueryAsync<CategoryModel>(sqlQuery);
+from tblCategoryMaster category LEFT JOIN tblCategoryMaster as parent ON category.ParentId = parent.CategoryId Where category.IsActive=@IsActive;";
+                    IEnumerable<CategoryModel> resObj = await connection.QueryAsync<CategoryModel>(sqlQuery, new { @IsActive =(int)Status.Active});
 
                     objCategoryListResponse.Data = resObj.ToList();
                     objCategoryListResponse.Result = resObj.Any() ? true : false;
@@ -250,7 +250,7 @@ from tblCategoryMaster category LEFT JOIN tblCategoryMaster as parent ON categor
             {
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    var sqlQuery = "Update tblCategoryMaster Set IsActive=@IsActive where ProviderId=@ContactId;";
+                    var sqlQuery = "Update tblCategoryMaster Set IsActive=@IsActive where CategoryId=@CategoryId;";
                     int rowsAffected = await connection.ExecuteAsync(sqlQuery, new
                     {
                         @CategoryId = CategoryId,

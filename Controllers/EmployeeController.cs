@@ -201,7 +201,17 @@ namespace WebAPI_SAMPLE.Controllers
         public async Task<IActionResult> AddCompliance([FromBody] ComplianceModel model)
         {
 
-
+            try
+            {
+                if (model.CompletedOn.HasValue)
+                {
+                    model.IsCompleted = true;               
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             model.CreatedOn = DateTime.Now;
             return Ok(await service.AddCompliance(model));
         }
@@ -353,7 +363,7 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.GetClientListByempId(empId));
         }
         #endregion
-        
+
 
         [HttpGet("GetClockinDetails/{userId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ClientListViewModel>>), StatusCodes.Status200OK)]
