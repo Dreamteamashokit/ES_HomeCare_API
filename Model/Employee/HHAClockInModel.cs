@@ -15,5 +15,6 @@ namespace ES_HomeCare_API.Model.Employee
         public bool Skincare { get; set; }
         public string ClientSignature { get; set; }
         public string HHAUserSignature { get; set; }
+        public int MeetingId { get; set; }
     }
 }
