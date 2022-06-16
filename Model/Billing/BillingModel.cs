@@ -6,10 +6,10 @@ namespace ES_HomeCare_API.Model.Billing
     {
         public long BillingId { get; set; }
         public long PayerId { get; set; }
-        public long ContractClientId { get; set; }
+        public string ContractClientId { get; set; }
         public string AuthorizationNumber { get; set; }
-        public DateTime FromDate { get; set; }
-        public DateTime ToDate { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
         public string HoursAuthorizedPerWeek { get; set; }
         public string HoursAuthorizedPerMonth { get; set; }
         public string HoursAuthorizedEntirePeriod { get; set; }
