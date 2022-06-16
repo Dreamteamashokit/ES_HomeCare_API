@@ -21,6 +21,7 @@ namespace ES_HomeCare_API.ViewModel.Employee
         public string ZipCode { get; set; }
         public string Longitude { get; set; }
         public string Latitude { get; set; }
+        public int MeetingId { get; set; }
     }
 
     //public class ClientAddressViewModel
