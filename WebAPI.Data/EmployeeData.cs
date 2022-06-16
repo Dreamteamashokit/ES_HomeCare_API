@@ -1214,8 +1214,10 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
                                 State = ds.Tables[0].Rows[i]["State"].ToString(),
                                 ZipCode = ds.Tables[0].Rows[i]["ZipCode"].ToString(),
                                 Latitude = ds.Tables[0].Rows[i]["Latitude"].ToString(),
-                                Longitude = ds.Tables[0].Rows[i]["Longitude"].ToString()
+                                Longitude = ds.Tables[0].Rows[i]["Longitude"].ToString(),
+                                MeetingId=Convert.ToInt32(ds.Tables[0].Rows[i]["MeetingId"].ToString())
                             };
+
                             objClientList.Add(objClient);
                         }
                         obj.Result = true;
@@ -1305,7 +1307,8 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
                     cmd.Parameters.AddWithValue("@ClientSignature", hhaClockin.ClientSignature == null ? "" : hhaClockin.ClientSignature);
                     cmd.Parameters.AddWithValue("@HHAUserSignature", hhaClockin.HHAUserSignature == null ? "" : hhaClockin.HHAUserSignature);
                     cmd.Parameters.AddWithValue("@Type", hhaClockin.Type);
-
+                    cmd.Parameters.AddWithValue("@meetingId", hhaClockin.MeetingId);
+                    
                     con.Open();
                     int value = cmd.ExecuteNonQuery();
                     if (value > 0)
