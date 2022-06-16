@@ -165,10 +165,33 @@ namespace ES_HomeCare_API.WebAPI.Data
                     cmd.Parameters.AddWithValue("@ServiceCode", payerRateModel.ServiceCode);
                     cmd.Parameters.AddWithValue("@Type", payerRateModel.Type);
                     cmd.Parameters.AddWithValue("@BillCode", payerRateModel.BillCode);
-                    cmd.Parameters.AddWithValue("@RevenueCode", payerRateModel.RevenueCode);
+                    if (payerRateModel.RevenueCode != null)
+                    {
+                        cmd.Parameters.AddWithValue("@RevenueCode", payerRateModel.RevenueCode);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@RevenueCode", DBNull.Value);
+                    }
+
                     cmd.Parameters.AddWithValue("@TaxRate", payerRateModel.TaxRate);
-                    cmd.Parameters.AddWithValue("@ValidFrom", payerRateModel.ValidFrom);
-                    cmd.Parameters.AddWithValue("@ValidTo", payerRateModel.ValidTo);
+
+                    if (payerRateModel.ValidFrom != null)
+                    {
+                        cmd.Parameters.AddWithValue("@ValidFrom", payerRateModel.ValidFrom);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@ValidFrom", DBNull.Value);
+                    }
+                    if (payerRateModel.ValidTo != null)
+                    {
+                        cmd.Parameters.AddWithValue("@ValidTo", payerRateModel.ValidTo);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@ValidTo", DBNull.Value);
+                    }
                     cmd.Parameters.AddWithValue("@Hourly", payerRateModel.Hourly);
                     cmd.Parameters.AddWithValue("@Livein", payerRateModel.Livein);
                     cmd.Parameters.AddWithValue("@Visit", payerRateModel.Visit);
@@ -180,13 +203,13 @@ namespace ES_HomeCare_API.WebAPI.Data
                     {
                         cmd.Parameters.AddWithValue("@Unit", "");
                     }
-                    cmd.Parameters.AddWithValue("@Modifiers1", payerRateModel.Modifiers1);
-                    cmd.Parameters.AddWithValue("@Modifiers2", payerRateModel.Modifiers2);
-                    cmd.Parameters.AddWithValue("@Modifiers3", payerRateModel.Modifiers3);
-                    cmd.Parameters.AddWithValue("@Modifiers4", payerRateModel.Modifiers4);
-                    cmd.Parameters.AddWithValue("@PlaceOfService", payerRateModel.PlaceOfService);
+                    cmd.Parameters.AddWithValue("@Modifiers1", payerRateModel.Modifiers1 == null? "" : payerRateModel.Modifiers1);
+                    cmd.Parameters.AddWithValue("@Modifiers2", payerRateModel.Modifiers2 == null ? "" : payerRateModel.Modifiers2);
+                    cmd.Parameters.AddWithValue("@Modifiers3", payerRateModel.Modifiers3 == null ? "" : payerRateModel.Modifiers3);
+                    cmd.Parameters.AddWithValue("@Modifiers4", payerRateModel.Modifiers4 == null ? "" : payerRateModel.Modifiers4);
+                    cmd.Parameters.AddWithValue("@PlaceOfService", payerRateModel.PlaceOfService == null ? "" : payerRateModel.PlaceOfService);
                     cmd.Parameters.AddWithValue("@MutualGroup", payerRateModel.MutualGroup);
-                    cmd.Parameters.AddWithValue("@Notes", payerRateModel.Notes);
+                    cmd.Parameters.AddWithValue("@Notes", payerRateModel.Notes == null ? "" : payerRateModel.Notes);
                     cmd.Parameters.AddWithValue("@CreatedBy", payerRateModel.CreatedBy);
 
                     con.Open();
@@ -222,18 +245,31 @@ namespace ES_HomeCare_API.WebAPI.Data
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@BillingId", billingModel.BillingId);
                     cmd.Parameters.AddWithValue("@PayerId", billingModel.PayerId);
-                    cmd.Parameters.AddWithValue("@ContractClientId", billingModel.ContractClientId);
-                    cmd.Parameters.AddWithValue("@AuthorizationNumber", billingModel.AuthorizationNumber);
-                    cmd.Parameters.AddWithValue("@FromDate", billingModel.FromDate);
-                    cmd.Parameters.AddWithValue("@ToDate", billingModel.ToDate);
-                    cmd.Parameters.AddWithValue("@HoursAuthorizedPerWeek", billingModel.HoursAuthorizedPerWeek);
-                    cmd.Parameters.AddWithValue("@HoursAuthorizedPerMonth", billingModel.HoursAuthorizedPerMonth);
-                    cmd.Parameters.AddWithValue("@HoursAuthorizedEntirePeriod", billingModel.HoursAuthorizedEntirePeriod);
+                    cmd.Parameters.AddWithValue("@ContractClientId", billingModel.ContractClientId == null ? "" : billingModel.ContractClientId);
+                    cmd.Parameters.AddWithValue("@AuthorizationNumber", billingModel.AuthorizationNumber == null ? "" : billingModel.AuthorizationNumber);
+                    if (billingModel.FromDate != null)
+                    {
+                        cmd.Parameters.AddWithValue("@FromDate", billingModel.FromDate);
+                    }
+                    else {
+                        cmd.Parameters.AddWithValue("@FromDate", DBNull.Value);
+                    }
+                    if (billingModel.ToDate != null)
+                    {
+                        cmd.Parameters.AddWithValue("@ToDate", billingModel.ToDate);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@ToDate", DBNull.Value);
+                    }
+                    cmd.Parameters.AddWithValue("@HoursAuthorizedPerWeek", billingModel.HoursAuthorizedPerWeek == null ? "" : billingModel.HoursAuthorizedPerWeek);
+                    cmd.Parameters.AddWithValue("@HoursAuthorizedPerMonth", billingModel.HoursAuthorizedPerMonth == null ? "" : billingModel.HoursAuthorizedPerMonth);
+                    cmd.Parameters.AddWithValue("@HoursAuthorizedEntirePeriod", billingModel.HoursAuthorizedEntirePeriod == null ? "" : billingModel.HoursAuthorizedEntirePeriod);
                     cmd.Parameters.AddWithValue("@ServiceCode", billingModel.ServiceCode);
-                    cmd.Parameters.AddWithValue("@OccurencesAuthorizedPerWeek", billingModel.OccurencesAuthorizedPerWeek);
-                    cmd.Parameters.AddWithValue("@OccurencesAuthorizedPerMonth", billingModel.OccurencesAuthorizedPerMonth);
-                    cmd.Parameters.AddWithValue("@OccurencesAuthorizedEntirePeriod", billingModel.OccurencesAuthorizedEntirePeriod);
-                    cmd.Parameters.AddWithValue("@DaysOfWeekNotes", billingModel.DaysOfWeekNotes);
+                    cmd.Parameters.AddWithValue("@OccurencesAuthorizedPerWeek", billingModel.OccurencesAuthorizedPerWeek == null ? "" : billingModel.OccurencesAuthorizedPerWeek);
+                    cmd.Parameters.AddWithValue("@OccurencesAuthorizedPerMonth", billingModel.OccurencesAuthorizedPerMonth == null ? "" : billingModel.OccurencesAuthorizedPerMonth);
+                    cmd.Parameters.AddWithValue("@OccurencesAuthorizedEntirePeriod", billingModel.OccurencesAuthorizedEntirePeriod == null ? "" : billingModel.OccurencesAuthorizedEntirePeriod);
+                    cmd.Parameters.AddWithValue("@DaysOfWeekNotes", billingModel.DaysOfWeekNotes == null ? "" : billingModel.DaysOfWeekNotes);
                     cmd.Parameters.AddWithValue("@BRServiceCode_SAT", billingModel.BRServiceCode_SAT);
                     cmd.Parameters.AddWithValue("@BRServiceCode_SUN", billingModel.BRServiceCode_SUN);
                     cmd.Parameters.AddWithValue("@BRServiceCode_MON", billingModel.BRServiceCode_MON);
@@ -248,7 +284,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                     cmd.Parameters.AddWithValue("@Quantity_WED", billingModel.Quantity_WED);
                     cmd.Parameters.AddWithValue("@Quantity_THU", billingModel.Quantity_THU);
                     cmd.Parameters.AddWithValue("@Quantity_FRI", billingModel.Quantity_FRI);
-                    cmd.Parameters.AddWithValue("@PeriodEpisode_Notes", billingModel.PeriodEpisode_Notes);
+                    cmd.Parameters.AddWithValue("@PeriodEpisode_Notes", billingModel.PeriodEpisode_Notes == null ? "" : billingModel.PeriodEpisode_Notes);
                     cmd.Parameters.AddWithValue("@CreatedBy", billingModel.CreatedBy);
 
                     con.Open();
@@ -329,7 +365,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                             {
                                 BillingId = Convert.ToInt32(table.Rows[i]["BillingId"]),
                                 PayerId = Convert.ToInt32(table.Rows[i]["PayerId"]),
-                                ContractClientId = Convert.ToInt32(table.Rows[i]["ContractClientId"]),
+                                ContractClientId = table.Rows[i]["ContractClientId"] == null ? "" :  table.Rows[i]["ContractClientId"].ToString(),
                                 AuthorizationNumber = table.Rows[i]["AuthorizationNumber"].ToString(),
                                 FromDate = Convert.ToDateTime(table.Rows[i]["FromDate"]),
                                 ToDate = Convert.ToDateTime(table.Rows[i]["ToDate"]),
@@ -401,10 +437,10 @@ namespace ES_HomeCare_API.WebAPI.Data
                             {
                                 BillingId = Convert.ToInt32(table.Rows[i]["BillingId"]),
                                 PayerId = Convert.ToInt32(table.Rows[i]["PayerId"]),
-                                ContractClientId = Convert.ToInt32(table.Rows[i]["ContractClientId"]),
+                                ContractClientId = table.Rows[i]["ContractClientId"].ToString(),
                                 AuthorizationNumber = table.Rows[i]["AuthorizationNumber"].ToString(),
-                                FromDate = Convert.ToDateTime(table.Rows[i]["FromDate"]),
-                                ToDate = Convert.ToDateTime(table.Rows[i]["ToDate"]),
+                                FromDate = string.IsNullOrWhiteSpace(table.Rows[i]["FromDate"].ToString()) ? (DateTime?)null : DateTime.Parse(table.Rows[i]["FromDate"].ToString()),
+                                ToDate = string.IsNullOrWhiteSpace(table.Rows[i]["ToDate"].ToString()) ? (DateTime?)null : DateTime.Parse(table.Rows[i]["ToDate"].ToString()),
                                 HoursAuthorizedPerWeek = table.Rows[i]["HoursAuthorizedPerWeek"].ToString(),
                                 HoursAuthorizedPerMonth = table.Rows[i]["HoursAuthorizedPerWeek"].ToString(),
                                 HoursAuthorizedEntirePeriod = table.Rows[i]["HoursAuthorizedPerWeek"].ToString(),
