@@ -32,32 +32,57 @@ namespace ES_HomeCare_API.Controllers
 
 
 
-        [HttpGet("getDocumentlist/{empId}")]
-        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<FolderView>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<FolderView>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetDocumentlist(int empId)
+        [HttpPost("addFolder")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddFolder([FromBody] FolderModel model)
         {
-            return Ok(await docSrv.GetDocumentlist(empId));
+
+
+            model.IsActive = (int)Status.Active;
+            model.CreatedOn = DateTime.Now;
+
+
+            return Ok(await docSrv.AddFolder(model));
         }
 
 
-        [HttpPost("UploadFile"), DisableRequestSizeLimit]
+
+        [HttpGet("getFolderlist/{UserId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<UploadFileRecord>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetFolderlist(int UserId)
+        {
+            return Ok(await docSrv.GetFolderlist(UserId));
+        }
+
+        [HttpDelete("deleteFolder/{FolderId}/{UserId}")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UploadFile()
+        public async Task<IActionResult> DeleteFolder(long FolderId, int UserId)
+        {
+            return Ok(await docSrv.DeleteFolder(FolderId, UserId));
+        }
+
+
+        [HttpPost("addDocument"), DisableRequestSizeLimit]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddDocument()
         {
             try
             {
                 var files = Request.Form.Files;
 
                 UploadFileFolder model = new UploadFileFolder();
-                model.FolderId = Convert.ToInt32(Request.Form["folderid"]);
+                model.FolderId = Convert.ToInt32(Request.Form["FolderId"]);
                 model.Title = Request.Form["Title"].ToString();
                 model.CreatedBy = Convert.ToInt32(Request.Form["CreatedBy"]);
                 model.Search = Request.Form["Search"].ToString();
                 model.Description = Request.Form["Description"].ToString();
                 model.UserId = Convert.ToInt32(Request.Form["UserId"]);
-                string Foldername = Request.Form["Foldername"].ToString();
+
+                string Foldername = Request.Form["FolderName"].ToString();
 
 
                 if (files.Any(f => f.Length == 0))
@@ -68,16 +93,18 @@ namespace ES_HomeCare_API.Controllers
                 foreach (var file in files)
                 {
 
-                    var fileName = Foldername + "/" + ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    //you can add this path to a list and then return all dbPaths to the client if require
-                    model.FileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+
+                    string fileName = model.Title + DateTime.Now.ToString("dd-MM-yy") + "-" + ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    string filePath = Foldername + "/" + fileName;
+                    //you can add this path to a list and then return all dbPaths to the client if require"
+                    model.FileName = fileName;
                     Stream fs = file.OpenReadStream();
                     AmazonUploader uploader = new AmazonUploader(configuration);
-                    uploader.sendMyFileToS3(fs, fileName);
+                    uploader.sendMyFileToS3(fs, filePath);
 
                 }
 
-                return Ok(await docSrv.Savefile(model));
+                return Ok(await docSrv.AddDocument(model));
 
             }
             catch (Exception ex)
@@ -88,22 +115,51 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
-        [HttpPost("SaveFolder")]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SaveFolder([FromBody] FolderData model)
+        [HttpGet("getDocumentlist/{UserId}")]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<FolderView>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<FolderView>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetDocumentlist(int UserId)
         {
-            return Ok(await docSrv.SaveFolder(model));
+            return Ok(await docSrv.GetDocumentlist(UserId));
         }
 
 
-        [HttpGet("getFolderlist/{EmpId}")]
-        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<UploadFileRecord>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetFolderlist(int EmpId)
+
+
+        [HttpDelete("DeletetDocumentFromS3")]
+        [ProducesResponseType(typeof(ServiceResponse<FolderView>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<FolderView>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeletetDocumentFromS3(int DocumentId, string FileName, int FolderId, string FolderName, int UserId)
+
         {
-            return Ok(await docSrv.GetFolderlist(EmpId));
+            //string DeleteFilename = string.IsNullOrEmpty(FileName) ? FolderName + "/" : FolderName + "/" + FileName;
+            //AmazonUploader Download = new AmazonUploader(configuration);
+            //Download.DeleteFile(DeleteFilename);
+            DeleteItem obj = new DeleteItem();
+            obj.DocumentId = DocumentId;
+            obj.FileName = FileName;
+            obj.FolderName = FolderName;
+            obj.FolderId = FolderId;
+            obj.UserId = UserId;
+            return Ok(await docSrv.DeleteDocument(DocumentId));
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         [HttpGet("download/{documentName}")]
         public IActionResult GetDocumentFromS3(string documentName, string foldername)
@@ -132,33 +188,8 @@ namespace ES_HomeCare_API.Controllers
             return sres;
         }
 
-        [HttpDelete("DeletetDocumentFromS3")]
-        [ProducesResponseType(typeof(ServiceResponse<FolderView>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<FolderView>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeletetDocumentFromS3(int DocumentId, string FileName, int FolderId, string FolderName, int empid)
-
-        {
-            //string DeleteFilename = string.IsNullOrEmpty(FileName) ? FolderName + "/" : FolderName + "/" + FileName;
-            //AmazonUploader Download = new AmazonUploader(configuration);
-            //Download.DeleteFile(DeleteFilename);
-            DeleteItem obj = new DeleteItem();
-            obj.DocumentId = DocumentId;
-            obj.FileName = FileName;
-            obj.FolderName = FolderName;
-            obj.FolderId = FolderId;
-            obj.EmpId = empid;
-            return Ok(await docSrv.DeleteFile(obj));
-        }
 
 
-
-        [HttpDelete("deleteFolder")]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteFolder(long folderId)
-        {       
-            return Ok(await docSrv.DeleteFolder(folderId));
-        }
 
 
 

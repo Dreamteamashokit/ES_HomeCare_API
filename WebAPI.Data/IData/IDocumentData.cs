@@ -8,12 +8,12 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
 {
     public interface IDocumentData
     {
-        Task<ServiceResponse<IEnumerable<FolderView>>> GetDocumentlist(int empId);
-        Task<ServiceResponse<string>> SaveFolder(FolderData model);
-        Task<ServiceResponse<IEnumerable<UploadFileRecord>>> GetFolderlist(int EmpID);
-        Task<ServiceResponse<string>> Savefile(UploadFileFolder model);
-        Task<ServiceResponse<string>> DeleteFile(DeleteItem item);
-        Task<ServiceResponse<string>> DeleteFolder(long folderId);
+        Task<ServiceResponse<string>> AddFolder(FolderModel model);
+        Task<ServiceResponse<IEnumerable<UploadFileRecord>>> GetFolderlist(int UserId);
+        Task<ServiceResponse<string>> DeleteFolder(long FolderId, int UserId);
+        Task<ServiceResponse<string>> AddDocument(UploadFileFolder model);
+        Task<ServiceResponse<IEnumerable<FolderView>>> GetDocumentlist(int UserId);
+        Task<ServiceResponse<string>> DeleteDocument(long DocumentId);
     }
 }
 

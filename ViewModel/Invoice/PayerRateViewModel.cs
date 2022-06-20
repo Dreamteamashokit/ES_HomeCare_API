@@ -8,12 +8,12 @@ namespace ES_HomeCare_API.ViewModel.Invoice
         public int PayerId { get; set; }
         public string PayerName { get; set; }
         public string ServiceCode { get; set; }
-        public long Type { get; set; }
+        public string Type { get; set; }
         public string BillCode { get; set; }
         public string RevenueCode { get; set; }
         public decimal TaxRate { get; set; }
-        public DateTime? ValidFrom { get; set; }
-        public DateTime? ValidTo { get; set; }
+        public string ValidFrom { get; set; }
+        public string ValidTo { get; set; }
         public decimal Hourly { get; set; }
         public decimal LiveIn { get; set; }
         public decimal Visit { get; set; }
