@@ -8,7 +8,7 @@ using WebAPI_SAMPLE.Model;
 
 namespace ES_HomeCare_API.WebAPI.Service
 {
-    public class DocumentService: IDocumentService
+    public class DocumentService : IDocumentService
     {
 
         private readonly IDocumentData data;
@@ -17,35 +17,53 @@ namespace ES_HomeCare_API.WebAPI.Service
             data = ldata;
         }
 
-       
-        public async Task<ServiceResponse<IEnumerable<FolderView>>> GetDocumentlist(int empId)
-        {
-            return await data.GetDocumentlist(empId);
-        }
 
-        public async Task<ServiceResponse<string>> SaveFolder(FolderData model)
+        public async Task<ServiceResponse<string>> AddFolder(FolderModel model)
         {
 
-            return await data.SaveFolder(model);
+            return await data.AddFolder(model);
+
+
+        }
+        public async Task<ServiceResponse<IEnumerable<UploadFileRecord>>> GetFolderlist(int UserId)
+        {
+            return await data.GetFolderlist(UserId);
         }
 
-        public async Task<ServiceResponse<IEnumerable<UploadFileRecord>>> GetFolderlist(int EmpId)
+        public async Task<ServiceResponse<string>> DeleteFolder(long FolderId, int UserId)
         {
-            return await data.GetFolderlist(EmpId);
+
+            return await data.DeleteFolder(FolderId, UserId);
+
         }
-        public async Task<ServiceResponse<string>> Savefile(UploadFileFolder model)
+        public async Task<ServiceResponse<string>> AddDocument(UploadFileFolder model)
         {
-            return await data.Savefile(model);
+
+            return await data.AddDocument(model);
         }
-        public async Task<ServiceResponse<string>> DeleteFile(DeleteItem item)
+        public async Task<ServiceResponse<IEnumerable<FolderView>>> GetDocumentlist(int UserId)
         {
-            return await data.DeleteFile(item);
+
+            return await data.GetDocumentlist(UserId);
+        }
+        public async Task<ServiceResponse<string>> DeleteDocument(long DocumentId)
+        {
+
+            return await data.DeleteDocument(DocumentId);
         }
 
-        public async Task<ServiceResponse<string>> DeleteFolder(long folderId)
-        {
-            return await data.DeleteFolder(folderId);
-        }
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
 }
