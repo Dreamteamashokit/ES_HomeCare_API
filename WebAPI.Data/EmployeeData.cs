@@ -1291,10 +1291,10 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@UserId", hhaClockin.UserId);
 
-                    cmd.Parameters.AddWithValue("@ClockInTime", hhaClockin.DateString);
+                    cmd.Parameters.AddWithValue("@ClockInTime", hhaClockin.ClockInTime);
                     if (hhaClockin.Type == 2)
                     {
-                        cmd.Parameters.AddWithValue("@ClockOutTime", hhaClockin.DateString);
+                        cmd.Parameters.AddWithValue("@ClockOutTime", hhaClockin.ClockOutTime);
                     }
                     else
                     {
