@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ES_HomeCare_API.Model.Document
 {
@@ -20,7 +21,7 @@ namespace ES_HomeCare_API.Model.Document
         public string FileName { get; set; }
         public string FilePath { get; set; }
         public string CreatedByName { get; set; }
-        public string CreatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 
     public class DeleteItem

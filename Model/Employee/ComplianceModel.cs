@@ -14,6 +14,7 @@ namespace ES_HomeCare_API.Model.Employee
         public string Code { get; set; }
         public string Result { get; set; }
         public string Notes { get; set; }
+        public long DocumentId { get; set; }
         public bool IsCompleted { get; set; }
     }
 }

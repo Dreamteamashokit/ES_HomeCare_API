@@ -800,13 +800,13 @@ VALUES(@EmpId, @EffectiveDate, @EndDate, @ClientId, @Description, @Notes, @Hourl
                     {
 
                         sqlQuery = @"INSERT INTO tblCompliance
-(UserId,DueDate,CompletedOn,CategoryId,Nurse,CodeId,Result,Notes,IsCompleted,IsActive,CreatedOn,CreatedBy)
-VALUES(@UserId,@DueDate,@CompletedOn,@CategoryId,@Nurse,@CodeId,@Result,@Notes,@IsCompleted,@IsActive,@CreatedOn,@CreatedBy)";
+(UserId,DueDate,CompletedOn,CategoryId,Nurse,CodeId,Result,Notes,DocumentId,IsCompleted,IsActive,CreatedOn,CreatedBy)
+VALUES(@UserId,@DueDate,@CompletedOn,@CategoryId,@Nurse,@CodeId,@Result,@Notes,@DocumentId,@IsCompleted,@IsActive,@CreatedOn,@CreatedBy)";
 
                     }
                     else
                     {
-                        sqlQuery = @"Update tblCompliance SET DueDate = @DueDate, CompletedOn = @CompletedOn, CategoryId = @CategoryId,CodeId = @CodeId, Notes = @Notes,IsCompleted =@IsCompleted
+                        sqlQuery = @"Update tblCompliance SET DueDate = @DueDate, CompletedOn = @CompletedOn, CategoryId = @CategoryId,CodeId = @CodeId, Notes = @Notes,DocumentId=@DocumentId,IsCompleted =@IsCompleted
 Where ComplianceId = @ComplianceId;";
                     }
 
@@ -821,6 +821,7 @@ Where ComplianceId = @ComplianceId;";
                         CodeId = _model.CodeId,
                         Result = _model.Result,
                         Notes = _model.Notes,
+                        DocumentId= _model.DocumentId,
                         IsCompleted = _model.IsCompleted,
                         IsActive = (int)Status.Active,
                         CreatedOn = _model.CreatedOn,

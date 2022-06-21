@@ -265,7 +265,7 @@ where p.UserId = @UserId;";
                                             FileName = x.FileName == null ? string.Empty : x.FileName,
                                             FilePath = x.FilePath == null ? string.Empty : x.FilePath,
                                             CreatedByName = x.CreatedByName == null ? "admin" : x.CreatedByName,
-                                            CreatedOn = x.CreatedOn == null ? string.Empty : x.CreatedOn.ToString(),
+                                            CreatedOn = x.CreatedOn,
                                         }).ToList()
                                     };
 
