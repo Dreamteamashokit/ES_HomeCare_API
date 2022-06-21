@@ -1257,7 +1257,7 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
 
                             objClockinDetail.ClockId = Convert.ToInt32(ds.Tables[0].Rows[i]["ClockId"]);
                             objClockinDetail.UserId = Convert.ToInt32(ds.Tables[0].Rows[i]["UserId"]);
-                            if (ds.Tables[0].Rows[i]["ClockInTime"] != null)
+                            if (ds.Tables[0].Rows[i]["ClockInTime"] != null && ds.Tables[0].Rows[i]["ClockInTime"] != DBNull.Value)
                             {
                                 objClockinDetail.ClockInTime = Convert.ToDateTime(ds.Tables[0].Rows[i]["ClockInTime"]);
                             }
