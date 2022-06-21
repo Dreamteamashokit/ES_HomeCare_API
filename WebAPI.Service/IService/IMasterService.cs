@@ -17,7 +17,7 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<string>> ActiveTask(int TaskId, int Status);
 
         Task<ServiceResponse<string>> AddCMPLCategory(CategoryModel _model);
-        Task<ServiceResponse<IEnumerable<CategoryModel>>> GetCMPLCategoryList();
+        Task<ServiceResponse<IEnumerable<CategoryModel>>> GetCMPLUserCategoryList(short CatType);
         Task<ServiceResponse<IEnumerable<CategoryModel>>> GetCMPLCategoryList(int CategoryId);
         Task<ServiceResponse<string>> DelCMPLCategory(int CategoryId);
     }

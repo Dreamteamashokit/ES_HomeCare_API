@@ -50,9 +50,9 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.GetCMPLCategoryList(CategoryId);
         }
 
-        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetCMPLCategoryList()
+        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetCMPLUserCategoryList(short CatType)
         {
-            return await data.GetCMPLCategoryList();
+            return await data.GetCMPLUserCategoryList(CatType);
         }
 
         public async Task<ServiceResponse<string>> DelCMPLCategory(int CategoryId)
