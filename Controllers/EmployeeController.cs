@@ -195,26 +195,28 @@ namespace WebAPI_SAMPLE.Controllers
 
 
         #region Compliance
+
         [HttpPost("addCompliance")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddCompliance([FromBody] ComplianceModel model)
         {
-
             try
             {
-                if (model.CompletedOn.HasValue || model.DocumentId > 0)
+                if (model.CompletedOn.HasValue && model.DocumentId > 0)
                 {
                     model.IsCompleted = true;
                 }
-
+                else if ((!model.CompletedOn.HasValue) && (model.DocumentId > 0))
+                {
+                    model.IsCompleted = true;
+                    model.CompletedOn = DateTime.Now;
+                }
 
                 if (model.DocumentId == 0)
                 {
                     model.DocumentId = null;
                 }
-
-
 
             }
             catch (Exception ex)
@@ -240,12 +242,8 @@ namespace WebAPI_SAMPLE.Controllers
         {
             return Ok(await service.DeleteCompliance(complianceId));
         }
-
+        
         #endregion
-
-
-
-
 
 
         #region Address
