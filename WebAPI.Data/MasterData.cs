@@ -220,16 +220,16 @@ from tblCategoryMaster category LEFT JOIN tblCategoryMaster as parent ON categor
             }
         }
 
-        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetCMPLCategoryList(int CategoryId)
+        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetCMPLCategoryList(int CategoryId,short UserTypeId)
         {
             ServiceResponse<IEnumerable<CategoryModel>> objCategoryListResponse = new ServiceResponse<IEnumerable<CategoryModel>>();
             try
             {
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = @"Select * from tblCategoryMaster Where IsNULL(ParentId,0)=@ParentId and IsActive=@IsActive";
+                    string sqlQuery = @"Select * from tblCategoryMaster Where IsNULL(ParentId,0)=@ParentId and IsActive=@IsActive and UserTypeId=@UserTypeId";
                     IEnumerable<CategoryModel> resObj = await connection.QueryAsync<CategoryModel>(sqlQuery,
-                         new { @ParentId = CategoryId, @IsActive = (int)Status.Active });
+                         new { @ParentId = CategoryId, @IsActive = (int)Status.Active, @UserTypeId = UserTypeId });
                     objCategoryListResponse.Data = resObj.ToList();
                     objCategoryListResponse.Result = resObj.Any() ? true : false;
                     objCategoryListResponse.Message = resObj.Any() ? "Data Found." : "No Data found.";

@@ -458,16 +458,16 @@ where IsNULL(z.ProvisionValue,'True')='True'and x.UserId=@UserId";
 
 
 
-        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetCMPLCategoryList(int CategoryId)
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetCMPLCategoryList(int CategoryId, short UserTypeId)
         {
             ServiceResponse<IEnumerable<ItemList>> objItemList= new ServiceResponse<IEnumerable<ItemList>>();
             try
             {
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = @"Select * from tblCategoryMaster Where IsNULL(ParentId,0)=@ParentId and IsActive=@IsActive";
+                    string sqlQuery = @"Select * from tblCategoryMaster Where IsNULL(ParentId,0)=@ParentId and IsActive=@IsActive and UserTypeId= @UserTypeId";
                     IEnumerable<ItemList> resObj = (await connection.QueryAsync(sqlQuery,
-                         new { @ParentId = CategoryId, @IsActive = (int)Status.Active, })).Select(x=>new ItemList { ItemId=x.CategoryId,ItemName=x.CategoryName });
+                         new { @ParentId = CategoryId, @IsActive = (int)Status.Active, @UserTypeId= UserTypeId })).Select(x=>new ItemList { ItemId=x.CategoryId,ItemName=x.CategoryName });
                     objItemList.Data = resObj.ToList();
                     objItemList.Result = resObj.Any() ? true : false;
                     objItemList.Message = resObj.Any() ? "Data Found." : "No Data found.";

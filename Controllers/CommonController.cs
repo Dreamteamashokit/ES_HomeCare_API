@@ -237,15 +237,14 @@ namespace ES_HomeCare_API.Controllers
 
         }
 
+       
 
-
-
-        [HttpGet("getCMPLCategoryList/{CategoryId}")]
+        [HttpGet("getCMPLCategoryList/{CategoryId}/{UserTypeId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetCMPLCategoryList(int CategoryId)
+        public async Task<IActionResult> GetCMPLCategoryList(int CategoryId, short UserTypeId)
         {
-            return Ok(await comSrv.GetCMPLCategoryList(CategoryId));
+            return Ok(await comSrv.GetCMPLCategoryList(CategoryId, UserTypeId));
         }
 
 

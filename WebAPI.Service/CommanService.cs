@@ -124,9 +124,9 @@ namespace ES_HomeCare_API.WebAPI.Service
         }
 
 
-        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetCMPLCategoryList(int CategoryId)
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetCMPLCategoryList(int CategoryId,short UserTypeId)
         {
-            return await data.GetCMPLCategoryList(CategoryId);
+            return await data.GetCMPLCategoryList(CategoryId, UserTypeId);
         }
 
 

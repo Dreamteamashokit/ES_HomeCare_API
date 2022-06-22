@@ -799,14 +799,13 @@ VALUES(@EmpId, @EffectiveDate, @EndDate, @ClientId, @Description, @Notes, @Hourl
                     if (_model.ComplianceId == 0)
                     {
 
-                        sqlQuery = @"INSERT INTO tblCompliance
-(UserId,DueDate,CompletedOn,CategoryId,Nurse,CodeId,Result,Notes,DocumentId,IsCompleted,IsActive,CreatedOn,CreatedBy)
-VALUES(@UserId,@DueDate,@CompletedOn,@CategoryId,@Nurse,@CodeId,@Result,@Notes,@DocumentId,@IsCompleted,@IsActive,@CreatedOn,@CreatedBy)";
+                        sqlQuery = @"INSERT INTO tblCompliance(UserId,DueDate,CompletedOn,CategoryId,NurseId,CodeId,Result,Notes,DocumentId,IsCompleted,IsActive,IsStatus,CreatedOn,CreatedBy)
+VALUES(@UserId,@DueDate,@CompletedOn,@CategoryId,@NurseId,@CodeId,@Result,@Notes,@DocumentId,@IsCompleted,@IsActive,@IsStatus,@CreatedOn,@CreatedBy);";
 
                     }
                     else
                     {
-                        sqlQuery = @"Update tblCompliance SET DueDate = @DueDate, CompletedOn = @CompletedOn, CategoryId = @CategoryId,CodeId = @CodeId, Notes = @Notes,DocumentId=@DocumentId,IsCompleted =@IsCompleted
+                        sqlQuery = @"Update tblCompliance SET DueDate = @DueDate, CompletedOn = @CompletedOn, CategoryId = @CategoryId,CodeId = @CodeId, Notes = @Notes,NurseId=@NurseId,DocumentId=@DocumentId,IsCompleted =@IsCompleted,IsStatus=@IsStatus 
 Where ComplianceId = @ComplianceId;";
                     }
 
@@ -814,7 +813,7 @@ Where ComplianceId = @ComplianceId;";
                     {
                         ComplianceId=_model.ComplianceId,
                         UserId = _model.UserId,
-                        Nurse = _model.Nurse,
+                        NurseId = _model.NurseId,
                         DueDate = _model.DueDate,
                         CompletedOn = _model.CompletedOn,
                         CategoryId = _model.CategoryId,
@@ -824,6 +823,7 @@ Where ComplianceId = @ComplianceId;";
                         DocumentId= _model.DocumentId,
                         IsCompleted = _model.IsCompleted,
                         IsActive = (int)Status.Active,
+                        IsStatus= _model.IsStatus,
                         CreatedOn = _model.CreatedOn,
                         CreatedBy = _model.CreatedBy,
                     });
@@ -857,9 +857,10 @@ Where ComplianceId = @ComplianceId;";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
 
-                string sql = @"SELECT x.*,y.CategoryName as Category,z.CategoryName as Code  FROM tblCompliance x
-LEFT JOIN tblCategoryMaster y on x.CategoryId = y.CategoryId
+                string sql = @"SELECT x.*,y.CategoryName as Category,z.CategoryName as Code,p.ItemName as StatusName
+FROM tblCompliance x LEFT JOIN tblCategoryMaster y on x.CategoryId = y.CategoryId
 LEFT JOIN tblCategoryMaster z on x.CodeId = z.CategoryId
+LEFT JOIN tblMaster p on x.IsStatus=p.MasterId 
 Where x.UserId = @UserId and x.IsActive = @IsActive; ";
 
                 IEnumerable<ComplianceModel> dataResult = (await connection.QueryAsync<ComplianceModel>(sql,

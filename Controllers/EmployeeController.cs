@@ -203,10 +203,19 @@ namespace WebAPI_SAMPLE.Controllers
 
             try
             {
-                if (model.CompletedOn.HasValue)
+                if (model.CompletedOn.HasValue || model.DocumentId > 0)
                 {
-                    model.IsCompleted = true;               
+                    model.IsCompleted = true;
                 }
+
+
+                if (model.DocumentId == 0)
+                {
+                    model.DocumentId = null;
+                }
+
+
+
             }
             catch (Exception ex)
             {
