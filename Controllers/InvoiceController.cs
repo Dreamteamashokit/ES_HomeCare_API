@@ -125,5 +125,13 @@ namespace ES_HomeCare_API.Controllers
         {
             return Ok(await service.GetPayerRateDetails(rateId));
         }
+
+        [HttpDelete("DeleteRate")]
+        [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteRate(int rateId)
+        {
+            return Ok(await service.DeleteRate(rateId));
+        }
     }
 }

@@ -79,5 +79,10 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             return await data.GetPayerRateDetails(rateId);
         }
+
+        public async Task<ServiceResponse<string>> DeleteRate(int rateId)
+        {
+            return await data.DeleteRate(rateId);
+        }
     }
 }

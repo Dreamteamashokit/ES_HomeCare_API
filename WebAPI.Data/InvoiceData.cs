@@ -342,6 +342,39 @@ namespace ES_HomeCare_API.WebAPI.Data
         }
 
 
+        public async Task<ServiceResponse<string>> DeleteRate(int rateId)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                var existsBilling = await GetPayerRateDetails(rateId);
+                if (existsBilling != null && existsBilling.Result == true && existsBilling.Data != null)
+                {
+                    using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                    {
+                        SqlCommand cmd = new SqlCommand("DeleteRate", con);
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@RateId", rateId);
+                        con.Open();
+                        int value = cmd.ExecuteNonQuery();
+                        sres.Result = true;
+                        sres.Data = "Rate detail Deleted successfull.";
+                    }
+                }
+                else
+                {
+                    sres.Result = false;
+                    sres.Data = "Rate does not exists.";
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return sres;
+        }
+
+
         public async Task<ServiceResponse<BillingViewModel>> GetBillingDetailsByBillingId(long billingId)
         {
             ServiceResponse<BillingViewModel> obj = new ServiceResponse<BillingViewModel>();
