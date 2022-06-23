@@ -14,8 +14,8 @@ namespace ES_HomeCare_API.Model.Billing
         public string RevenueCode { get; set; }
 
         public decimal TaxRate { get; set; }
-        public DateTime? ValidFrom { get; set; }
-        public DateTime? ValidTo { get; set; }
+        public string ValidFrom { get; set; }
+        public string ValidTo { get; set; }
         public decimal Hourly { get; set; }
         public decimal Livein { get; set; }
         public decimal Visit { get; set; }
