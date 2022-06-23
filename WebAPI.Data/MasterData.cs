@@ -158,8 +158,8 @@ namespace ES_HomeCare_API.WebAPI.Data
                     if (_model.CategoryId == 0)
                     {
 
-                        sqlQuery = sqlQuery = @"INSERT INTO tblCategoryMaster(CategoryName,ParentId,IsActive,CreatedOn,CreatedBy)
-VALUES(@CategoryName,@ParentId,@IsActive,@CreatedOn,@CreatedBy)";
+                        sqlQuery = sqlQuery = @"INSERT INTO tblCategoryMaster(CategoryName,ParentId,IsActive,CreatedOn,CreatedBy,UserTypeId)
+VALUES(@CategoryName,@ParentId,@IsActive,@CreatedOn,@CreatedBy,@UserTypeId)";
 
                     }
                     else
@@ -174,7 +174,8 @@ VALUES(@CategoryName,@ParentId,@IsActive,@CreatedOn,@CreatedBy)";
                         @ParentId = _model.ParentId,
                         @IsActive = (int)Status.Active,
                         @CreatedOn = _model.CreatedOn,
-                        @CreatedBy = _model.CreatedBy
+                        @CreatedBy = _model.CreatedBy,
+                        @UserTypeId = _model.UserTypeId
                     });
                     if (rowsAffected > 0)
                     {
@@ -195,7 +196,7 @@ VALUES(@CategoryName,@ParentId,@IsActive,@CreatedOn,@CreatedBy)";
             return addCategoryResponse;
         }
 
-        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetCMPLCategoryList()
+        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetCMPLUserCategoryList(short UserTypeId)
         {
             ServiceResponse<IEnumerable<CategoryModel>> objCategoryListResponse = new ServiceResponse<IEnumerable<CategoryModel>>();
             try
@@ -203,8 +204,8 @@ VALUES(@CategoryName,@ParentId,@IsActive,@CreatedOn,@CreatedBy)";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
                     string sqlQuery = @"SELECT category.CategoryId, category.CategoryName, ISNULL(category.ParentId,0) as ParentId , ISNULL(parent.CategoryName,'RootCategory') as ParentName 
-from tblCategoryMaster category LEFT JOIN tblCategoryMaster as parent ON category.ParentId = parent.CategoryId Where category.IsActive=@IsActive;";
-                    IEnumerable<CategoryModel> resObj = await connection.QueryAsync<CategoryModel>(sqlQuery, new { @IsActive =(int)Status.Active});
+from tblCategoryMaster category LEFT JOIN tblCategoryMaster as parent ON category.ParentId = parent.CategoryId Where category.IsActive=@IsActive AND category.UserTypeId=@UserTypeId;";
+                    IEnumerable<CategoryModel> resObj = await connection.QueryAsync<CategoryModel>(sqlQuery, new { @IsActive =(int)Status.Active, @UserTypeId = UserTypeId });
 
                     objCategoryListResponse.Data = resObj.ToList();
                     objCategoryListResponse.Result = resObj.Any() ? true : false;
@@ -219,16 +220,16 @@ from tblCategoryMaster category LEFT JOIN tblCategoryMaster as parent ON categor
             }
         }
 
-        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetCMPLCategoryList(int CategoryId)
+        public async Task<ServiceResponse<IEnumerable<CategoryModel>>> GetCMPLCategoryList(int CategoryId,short UserTypeId)
         {
             ServiceResponse<IEnumerable<CategoryModel>> objCategoryListResponse = new ServiceResponse<IEnumerable<CategoryModel>>();
             try
             {
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = @"Select * from tblCategoryMaster Where IsNULL(ParentId,0)=@ParentId and IsActive=@IsActive";
+                    string sqlQuery = @"Select * from tblCategoryMaster Where IsNULL(ParentId,0)=@ParentId and IsActive=@IsActive and UserTypeId=@UserTypeId";
                     IEnumerable<CategoryModel> resObj = await connection.QueryAsync<CategoryModel>(sqlQuery,
-                         new { @ParentId = CategoryId, @IsActive = (int)Status.Active, });
+                         new { @ParentId = CategoryId, @IsActive = (int)Status.Active, @UserTypeId = UserTypeId });
                     objCategoryListResponse.Data = resObj.ToList();
                     objCategoryListResponse.Result = resObj.Any() ? true : false;
                     objCategoryListResponse.Message = resObj.Any() ? "Data Found." : "No Data found.";
