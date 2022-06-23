@@ -1,4 +1,5 @@
-﻿using ES_HomeCare_API.Helper;
+﻿using ES_HomeCare_API;
+using ES_HomeCare_API.Helper;
 using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.ViewModel.Employee;
@@ -206,11 +207,18 @@ namespace WebAPI_SAMPLE.Controllers
                 if (model.CompletedOn.HasValue && model.DocumentId > 0)
                 {
                     model.IsCompleted = true;
+                    model.IsStatus = (short)ComplianceStatusEnum.Completed;
                 }
                 else if ((!model.CompletedOn.HasValue) && (model.DocumentId > 0))
                 {
                     model.IsCompleted = true;
+                    model.IsStatus = (short)ComplianceStatusEnum.Completed;
                     model.CompletedOn = DateTime.Now;
+                }
+
+                if (model.CodeId == 0 )
+                {
+                    model.CodeId = model.CategoryId;
                 }
 
                 if (model.DocumentId == 0)

@@ -204,6 +204,7 @@ END CATCH
             {
                 string sqlQuery = @"Insert Into tblEmpDocument (FolderId,FileName,FilePath,Title,SeachTag,Description,UserId,CreatedOn,CreatedBy) 
 	Values (@FolderId,@FileName,@FilePath,@Title,@SeachTag,@Description,@UserId,@CreatedOn,@CreatedBy);";
+                
                 int rowsAffected = await db.ExecuteAsync(sqlQuery, new
                 {
                     FolderId = model.FolderId,
@@ -228,8 +229,6 @@ END CATCH
                     sres.Message = "Data not save";
                 }
             }
-
-
 
             return sres;
 
