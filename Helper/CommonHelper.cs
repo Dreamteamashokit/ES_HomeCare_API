@@ -123,6 +123,17 @@ namespace ES_HomeCare_API.Helper
 
         }
 
+
+
+        public static string RemoveChar(string name)
+        {
+            string tidyName = name;
+
+            tidyName = tidyName.Replace("&", "And").Replace("/", "And").Replace("'", "").Replace("-", "").Replace(" ", "").Replace(".", "").Replace(">", "").Replace("<", "");
+
+            return tidyName;
+        }
+
     }
 
 }

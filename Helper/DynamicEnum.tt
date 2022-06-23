@@ -1,0 +1,105 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Data" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#@ import namespace="System.Data" #>
+<#@ import namespace="System.Data.SqlClient" #> 
+
+
+<#
+/*
+ * Developer : Ronen Rabinovitz
+ * Date : 06/07/2012
+ * All code (c)2012 Ronen Rabinovitz, all rights reserved
+ */
+
+
+///////////////////////TEMPLATE PARAMETES////////////////////////////////////
+//Database connection string
+var connectionString = "Server=eshomecaredb.ckcoxygmjhga.us-east-1.rds.amazonaws.com,1433;Database=ESHomeCareDB.QA;Uid=admin;Pwd=Akumar01#;";
+
+//Enum value column name:
+var enumDescriptionColumnName = "Enum_Description";
+
+//Enum namespace
+var enumNameSpace = "ES_HomeCare_API";
+
+//Open ADO connection
+var connection = new SqlConnection(connectionString);
+var command = connection.CreateCommand();
+connection.Open();
+
+command.CommandText = string.Format(@"Select * from tblMasterType");
+var tableReader = command.ExecuteReader();
+
+var enumTables = new  Dictionary<int, string>();
+while (tableReader.Read())
+{
+	enumTables.Add(Convert.ToInt32(tableReader["MasterTypeId"]),tableReader["MasterName"].ToString());
+}
+
+
+connection.Close();
+#>
+namespace <#=enumNameSpace#>
+{
+<#
+foreach (var item in enumTables)
+{
+	connection.Open();
+	
+
+
+//Start write enum file:		
+#>
+
+
+
+public enum <#=item.Value#>Enum
+	{
+	<#
+	command.CommandText = string.Format("select * from tblMaster Where MasterType={0}",item.Key);
+    var columnReader = command.ExecuteReader();
+    while (columnReader.Read())
+    {
+		//Fill only the values that the field "enumDescriptionColumnName" have value
+		if(!string.IsNullOrEmpty(columnReader["ItemName"].ToString().Trim()))
+		{
+	#>	<#=RemoveChar(columnReader["ItemName"].ToString())#> = <#=columnReader["MasterId"].ToString()#>,
+	<#	}
+	}#>
+
+}
+
+<#
+	connection.Close();
+}
+#>
+
+}
+
+
+
+
+
+
+
+
+
+
+<#+
+	
+    public string RemoveChar(string name)
+    {
+        string tidyName = name;
+
+		tidyName = tidyName.Replace("&", "And").Replace("/", "And").Replace("'", "").Replace("-", "").Replace(" ", "").Replace(".", "").Replace(">", "").Replace("<", "");
+		
+        return tidyName;
+    }
+
+#>
