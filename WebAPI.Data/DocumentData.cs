@@ -202,12 +202,14 @@ END CATCH
             {
                 string sqlQuery = @"BEGIN
 BEGIN TRANSACTION UploadDoc
+declare @UserTypeId int=NULL,@DocumentId bigInt =null
 Insert Into tblEmpDocument (FolderId,FileName,FilePath,Title,SeachTag,Description,UserId,CreatedOn,CreatedBy) 
 Values (@FolderId,@FileName,@FilePath,@Title,@SeachTag,@Description,@UserId,@CreatedOn,@CreatedBy)
 
-declare @UserTypeId int=NULL
+
+Select @DocumentId=SCOPE_IDENTITY();
 select @UserTypeId=UserType from tblUser where UserId=@UserId
-UPDATE  xy SET xy.CompletedOn = GetDate(), xy.IsStatus=@IsStatus
+UPDATE  xy SET xy.CompletedOn = GetDate(), xy.IsStatus=@IsStatus,xy.DocumentId=@DocumentId,xy.IsCompleted=1
 from tblCompliance xy 
 inner join  tblCategoryMaster x on xy.CodeId=x.CategoryId
 inner join tblFolderMaster y on x.CategoryName=y.FolderName 
