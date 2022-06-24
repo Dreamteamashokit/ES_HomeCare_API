@@ -1,5 +1,6 @@
 ﻿using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Client;
+using ES_HomeCare_API.ViewModel.Compliance;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -196,6 +197,10 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         }
         public async Task<ServiceResponse<IEnumerable<ProviderModel>>> GetEmergProvider(int userId) {
             return await data.GetEmergProvider(userId);
+        }
+        public async Task<ServiceResponse<ComplianceCountsViewModel>> GetComplianceCountByUserid(int userId)
+        {
+            return await data.GetComplianceCountByUserid(userId);
         }
 
 

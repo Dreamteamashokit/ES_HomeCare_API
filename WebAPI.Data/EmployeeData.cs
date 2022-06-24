@@ -1153,15 +1153,15 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
                             {
                                 result = new ExternalLoginViewModel
                                 {
-                                    userId = Convert.ToInt32(ds.Tables[0].Rows[i]["userId"].ToString()),
-                                    userTypeId = Convert.ToInt32(ds.Tables[0].Rows[i]["userTypeId"]),
-                                    firstName = ds.Tables[0].Rows[i]["firstName"].ToString(),
-                                    lastName = ds.Tables[0].Rows[i]["lastName"].ToString(),
-                                    middleName = ds.Tables[0].Rows[i]["middleName"].ToString(),
-                                    userName = ds.Tables[0].Rows[i]["userName"].ToString(),
-                                    email = ds.Tables[0].Rows[i]["email"].ToString(),
-                                    latitude = Convert.ToDecimal(ds.Tables[0].Rows[i]["latitude"]),
-                                    longitude = Convert.ToDecimal(ds.Tables[0].Rows[i]["longitude"])
+                                    userId = (ds.Tables[0].Rows[i]["userId"] == null || ds.Tables[0].Rows[i]["userId"] == DBNull.Value) ? 0 : Convert.ToInt32(ds.Tables[0].Rows[i]["userId"].ToString()),
+                                    userTypeId = (ds.Tables[0].Rows[i]["userTypeId"] == null || ds.Tables[0].Rows[i]["userTypeId"] == DBNull.Value) ? 0 :  Convert.ToInt32(ds.Tables[0].Rows[i]["userTypeId"]),
+                                    firstName = (ds.Tables[0].Rows[i]["firstName"] == null || ds.Tables[0].Rows[i]["firstName"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["firstName"].ToString(),
+                                    lastName = (ds.Tables[0].Rows[i]["lastName"] == null || ds.Tables[0].Rows[i]["lastName"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["lastName"].ToString(),
+                                    middleName = (ds.Tables[0].Rows[i]["middleName"] == null || ds.Tables[0].Rows[i]["middleName"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["middleName"].ToString(),
+                                    userName = (ds.Tables[0].Rows[i]["userName"] == null || ds.Tables[0].Rows[i]["userName"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["userName"].ToString(),
+                                    email = (ds.Tables[0].Rows[i]["email"] == null || ds.Tables[0].Rows[i]["email"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["email"].ToString(),
+                                    latitude = (ds.Tables[0].Rows[i]["latitude"] == null || ds.Tables[0].Rows[i]["latitude"] == DBNull.Value) ? 0 : Convert.ToDecimal(ds.Tables[0].Rows[i]["latitude"]),
+                                    longitude = (ds.Tables[0].Rows[i]["longitude"] == null || ds.Tables[0].Rows[i]["longitude"] == DBNull.Value) ? 0 : Convert.ToDecimal(ds.Tables[0].Rows[i]["longitude"])
                                 };
                             }
                         }
@@ -1201,23 +1201,29 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
                         {
                             ClientListViewModel objClient = new ClientListViewModel
                             {
-                                ClientId = Convert.ToInt32(ds.Tables[0].Rows[i]["ClientId"]),
-                                UserId = Convert.ToInt32(ds.Tables[0].Rows[i]["UserId"]),
-                                FirstName = ds.Tables[0].Rows[i]["FirstName"].ToString(),
-                                MiddleName = ds.Tables[0].Rows[i]["MiddleName"].ToString(),
-                                LastName = ds.Tables[0].Rows[i]["LastName"].ToString(),
-                                MeetingDate = ds.Tables[0].Rows[i]["MeetingDate"].ToString(),
-                                MeetingStartTime = ds.Tables[0].Rows[i]["StartTime"].ToString(),
-                                MeetingEndTime = ds.Tables[0].Rows[i]["EndTime"].ToString(),
-                                FlatNo = ds.Tables[0].Rows[i]["FlatNo"].ToString(),
-                                City = ds.Tables[0].Rows[i]["City"].ToString(),
-                                Address = ds.Tables[0].Rows[i]["Address"].ToString(),
-                                Country = ds.Tables[0].Rows[i]["Country"].ToString(),
-                                State = ds.Tables[0].Rows[i]["State"].ToString(),
-                                ZipCode = ds.Tables[0].Rows[i]["ZipCode"].ToString(),
-                                Latitude = ds.Tables[0].Rows[i]["Latitude"].ToString(),
-                                Longitude = ds.Tables[0].Rows[i]["Longitude"].ToString(),
-                                MeetingId=Convert.ToInt32(ds.Tables[0].Rows[i]["MeetingId"].ToString())
+                                ClientId = (ds.Tables[0].Rows[i]["ClientId"] == null || ds.Tables[0].Rows[i]["ClientId"] == DBNull.Value) ? 0 : Convert.ToInt32(ds.Tables[0].Rows[i]["ClientId"]),
+                                UserId = (ds.Tables[0].Rows[i]["UserId"] == null || ds.Tables[0].Rows[i]["UserId"] == DBNull.Value) ? 0 : Convert.ToInt32(ds.Tables[0].Rows[i]["UserId"]),
+                                FirstName = (ds.Tables[0].Rows[i]["FirstName"] == null || ds.Tables[0].Rows[i]["FirstName"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["FirstName"].ToString(),
+                                MiddleName = (ds.Tables[0].Rows[i]["MiddleName"] == null || ds.Tables[0].Rows[i]["MiddleName"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["MiddleName"].ToString(),
+                                LastName = (ds.Tables[0].Rows[i]["LastName"] == null || ds.Tables[0].Rows[i]["LastName"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["LastName"].ToString(),
+                                CellPhone = (ds.Tables[0].Rows[i]["CellPhone"] == null || ds.Tables[0].Rows[i]["CellPhone"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["CellPhone"].ToString(),
+                                Diagnosis = (ds.Tables[0].Rows[i]["Diagnosis"] == null || ds.Tables[0].Rows[i]["Diagnosis"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["Diagnosis"].ToString(),
+                                BedBath = (ds.Tables[0].Rows[i]["BedBath"] == null || ds.Tables[0].Rows[i]["BedBath"] == DBNull.Value) ? false : Convert.ToBoolean(ds.Tables[0].Rows[i]["BedBath"]),
+                                Footcare = (ds.Tables[0].Rows[i]["Footcare"] == null || ds.Tables[0].Rows[i]["Footcare"] == DBNull.Value) ? false : Convert.ToBoolean(ds.Tables[0].Rows[i]["Footcare"]),
+                                Skincare = (ds.Tables[0].Rows[i]["Skincare"] == null || ds.Tables[0].Rows[i]["Skincare"] == DBNull.Value) ? false : Convert.ToBoolean(ds.Tables[0].Rows[i]["Skincare"]),
+                                SpongeBath = (ds.Tables[0].Rows[i]["SpongeBath"] == null || ds.Tables[0].Rows[i]["SpongeBath"] == DBNull.Value) ? false : Convert.ToBoolean(ds.Tables[0].Rows[i]["SpongeBath"]),
+                                MeetingDate = (ds.Tables[0].Rows[i]["MeetingDate"] == null || ds.Tables[0].Rows[i]["MeetingDate"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["MeetingDate"].ToString(),
+                                MeetingStartTime = (ds.Tables[0].Rows[i]["StartTime"] == null || ds.Tables[0].Rows[i]["StartTime"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["StartTime"].ToString(),
+                                MeetingEndTime = (ds.Tables[0].Rows[i]["EndTime"] == null || ds.Tables[0].Rows[i]["EndTime"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["EndTime"].ToString(),
+                                FlatNo = (ds.Tables[0].Rows[i]["FlatNo"] == null || ds.Tables[0].Rows[i]["FlatNo"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["FlatNo"].ToString(),
+                                City = (ds.Tables[0].Rows[i]["City"] == null || ds.Tables[0].Rows[i]["City"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["City"].ToString(),
+                                Address = (ds.Tables[0].Rows[i]["Address"] == null || ds.Tables[0].Rows[i]["Address"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["Address"].ToString(),
+                                Country = (ds.Tables[0].Rows[i]["Country"] == null || ds.Tables[0].Rows[i]["Country"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["Country"].ToString(),
+                                State = (ds.Tables[0].Rows[i]["State"] == null || ds.Tables[0].Rows[i]["State"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["State"].ToString(),
+                                ZipCode = (ds.Tables[0].Rows[i]["ZipCode"] == null || ds.Tables[0].Rows[i]["ZipCode"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["ZipCode"].ToString(),
+                                Latitude = (ds.Tables[0].Rows[i]["Latitude"] == null || ds.Tables[0].Rows[i]["Latitude"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["Latitude"].ToString(),
+                                Longitude = (ds.Tables[0].Rows[i]["Longitude"] == null || ds.Tables[0].Rows[i]["Longitude"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["Longitude"].ToString(),
+                                MeetingId= (ds.Tables[0].Rows[i]["MeetingId"] == null || ds.Tables[0].Rows[i]["MeetingId"] == DBNull.Value) ? 0 : Convert.ToInt32(ds.Tables[0].Rows[i]["MeetingId"].ToString())
                             };
 
                             objClientList.Add(objClient);
