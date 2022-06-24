@@ -134,9 +134,7 @@ END CATCH
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 string sql = @"Select x.*,y.UserId From tblFoldermaster x Inner Join tblFolderUser y on x.FolderId=y.FolderId Where y.UserId=@UserId;";
-                IEnumerable<UploadFileRecord> result = (await connection.QueryAsync<UploadFileRecord>(sql,
-             new { @UserId = UserId }));
-
+                IEnumerable<UploadFileRecord> result = (await connection.QueryAsync<UploadFileRecord>(sql, new { @UserId = UserId }));
                 obj.Data = result;
                 obj.Result = result.Any() ? true : false;
                 obj.Message = result.Any() ? "Data Found." : "No Data found.";
