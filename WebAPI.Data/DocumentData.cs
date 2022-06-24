@@ -197,8 +197,9 @@ END CATCH
         public async Task<ServiceResponse<string>> AddDocument(UploadFileFolder model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
-
-            using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            try
+            {
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 string sqlQuery = @"BEGIN
 BEGIN TRANSACTION UploadDoc
@@ -243,6 +244,17 @@ END ";
                     sres.Data = null;
                     sres.Message = "Data not save";
                 }
+            }
+
+
+            }
+            catch (Exception ex)
+            {
+                
+                sres.Result = false;
+                sres.Data = null;
+                sres.Message = ex.Message;
+                
             }
 
             return sres;
