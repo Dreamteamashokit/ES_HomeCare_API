@@ -85,17 +85,7 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.GetDiagnosisList();
 
         }
-        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetCategoryList()
-        {
-            return await data.GetCategoryList();
 
-        }
-
-        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetSubCategoryList()
-        {
-            return await data.GetSubCategoryList();
-
-        }
 
 
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetProvisionList(int ProvisionType)

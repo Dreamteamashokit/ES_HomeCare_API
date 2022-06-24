@@ -134,9 +134,7 @@ END CATCH
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 string sql = @"Select x.*,y.UserId From tblFoldermaster x Inner Join tblFolderUser y on x.FolderId=y.FolderId Where y.UserId=@UserId;";
-                IEnumerable<UploadFileRecord> result = (await connection.QueryAsync<UploadFileRecord>(sql,
-             new { @UserId = UserId }));
-
+                IEnumerable<UploadFileRecord> result = (await connection.QueryAsync<UploadFileRecord>(sql, new { @UserId = UserId }));
                 obj.Data = result;
                 obj.Result = result.Any() ? true : false;
                 obj.Message = result.Any() ? "Data Found." : "No Data found.";
@@ -199,11 +197,28 @@ END CATCH
         public async Task<ServiceResponse<string>> AddDocument(UploadFileFolder model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
-
-            using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            try
             {
-                string sqlQuery = @"Insert Into tblEmpDocument (FolderId,FileName,FilePath,Title,SeachTag,Description,UserId,CreatedOn,CreatedBy) 
-	Values (@FolderId,@FileName,@FilePath,@Title,@SeachTag,@Description,@UserId,@CreatedOn,@CreatedBy);";
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sqlQuery = @"BEGIN
+BEGIN TRANSACTION UploadDoc
+declare @UserTypeId int=NULL,@DocumentId bigInt =null
+Insert Into tblEmpDocument (FolderId,FileName,FilePath,Title,SeachTag,Description,UserId,CreatedOn,CreatedBy) 
+Values (@FolderId,@FileName,@FilePath,@Title,@SeachTag,@Description,@UserId,@CreatedOn,@CreatedBy)
+
+
+Select @DocumentId=SCOPE_IDENTITY();
+select @UserTypeId=UserType from tblUser where UserId=@UserId
+UPDATE  xy SET xy.CompletedOn = GetDate(), xy.IsStatus=@IsStatus,xy.DocumentId=@DocumentId,xy.IsCompleted=1
+from tblCompliance xy 
+inner join  tblCategoryMaster x on xy.CodeId=x.CategoryId
+inner join tblFolderMaster y on x.CategoryName=y.FolderName 
+inner join tblFolderUser z on y.FolderId= z.FolderId and z.UserId =xy.UserId
+Where  z.UserId=@UserId and x.UserTypeId=@UserTypeId and xy.IsStatus!=@IsStatus
+
+COMMIT TRANSACTION UploadDoc
+END ";
                 
                 int rowsAffected = await db.ExecuteAsync(sqlQuery, new
                 {
@@ -215,6 +230,7 @@ END CATCH
                     Description = model.Description,
                     UserId = model.UserId,
                     CreatedBy = model.CreatedBy,
+                    IsStatus=(int)ComplianceStatusEnum.Completed,          
                     CreatedOn = DateTime.Now
                 });
 
@@ -228,6 +244,17 @@ END CATCH
                     sres.Data = null;
                     sres.Message = "Data not save";
                 }
+            }
+
+
+            }
+            catch (Exception ex)
+            {
+                
+                sres.Result = false;
+                sres.Data = null;
+                sres.Message = ex.Message;
+                
             }
 
             return sres;

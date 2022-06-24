@@ -787,7 +787,7 @@ VALUES(@EmpId, @EffectiveDate, @EndDate, @ClientId, @Description, @Notes, @Hourl
         #endregion
 
         #region Compliance
-        public async Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model)
+        public async Task<ServiceResponse<string>> AddComplianceTest(ComplianceModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
             try
@@ -850,6 +850,209 @@ Where ComplianceId = @ComplianceId;";
             }
             return sres;
         }
+
+
+
+
+
+
+
+
+        public async Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+
+                    string sqlQuery= @"IF @flag=1              
+BEGIN  
+  
+BEGIN TRY  
+BEGIN TRANSACTION addComp  
+  
+IF (@ComplianceId is NULL OR @ComplianceId=0)  
+BEGIN    
+        
+INSERT INTO tblCompliance(UserId,DueDate,CompletedOn,CategoryId,NurseId,CodeId,Result,Notes,DocumentId,IsCompleted,IsActive,IsStatus,CreatedOn,CreatedBy)  
+VALUES(@UserId,@DueDate,@CompletedOn,@CategoryId,@NurseId,@SubCategoryId,@Result,@Notes,@DocumentId,@IsCompleted,@IsActive,@IsStatus,@CreatedOn,@CreatedBy)  
+  
+  
+  
+Declare @FolderName varchar(150)=NULL,@FolderId bigInt=NULL,@ParentId bigInt=NULL  
+  
+  
+SELECT @FolderName=CategoryName FROM tblCategoryMaster where CategoryId = @CategoryId  
+IF NOT EXISTS (SELECT * FROM tblFolderMaster where FolderName = @FolderName)  
+BEGIN    
+        
+Insert Into tblFolderMaster (FolderName,CreatedOn,CreatedBy,ParentId)   
+Values (@FolderName,@CreatedOn,@CreatedBy,@ParentId);  
+  
+Select @FolderId=SCOPE_IDENTITY();  
+Insert Into tblFolderUser (FolderId,UserId,CreatedOn,CreatedBy)   
+Values (@FolderId,@UserId,@CreatedOn,@CreatedBy);  
+  
+  
+END    
+  
+ELSE   
+  
+BEGIN  
+  
+SELECT @FolderId=FolderId FROM tblFolderMaster where FolderName = @FolderName  
+  
+IF NOT EXISTS (SELECT * FROM tblFolderUser where FolderId=@FolderId and UserId = @UserId)  
+BEGIN    
+Insert Into tblFolderUser (FolderId,UserId,CreatedOn,CreatedBy)   
+Values (@FolderId,@UserId,@CreatedOn,@CreatedBy)  
+END  
+  
+END    
+  
+  
+  
+  
+SELECT @FolderName=CategoryName FROM tblCategoryMaster where CategoryId = @SubCategoryId  
+IF NOT EXISTS (SELECT * FROM tblFolderMaster where FolderName = @FolderName)  
+BEGIN  
+
+Select @ParentId=@FolderId
+        
+Insert Into tblFolderMaster (FolderName,CreatedOn,CreatedBy,ParentId)   
+Values (@FolderName,@CreatedOn,@CreatedBy,@ParentId);  
+  
+Select @FolderId=SCOPE_IDENTITY();  
+Insert Into tblFolderUser (FolderId,UserId,CreatedOn,CreatedBy)   
+Values (@FolderId,@UserId,@CreatedOn,@CreatedBy);  
+  
+  
+END    
+  
+ELSE   
+  
+BEGIN  
+  
+SELECT @FolderId=FolderId FROM tblFolderMaster where FolderName = @FolderName  
+  
+IF NOT EXISTS (SELECT * FROM tblFolderUser where FolderId=@FolderId and UserId = @UserId)  
+BEGIN    
+Insert Into tblFolderUser (FolderId,UserId,CreatedOn,CreatedBy)   
+Values (@FolderId,@UserId,@CreatedOn,@CreatedBy)  
+END  
+  
+END    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+END    
+              
+  
+  
+  
+  
+  
+ELSE   
+BEGIN   
+Update tblCompliance SET DueDate = @DueDate, CompletedOn = @CompletedOn, CategoryId = @CategoryId,CodeId = @SubCategoryId,   
+Notes = @Notes,NurseId=@NurseId,DocumentId=@DocumentId,IsCompleted =@IsCompleted,IsStatus=@IsStatus   
+Where ComplianceId = @ComplianceId  
+  
+END   
+  
+  
+COMMIT TRANSACTION addComp  
+  
+  
+  
+END TRY  
+  
+BEGIN CATCH   
+IF (@@TRANCOUNT > 0)  
+BEGIN  
+ROLLBACK TRANSACTION addComp  
+END   
+SELECT  
+ERROR_NUMBER() AS ErrorNumber,  
+ERROR_SEVERITY() AS ErrorSeverity,  
+ERROR_STATE() AS ErrorState,  
+ERROR_PROCEDURE() AS ErrorProcedure,  
+ERROR_LINE() AS ErrorLine,  
+ERROR_MESSAGE() AS ErrorMessage  
+END CATCH  
+  
+END  ";
+       
+                    int rowsAffected = await db.ExecuteAsync(sqlQuery, new
+                    {
+                        flag=1,
+                        ComplianceId = _model.ComplianceId,
+                        UserId = _model.UserId,
+                        NurseId = _model.NurseId,
+                        DueDate = _model.DueDate,
+                        CompletedOn = _model.CompletedOn,
+                        CategoryId = _model.CategoryId,
+                        SubCategoryId = _model.CodeId,
+                        Result = _model.Result,
+                        Notes = _model.Notes,
+                        DocumentId = _model.DocumentId,
+                        IsCompleted = _model.IsCompleted,
+                        IsActive = (int)Status.Active,
+                        IsStatus = _model.IsStatus,
+                        CreatedOn = _model.CreatedOn,
+                        CreatedBy = _model.CreatedBy,
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new creation.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+                return sres;
+            }
+            finally
+            {
+            }
+            return sres;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         public async Task<ServiceResponse<IEnumerable<ComplianceModel>>> GetComplianceList(int UserId)
         {
