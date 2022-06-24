@@ -200,8 +200,22 @@ END CATCH
 
             using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sqlQuery = @"Insert Into tblEmpDocument (FolderId,FileName,FilePath,Title,SeachTag,Description,UserId,CreatedOn,CreatedBy) 
-	Values (@FolderId,@FileName,@FilePath,@Title,@SeachTag,@Description,@UserId,@CreatedOn,@CreatedBy);";
+                string sqlQuery = @"BEGIN
+BEGIN TRANSACTION UploadDoc
+Insert Into tblEmpDocument (FolderId,FileName,FilePath,Title,SeachTag,Description,UserId,CreatedOn,CreatedBy) 
+Values (@FolderId,@FileName,@FilePath,@Title,@SeachTag,@Description,@UserId,@CreatedOn,@CreatedBy)
+
+declare @UserTypeId int=NULL
+select @UserTypeId=UserType from tblUser where UserId=@UserId
+UPDATE  xy SET xy.CompletedOn = GetDate(), xy.IsStatus=@IsStatus
+from tblCompliance xy 
+inner join  tblCategoryMaster x on xy.CodeId=x.CategoryId
+inner join tblFolderMaster y on x.CategoryName=y.FolderName 
+inner join tblFolderUser z on y.FolderId= z.FolderId and z.UserId =xy.UserId
+Where  z.UserId=@UserId and x.UserTypeId=@UserTypeId and xy.IsStatus!=@IsStatus
+
+COMMIT TRANSACTION UploadDoc
+END ";
                 
                 int rowsAffected = await db.ExecuteAsync(sqlQuery, new
                 {
@@ -213,6 +227,7 @@ END CATCH
                     Description = model.Description,
                     UserId = model.UserId,
                     CreatedBy = model.CreatedBy,
+                    IsStatus=(int)ComplianceStatusEnum.Completed,          
                     CreatedOn = DateTime.Now
                 });
 
