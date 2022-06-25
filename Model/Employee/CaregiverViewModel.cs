@@ -7,9 +7,9 @@ namespace ES_HomeCare_API.Model.Employee
         public string providerTaxId { get; set; }
         public string qualifier { get; set; }
         public string externalID { get; set; }
-        public int npi { get; set; }
-        public int ssn { get; set; }
-        public DateTime dateOfBirth { get; set; }
+        public string npi { get; set; }
+        public string ssn { get; set; }
+        public DateTime? dateOfBirth { get; set; }
         public string lastName { get; set; }
         public string firstName { get; set; }
         public string gender { get; set; }
@@ -18,7 +18,7 @@ namespace ES_HomeCare_API.Model.Employee
         public string type { get; set; }
         public int stateRegistrationID { get; set; }
         public int professionalLicenseNumber { get; set; }
-        public DateTime hireDate { get; set; }
+        public DateTime? hireDate { get; set; }
 
         public address address { get; set; }
     }
