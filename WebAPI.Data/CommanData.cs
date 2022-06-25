@@ -427,17 +427,21 @@ where y.EmpType=@EmpType;";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 string sqlqry = @"select x.UserId,y.Latitude,y.Longitude ,z.ProvisionId
-from tblUser x inner join tblAddress y on x.UserId=y.UserId
-Left join tblProvisions z on x.UserId=z.UserId 
-where IsNULL(z.ProvisionValue,'True')='True'and x.UserId=@UserId";
+                                 ,(isnull(FirstName,'')+' '+isnull(MiddleName,'')+' '+isnull(LastName,'')) as UserName
+                                from tblUser x 
+                                inner join tblAddress y on x.UserId=y.UserId
+                                Left join tblProvisions z on x.UserId=z.UserId 
+                                where IsNULL(z.ProvisionValue,'True')='True'
+                                and x.UserId=@UserId";
                 var results = (await connection.QueryAsync(sqlqry, new { @UserId = UserId })).ToList();
 
                 //Using Query Syntax
                 var GroupByQS = (from p in results
-                                 group p by new { p.UserId, p.Latitude, p.Longitude } into g
+                                 group p by new { p.UserId, p.Latitude, p.Longitude,p.UserName } into g
                                  orderby g.Key.UserId descending
                                  select new ClientGeoProvisions
                                  {
+                                     UserName= g.Key.UserName,
                                      ClientId = g.Key.UserId,
                                      Latitude = g.Key.Latitude == null ? 0.0m : Convert.ToDecimal(g.Key.Latitude),
                                      Longitude = g.Key.Longitude == null ? 0.0m : Convert.ToDecimal(g.Key.Longitude),

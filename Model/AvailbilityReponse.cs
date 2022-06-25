@@ -37,6 +37,7 @@ namespace ES_HomeCare_API.Model
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
         public int[] Provisions { get; set; }
+        public string UserName { get; set; }
     }
 
 
