@@ -243,7 +243,13 @@ namespace WebAPI_SAMPLE.WebAPI.Data
 
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "SELECT * FROM tblAddress Where UserId=@UserId;";
+                string sql = @"SELECT AddressId,tblAddress.UserId,AddressType,
+                                (isnull(tblUser.FirstName, '') + ' ' + isnull(tblUser.MiddleName, '') + ' ' + isnull(tblUser.LastName, '')) as [Owner],
+                                FlatNo, Address, City, Country State,
+                                ZipCode,Longitude,Latitude
+                                FROM tblAddress
+                                inner join tblUser on(tblUser.UserId = tblAddress.UserId)
+                                Where tblAddress.UserId = @UserId";
                 IEnumerable<AddressModel> cmeetings = (await connection.QueryAsync<AddressModel>(sql,
                          new { @UserId = empId }));
                 obj.Data = cmeetings.FirstOrDefault();
