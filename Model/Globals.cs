@@ -16,7 +16,7 @@ namespace ES_HomeCare_API.Model
         Active = 1,
         [Description("Suspended")]
         Suspended = 2,
-       
+
     }
 
 
@@ -30,7 +30,7 @@ namespace ES_HomeCare_API.Model
         [Description("Cancelled")]
         Cancelled = 2,
         [Description("Cancelled By Client")]
-        CancelledByClient = 3,       
+        CancelledByClient = 3,
 
     }
 
@@ -72,9 +72,9 @@ namespace ES_HomeCare_API.Model
         [Display(Name = "Super Admin")]
         SuperAdmin = 1,
         [Display(Name = "Administrators")]
-        Administrators = 2,     
+        Administrators = 2,
         [Display(Name = "Coordinators")]
-        Coordinators =3,
+        Coordinators = 3,
         [Display(Name = "Human Resources")]
         HR = 4,
         [Display(Name = "Nursing Supervisors")]
@@ -89,18 +89,20 @@ namespace ES_HomeCare_API.Model
         Client = 9,
     }
 
+    public enum RecurrTypeEnum
+    {
+        Days = 1,
+        Weeks = 2,
+        Months = 3,
+        Years = 4,
 
+    }
 
-
-
-
-
-
-
-
-
-
-
-
+    public enum RecurrSrcDateEnum
+    {
+        CompletionDate = 1,
+        DateofHire = 2,
+        DueDate = 3,
+    }
 
 }

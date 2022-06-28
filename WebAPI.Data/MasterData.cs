@@ -154,18 +154,82 @@ namespace ES_HomeCare_API.WebAPI.Data
             {
                 using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery;
-                    if (_model.CategoryId == 0)
-                    {
+                    string sqlQuery= @"BEGIN TRY  
+BEGIN TRANSACTION addRecurr 
 
-                        sqlQuery = sqlQuery = @"INSERT INTO tblCategoryMaster(CategoryName,ParentId,IsActive,CreatedOn,CreatedBy,UserTypeId)
-VALUES(@CategoryName,@ParentId,@IsActive,@CreatedOn,@CreatedBy,@UserTypeId)";
+IF NOT EXISTS (SELECT * FROM tblCategoryMaster where CategoryName = @CategoryName AND UserTypeId=@UserTypeId )  
+BEGIN    
+        
+INSERT INTO tblCategoryMaster(CategoryName,ParentId,IsActive,CreatedOn,CreatedBy,UserTypeId,IsRecurring)
+VALUES(@CategoryName,@ParentId,@IsActive,@CreatedOn,@CreatedBy,@UserTypeId,@IsRecurring) 
+  
+Select @CategoryId=SCOPE_IDENTITY(); 
 
-                    }
-                    else
-                    {
-                        sqlQuery = @"Update tblCategoryMaster set CategoryName=@CategoryName,ParentId=@ParentId where CategoryId=@CategoryId;";
-                    }
+
+IF @IsRecurring=1
+BEGIN  
+
+INSERT INTO tblCategoryRecurr (CategoryId,RecurrType,RecurrValue,RecurrSrcType,RecurrNotifyDays,RecurrDate)     
+VALUES (@CategoryId,@RecurrType,@RecurrValue,@RecurrSrcType,@RecurrNotifyDays,@RecurrDate) 
+
+END 
+  
+END    
+  
+ELSE   
+  
+BEGIN  
+  
+Update tblCategoryMaster set CategoryName=@CategoryName,ParentId=@ParentId, IsRecurring=@IsRecurring where CategoryId=@CategoryId 
+ 
+ 
+IF @IsRecurring=1
+
+BEGIN 
+
+IF NOT EXISTS (SELECT * FROM tblCategoryRecurr where CategoryId=@CategoryId and RecurrType = @RecurrType)  
+BEGIN    
+INSERT INTO tblCategoryRecurr (CategoryId,RecurrType,RecurrValue,RecurrSrcType,RecurrNotifyDays,RecurrDate)     
+VALUES (@CategoryId,@RecurrType,@RecurrValue,@RecurrSrcType,@RecurrNotifyDays,@RecurrDate) 
+
+END 
+ELSE  
+BEGIN  
+Update tblCategoryRecurr set RecurrValue=@RecurrValue,RecurrSrcType=@RecurrSrcType, 
+RecurrNotifyDays=@RecurrNotifyDays,RecurrDate=@RecurrDate where CategoryId=@CategoryId AND RecurrType=@RecurrType
+END  
+  
+END  
+
+END  
+
+Commit TRANSACTION addRecurr
+
+END TRY  
+BEGIN CATCH   
+IF (@@TRANCOUNT > 0)  
+BEGIN  
+ROLLBACK TRANSACTION addRecurr  
+END   
+SELECT  
+ERROR_NUMBER() AS ErrorNumber,  
+ERROR_SEVERITY() AS ErrorSeverity,  
+ERROR_STATE() AS ErrorState,  
+ERROR_PROCEDURE() AS ErrorProcedure,  
+ERROR_LINE() AS ErrorLine,  
+ERROR_MESSAGE() AS ErrorMessage  
+END CATCH ";
+//                    if (_model.CategoryId == 0)
+//                    {
+
+//                        sqlQuery = sqlQuery = @"INSERT INTO tblCategoryMaster(CategoryName,ParentId,IsActive,CreatedOn,CreatedBy,UserTypeId)
+//VALUES(@CategoryName,@ParentId,@IsActive,@CreatedOn,@CreatedBy,@UserTypeId)";
+
+//                    }
+//                    else
+//                    {
+//                        sqlQuery = @"Update tblCategoryMaster set CategoryName=@CategoryName,ParentId=@ParentId where CategoryId=@CategoryId;";
+//                    }
                
                     int rowsAffected = await db.ExecuteAsync(sqlQuery, new
                     {
@@ -175,7 +239,19 @@ VALUES(@CategoryName,@ParentId,@IsActive,@CreatedOn,@CreatedBy,@UserTypeId)";
                         @IsActive = (int)Status.Active,
                         @CreatedOn = _model.CreatedOn,
                         @CreatedBy = _model.CreatedBy,
-                        @UserTypeId = _model.UserTypeId
+                        @UserTypeId = _model.UserTypeId,
+                        @IsRecurring = _model.IsRecurring,
+                        @RecurrType = (short)_model.RecurrType,
+                        @RecurrValue = _model.RecurrValue,
+                        @RecurrSrcType = (short)_model.RecurrSrcType,
+                        @RecurrNotifyDays = _model.RecurrNotifyDays,
+                        @RecurrDate = _model.IsRecurring? _model.RecurrDate.Date:DateTime.Now.Date,
+                
+
+
+
+
+
                     });
                     if (rowsAffected > 0)
                     {
@@ -203,8 +279,11 @@ VALUES(@CategoryName,@ParentId,@IsActive,@CreatedOn,@CreatedBy,@UserTypeId)";
             {
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = @"SELECT category.CategoryId, category.CategoryName, ISNULL(category.ParentId,0) as ParentId , ISNULL(parent.CategoryName,'RootCategory') as ParentName 
-from tblCategoryMaster category LEFT JOIN tblCategoryMaster as parent ON category.ParentId = parent.CategoryId Where category.IsActive=@IsActive AND category.UserTypeId=@UserTypeId;";
+                    string sqlQuery = @"SELECT category.CategoryId, category.CategoryName, ISNULL(category.ParentId,0) as ParentId , ISNULL(parent.CategoryName,'RootCategory') as ParentName ,
+category.IsRecurring,recurr.RecurrType,recurr.RecurrValue,recurr.RecurrSrcType,recurr.RecurrDate,recurr.RecurrNotifyDays
+from tblCategoryMaster category LEFT JOIN tblCategoryMaster as parent ON category.ParentId = parent.CategoryId 
+LEFT JOIN tblCategoryRecurr recurr on  category.CategoryId = recurr.CategoryId
+Where category.IsActive=@IsActive AND category.UserTypeId=@UserTypeId;";
                     IEnumerable<CategoryModel> resObj = await connection.QueryAsync<CategoryModel>(sqlQuery, new { @IsActive =(int)Status.Active, @UserTypeId = UserTypeId });
 
                     objCategoryListResponse.Data = resObj.ToList();
