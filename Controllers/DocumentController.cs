@@ -93,15 +93,15 @@ namespace ES_HomeCare_API.Controllers
                 foreach (var file in files)
                 {
 
-
-                    string fileName = model.Title + DateTime.Now.ToString("dd-MM-yy") + "-" + ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    Foldername = Foldername.Trim();
+                    string fileName = model.Title + DateTime.Now.ToString("dd_MM_yy_hh_mm_ss")  + ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
                     string filePath = Foldername + "/" + fileName;
                     //you can add this path to a list and then return all dbPaths to the client if require"
                     model.FileName = fileName;
                     Stream fs = file.OpenReadStream();
                     AmazonUploader uploader = new AmazonUploader(configuration);
-                    uploader.sendMyFileToS3(fs, filePath);
-
+                    //uploader.sendMyFileToS3(fs, filePath);
+                    uploader.sendMyFileToS3(localFile: fs, fileNameInS3: fileName, subDirectoryInBucket: Foldername);
                 }
 
                 return Ok(await docSrv.AddDocument(model));
@@ -115,10 +115,11 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
+
         [HttpGet("getDocumentlist/{UserId}")]
         [ProducesResponseType(typeof(ServiceResponse<IEnumerable<FolderView>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<IEnumerable<FolderView>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetDocumentlist(int UserId, string forType="")
+        public async Task<IActionResult> GetDocumentlist(int UserId, string forType = "")
         {
             if (forType == "tree")
             {
@@ -128,7 +129,7 @@ namespace ES_HomeCare_API.Controllers
             {
                 return Ok(await docSrv.GetDocumentlist(UserId));
             }
-           
+
         }
 
 

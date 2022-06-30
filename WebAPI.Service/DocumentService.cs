@@ -20,19 +20,22 @@ namespace ES_HomeCare_API.WebAPI.Service
 
         public async Task<ServiceResponse<string>> AddFolder(FolderModel model)
         {
-            ServiceResponse<string> rObj=null;
+            ServiceResponse<string> rObj = null;
+            model.FolderName = model.FolderName.Trim();
             if (model.ParentFolderId > 0)
             {
+                model.ParentFolderName = model.ParentFolderName.Trim();
                 rObj = await data.AddSubFolder(model);
             }
             else
             {
                 rObj = await data.AddFolder(model);
             }
-            
+
             return rObj;
 
         }
+
         public async Task<ServiceResponse<IEnumerable<UploadFileRecord>>> GetFolderlist(int UserId)
         {
             return await data.GetFolderlist(UserId);
