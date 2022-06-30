@@ -94,7 +94,7 @@ namespace ES_HomeCare_API.Controllers
                 {
 
                     Foldername = Foldername.Trim();
-                    string fileName = model.Title + DateTime.Now.ToString("dd_MM_yy_hh_mm_ss")  + ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    string fileName = model.Title + DateTime.Now.ToString("_dd_MM_yy_hh_mm_ss")  +Path.GetExtension(file.FileName);
                     string filePath = Foldername + "/" + fileName;
                     //you can add this path to a list and then return all dbPaths to the client if require"
                     model.FileName = fileName;

@@ -240,7 +240,17 @@ END CATCH
                     if (cnn.State != ConnectionState.Open)
                         cnn.Open();
                     transaction = cnn.BeginTransaction();
-                    string _query = @"delete from tblFolderUser  Where FolderId=@FolderId and UserId=@UserId;";
+                    string _query = @"/*delete child if exists*/
+delete 
+FROM tblEmpDocument Where FolderId in (select FolderId from tblFoldermaster Where parentid=@FolderId)
+delete
+from tblFolderUser    Where FolderId in (select FolderId from tblFoldermaster Where parentid=@FolderId)
+and UserId=@UserId
+delete from tblFoldermaster Where parentid=@FolderId
+
+ /*delete parent */
+delete FROM tblEmpDocument  Where FolderId=@FolderId
+delete from tblFolderUser   Where FolderId=@FolderId and UserId=@UserId";
 
                     int rowsAffected = await cnn.ExecuteAsync(_query, new { @FolderId = FolderId, @UserId = UserId }, transaction);
                     transaction.Commit();
