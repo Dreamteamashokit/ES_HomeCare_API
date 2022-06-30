@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ES_HomeCare_API.Helper;
 using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Client;
+using ES_HomeCare_API.ViewModel.Compliance;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI_SAMPLE.Model;
@@ -805,15 +806,13 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.GetEmergProvider(userId));
         }
 
-
-
-
-
-
-
-
-
-
+        [HttpGet("GetComplianceCountByUserid/{userId}")]
+        [ProducesResponseType(typeof(ServiceResponse<ComplianceCountsViewModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<ComplianceCountsViewModel>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetComplianceCountByUserid(int userId)
+        {
+            return Ok(await service.GetComplianceCountByUserid(userId));
+        }
 
     }
 }

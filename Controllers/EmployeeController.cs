@@ -1,4 +1,5 @@
-﻿using ES_HomeCare_API.Helper;
+﻿using ES_HomeCare_API;
+using ES_HomeCare_API.Helper;
 using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.ViewModel.Employee;
@@ -195,18 +196,45 @@ namespace WebAPI_SAMPLE.Controllers
 
 
         #region Compliance
+
         [HttpPost("addCompliance")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddCompliance([FromBody] ComplianceModel model)
         {
-
             try
             {
-                if (model.CompletedOn.HasValue)
+                if (model.CompletedOn.HasValue && model.DocumentId > 0)
                 {
-                    model.IsCompleted = true;               
+                    model.IsCompleted = true;
+                    model.IsStatus = (short)ComplianceStatusEnum.Completed;
                 }
+                else if ((!model.CompletedOn.HasValue) && (model.DocumentId > 0))
+                {
+                    model.IsCompleted = true;
+                    model.IsStatus = (short)ComplianceStatusEnum.Completed;
+                    model.CompletedOn = DateTime.Now;
+                }
+                else if(model.CompletedOn.HasValue)
+                {
+                    model.IsCompleted = true;
+                    model.IsStatus = (short)ComplianceStatusEnum.Completed;
+                  
+                }
+
+
+
+
+                if (model.CodeId == 0 )
+                {
+                    model.CodeId = model.CategoryId;
+                }
+
+                if (model.DocumentId == 0)
+                {
+                    model.DocumentId = null;
+                }
+
             }
             catch (Exception ex)
             {
@@ -231,12 +259,8 @@ namespace WebAPI_SAMPLE.Controllers
         {
             return Ok(await service.DeleteCompliance(complianceId));
         }
-
+        
         #endregion
-
-
-
-
 
 
         #region Address

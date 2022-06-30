@@ -102,7 +102,7 @@ namespace ES_HomeCare_API.WebAPI.Data
             ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = "select x.MasterITyped, x.MasterName from tblMasterType x; ";
+                string sql = "select x.MasterTypeId, x.MasterName from tblMasterType x; ";
 
                 IEnumerable<ItemList> resData = (await connection.QueryAsync(sql)).Select(x => new ItemList { ItemId = x.MasterITyped, ItemName = x.MasterName });
 
@@ -340,33 +340,7 @@ where y.EmpType=@EmpType;";
 
         }
 
-        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetCategoryList()
-        {
-            ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-            {
-                string sql = "select *  from tblCategory; ";
-                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sql)).Select(x => new ItemList { ItemId = x.CategoryItemId, ItemName = x.CategoryItemName });
-                obj.Data = cmeetings;
-                obj.Result = cmeetings.Any() ? true : false;
-                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
-            }
-            return obj;
-
-        }
-        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetSubCategoryList()
-        {
-            ServiceResponse<IEnumerable<ItemList>> obj = new ServiceResponse<IEnumerable<ItemList>>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-            {
-                string sql = "select *  from tblSubCategory; ";
-                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sql)).Select(x => new ItemList { ItemId = x.SubCategoryItemId, ItemName = x.SubCategoryItemName });
-                obj.Data = cmeetings;
-                obj.Result = cmeetings.Any() ? true : false;
-                obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
-            }
-            return obj;
-        }
+    
 
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetProvisionList(int ProvisionType)
         {
@@ -462,16 +436,16 @@ where y.EmpType=@EmpType;";
 
 
 
-        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetCMPLCategoryList(int CategoryId)
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetCMPLCategoryList(int CategoryId, short UserTypeId)
         {
             ServiceResponse<IEnumerable<ItemList>> objItemList= new ServiceResponse<IEnumerable<ItemList>>();
             try
             {
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string sqlQuery = @"Select * from tblCategoryMaster Where IsNULL(ParentId,0)=@ParentId and IsActive=@IsActive";
+                    string sqlQuery = @"Select * from tblCategoryMaster Where IsNULL(ParentId,0)=@ParentId and IsActive=@IsActive and UserTypeId= @UserTypeId";
                     IEnumerable<ItemList> resObj = (await connection.QueryAsync(sqlQuery,
-                         new { @ParentId = CategoryId, @IsActive = (int)Status.Active, })).Select(x=>new ItemList { ItemId=x.CategoryId,ItemName=x.CategoryName });
+                         new { @ParentId = CategoryId, @IsActive = (int)Status.Active, @UserTypeId= UserTypeId })).Select(x=>new ItemList { ItemId=x.CategoryId,ItemName=x.CategoryName });
                     objItemList.Data = resObj.ToList();
                     objItemList.Result = resObj.Any() ? true : false;
                     objItemList.Message = resObj.Any() ? "Data Found." : "No Data found.";

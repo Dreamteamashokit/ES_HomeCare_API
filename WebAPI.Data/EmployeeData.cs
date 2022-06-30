@@ -793,7 +793,7 @@ VALUES(@EmpId, @EffectiveDate, @EndDate, @ClientId, @Description, @Notes, @Hourl
         #endregion
 
         #region Compliance
-        public async Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model)
+        public async Task<ServiceResponse<string>> AddComplianceTest(ComplianceModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
             try
@@ -805,14 +805,13 @@ VALUES(@EmpId, @EffectiveDate, @EndDate, @ClientId, @Description, @Notes, @Hourl
                     if (_model.ComplianceId == 0)
                     {
 
-                        sqlQuery = @"INSERT INTO tblCompliance
-(UserId,DueDate,CompletedOn,CategoryId,Nurse,CodeId,Result,Notes,IsCompleted,IsActive,CreatedOn,CreatedBy)
-VALUES(@UserId,@DueDate,@CompletedOn,@CategoryId,@Nurse,@CodeId,@Result,@Notes,@IsCompleted,@IsActive,@CreatedOn,@CreatedBy)";
+                        sqlQuery = @"INSERT INTO tblCompliance(UserId,DueDate,CompletedOn,CategoryId,NurseId,CodeId,Result,Notes,DocumentId,IsCompleted,IsActive,IsStatus,CreatedOn,CreatedBy)
+VALUES(@UserId,@DueDate,@CompletedOn,@CategoryId,@NurseId,@CodeId,@Result,@Notes,@DocumentId,@IsCompleted,@IsActive,@IsStatus,@CreatedOn,@CreatedBy);";
 
                     }
                     else
                     {
-                        sqlQuery = @"Update tblCompliance SET DueDate = @DueDate, CompletedOn = @CompletedOn, CategoryId = @CategoryId,CodeId = @CodeId, Notes = @Notes,IsCompleted =@IsCompleted
+                        sqlQuery = @"Update tblCompliance SET DueDate = @DueDate, CompletedOn = @CompletedOn, CategoryId = @CategoryId,CodeId = @CodeId, Notes = @Notes,NurseId=@NurseId,DocumentId=@DocumentId,IsCompleted =@IsCompleted,IsStatus=@IsStatus 
 Where ComplianceId = @ComplianceId;";
                     }
 
@@ -820,15 +819,17 @@ Where ComplianceId = @ComplianceId;";
                     {
                         ComplianceId=_model.ComplianceId,
                         UserId = _model.UserId,
-                        Nurse = _model.Nurse,
+                        NurseId = _model.NurseId,
                         DueDate = _model.DueDate,
                         CompletedOn = _model.CompletedOn,
                         CategoryId = _model.CategoryId,
                         CodeId = _model.CodeId,
                         Result = _model.Result,
                         Notes = _model.Notes,
+                        DocumentId= _model.DocumentId,
                         IsCompleted = _model.IsCompleted,
                         IsActive = (int)Status.Active,
+                        IsStatus= _model.IsStatus,
                         CreatedOn = _model.CreatedOn,
                         CreatedBy = _model.CreatedBy,
                     });
@@ -856,15 +857,219 @@ Where ComplianceId = @ComplianceId;";
             return sres;
         }
 
+
+
+
+
+
+
+
+        public async Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+
+                    string sqlQuery= @"IF @flag=1              
+BEGIN  
+  
+BEGIN TRY  
+BEGIN TRANSACTION addComp  
+  
+IF (@ComplianceId is NULL OR @ComplianceId=0)  
+BEGIN    
+        
+INSERT INTO tblCompliance(UserId,DueDate,CompletedOn,CategoryId,NurseId,CodeId,Result,Notes,DocumentId,IsCompleted,IsActive,IsStatus,CreatedOn,CreatedBy)  
+VALUES(@UserId,@DueDate,@CompletedOn,@CategoryId,@NurseId,@SubCategoryId,@Result,@Notes,@DocumentId,@IsCompleted,@IsActive,@IsStatus,@CreatedOn,@CreatedBy)  
+  
+  
+  
+Declare @FolderName varchar(150)=NULL,@FolderId bigInt=NULL,@ParentId bigInt=NULL  
+  
+  
+SELECT @FolderName=CategoryName FROM tblCategoryMaster where CategoryId = @CategoryId  
+IF NOT EXISTS (SELECT * FROM tblFolderMaster where FolderName = @FolderName)  
+BEGIN    
+        
+Insert Into tblFolderMaster (FolderName,CreatedOn,CreatedBy,ParentId)   
+Values (@FolderName,@CreatedOn,@CreatedBy,@ParentId);  
+  
+Select @FolderId=SCOPE_IDENTITY();  
+Insert Into tblFolderUser (FolderId,UserId,CreatedOn,CreatedBy)   
+Values (@FolderId,@UserId,@CreatedOn,@CreatedBy);  
+  
+  
+END    
+  
+ELSE   
+  
+BEGIN  
+  
+SELECT @FolderId=FolderId FROM tblFolderMaster where FolderName = @FolderName  
+  
+IF NOT EXISTS (SELECT * FROM tblFolderUser where FolderId=@FolderId and UserId = @UserId)  
+BEGIN    
+Insert Into tblFolderUser (FolderId,UserId,CreatedOn,CreatedBy)   
+Values (@FolderId,@UserId,@CreatedOn,@CreatedBy)  
+END  
+  
+END    
+  
+  
+  
+  
+SELECT @FolderName=CategoryName FROM tblCategoryMaster where CategoryId = @SubCategoryId  
+IF NOT EXISTS (SELECT * FROM tblFolderMaster where FolderName = @FolderName)  
+BEGIN  
+
+Select @ParentId=@FolderId
+        
+Insert Into tblFolderMaster (FolderName,CreatedOn,CreatedBy,ParentId)   
+Values (@FolderName,@CreatedOn,@CreatedBy,@ParentId);  
+  
+Select @FolderId=SCOPE_IDENTITY();  
+Insert Into tblFolderUser (FolderId,UserId,CreatedOn,CreatedBy)   
+Values (@FolderId,@UserId,@CreatedOn,@CreatedBy);  
+  
+  
+END    
+  
+ELSE   
+  
+BEGIN  
+  
+SELECT @FolderId=FolderId FROM tblFolderMaster where FolderName = @FolderName  
+  
+IF NOT EXISTS (SELECT * FROM tblFolderUser where FolderId=@FolderId and UserId = @UserId)  
+BEGIN    
+Insert Into tblFolderUser (FolderId,UserId,CreatedOn,CreatedBy)   
+Values (@FolderId,@UserId,@CreatedOn,@CreatedBy)  
+END  
+  
+END    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+END    
+              
+  
+  
+  
+  
+  
+ELSE   
+BEGIN   
+Update tblCompliance SET DueDate = @DueDate, CompletedOn = @CompletedOn, CategoryId = @CategoryId,CodeId = @SubCategoryId,   
+Notes = @Notes,NurseId=@NurseId,DocumentId=@DocumentId,IsCompleted =@IsCompleted,IsStatus=@IsStatus   
+Where ComplianceId = @ComplianceId  
+  
+END   
+  
+  
+COMMIT TRANSACTION addComp  
+  
+  
+  
+END TRY  
+  
+BEGIN CATCH   
+IF (@@TRANCOUNT > 0)  
+BEGIN  
+ROLLBACK TRANSACTION addComp  
+END   
+SELECT  
+ERROR_NUMBER() AS ErrorNumber,  
+ERROR_SEVERITY() AS ErrorSeverity,  
+ERROR_STATE() AS ErrorState,  
+ERROR_PROCEDURE() AS ErrorProcedure,  
+ERROR_LINE() AS ErrorLine,  
+ERROR_MESSAGE() AS ErrorMessage  
+END CATCH  
+  
+END  ";
+       
+                    int rowsAffected = await db.ExecuteAsync(sqlQuery, new
+                    {
+                        flag=1,
+                        ComplianceId = _model.ComplianceId,
+                        UserId = _model.UserId,
+                        NurseId = _model.NurseId,
+                        DueDate = _model.DueDate,
+                        CompletedOn = _model.CompletedOn,
+                        CategoryId = _model.CategoryId,
+                        SubCategoryId = _model.CodeId,
+                        Result = _model.Result,
+                        Notes = _model.Notes,
+                        DocumentId = _model.DocumentId,
+                        IsCompleted = _model.IsCompleted,
+                        IsActive = (int)Status.Active,
+                        IsStatus = _model.IsStatus,
+                        CreatedOn = _model.CreatedOn,
+                        CreatedBy = _model.CreatedBy,
+                    });
+
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = "Sucessfully  Created.";
+                    }
+                    else
+                    {
+                        sres.Data = null;
+                        sres.Message = "Failed new creation.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+                return sres;
+            }
+            finally
+            {
+            }
+            return sres;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         public async Task<ServiceResponse<IEnumerable<ComplianceModel>>> GetComplianceList(int UserId)
         {
             ServiceResponse<IEnumerable<ComplianceModel>> obj = new ServiceResponse<IEnumerable<ComplianceModel>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
 
-                string sql = @"SELECT x.*,y.CategoryName as Category,z.CategoryName as Code  FROM tblCompliance x
-LEFT JOIN tblCategoryMaster y on x.CategoryId = y.CategoryId
+                string sql = @"SELECT x.*,y.CategoryName as Category,z.CategoryName as Code,p.ItemName as StatusName
+FROM tblCompliance x LEFT JOIN tblCategoryMaster y on x.CategoryId = y.CategoryId
 LEFT JOIN tblCategoryMaster z on x.CodeId = z.CategoryId
+LEFT JOIN tblMaster p on x.IsStatus=p.MasterId 
 Where x.UserId = @UserId and x.IsActive = @IsActive; ";
 
                 IEnumerable<ComplianceModel> dataResult = (await connection.QueryAsync<ComplianceModel>(sql,
@@ -1092,7 +1297,7 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
                                 address = new address
                                 {
                                     addressLine1 = ds.Tables[1].Rows[i]["addressLine1"].ToString(),
-                                    addressLine2 = ds.Tables[1].Rows[i]["addressLine2"].ToString(),
+                                    addressLine2 = ds.Tables[1].Rows[i]["address"].ToString(),
                                     state = ds.Tables[1].Rows[i]["state"].ToString(),
                                     city = ds.Tables[1].Rows[i]["city"].ToString(),
                                     zipcode = ds.Tables[1].Rows[i]["zipcode"].ToString()
@@ -1104,15 +1309,15 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
                             caregiver = new CaregiverViewModel
                             {
                                 providerTaxId = ds.Tables[0].Rows[i]["providerTaxId"].ToString(),
-                                npi = Convert.ToInt32(ds.Tables[0].Rows[i]["npi"].ToString()),
-                                ssn = Convert.ToInt32(ds.Tables[0].Rows[i]["ssn"].ToString()),
-                                dateOfBirth = Convert.ToDateTime(ds.Tables[0].Rows[i]["dateOfBirth"].ToString()),
+                                npi = ds.Tables[0].Rows[i]["npi"].ToString(),
+                                ssn = ds.Tables[0].Rows[i]["ssn"].ToString(),
+                                dateOfBirth = (ds.Tables[0].Rows[i]["dateOfBirth"] == null || ds.Tables[0].Rows[i]["dateOfBirth"] == DBNull.Value) ? (DateTime?)null : Convert.ToDateTime(ds.Tables[0].Rows[i]["dateOfBirth"].ToString()),
                                 email = ds.Tables[0].Rows[i]["email"].ToString(),
                                 externalID = ds.Tables[0].Rows[i]["externalID"].ToString(),
                                 firstName = ds.Tables[0].Rows[i]["firstName"].ToString(),
                                 lastName = ds.Tables[0].Rows[i]["lastName"].ToString(),
                                 gender = ds.Tables[0].Rows[i]["gender"].ToString(),
-                                hireDate = Convert.ToDateTime(ds.Tables[0].Rows[i]["gender"].ToString()),
+                                hireDate = (ds.Tables[0].Rows[i]["hireDate"] == null || ds.Tables[0].Rows[i]["hireDate"] == DBNull.Value) ? (DateTime?)null : Convert.ToDateTime(ds.Tables[0].Rows[i]["hireDate"].ToString()),
                                 phoneNumber = ds.Tables[0].Rows[i]["phoneNumber"].ToString(),
                                 professionalLicenseNumber = Convert.ToInt32(ds.Tables[0].Rows[i]["professionalLicenseNumber"].ToString()),
                                 qualifier = ds.Tables[0].Rows[i]["qualifier"].ToString(),
@@ -1157,15 +1362,15 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
                             {
                                 result = new ExternalLoginViewModel
                                 {
-                                    userId = Convert.ToInt32(ds.Tables[0].Rows[i]["userId"].ToString()),
-                                    userTypeId = Convert.ToInt32(ds.Tables[0].Rows[i]["userTypeId"]),
-                                    firstName = ds.Tables[0].Rows[i]["firstName"].ToString(),
-                                    lastName = ds.Tables[0].Rows[i]["lastName"].ToString(),
-                                    middleName = ds.Tables[0].Rows[i]["middleName"].ToString(),
-                                    userName = ds.Tables[0].Rows[i]["userName"].ToString(),
-                                    email = ds.Tables[0].Rows[i]["email"].ToString(),
-                                    latitude = Convert.ToDecimal(ds.Tables[0].Rows[i]["latitude"]),
-                                    longitude = Convert.ToDecimal(ds.Tables[0].Rows[i]["longitude"])
+                                    userId = (ds.Tables[0].Rows[i]["userId"] == null || ds.Tables[0].Rows[i]["userId"] == DBNull.Value) ? 0 : Convert.ToInt32(ds.Tables[0].Rows[i]["userId"].ToString()),
+                                    userTypeId = (ds.Tables[0].Rows[i]["userTypeId"] == null || ds.Tables[0].Rows[i]["userTypeId"] == DBNull.Value) ? 0 :  Convert.ToInt32(ds.Tables[0].Rows[i]["userTypeId"]),
+                                    firstName = (ds.Tables[0].Rows[i]["firstName"] == null || ds.Tables[0].Rows[i]["firstName"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["firstName"].ToString(),
+                                    lastName = (ds.Tables[0].Rows[i]["lastName"] == null || ds.Tables[0].Rows[i]["lastName"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["lastName"].ToString(),
+                                    middleName = (ds.Tables[0].Rows[i]["middleName"] == null || ds.Tables[0].Rows[i]["middleName"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["middleName"].ToString(),
+                                    userName = (ds.Tables[0].Rows[i]["userName"] == null || ds.Tables[0].Rows[i]["userName"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["userName"].ToString(),
+                                    email = (ds.Tables[0].Rows[i]["email"] == null || ds.Tables[0].Rows[i]["email"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["email"].ToString(),
+                                    latitude = (ds.Tables[0].Rows[i]["latitude"] == null || ds.Tables[0].Rows[i]["latitude"] == DBNull.Value) ? 0 : Convert.ToDecimal(ds.Tables[0].Rows[i]["latitude"]),
+                                    longitude = (ds.Tables[0].Rows[i]["longitude"] == null || ds.Tables[0].Rows[i]["longitude"] == DBNull.Value) ? 0 : Convert.ToDecimal(ds.Tables[0].Rows[i]["longitude"])
                                 };
                             }
                         }
@@ -1205,23 +1410,29 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
                         {
                             ClientListViewModel objClient = new ClientListViewModel
                             {
-                                ClientId = Convert.ToInt32(ds.Tables[0].Rows[i]["ClientId"]),
-                                UserId = Convert.ToInt32(ds.Tables[0].Rows[i]["UserId"]),
-                                FirstName = ds.Tables[0].Rows[i]["FirstName"].ToString(),
-                                MiddleName = ds.Tables[0].Rows[i]["MiddleName"].ToString(),
-                                LastName = ds.Tables[0].Rows[i]["LastName"].ToString(),
-                                MeetingDate = ds.Tables[0].Rows[i]["MeetingDate"].ToString(),
-                                MeetingStartTime = ds.Tables[0].Rows[i]["StartTime"].ToString(),
-                                MeetingEndTime = ds.Tables[0].Rows[i]["EndTime"].ToString(),
-                                FlatNo = ds.Tables[0].Rows[i]["FlatNo"].ToString(),
-                                City = ds.Tables[0].Rows[i]["City"].ToString(),
-                                Address = ds.Tables[0].Rows[i]["Address"].ToString(),
-                                Country = ds.Tables[0].Rows[i]["Country"].ToString(),
-                                State = ds.Tables[0].Rows[i]["State"].ToString(),
-                                ZipCode = ds.Tables[0].Rows[i]["ZipCode"].ToString(),
-                                Latitude = ds.Tables[0].Rows[i]["Latitude"].ToString(),
-                                Longitude = ds.Tables[0].Rows[i]["Longitude"].ToString(),
-                                MeetingId=Convert.ToInt32(ds.Tables[0].Rows[i]["MeetingId"].ToString())
+                                ClientId = (ds.Tables[0].Rows[i]["ClientId"] == null || ds.Tables[0].Rows[i]["ClientId"] == DBNull.Value) ? 0 : Convert.ToInt32(ds.Tables[0].Rows[i]["ClientId"]),
+                                UserId = (ds.Tables[0].Rows[i]["UserId"] == null || ds.Tables[0].Rows[i]["UserId"] == DBNull.Value) ? 0 : Convert.ToInt32(ds.Tables[0].Rows[i]["UserId"]),
+                                FirstName = (ds.Tables[0].Rows[i]["FirstName"] == null || ds.Tables[0].Rows[i]["FirstName"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["FirstName"].ToString(),
+                                MiddleName = (ds.Tables[0].Rows[i]["MiddleName"] == null || ds.Tables[0].Rows[i]["MiddleName"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["MiddleName"].ToString(),
+                                LastName = (ds.Tables[0].Rows[i]["LastName"] == null || ds.Tables[0].Rows[i]["LastName"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["LastName"].ToString(),
+                                CellPhone = (ds.Tables[0].Rows[i]["CellPhone"] == null || ds.Tables[0].Rows[i]["CellPhone"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["CellPhone"].ToString(),
+                                Diagnosis = (ds.Tables[0].Rows[i]["Diagnosis"] == null || ds.Tables[0].Rows[i]["Diagnosis"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["Diagnosis"].ToString(),
+                                BedBath = (ds.Tables[0].Rows[i]["BedBath"] == null || ds.Tables[0].Rows[i]["BedBath"] == DBNull.Value) ? false : Convert.ToBoolean(ds.Tables[0].Rows[i]["BedBath"]),
+                                Footcare = (ds.Tables[0].Rows[i]["Footcare"] == null || ds.Tables[0].Rows[i]["Footcare"] == DBNull.Value) ? false : Convert.ToBoolean(ds.Tables[0].Rows[i]["Footcare"]),
+                                Skincare = (ds.Tables[0].Rows[i]["Skincare"] == null || ds.Tables[0].Rows[i]["Skincare"] == DBNull.Value) ? false : Convert.ToBoolean(ds.Tables[0].Rows[i]["Skincare"]),
+                                SpongeBath = (ds.Tables[0].Rows[i]["SpongeBath"] == null || ds.Tables[0].Rows[i]["SpongeBath"] == DBNull.Value) ? false : Convert.ToBoolean(ds.Tables[0].Rows[i]["SpongeBath"]),
+                                MeetingDate = (ds.Tables[0].Rows[i]["MeetingDate"] == null || ds.Tables[0].Rows[i]["MeetingDate"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["MeetingDate"].ToString(),
+                                MeetingStartTime = (ds.Tables[0].Rows[i]["StartTime"] == null || ds.Tables[0].Rows[i]["StartTime"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["StartTime"].ToString(),
+                                MeetingEndTime = (ds.Tables[0].Rows[i]["EndTime"] == null || ds.Tables[0].Rows[i]["EndTime"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["EndTime"].ToString(),
+                                FlatNo = (ds.Tables[0].Rows[i]["FlatNo"] == null || ds.Tables[0].Rows[i]["FlatNo"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["FlatNo"].ToString(),
+                                City = (ds.Tables[0].Rows[i]["City"] == null || ds.Tables[0].Rows[i]["City"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["City"].ToString(),
+                                Address = (ds.Tables[0].Rows[i]["Address"] == null || ds.Tables[0].Rows[i]["Address"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["Address"].ToString(),
+                                Country = (ds.Tables[0].Rows[i]["Country"] == null || ds.Tables[0].Rows[i]["Country"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["Country"].ToString(),
+                                State = (ds.Tables[0].Rows[i]["State"] == null || ds.Tables[0].Rows[i]["State"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["State"].ToString(),
+                                ZipCode = (ds.Tables[0].Rows[i]["ZipCode"] == null || ds.Tables[0].Rows[i]["ZipCode"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["ZipCode"].ToString(),
+                                Latitude = (ds.Tables[0].Rows[i]["Latitude"] == null || ds.Tables[0].Rows[i]["Latitude"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["Latitude"].ToString(),
+                                Longitude = (ds.Tables[0].Rows[i]["Longitude"] == null || ds.Tables[0].Rows[i]["Longitude"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["Longitude"].ToString(),
+                                MeetingId= (ds.Tables[0].Rows[i]["MeetingId"] == null || ds.Tables[0].Rows[i]["MeetingId"] == DBNull.Value) ? 0 : Convert.ToInt32(ds.Tables[0].Rows[i]["MeetingId"].ToString())
                             };
 
                             objClientList.Add(objClient);
@@ -1262,7 +1473,7 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
 
                             objClockinDetail.ClockId = Convert.ToInt32(ds.Tables[0].Rows[i]["ClockId"]);
                             objClockinDetail.UserId = Convert.ToInt32(ds.Tables[0].Rows[i]["UserId"]);
-                            if (ds.Tables[0].Rows[i]["ClockInTime"] != null)
+                            if (ds.Tables[0].Rows[i]["ClockInTime"] != null && ds.Tables[0].Rows[i]["ClockInTime"] != DBNull.Value)
                             {
                                 objClockinDetail.ClockInTime = Convert.ToDateTime(ds.Tables[0].Rows[i]["ClockInTime"]);
                             }

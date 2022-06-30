@@ -184,21 +184,7 @@ namespace ES_HomeCare_API.Controllers
             return Ok(await comSrv.GetDiagnosisList());
         }
 
-        [HttpGet("getCategory")]
-        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetCategoryList()
-        {
-            return Ok(await comSrv.GetCategoryList());
-        }
-
-        [HttpGet("getSubCategory")]
-        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetSubCategoryList()
-        {
-            return Ok(await comSrv.GetSubCategoryList());
-        }
+     
 
 
 
@@ -237,15 +223,14 @@ namespace ES_HomeCare_API.Controllers
 
         }
 
+       
 
-
-
-        [HttpGet("getCMPLCategoryList/{CategoryId}")]
+        [HttpGet("getCMPLCategoryList/{CategoryId}/{UserTypeId}")]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<ItemList>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetCMPLCategoryList(int CategoryId)
+        public async Task<IActionResult> GetCMPLCategoryList(int CategoryId, short UserTypeId)
         {
-            return Ok(await comSrv.GetCMPLCategoryList(CategoryId));
+            return Ok(await comSrv.GetCMPLCategoryList(CategoryId, UserTypeId));
         }
 
 

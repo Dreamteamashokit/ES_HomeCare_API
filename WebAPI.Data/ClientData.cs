@@ -2,6 +2,7 @@
 using ES_HomeCare_API.Helper;
 using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Client;
+using ES_HomeCare_API.ViewModel.Compliance;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -1783,7 +1784,40 @@ IsActive=@IsActive where ProviderId=@ContactId";
         }
 
 
+        public async Task<ServiceResponse<ComplianceCountsViewModel>> GetComplianceCountByUserid(int userId)
+        {
+            ServiceResponse<ComplianceCountsViewModel> obj = new ServiceResponse<ComplianceCountsViewModel>();
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    var procedure = "GetClientCompliaceCount";
+                    var model = new { @UserId = userId };
+
+                    ComplianceCountsViewModel results = null;
+                    var ItemList = (await connection.QueryAsync(procedure, model, commandType: CommandType.StoredProcedure)).FirstOrDefault();
+                    if (ItemList!= null)
+                    {
+                        results = new ComplianceCountsViewModel()
+                        {
+                            OverdueCompliance = ItemList.OverdueCompliance,
+                            PendingCompliance = ItemList.PendingCompliance,
+                            CompletedCompliance = ItemList.CompletedCompliance
+                        };
+                    }
+
+                    obj.Data = results;
+                    obj.Result = results != null ? true : false;
+                    obj.Message = results != null ? "Data Found." : "No Data found.";
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Data = null;
+                obj.Result = false;
+                obj.Message = ex.Message.ToString();
+            }
+            return obj;
+        }
     }
-
-
 }

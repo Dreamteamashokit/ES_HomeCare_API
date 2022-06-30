@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ES_HomeCare_API.Model.Document
 {
@@ -7,9 +8,19 @@ namespace ES_HomeCare_API.Model.Document
         public string FolderName { get; set; }
         public long FolderId { get; set; }
 
-        public List<DocumentView> DocumentList { get; set; }
+        public List<DocumentView> DocumentList { get; set; } = new List<DocumentView>();
     }
 
+    public class NewFolderView: DocumentView
+    {
+        public string FolderName { get; set; }
+        public long FolderId { get; set; }
+        public int ParentId { get; set; }
+
+        public List<FolderView> SubFolderList { get; set; } = new List<FolderView>();
+        public List<DocumentView> DocumentList { get; set; } = new List<DocumentView>();
+
+    }
 
     public class DocumentView
     {
@@ -20,7 +31,7 @@ namespace ES_HomeCare_API.Model.Document
         public string FileName { get; set; }
         public string FilePath { get; set; }
         public string CreatedByName { get; set; }
-        public string CreatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 
     public class DeleteItem

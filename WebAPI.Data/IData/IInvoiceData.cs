@@ -23,5 +23,6 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
         Task<ServiceResponse<IList<PayerServiceCodeModel>>> GetServiceCodeByPayerId(long payerId);
         Task<ServiceResponse<IList<PayerRateViewModel>>> GetPayerRateList();
         Task<ServiceResponse<PayerRateViewModel>> GetPayerRateDetails(int rateId);
+        Task<ServiceResponse<string>> DeleteRate(int rateId);
     }
 }

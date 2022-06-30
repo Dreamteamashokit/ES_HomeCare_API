@@ -20,9 +20,17 @@ namespace ES_HomeCare_API.WebAPI.Service
 
         public async Task<ServiceResponse<string>> AddFolder(FolderModel model)
         {
-
-            return await data.AddFolder(model);
-
+            ServiceResponse<string> rObj=null;
+            if (model.ParentFolderId > 0)
+            {
+                rObj = await data.AddSubFolder(model);
+            }
+            else
+            {
+                rObj = await data.AddFolder(model);
+            }
+            
+            return rObj;
 
         }
         public async Task<ServiceResponse<IEnumerable<UploadFileRecord>>> GetFolderlist(int UserId)
@@ -46,6 +54,13 @@ namespace ES_HomeCare_API.WebAPI.Service
 
             return await data.GetDocumentlist(UserId);
         }
+
+        public async Task<ServiceResponse<IEnumerable<NewFolderView>>> GetTreeDocumentlist(int UserId)
+        {
+
+            return await data.GetTreeDocumentlist(UserId);
+        }
+
         public async Task<ServiceResponse<string>> DeleteDocument(long DocumentId)
         {
 

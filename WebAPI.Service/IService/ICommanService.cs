@@ -27,14 +27,12 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<IEnumerable<ItemList>>> GetDiagnosisList();
 
         Task<ServiceResponse<IEnumerable<ItemList>>> GetNoteTypeList();
-        Task<ServiceResponse<IEnumerable<ItemList>>> GetCategoryList();
-        Task<ServiceResponse<IEnumerable<ItemList>>> GetSubCategoryList();
 
         Task<ServiceResponse<IEnumerable<ItemList>>> GetProvisionList(int ProvisionType);
         Task<ServiceResponse<IEnumerable<ItemList>>> GetPayers();
         Task<ServiceResponse<IEnumerable<ItemList>>> GetUsers(int type);
         Task<ServiceResponse<ClientGeoProvisions>> GetUsersGeoProvision(int UserId);
 
-        Task<ServiceResponse<IEnumerable<ItemList>>> GetCMPLCategoryList(int CategoryId);
+        Task<ServiceResponse<IEnumerable<ItemList>>> GetCMPLCategoryList(int CategoryId, short UserTypeId);
     }
 }
