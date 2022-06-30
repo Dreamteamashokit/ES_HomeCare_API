@@ -16,7 +16,7 @@ namespace ES_HomeCare_API.Model.Master
         public RecurrSrcDateEnum RecurrSrcType { get; set; }
         public int RecurrNotifyDays { get; set; }
         public DateTime RecurrDate { get; set; }
-
+        public InitialTypeEnum InitialType { get; set; }
 
     }
 }
