@@ -8,9 +8,19 @@ namespace ES_HomeCare_API.Model.Document
         public string FolderName { get; set; }
         public long FolderId { get; set; }
 
-        public List<DocumentView> DocumentList { get; set; }
+        public List<DocumentView> DocumentList { get; set; } = new List<DocumentView>();
     }
 
+    public class NewFolderView: DocumentView
+    {
+        public string FolderName { get; set; }
+        public long FolderId { get; set; }
+        public int ParentId { get; set; }
+
+        public List<FolderView> SubFolderList { get; set; } = new List<FolderView>();
+        public List<DocumentView> DocumentList { get; set; } = new List<DocumentView>();
+
+    }
 
     public class DocumentView
     {

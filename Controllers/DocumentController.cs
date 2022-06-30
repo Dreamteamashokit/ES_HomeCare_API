@@ -118,9 +118,17 @@ namespace ES_HomeCare_API.Controllers
         [HttpGet("getDocumentlist/{UserId}")]
         [ProducesResponseType(typeof(ServiceResponse<IEnumerable<FolderView>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<IEnumerable<FolderView>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetDocumentlist(int UserId)
+        public async Task<IActionResult> GetDocumentlist(int UserId, string forType="")
         {
-            return Ok(await docSrv.GetDocumentlist(UserId));
+            if (forType == "tree")
+            {
+                return Ok(await docSrv.GetTreeDocumentlist(UserId));
+            }
+            else
+            {
+                return Ok(await docSrv.GetDocumentlist(UserId));
+            }
+           
         }
 
 
