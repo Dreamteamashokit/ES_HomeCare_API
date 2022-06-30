@@ -1297,7 +1297,7 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
                                 address = new address
                                 {
                                     addressLine1 = ds.Tables[1].Rows[i]["addressLine1"].ToString(),
-                                    addressLine2 = ds.Tables[1].Rows[i]["addressLine2"].ToString(),
+                                    addressLine2 = ds.Tables[1].Rows[i]["address"].ToString(),
                                     state = ds.Tables[1].Rows[i]["state"].ToString(),
                                     city = ds.Tables[1].Rows[i]["city"].ToString(),
                                     zipcode = ds.Tables[1].Rows[i]["zipcode"].ToString()
@@ -1309,15 +1309,15 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
                             caregiver = new CaregiverViewModel
                             {
                                 providerTaxId = ds.Tables[0].Rows[i]["providerTaxId"].ToString(),
-                                npi = Convert.ToInt32(ds.Tables[0].Rows[i]["npi"].ToString()),
-                                ssn = Convert.ToInt32(ds.Tables[0].Rows[i]["ssn"].ToString()),
-                                dateOfBirth = Convert.ToDateTime(ds.Tables[0].Rows[i]["dateOfBirth"].ToString()),
+                                npi = ds.Tables[0].Rows[i]["npi"].ToString(),
+                                ssn = ds.Tables[0].Rows[i]["ssn"].ToString(),
+                                dateOfBirth = (ds.Tables[0].Rows[i]["dateOfBirth"] == null || ds.Tables[0].Rows[i]["dateOfBirth"] == DBNull.Value) ? (DateTime?)null : Convert.ToDateTime(ds.Tables[0].Rows[i]["dateOfBirth"].ToString()),
                                 email = ds.Tables[0].Rows[i]["email"].ToString(),
                                 externalID = ds.Tables[0].Rows[i]["externalID"].ToString(),
                                 firstName = ds.Tables[0].Rows[i]["firstName"].ToString(),
                                 lastName = ds.Tables[0].Rows[i]["lastName"].ToString(),
                                 gender = ds.Tables[0].Rows[i]["gender"].ToString(),
-                                hireDate = Convert.ToDateTime(ds.Tables[0].Rows[i]["gender"].ToString()),
+                                hireDate = (ds.Tables[0].Rows[i]["hireDate"] == null || ds.Tables[0].Rows[i]["hireDate"] == DBNull.Value) ? (DateTime?)null : Convert.ToDateTime(ds.Tables[0].Rows[i]["hireDate"].ToString()),
                                 phoneNumber = ds.Tables[0].Rows[i]["phoneNumber"].ToString(),
                                 professionalLicenseNumber = Convert.ToInt32(ds.Tables[0].Rows[i]["professionalLicenseNumber"].ToString()),
                                 qualifier = ds.Tables[0].Rows[i]["qualifier"].ToString(),

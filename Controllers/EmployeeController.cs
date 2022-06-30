@@ -215,6 +215,15 @@ namespace WebAPI_SAMPLE.Controllers
                     model.IsStatus = (short)ComplianceStatusEnum.Completed;
                     model.CompletedOn = DateTime.Now;
                 }
+                else if(model.CompletedOn.HasValue)
+                {
+                    model.IsCompleted = true;
+                    model.IsStatus = (short)ComplianceStatusEnum.Completed;
+                  
+                }
+
+
+
 
                 if (model.CodeId == 0 )
                 {
