@@ -46,8 +46,6 @@ namespace ES_HomeCare_API.Helper
                 request.CannedACL = S3CannedACL.PublicReadWrite;
                 utility.Upload(request);
 
-                //bool status = CheckFile(client, fileNameInS3, sourceFilePath);
-                //return status;
             }
             catch (System.Exception ex)
             {
@@ -58,7 +56,28 @@ namespace ES_HomeCare_API.Helper
 
         }
 
-
+        #region sendMyFileToS3
+        public bool sendMyFileToS3(System.IO.Stream localFile,  string subDirectoryInBucket, string fileNameInS3)
+        {
+            //string localFilePath
+            TransferUtility utility = new TransferUtility(client);
+           
+            TransferUtilityUploadRequest request = new TransferUtilityUploadRequest();
+            if (subDirectoryInBucket == "" || subDirectoryInBucket == null)
+            {
+                request.BucketName = BucketName; //no subdirectory just bucket name
+            }
+            else
+            {   // subdirectory and bucket name
+                request.BucketName = BucketName + @"/" + subDirectoryInBucket;
+            }
+            request.Key = fileNameInS3; //file name up in S3
+            //request.FilePath = localFilePath; //local file name
+            request.InputStream = localFile;
+            utility.Upload(request); //commensing the transfer
+            return true; //indicate that the file was sent
+        }
+        #endregion
 
         public bool RunFolderCreationDemo(string FolderName)
         {
@@ -130,7 +149,7 @@ namespace ES_HomeCare_API.Helper
 
                 return ms.ToArray();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw;
             }

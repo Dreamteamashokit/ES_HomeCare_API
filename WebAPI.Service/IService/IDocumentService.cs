@@ -15,6 +15,5 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<IEnumerable<FolderView>>> GetDocumentlist(int UserId);
         Task<ServiceResponse<string>> DeleteDocument(long DocumentId);
         Task<ServiceResponse<IEnumerable<NewFolderView>>> GetTreeDocumentlist(int UserId);
-
     }
 }

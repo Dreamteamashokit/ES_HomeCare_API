@@ -11,7 +11,7 @@ namespace ES_HomeCare_API.Model.Document
         public List<DocumentView> DocumentList { get; set; } = new List<DocumentView>();
     }
 
-    public class NewFolderView: DocumentView
+    public class NewFolderView : DocumentView
     {
         public string FolderName { get; set; }
         public long FolderId { get; set; }
