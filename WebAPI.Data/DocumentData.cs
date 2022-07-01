@@ -233,6 +233,35 @@ END CATCH
         {
             ServiceResponse<string> rObj = new ServiceResponse<string>();
             IDbTransaction transaction = null;
+            string _query = @"/*delete child if exists*/
+delete from Ted
+FROM tblEmpDocument  as Ted
+inner join tblFolderUser as tfu
+on (tfu.FolderId=Ted.FolderId 
+and tfu.UserId= Ted.UserId)
+inner join tblFoldermaster as tfm
+on (tfu.FolderId=tfm.ParentId)
+where tfu.UserId=@UserId
+and tfm.ParentId=@FolderId
+
+
+delete  
+from tblFolderUser    
+Where FolderId in (select FolderId from tblFoldermaster Where parentid=@FolderId)
+and UserId=@UserId
+
+---- /*delete parent */
+delete   FROM tblEmpDocument  Where FolderId=@FolderId and UserId=@UserId
+delete   from tblFolderUser   Where FolderId=@FolderId and UserId=@UserId
+
+delete from tfm
+from tblFoldermaster  as tfm
+inner join tblFolderUser as tfu
+on (tfu.FolderId=tfm.ParentId)
+where tfu.UserId=@UserId
+and  parentid=@FolderId";
+
+
             try
             {
                 using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
@@ -240,18 +269,7 @@ END CATCH
                     if (cnn.State != ConnectionState.Open)
                         cnn.Open();
                     transaction = cnn.BeginTransaction();
-                    string _query = @"/*delete child if exists*/
-delete 
-FROM tblEmpDocument Where FolderId in (select FolderId from tblFoldermaster Where parentid=@FolderId)
-delete
-from tblFolderUser    Where FolderId in (select FolderId from tblFoldermaster Where parentid=@FolderId)
-and UserId=@UserId
-delete from tblFoldermaster Where parentid=@FolderId
-
- /*delete parent */
-delete FROM tblEmpDocument  Where FolderId=@FolderId
-delete from tblFolderUser   Where FolderId=@FolderId and UserId=@UserId";
-
+                    
                     int rowsAffected = await cnn.ExecuteAsync(_query, new { @FolderId = FolderId, @UserId = UserId }, transaction);
                     transaction.Commit();
 
@@ -430,7 +448,8 @@ END ";
                                 (e.FirstName + ' ' + ISNULL(e.MiddleName,'') + ' ' + e.LastName) as CreatedByName, 
                                  y.FolderID as ParentId
                                 from  tblEmpDocument as y
-                                Inner join tblFolderUser p On y.FolderId=p.FolderId 
+                                Inner join tblFolderUser p 
+                                 On (y.FolderId=p.FolderId and y.UserId=p.UserId)
                                 left join tblUser e on y.CreatedBy=e.UserId
                                 where p.UserId = @UserId";
 
