@@ -311,10 +311,13 @@ from tblCompliance xy
 inner join  tblCategoryMaster x on xy.CodeId=x.CategoryId
 inner join tblFolderMaster y on x.CategoryName=y.FolderName 
 inner join tblFolderUser z on y.FolderId= z.FolderId and z.UserId =xy.UserId
-Where  z.UserId=@UserId and x.UserTypeId=@UserTypeId and xy.IsStatus!=@IsStatus
+Where  z.UserId=@UserId and x.UserTypeId=@UserTypeId and xy.IsStatus!=@IsStatus and xy.IsCompleted = 0 and xy.IsActive = 1 and y.FolderId = @FolderId
 
 COMMIT TRANSACTION UploadDoc
 END ";
+
+                   
+
 
                     int rowsAffected = await db.ExecuteAsync(sqlQuery, new
                     {
