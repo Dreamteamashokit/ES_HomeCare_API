@@ -234,32 +234,54 @@ END CATCH
             ServiceResponse<string> rObj = new ServiceResponse<string>();
             IDbTransaction transaction = null;
             string _query = @"/*delete child if exists*/
-delete from Ted
+delete 
+from tblCompliance 
+where userid=@UserId
+and documentid in (
+select Ted.documentid
 FROM tblEmpDocument  as Ted
-inner join tblFolderUser as tfu
-on (tfu.FolderId=Ted.FolderId 
-and tfu.UserId= Ted.UserId)
-inner join tblFoldermaster as tfm
-on (tfu.FolderId=tfm.ParentId)
-where tfu.UserId=@UserId
-and tfm.ParentId=@FolderId
+                                inner join tblFolderUser as tfu
+                                on (tfu.FolderId=Ted.FolderId 
+                                and tfu.UserId= Ted.UserId)
+                                inner join tblFoldermaster as tfm
+                                on (tfu.FolderId=tfm.ParentId)
+                                where tfu.UserId=@UserId
+                                and tfm.ParentId=@FolderId
+)
+
+                                delete from Ted
+                                FROM tblEmpDocument  as Ted
+                                inner join tblFolderUser as tfu
+                                on (tfu.FolderId=Ted.FolderId 
+                                and tfu.UserId= Ted.UserId)
+                                inner join tblFoldermaster as tfm
+                                on (tfu.FolderId=tfm.ParentId)
+                                where tfu.UserId=@UserId
+                                and tfm.ParentId=@FolderId
 
 
-delete  
-from tblFolderUser    
-Where FolderId in (select FolderId from tblFoldermaster Where parentid=@FolderId)
-and UserId=@UserId
+                                delete  
+                                from tblFolderUser    
+                                Where FolderId in (select FolderId from tblFoldermaster Where parentid=@FolderId)
+                                and UserId=@UserId
 
----- /*delete parent */
-delete   FROM tblEmpDocument  Where FolderId=@FolderId and UserId=@UserId
-delete   from tblFolderUser   Where FolderId=@FolderId and UserId=@UserId
+                                ---- /*delete parent */
+                                    delete 
+                                    from tblCompliance 
+                                    where userid=@UserId
+                                    and documentid in (
+                                    select documentid FROM tblEmpDocument  Where FolderId=@FolderId and UserId=@UserId
+                                    )
+                                                                    delete   FROM tblEmpDocument  Where FolderId=@FolderId and UserId=@UserId
+                                delete   from tblFolderUser   Where FolderId=@FolderId and UserId=@UserId
 
-delete from tfm
-from tblFoldermaster  as tfm
-inner join tblFolderUser as tfu
-on (tfu.FolderId=tfm.ParentId)
-where tfu.UserId=@UserId
-and  parentid=@FolderId";
+                                delete from tfm
+                                from tblFoldermaster  as tfm
+                                inner join tblFolderUser as tfu
+                                on (tfu.FolderId=tfm.ParentId)
+                                where tfu.UserId=@UserId
+
+                                and  parentid=@FolderId";
 
 
             try
@@ -557,6 +579,10 @@ END ";
         {
             ServiceResponse<string> rObj = new ServiceResponse<string>();
             IDbTransaction transaction = null;
+            string _query = @"delete from tblCompliance where Documentid=@DocumentId
+                              delete from tblEmpDocument where Documentid=@DocumentId";
+
+
             try
             {
                 using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
@@ -564,8 +590,7 @@ END ";
                     if (cnn.State != ConnectionState.Open)
                         cnn.Open();
                     transaction = cnn.BeginTransaction();
-                    string _query = @"delete from tblEmpDocument where DocumentId=@DocumentId";
-
+                    
                     int rowsAffected = await cnn.ExecuteAsync(_query, new { @DocumentId = DocumentId }, transaction);
                     transaction.Commit();
 
