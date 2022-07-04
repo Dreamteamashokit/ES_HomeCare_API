@@ -92,9 +92,12 @@ namespace ES_HomeCare_API.Controllers
 
                 foreach (var file in files)
                 {
-
+                    string fileName = string.Empty;
                     Foldername = Foldername.Trim();
-                    string fileName = model.Title + DateTime.Now.ToString("_dd_MM_yy_hh_mm_ss")  +Path.GetExtension(file.FileName);
+                    string[] directory = Foldername.Split('/');
+                    fileName = directory.Length > 1 ? directory[1] : directory[0];
+                    fileName = fileName + DateTime.Now.ToString("-dd-MM-yy-hh-mm-ss") + Path.GetExtension(file.FileName);
+                    // fileName = model.Title + DateTime.Now.ToString("_dd_MM_yy_hh_mm_ss")  +Path.GetExtension(file.FileName);
                     string filePath = Foldername + "/" + fileName;
                     //you can add this path to a list and then return all dbPaths to the client if require"
                     model.FileName = fileName;
