@@ -664,7 +664,7 @@ inner join tblMaster y  on x.TypeId = y.MasterId  where x.EmployeeId = @EmpId an
 
         }
 
- 
+
 
         #endregion
 
@@ -694,7 +694,7 @@ VALUES(@EmpId, @EffectiveDate, @EndDate, @ClientId, @Description, @Notes, @Hourl
                     int rowsAffected = await db.ExecuteAsync(sqlQuery, new
                     {
                         RateId = _model.EntityId,
-                        PayerId= _model.PayerId,
+                        PayerId = _model.PayerId,
                         EmpId = _model.EmpId,
                         ClientId = _model.ClientId,
                         EffectiveDate = _model.EffectiveDateTime.ParseDate(),
@@ -817,7 +817,7 @@ Where ComplianceId = @ComplianceId;";
 
                     int rowsAffected = await db.ExecuteAsync(sqlQuery, new
                     {
-                        ComplianceId=_model.ComplianceId,
+                        ComplianceId = _model.ComplianceId,
                         UserId = _model.UserId,
                         NurseId = _model.NurseId,
                         DueDate = _model.DueDate,
@@ -826,10 +826,10 @@ Where ComplianceId = @ComplianceId;";
                         CodeId = _model.CodeId,
                         Result = _model.Result,
                         Notes = _model.Notes,
-                        DocumentId= _model.DocumentId,
+                        DocumentId = _model.DocumentId,
                         IsCompleted = _model.IsCompleted,
                         IsActive = (int)Status.Active,
-                        IsStatus= _model.IsStatus,
+                        IsStatus = _model.IsStatus,
                         CreatedOn = _model.CreatedOn,
                         CreatedBy = _model.CreatedBy,
                     });
@@ -857,13 +857,6 @@ Where ComplianceId = @ComplianceId;";
             return sres;
         }
 
-
-
-
-
-
-
-
         public async Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -872,7 +865,7 @@ Where ComplianceId = @ComplianceId;";
                 using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
 
-                    string sqlQuery= @"IF @flag=1              
+                    string sqlQuery = @"IF @flag=1              
 BEGIN  
   
 BEGIN TRY  
@@ -995,10 +988,10 @@ ERROR_MESSAGE() AS ErrorMessage
 END CATCH  
   
 END  ";
-       
+
                     int rowsAffected = await db.ExecuteAsync(sqlQuery, new
                     {
-                        flag=1,
+                        flag = 1,
                         ComplianceId = _model.ComplianceId,
                         UserId = _model.UserId,
                         NurseId = _model.NurseId,
@@ -1038,27 +1031,6 @@ END  ";
             }
             return sres;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         public async Task<ServiceResponse<IEnumerable<ComplianceModel>>> GetComplianceList(int UserId)
         {
@@ -1119,7 +1091,7 @@ Where x.UserId = @UserId and x.IsActive = @IsActive; ";
             return result;
         }
 
-    
+
         #endregion
 
         #region DeclinedCase
@@ -1270,7 +1242,7 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
         }
         #endregion
 
-       
+
         public async Task<ServiceResponse<CaregiverViewModel>> GetCareGiverDetails(int UserId)
         {
             ServiceResponse<CaregiverViewModel> obj = new ServiceResponse<CaregiverViewModel>();
@@ -1363,7 +1335,7 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
                                 result = new ExternalLoginViewModel
                                 {
                                     userId = (ds.Tables[0].Rows[i]["userId"] == null || ds.Tables[0].Rows[i]["userId"] == DBNull.Value) ? 0 : Convert.ToInt32(ds.Tables[0].Rows[i]["userId"].ToString()),
-                                    userTypeId = (ds.Tables[0].Rows[i]["userTypeId"] == null || ds.Tables[0].Rows[i]["userTypeId"] == DBNull.Value) ? 0 :  Convert.ToInt32(ds.Tables[0].Rows[i]["userTypeId"]),
+                                    userTypeId = (ds.Tables[0].Rows[i]["userTypeId"] == null || ds.Tables[0].Rows[i]["userTypeId"] == DBNull.Value) ? 0 : Convert.ToInt32(ds.Tables[0].Rows[i]["userTypeId"]),
                                     firstName = (ds.Tables[0].Rows[i]["firstName"] == null || ds.Tables[0].Rows[i]["firstName"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["firstName"].ToString(),
                                     lastName = (ds.Tables[0].Rows[i]["lastName"] == null || ds.Tables[0].Rows[i]["lastName"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["lastName"].ToString(),
                                     middleName = (ds.Tables[0].Rows[i]["middleName"] == null || ds.Tables[0].Rows[i]["middleName"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["middleName"].ToString(),
@@ -1432,7 +1404,7 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
                                 ZipCode = (ds.Tables[0].Rows[i]["ZipCode"] == null || ds.Tables[0].Rows[i]["ZipCode"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["ZipCode"].ToString(),
                                 Latitude = (ds.Tables[0].Rows[i]["Latitude"] == null || ds.Tables[0].Rows[i]["Latitude"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["Latitude"].ToString(),
                                 Longitude = (ds.Tables[0].Rows[i]["Longitude"] == null || ds.Tables[0].Rows[i]["Longitude"] == DBNull.Value) ? "" : ds.Tables[0].Rows[i]["Longitude"].ToString(),
-                                MeetingId= (ds.Tables[0].Rows[i]["MeetingId"] == null || ds.Tables[0].Rows[i]["MeetingId"] == DBNull.Value) ? 0 : Convert.ToInt32(ds.Tables[0].Rows[i]["MeetingId"].ToString())
+                                MeetingId = (ds.Tables[0].Rows[i]["MeetingId"] == null || ds.Tables[0].Rows[i]["MeetingId"] == DBNull.Value) ? 0 : Convert.ToInt32(ds.Tables[0].Rows[i]["MeetingId"].ToString())
                             };
 
                             objClientList.Add(objClient);
@@ -1525,7 +1497,7 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
                     cmd.Parameters.AddWithValue("@HHAUserSignature", hhaClockin.HHAUserSignature == null ? "" : hhaClockin.HHAUserSignature);
                     cmd.Parameters.AddWithValue("@Type", hhaClockin.Type);
                     cmd.Parameters.AddWithValue("@meetingId", hhaClockin.MeetingId);
-                    
+
                     con.Open();
                     int value = cmd.ExecuteNonQuery();
                     if (value > 0)
@@ -1547,6 +1519,93 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
             }
             return sres;
         }
+
+
+        public async Task<ServiceResponse<string>> AddUpdateRatings(RatingModel _model)
+        {
+            ServiceResponse<string> sres = new ServiceResponse<string>();
+            try
+            {
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                    {
+                        SqlCommand cmd = new SqlCommand("AddUpdateRatings", con);
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@RatingId", _model.RatingId);
+                        cmd.Parameters.AddWithValue("@Userid", _model.UserId);
+                        cmd.Parameters.AddWithValue("@Star1", _model.Star1);
+                        cmd.Parameters.AddWithValue("@Star2", _model.Star2);
+                        cmd.Parameters.AddWithValue("@Star3", _model.Star3);
+                        cmd.Parameters.AddWithValue("@Star4", _model.Star4);
+                        cmd.Parameters.AddWithValue("@Star5", _model.Star5);
+                        con.Open();
+                        int id = cmd.ExecuteNonQuery();
+                        con.Close();
+
+                        sres.Result = true;
+                        sres.Data = "Sucessfully Created Ratings.";
+                        return sres;
+                    }
+                }
                 
+            }
+            catch (Exception ex)
+            {
+                sres.Result = true;
+                sres.Message = ex.Message;
+                return sres;
+            }
+        }
+
+        public async Task<ServiceResponse<RatingViewModel>> GetRatingsDetails(long userId)
+        {
+            ServiceResponse<RatingViewModel> sres = new ServiceResponse<RatingViewModel>();
+            try
+            {
+                using (IDbConnection db = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                    {
+                        SqlCommand cmd = new SqlCommand("GetRatingDetailsById", con);
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@userId", userId);
+
+                        DataSet ds = new DataSet();
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        da.Fill(ds);
+                        if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                        {
+                            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                            {
+                                sres.Data = new RatingViewModel
+                                {
+                                    RatingId = (ds.Tables[0].Rows[i]["RatingId"] == null || ds.Tables[0].Rows[i]["RatingId"] == DBNull.Value) ? 0 : Convert.ToInt32(ds.Tables[0].Rows[i]["RatingId"]),
+                                    UserId = (ds.Tables[0].Rows[i]["UserId"] == null || ds.Tables[0].Rows[i]["UserId"] == DBNull.Value) ? 0 : Convert.ToInt32(ds.Tables[0].Rows[i]["UserId"]),
+                                    Star1 = (ds.Tables[0].Rows[i]["Star1"] == null || ds.Tables[0].Rows[i]["Star1"] == DBNull.Value) ? false : Convert.ToBoolean(ds.Tables[0].Rows[i]["Star1"]),
+                                    Star2 = (ds.Tables[0].Rows[i]["Star2"] == null || ds.Tables[0].Rows[i]["Star2"] == DBNull.Value) ? false : Convert.ToBoolean(ds.Tables[0].Rows[i]["Star2"]),
+                                    Star3 = (ds.Tables[0].Rows[i]["Star3"] == null || ds.Tables[0].Rows[i]["Star3"] == DBNull.Value) ? false : Convert.ToBoolean(ds.Tables[0].Rows[i]["Star3"]),
+                                    Star4 = (ds.Tables[0].Rows[i]["Star4"] == null || ds.Tables[0].Rows[i]["Star4"] == DBNull.Value) ? false : Convert.ToBoolean(ds.Tables[0].Rows[i]["Star4"]),
+                                    Star5 = (ds.Tables[0].Rows[i]["star5"] == null || ds.Tables[0].Rows[i]["star5"] == DBNull.Value) ? false : Convert.ToBoolean(ds.Tables[0].Rows[i]["star5"])
+                                };
+                            }
+                            sres.Result = true;
+                            sres.Message = "Rating details retrive successfully.";
+                        }
+                        else
+                        {
+                            sres.Result = true;
+                            sres.Message = "Rating details does not found.";
+                        }
+                        return sres;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                sres.Message = ex.Message;
+                return sres;
+            }
+        }
     }
 }

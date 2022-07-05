@@ -168,6 +168,15 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         public async Task<ServiceResponse<string>> HHAClockin(HHAClockInModel hhaClockin)
         {
             return await data.HHAClockin(hhaClockin);
-        }        
+        }
+
+        public async Task<ServiceResponse<string>> AddUpdateRatings(RatingModel _model)
+        {
+            return await data.AddUpdateRatings(_model);
+        }
+        public async Task<ServiceResponse<RatingViewModel>> GetRatingsDetails(long userId)
+        {
+            return await data.GetRatingsDetails(userId);
+        }
     }
 }

@@ -395,5 +395,23 @@ namespace WebAPI_SAMPLE.Controllers
         {
             return Ok(await service.HHAClockin(hhaClockinModel));
         }
+
+
+        [HttpPost("AddUpdateRatings")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddUpdateRatings(RatingModel _model)
+        {
+            return Ok(await service.AddUpdateRatings(_model));
+        }
+
+
+        [HttpGet("GetRatingsDetails/{userId}")]
+        [ProducesResponseType(typeof(ServiceResponse<RatingViewModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<RatingViewModel>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetRatingsDetails(long userId)
+        {
+            return Ok(await service.GetRatingsDetails(userId));
+        }
     }
 }

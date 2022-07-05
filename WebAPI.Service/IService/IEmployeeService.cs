@@ -53,6 +53,8 @@ namespace WebAPI_SAMPLE.WebAPI.Service.IService
         Task<ServiceResponse<ExternalLoginViewModel>> ExternalLogin(ExternalLoginModel externalLoginModel);
         Task<ServiceResponse<List<ClientListViewModel>>> GetClientListByempId(int empId);
         Task<ServiceResponse<HHAClockInDetailsModel>> GetClockinDetails(int userId);
-        Task<ServiceResponse<string>> HHAClockin(HHAClockInModel hhaClockin);        
+        Task<ServiceResponse<string>> HHAClockin(HHAClockInModel hhaClockin);
+        Task<ServiceResponse<string>> AddUpdateRatings(RatingModel _model);
+        Task<ServiceResponse<RatingViewModel>> GetRatingsDetails(long userId);
     }
 }
