@@ -101,8 +101,24 @@ namespace ES_HomeCare_API.Model
     public enum RecurrSrcDateEnum
     {
         CompletionDate = 1,
-        DateofHire = 2,
+        SpecificDate = 2,
         DueDate = 3,
     }
+
+
+
+
+
+    public enum InitialTypeEnum
+    {
+        FirstShift = 1,
+        DateofHire = 2,
+        Manual = 3,
+
+    }
+
+
+
+
 
 }

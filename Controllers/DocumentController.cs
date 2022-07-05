@@ -92,16 +92,19 @@ namespace ES_HomeCare_API.Controllers
 
                 foreach (var file in files)
                 {
-
-
-                    string fileName = model.Title + DateTime.Now.ToString("dd-MM-yy") + "-" + ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    string fileName = string.Empty;
+                    Foldername = Foldername.Trim();
+                    string[] directory = Foldername.Split('/');
+                    fileName = directory.Length > 1 ? directory[1] : directory[0];
+                    fileName = fileName + DateTime.Now.ToString("-dd-MM-yy-hh-mm-ss") + Path.GetExtension(file.FileName);
+                    // fileName = model.Title + DateTime.Now.ToString("_dd_MM_yy_hh_mm_ss")  +Path.GetExtension(file.FileName);
                     string filePath = Foldername + "/" + fileName;
                     //you can add this path to a list and then return all dbPaths to the client if require"
                     model.FileName = fileName;
                     Stream fs = file.OpenReadStream();
                     AmazonUploader uploader = new AmazonUploader(configuration);
-                    uploader.sendMyFileToS3(fs, filePath);
-
+                    //uploader.sendMyFileToS3(fs, filePath);
+                    uploader.sendMyFileToS3(localFile: fs, fileNameInS3: fileName, subDirectoryInBucket: Foldername);
                 }
 
                 return Ok(await docSrv.AddDocument(model));
@@ -115,12 +118,21 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
+
         [HttpGet("getDocumentlist/{UserId}")]
         [ProducesResponseType(typeof(ServiceResponse<IEnumerable<FolderView>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<IEnumerable<FolderView>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetDocumentlist(int UserId)
+        public async Task<IActionResult> GetDocumentlist(int UserId, string forType = "")
         {
-            return Ok(await docSrv.GetDocumentlist(UserId));
+            if (forType == "tree")
+            {
+                return Ok(await docSrv.GetTreeDocumentlist(UserId));
+            }
+            else
+            {
+                return Ok(await docSrv.GetDocumentlist(UserId));
+            }
+
         }
 
 

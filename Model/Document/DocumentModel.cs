@@ -15,6 +15,9 @@ namespace ES_HomeCare_API.Model.Document
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
 
+        public int ParentFolderId { get; set; }
+        public string ParentFolderName { get; set; }
+
     }
 
 

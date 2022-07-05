@@ -160,8 +160,8 @@ BEGIN TRANSACTION addRecurr
 IF NOT EXISTS (SELECT * FROM tblCategoryMaster where CategoryName = @CategoryName AND UserTypeId=@UserTypeId )  
 BEGIN    
         
-INSERT INTO tblCategoryMaster(CategoryName,ParentId,IsActive,CreatedOn,CreatedBy,UserTypeId,IsRecurring)
-VALUES(@CategoryName,@ParentId,@IsActive,@CreatedOn,@CreatedBy,@UserTypeId,@IsRecurring) 
+INSERT INTO tblCategoryMaster(CategoryName,ParentId,IsActive,CreatedOn,CreatedBy,UserTypeId,IsRecurring,InitialType)
+VALUES(@CategoryName,@ParentId,@IsActive,@CreatedOn,@CreatedBy,@UserTypeId,@IsRecurring,@InitialType) 
   
 Select @CategoryId=SCOPE_IDENTITY(); 
 
@@ -180,7 +180,7 @@ ELSE
   
 BEGIN  
   
-Update tblCategoryMaster set CategoryName=@CategoryName,ParentId=@ParentId, IsRecurring=@IsRecurring where CategoryId=@CategoryId 
+Update tblCategoryMaster set CategoryName=@CategoryName,ParentId=@ParentId, IsRecurring=@IsRecurring,InitialType=@InitialType where CategoryId=@CategoryId 
  
  
 IF @IsRecurring=1
@@ -246,8 +246,8 @@ END CATCH ";
                         @RecurrSrcType = (short)_model.RecurrSrcType,
                         @RecurrNotifyDays = _model.RecurrNotifyDays,
                         @RecurrDate = _model.IsRecurring? _model.RecurrDate.Date:DateTime.Now.Date,
-                
-
+                        @InitialType = (short)_model.InitialType,
+                        
 
 
 
@@ -280,7 +280,7 @@ END CATCH ";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
                     string sqlQuery = @"SELECT category.CategoryId, category.CategoryName, ISNULL(category.ParentId,0) as ParentId , ISNULL(parent.CategoryName,'RootCategory') as ParentName ,
-category.IsRecurring,recurr.RecurrType,recurr.RecurrValue,recurr.RecurrSrcType,recurr.RecurrDate,recurr.RecurrNotifyDays
+category.IsRecurring,recurr.RecurrType,recurr.RecurrValue,recurr.RecurrSrcType,recurr.RecurrDate,recurr.RecurrNotifyDays,category.InitialType
 from tblCategoryMaster category LEFT JOIN tblCategoryMaster as parent ON category.ParentId = parent.CategoryId 
 LEFT JOIN tblCategoryRecurr recurr on  category.CategoryId = recurr.CategoryId
 Where category.IsActive=@IsActive AND category.UserTypeId=@UserTypeId;";

@@ -14,6 +14,6 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<string>> AddDocument(UploadFileFolder model);
         Task<ServiceResponse<IEnumerable<FolderView>>> GetDocumentlist(int UserId);
         Task<ServiceResponse<string>> DeleteDocument(long DocumentId);
-
+        Task<ServiceResponse<IEnumerable<NewFolderView>>> GetTreeDocumentlist(int UserId);
     }
 }
