@@ -1073,10 +1073,10 @@ Where x.UserId = @UserId and x.IsActive = @IsActive; ";
                     da.Fill(dstable);
                     if (dstable.Tables.Count > 0 && dstable.Tables[0].Rows.Count > 0)
                     {
-                        IList<ComplianceModel> objcompletedComplianceList = new List<ComplianceModel>();
+                        IList<ComplianceModelList> objcompletedComplianceList = new List<ComplianceModelList>();
                         for (int i = 0; i < dstable.Tables[0].Rows.Count; i++)
                         {
-                            ComplianceModel objcompletedCompliance = new ComplianceModel();
+                            ComplianceModelList objcompletedCompliance = new ComplianceModelList();
                             objcompletedCompliance.ComplianceId = Convert.ToInt32(dstable.Tables[0].Rows[i]["ComplianceId"]);
                             objcompletedCompliance.UserId = dstable.Tables[0].Rows[i]["UserId"] == null ? 0 : Convert.ToInt32(dstable.Tables[0].Rows[i]["UserId"]);
                             if (dstable.Tables[0].Rows[i]["DueDate"] != null && dstable.Tables[0].Rows[i]["DueDate"] != DBNull.Value)
@@ -1116,21 +1116,26 @@ Where x.UserId = @UserId and x.IsActive = @IsActive; ";
                                 objcompletedCompliance.DocumentId = Convert.ToInt32(dstable.Tables[0].Rows[i]["DocumentId"]);
                             }
                             else { objcompletedCompliance.DocumentId = 0; }
+                            if (dstable.Tables[0].Rows[i]["ComplianceName"] != null && dstable.Tables[0].Rows[i]["ComplianceName"] != DBNull.Value)
+                            {
+                                objcompletedCompliance.ComplianceName = dstable.Tables[0].Rows[i]["ComplianceName"].ToString();
+                            }
+                            else { objcompletedCompliance.ComplianceName = ""; }
                             objcompletedCompliance.IsCompleted = Convert.ToBoolean(dstable.Tables[0].Rows[i]["IsCompleted"]);
                             objcompletedCompliance.IsActive = Convert.ToInt16(dstable.Tables[0].Rows[i]["IsActive"]);
                             objcompletedCompliance.IsStatus = Convert.ToInt16(dstable.Tables[0].Rows[i]["IsStatus"]);
 
                             objcompletedComplianceList.Add(objcompletedCompliance);
                         }
-                        objComplianceList.objThreeLatestCompletedCompliance = new List<ComplianceModel>();
+                        objComplianceList.objThreeLatestCompletedCompliance = new List<ComplianceModelList>();
                         objComplianceList.objThreeLatestCompletedCompliance = objcompletedComplianceList.ToList();
 
                         if(dstable.Tables.Count > 1 && dstable.Tables[1].Rows.Count > 0)
                         {
-                            IList<ComplianceModel> objPendingComplianceList = new List<ComplianceModel>();
+                            IList<ComplianceModelList> objPendingComplianceList = new List<ComplianceModelList>();
                             for (int i = 0; i < dstable.Tables[1].Rows.Count; i++)
                             {
-                                ComplianceModel objPendingCompliance = new ComplianceModel();
+                                ComplianceModelList objPendingCompliance = new ComplianceModelList();
                                 objPendingCompliance.ComplianceId = Convert.ToInt32(dstable.Tables[1].Rows[i]["ComplianceId"]);
                                 objPendingCompliance.UserId = dstable.Tables[1].Rows[i]["UserId"] == null ? 0 : Convert.ToInt32(dstable.Tables[1].Rows[i]["UserId"]);
                                 if (dstable.Tables[1].Rows[i]["DueDate"] != null && dstable.Tables[1].Rows[i]["DueDate"] != DBNull.Value)
@@ -1170,24 +1175,29 @@ Where x.UserId = @UserId and x.IsActive = @IsActive; ";
                                     objPendingCompliance.DocumentId = Convert.ToInt32(dstable.Tables[1].Rows[i]["DocumentId"]);
                                 }
                                 else { objPendingCompliance.DocumentId = 0; }
+                                if (dstable.Tables[1].Rows[i]["ComplianceName"] != null && dstable.Tables[1].Rows[i]["ComplianceName"] != DBNull.Value)
+                                {
+                                    objPendingCompliance.ComplianceName = dstable.Tables[1].Rows[i]["ComplianceName"].ToString();
+                                }
+                                else { objPendingCompliance.ComplianceName = ""; }
                                 objPendingCompliance.IsCompleted = Convert.ToBoolean(dstable.Tables[1].Rows[i]["IsCompleted"]);
                                 objPendingCompliance.IsActive = Convert.ToInt16(dstable.Tables[1].Rows[i]["IsActive"]);
                                 objPendingCompliance.IsStatus = Convert.ToInt16(dstable.Tables[1].Rows[i]["IsStatus"]);
 
                                 objPendingComplianceList.Add(objPendingCompliance);
                             }
-                            objComplianceList.objThreeLatestPendingCompliance = new List<ComplianceModel>();
+                            objComplianceList.objThreeLatestPendingCompliance = new List<ComplianceModelList>();
                             objComplianceList.objThreeLatestPendingCompliance = objPendingComplianceList.ToList();
                         }
                         obj.Data = objComplianceList;
                         obj.Result = true;
-                        obj.Message = "Payer Rate details retrive successfull.";
+                        obj.Message = "compliance details retrive successfull.";
 
                     }
                     else
                     {
                         obj.Result = true;
-                        obj.Message = "Payer Rate does not exists.";
+                        obj.Message = "compliance does not exists.";
                     }
                     return obj;
                 }
