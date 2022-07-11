@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ES_HomeCare_API.Model.Employee
 {
@@ -19,5 +20,11 @@ namespace ES_HomeCare_API.Model.Employee
         public short IsStatus { get; set; }
         public string StatusName { get; set; }
         
+    }
+
+    public class ComplianceList
+    {
+        public List<ComplianceModel> objThreeLatestCompletedCompliance { get; set; }
+        public List<ComplianceModel> objThreeLatestPendingCompliance { get; set; }
     }
 }

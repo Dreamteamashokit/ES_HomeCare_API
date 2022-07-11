@@ -9,6 +9,7 @@ namespace ES_HomeCare_API.Model.Meeting
     {
         public int MeetingId { get; set; }
         public string MeetingNote { get; set; }
+        public string MeetingCanceledReason { get; set; }
         public short IsStatus { get; set; }
     }
 }

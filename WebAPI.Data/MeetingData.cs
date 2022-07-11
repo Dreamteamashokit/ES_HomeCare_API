@@ -459,9 +459,9 @@ Where p.MeetingId=@MeetingId;";
             {
                 using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
-                    string addQuery = "Update tblMeeting SET IsStatus= @IsStatus Where MeetingId=@MeetingId";
+                    string addQuery = "Update tblMeeting SET IsStatus= @IsStatus,MeetingCancelReason=@MeetingCanceledReason Where MeetingId=@MeetingId";
 
-                    var result = cnn.Execute(addQuery, new { _model.IsStatus, _model.MeetingId });
+                    var result = cnn.Execute(addQuery, new { _model.IsStatus,_model.MeetingCanceledReason, _model.MeetingId });
                     if (result > 0)
                     {
 
@@ -470,9 +470,7 @@ Where p.MeetingId=@MeetingId;";
                             string query = "INSERT INTO tblMeetingPoint (MeetingId,MeetingPoint,CreatedOn,CreatedBy) VALUES (@MeetingId,@MeetingPoint,@CreatedOn,@CreatedBy)";
                             var rs = cnn.Execute(query, new { _model.MeetingId, MeetingPoint = _model.MeetingNote, _model.CreatedOn, _model.CreatedBy });
                             sres.Result = true;
-
                         }
-
                     }
 
                     if (result > 0)

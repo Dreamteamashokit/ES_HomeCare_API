@@ -215,17 +215,17 @@ namespace WebAPI_SAMPLE.Controllers
                     model.IsStatus = (short)ComplianceStatusEnum.Completed;
                     model.CompletedOn = DateTime.Now;
                 }
-                else if(model.CompletedOn.HasValue)
+                else if (model.CompletedOn.HasValue)
                 {
                     model.IsCompleted = true;
                     model.IsStatus = (short)ComplianceStatusEnum.Completed;
-                  
+
                 }
 
 
 
 
-                if (model.CodeId == 0 )
+                if (model.CodeId == 0)
                 {
                     model.CodeId = model.CategoryId;
                 }
@@ -259,7 +259,15 @@ namespace WebAPI_SAMPLE.Controllers
         {
             return Ok(await service.DeleteCompliance(complianceId));
         }
-        
+
+
+        [HttpGet("GetLatestThreeOverdueComplianceList/{userId}")]
+        [ProducesResponseType(typeof(ServiceResponse<List<ComplianceModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ComplianceModel>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetLatestThreeOverdueComplianceList(int userId)
+        {
+            return Ok(await service.GetLatestThreeOverdueComplianceList(userId));
+        }
         #endregion
 
 

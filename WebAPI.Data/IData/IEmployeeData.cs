@@ -44,6 +44,7 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
 
         Task<ServiceResponse<string>> AddCompliance(ComplianceModel _model);
         Task<ServiceResponse<IEnumerable<ComplianceModel>>> GetComplianceList(int UserId);
+        Task<ServiceResponse<ComplianceList>> GetLatestThreeOverdueComplianceList(int userId);
         Task<ServiceResponse<string>> DeleteCompliance(int complianceId);
 
 

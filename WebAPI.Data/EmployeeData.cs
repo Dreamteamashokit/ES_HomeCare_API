@@ -1055,6 +1055,151 @@ Where x.UserId = @UserId and x.IsActive = @IsActive; ";
 
         }
 
+
+        public async Task<ServiceResponse<ComplianceList>> GetLatestThreeOverdueComplianceList(int userId)
+        {
+            ServiceResponse<ComplianceList> obj = new ServiceResponse<ComplianceList>();
+            ComplianceList objComplianceList = new ComplianceList();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    SqlCommand cmd = new SqlCommand("GetLatestThreeOverdueCompliance", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@UserId", userId);
+
+                    DataSet dstable = new DataSet();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(dstable);
+                    if (dstable.Tables.Count > 0 && dstable.Tables[0].Rows.Count > 0)
+                    {
+                        IList<ComplianceModel> objcompletedComplianceList = new List<ComplianceModel>();
+                        for (int i = 0; i < dstable.Tables[0].Rows.Count; i++)
+                        {
+                            ComplianceModel objcompletedCompliance = new ComplianceModel();
+                            objcompletedCompliance.ComplianceId = Convert.ToInt32(dstable.Tables[0].Rows[i]["ComplianceId"]);
+                            objcompletedCompliance.UserId = dstable.Tables[0].Rows[i]["UserId"] == null ? 0 : Convert.ToInt32(dstable.Tables[0].Rows[i]["UserId"]);
+                            if (dstable.Tables[0].Rows[i]["DueDate"] != null && dstable.Tables[0].Rows[i]["DueDate"] != DBNull.Value)
+                            {
+                                objcompletedCompliance.DueDate = Convert.ToDateTime(dstable.Tables[0].Rows[i]["DueDate"]);
+                            }
+
+                            if (dstable.Tables[0].Rows[i]["CompletedOn"] != null && dstable.Tables[0].Rows[i]["CompletedOn"] != DBNull.Value)
+                            {
+                                objcompletedCompliance.CompletedOn = Convert.ToDateTime(dstable.Tables[0].Rows[i]["CompletedOn"]);
+                            }
+                            else
+                            {
+                                objcompletedCompliance.CompletedOn = null;
+                            }
+                            if (dstable.Tables[0].Rows[i]["CategoryId"] != null && dstable.Tables[0].Rows[i]["CategoryId"] != DBNull.Value)
+                            {
+                                objcompletedCompliance.CategoryId = Convert.ToInt32(dstable.Tables[0].Rows[i]["CategoryId"]);
+                            }
+                            else { objcompletedCompliance.CategoryId = 0; }
+                            if (dstable.Tables[0].Rows[i]["NurseId"] != null && dstable.Tables[0].Rows[i]["NurseId"] != DBNull.Value)
+                            {
+                                objcompletedCompliance.NurseId = Convert.ToInt32(dstable.Tables[0].Rows[i]["NurseId"]);
+                            }
+                            else { objcompletedCompliance.CategoryId = 0; }
+                            if (dstable.Tables[0].Rows[i]["CodeId"] != null && dstable.Tables[0].Rows[i]["CodeId"] != DBNull.Value)
+                            {
+                                objcompletedCompliance.CodeId = Convert.ToInt32(dstable.Tables[0].Rows[i]["CodeId"]);
+                            }
+                            else { objcompletedCompliance.CodeId = 0; }
+
+                            objcompletedCompliance.Result = dstable.Tables[0].Rows[i]["Result"] == null ? "" : dstable.Tables[0].Rows[i]["Result"].ToString();
+                            objcompletedCompliance.Notes = dstable.Tables[0].Rows[i]["Notes"] == null ? "" : dstable.Tables[0].Rows[i]["Notes"].ToString();
+
+                            if (dstable.Tables[0].Rows[i]["DocumentId"] != null && dstable.Tables[0].Rows[i]["DocumentId"] != DBNull.Value)
+                            {
+                                objcompletedCompliance.DocumentId = Convert.ToInt32(dstable.Tables[0].Rows[i]["DocumentId"]);
+                            }
+                            else { objcompletedCompliance.DocumentId = 0; }
+                            objcompletedCompliance.IsCompleted = Convert.ToBoolean(dstable.Tables[0].Rows[i]["IsCompleted"]);
+                            objcompletedCompliance.IsActive = Convert.ToInt16(dstable.Tables[0].Rows[i]["IsActive"]);
+                            objcompletedCompliance.IsStatus = Convert.ToInt16(dstable.Tables[0].Rows[i]["IsStatus"]);
+
+                            objcompletedComplianceList.Add(objcompletedCompliance);
+                        }
+                        objComplianceList.objThreeLatestCompletedCompliance = new List<ComplianceModel>();
+                        objComplianceList.objThreeLatestCompletedCompliance = objcompletedComplianceList.ToList();
+
+                        if(dstable.Tables.Count > 1 && dstable.Tables[1].Rows.Count > 0)
+                        {
+                            IList<ComplianceModel> objPendingComplianceList = new List<ComplianceModel>();
+                            for (int i = 0; i < dstable.Tables[1].Rows.Count; i++)
+                            {
+                                ComplianceModel objPendingCompliance = new ComplianceModel();
+                                objPendingCompliance.ComplianceId = Convert.ToInt32(dstable.Tables[1].Rows[i]["ComplianceId"]);
+                                objPendingCompliance.UserId = dstable.Tables[1].Rows[i]["UserId"] == null ? 0 : Convert.ToInt32(dstable.Tables[1].Rows[i]["UserId"]);
+                                if (dstable.Tables[1].Rows[i]["DueDate"] != null && dstable.Tables[1].Rows[i]["DueDate"] != DBNull.Value)
+                                {
+                                    objPendingCompliance.DueDate = Convert.ToDateTime(dstable.Tables[1].Rows[i]["DueDate"]);
+                                }
+
+                                if (dstable.Tables[1].Rows[i]["CompletedOn"] != null && dstable.Tables[1].Rows[i]["CompletedOn"] != DBNull.Value)
+                                {
+                                    objPendingCompliance.CompletedOn = Convert.ToDateTime(dstable.Tables[1].Rows[i]["CompletedOn"]);
+                                }
+                                else
+                                {
+                                    objPendingCompliance.CompletedOn = null;
+                                }
+                                if (dstable.Tables[1].Rows[i]["CategoryId"] != null && dstable.Tables[1].Rows[i]["CategoryId"] != DBNull.Value)
+                                {
+                                    objPendingCompliance.CategoryId = Convert.ToInt32(dstable.Tables[1].Rows[i]["CategoryId"]);
+                                }
+                                else { objPendingCompliance.CategoryId = 0; }
+                                if (dstable.Tables[1].Rows[i]["NurseId"] != null && dstable.Tables[1].Rows[i]["NurseId"] != DBNull.Value)
+                                {
+                                    objPendingCompliance.NurseId = Convert.ToInt32(dstable.Tables[1].Rows[i]["NurseId"]);
+                                }
+                                else { objPendingCompliance.CategoryId = 0; }
+                                if (dstable.Tables[1].Rows[i]["CodeId"] != null && dstable.Tables[1].Rows[i]["CodeId"] != DBNull.Value)
+                                {
+                                    objPendingCompliance.CodeId = Convert.ToInt32(dstable.Tables[1].Rows[i]["CodeId"]);
+                                }
+                                else { objPendingCompliance.CodeId = 0; }
+
+                                objPendingCompliance.Result = dstable.Tables[1].Rows[i]["Result"] == null ? "" : dstable.Tables[1].Rows[i]["Result"].ToString();
+                                objPendingCompliance.Notes = dstable.Tables[1].Rows[i]["Notes"] == null ? "" : dstable.Tables[1].Rows[i]["Notes"].ToString();
+
+                                if (dstable.Tables[1].Rows[i]["DocumentId"] != null && dstable.Tables[1].Rows[i]["DocumentId"] != DBNull.Value)
+                                {
+                                    objPendingCompliance.DocumentId = Convert.ToInt32(dstable.Tables[1].Rows[i]["DocumentId"]);
+                                }
+                                else { objPendingCompliance.DocumentId = 0; }
+                                objPendingCompliance.IsCompleted = Convert.ToBoolean(dstable.Tables[1].Rows[i]["IsCompleted"]);
+                                objPendingCompliance.IsActive = Convert.ToInt16(dstable.Tables[1].Rows[i]["IsActive"]);
+                                objPendingCompliance.IsStatus = Convert.ToInt16(dstable.Tables[1].Rows[i]["IsStatus"]);
+
+                                objPendingComplianceList.Add(objPendingCompliance);
+                            }
+                            objComplianceList.objThreeLatestPendingCompliance = new List<ComplianceModel>();
+                            objComplianceList.objThreeLatestPendingCompliance = objPendingComplianceList.ToList();
+                        }
+                        obj.Data = objComplianceList;
+                        obj.Result = true;
+                        obj.Message = "Payer Rate details retrive successfull.";
+
+                    }
+                    else
+                    {
+                        obj.Result = true;
+                        obj.Message = "Payer Rate does not exists.";
+                    }
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.Message = ex.Message;
+                return obj;
+            }
+        }
+
+
         public async Task<ServiceResponse<string>> DeleteCompliance(int complianceId)
         {
             ServiceResponse<string> result = new ServiceResponse<string>();

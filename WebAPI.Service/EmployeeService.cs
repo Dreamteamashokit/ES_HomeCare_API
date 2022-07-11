@@ -139,6 +139,11 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.GetComplianceList(empId);
         }
+
+        public async Task<ServiceResponse<ComplianceList>> GetLatestThreeOverdueComplianceList(int userId)
+        {
+            return await data.GetLatestThreeOverdueComplianceList(userId);
+        }
         public async Task<ServiceResponse<string>> DeleteCompliance(int complianceId)
         {
             return await data.DeleteCompliance(complianceId);
