@@ -51,9 +51,10 @@ namespace WebAPI_SAMPLE
             services.AddScoped<ILocationService, LocationService>();
             services.AddScoped<ILocationData, LocationData>();
 
+            services.AddScoped<IBillingService, BillingService>();
+            services.AddScoped<IBillingData, BillingData>();
 
-
-
+   
 
 
 
