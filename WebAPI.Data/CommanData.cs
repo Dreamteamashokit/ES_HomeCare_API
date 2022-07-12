@@ -224,7 +224,7 @@ where y.EmpType=@EmpType;";
                 string sqlqry = @"Select x.UserId,x.LastName +', '+ x.FirstName +', '+ z.TypeName +' - ' + CONVERT(varchar(10), x.UserId) as EmpName from  
 			tblUser x inner join tblEmployee y Inner JOIN tblEmpType z on y.EmpType=z.TypeId
 			on x.UserId=y.UserId where x.IsActive=@IsActive;";
-                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry, new { @IsActive =(int)Status.Active})).Select(x => new ItemList { ItemId = x.UserId, ItemName = x.EmpName });
+                IEnumerable<ItemList> cmeetings = (await connection.QueryAsync(sqlqry, new { @IsActive = (int)Status.Active })).Select(x => new ItemList { ItemId = x.UserId, ItemName = x.EmpName });
                 obj.Data = cmeetings;
                 obj.Result = cmeetings.Any() ? true : false;
                 obj.Message = cmeetings.Any() ? "Data Found." : "No Data found.";
@@ -298,7 +298,7 @@ where y.EmpType=@EmpType;";
             {
 
                 string sqlqry = "select * from tblTaskMaster Where IsActive=@IsActive";
-                IEnumerable<TaskModel> objResult = (await connection.QueryAsync<TaskModel>(sqlqry, new { @IsActive= (int)Status.Active}));
+                IEnumerable<TaskModel> objResult = (await connection.QueryAsync<TaskModel>(sqlqry, new { @IsActive = (int)Status.Active }));
 
                 obj.Data = objResult;
                 obj.Result = objResult != null ? true : false;
@@ -340,7 +340,7 @@ where y.EmpType=@EmpType;";
 
         }
 
-    
+
 
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetProvisionList(int ProvisionType)
         {
@@ -402,6 +402,7 @@ where y.EmpType=@EmpType;";
             {
                 string sqlqry = @"select x.UserId,y.Latitude,y.Longitude ,z.ProvisionId
                                  ,(isnull(FirstName,'')+' '+isnull(MiddleName,'')+' '+isnull(LastName,'')) as UserName
+                               ,y.Address,y.ZipCode,y.FlatNo, y.City, y.Country ,y.State
                                 from tblUser x 
                                 inner join tblAddress y on x.UserId=y.UserId
                                 Left join tblProvisions z on x.UserId=z.UserId 
@@ -411,15 +412,36 @@ where y.EmpType=@EmpType;";
 
                 //Using Query Syntax
                 var GroupByQS = (from p in results
-                                 group p by new { p.UserId, p.Latitude, p.Longitude,p.UserName } into g
+                                 group p by new
+                                 {
+                                     p.UserId,
+                                     p.Latitude
+                                 ,
+                                     p.Longitude,
+                                     p.UserName
+                                 ,
+                                     p.Address,
+                                     p.ZipCode,
+                                     p.FlatNo,
+                                     p.City,
+                                     p.Country,
+                                     p.State
+                                 } into g
                                  orderby g.Key.UserId descending
                                  select new ClientGeoProvisions
                                  {
-                                     UserName= g.Key.UserName,
+                                     UserName = g.Key.UserName,
                                      ClientId = g.Key.UserId,
                                      Latitude = g.Key.Latitude == null ? 0.0m : Convert.ToDecimal(g.Key.Latitude),
                                      Longitude = g.Key.Longitude == null ? 0.0m : Convert.ToDecimal(g.Key.Longitude),
-                                     Provisions = g.Where(x => x.ProvisionId != null).Select(f => (int)f.ProvisionId).ToArray()
+                                     Provisions = g.Where(x => x.ProvisionId != null).Select(f => (int)f.ProvisionId).ToArray(),
+                                     Address = g.Key.Address == null ? "" : g.Key.Address,
+                                     City = g.Key.City == null ? "" : g.Key.City,
+                                     State = g.Key.State == null ? "" : g.Key.State,
+                                     Country = g.Key.Country == null ? "" : g.Key.Country,
+                                     ZipCode = g.Key.ZipCode == null ? "" : g.Key.ZipCode,
+                                     FlatNo = g.Key.FlatNo == null ? "" : g.Key.FlatNo,
+
                                  }).FirstOrDefault();
 
                 obj.Data = GroupByQS;
@@ -438,14 +460,14 @@ where y.EmpType=@EmpType;";
 
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetCMPLCategoryList(int CategoryId, short UserTypeId)
         {
-            ServiceResponse<IEnumerable<ItemList>> objItemList= new ServiceResponse<IEnumerable<ItemList>>();
+            ServiceResponse<IEnumerable<ItemList>> objItemList = new ServiceResponse<IEnumerable<ItemList>>();
             try
             {
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
                 {
                     string sqlQuery = @"Select * from tblCategoryMaster Where IsNULL(ParentId,0)=@ParentId and IsActive=@IsActive and UserTypeId= @UserTypeId";
                     IEnumerable<ItemList> resObj = (await connection.QueryAsync(sqlQuery,
-                         new { @ParentId = CategoryId, @IsActive = (int)Status.Active, @UserTypeId= UserTypeId })).Select(x=>new ItemList { ItemId=x.CategoryId,ItemName=x.CategoryName });
+                         new { @ParentId = CategoryId, @IsActive = (int)Status.Active, @UserTypeId = UserTypeId })).Select(x => new ItemList { ItemId = x.CategoryId, ItemName = x.CategoryName });
                     objItemList.Data = resObj.ToList();
                     objItemList.Result = resObj.Any() ? true : false;
                     objItemList.Message = resObj.Any() ? "Data Found." : "No Data found.";
