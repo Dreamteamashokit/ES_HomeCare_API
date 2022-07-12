@@ -22,9 +22,13 @@ namespace ES_HomeCare_API.Model.Employee
         
     }
 
+    public class ComplianceModelList : ComplianceModel
+    {
+        public string ComplianceName { get; set; }
+    }
     public class ComplianceList
     {
-        public List<ComplianceModel> objThreeLatestCompletedCompliance { get; set; }
-        public List<ComplianceModel> objThreeLatestPendingCompliance { get; set; }
+        public List<ComplianceModelList> objThreeLatestCompletedCompliance { get; set; }
+        public List<ComplianceModelList> objThreeLatestPendingCompliance { get; set; }
     }
 }
