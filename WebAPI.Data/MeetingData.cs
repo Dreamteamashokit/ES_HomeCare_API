@@ -222,7 +222,7 @@ on q.ClientId=r.UserId where q.EmpId=@UserId and q.IsStatus<>0";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 string sql = @"select  p.LastName  +' '+ p.FirstName as EmpName,q.*,r.LastName +' '+r.FirstName as ClientName
-from tblUser p inner join tblMeeting q on p.UserId=q.EmpId inner join tblUser r 
+from tblUser p inner join tblMeeting q on p.UserId=q.ClientId inner join tblUser r 
 on q.ClientId=r.UserId where q.ClientId=@UserId and q.IsStatus<>0";
 
                 IEnumerable<EmpMeeting> cmeetings = (await connection.QueryAsync<EmpMeeting>(sql,
