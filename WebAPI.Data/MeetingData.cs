@@ -222,8 +222,8 @@ on q.ClientId=r.UserId where q.EmpId=@UserId and q.IsStatus<>0";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 string sql = @"select  p.LastName  +' '+ p.FirstName as EmpName,q.*,r.LastName +' '+r.FirstName as ClientName
-from tblUser p inner join tblMeeting q on p.UserId=q.ClientId inner join tblUser r 
-on q.ClientId=r.UserId where q.ClientId=@UserId and q.IsStatus<>0";
+                            from tblUser p RIGHT join tblMeeting q on p.UserId=q.empId inner join tblUser r 
+                            on q.ClientId=r.UserId where q.ClientId=@UserId and q.IsStatus<>0";
 
                 IEnumerable<EmpMeeting> cmeetings = (await connection.QueryAsync<EmpMeeting>(sql,
                        new { @UserId = _userId }));
@@ -333,7 +333,7 @@ sp.Owner as empOwner,sp.FlatNo as empFlatNo,sp.Address as empAddress,
 sp.City as empCity,sp.Country as empCountry,sp.State as empState,sp.ZipCode as empZipCode from 
 tblMeeting p Left Join tblMeetingPoint q on p.MeetingId=q.MeetingId
 Inner Join tblUser r on p.ClientId=r.UserId Left Join tblAddress rp on r.UserId=rp.UserId
-Inner Join tblUser s on p.EmpId=s.UserId  Left Join tblAddress sp on s.UserId=sp.UserId
+Left Join tblUser s on p.EmpId=s.UserId  Left Join tblAddress sp on s.UserId=sp.UserId
 Where p.MeetingId=@MeetingId;";
 
                 var rsData = (await connection.QueryAsync(sql, new { @MeetingId = meetingId }));
