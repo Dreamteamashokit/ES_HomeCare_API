@@ -113,13 +113,22 @@ namespace ES_HomeCare_API.WebAPI.Data
                 var results = (await connection.QueryAsync(procedure, values, commandType: CommandType.StoredProcedure)).ToList();
                 //Using Query Syntax
                 var GroupByQS = (from p in results
-                                 group p by new { p.UserId, p.EName, p.Address, p.Latitude, p.Longitude } into g
+                                 group p by new { p.UserId, p.EName, p.Address
+                                 , p.Latitude, p.Longitude,p.City,p.State
+                                 ,p.Country,p.ZipCode,p.FlatNo
+                                 } into g
                                  orderby g.Key.UserId descending
                                  select new AvailbilityReponse
                                  {
                                      EmpId = g.Key.UserId,
                                      EmpName = g.Key.EName,
                                      Address = g.Key.Address == null ? "" : g.Key.Address,
+                                     City = g.Key.City == null ? "" : g.Key.City,
+                                     State = g.Key.State == null ? "" : g.Key.State,
+                                     Country = g.Key.Country == null ? "" : g.Key.Country,
+                                     ZipCode = g.Key.ZipCode == null ? "" : g.Key.ZipCode,
+                                     FlatNo = g.Key.FlatNo == null ? "" : g.Key.FlatNo,
+
                                      Latitude = g.Key.Latitude == null ? 0.0m : Convert.ToDecimal(g.Key.Latitude),
                                      Longitude = g.Key.Longitude == null ? 0.0m : Convert.ToDecimal(g.Key.Longitude),
                                      MeetingList = g.Where(x=>x.MeetingId != null).Select(f => new EmpAppointment

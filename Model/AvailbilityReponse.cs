@@ -14,6 +14,7 @@ namespace ES_HomeCare_API.Model
         public string State { get; set; }
         public string City { get; set; }
         public string ZipCode { get; set; }
+        public string FlatNo { get; set; }
         public List<EmpAppointment> MeetingList { get; set; }
 
     }
@@ -38,6 +39,12 @@ namespace ES_HomeCare_API.Model
         public decimal Longitude { get; set; }
         public int[] Provisions { get; set; }
         public string UserName { get; set; }
+        public string Address { get; set; }
+        public string Country { get; set; }
+        public string State { get; set; }
+        public string City { get; set; }
+        public string ZipCode { get; set; }
+        public string FlatNo { get; set; }
     }
 
 
