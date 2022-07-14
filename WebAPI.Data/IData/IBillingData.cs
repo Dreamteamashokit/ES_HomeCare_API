@@ -13,5 +13,7 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
         Task<ServiceResponse<string>> DelPayer(int PayerId);
 
 
+
+        Task<ServiceResponse<BillingSummaryInfoModel>> GetBillingSummaryInfo(int userId);
     }
 }

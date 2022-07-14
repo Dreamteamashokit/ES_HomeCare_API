@@ -11,5 +11,7 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<string>> UpdatePayer(PayerModel _model);
         Task<ServiceResponse<IEnumerable<PayerModel>>> GetPayerList();
         Task<ServiceResponse<string>> DelPayer(int PayerId);
+
+        Task<ServiceResponse<BillingSummaryInfoModel>> GetBillingSummaryInfo(int userId);
     }
 }

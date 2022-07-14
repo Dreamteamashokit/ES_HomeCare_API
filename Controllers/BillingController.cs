@@ -34,7 +34,7 @@ namespace ES_HomeCare_API.Controllers
             try
             {
 
-                model.IsActive = (int)Status.Active;     
+                model.IsActive = (int)Status.Active;
                 model.CreatedOn = DateTime.Now;
                 return Ok(await billSrv.AddPayer(model));
 
@@ -94,5 +94,21 @@ namespace ES_HomeCare_API.Controllers
 
 
 
+
+
+        [HttpGet("GetBillingSummaryInfo/{userId}")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetBillingSummaryInfo(int userId)
+        {
+            try
+            {
+                return Ok(await billSrv.GetBillingSummaryInfo(userId));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

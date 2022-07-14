@@ -29,6 +29,11 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.GetPayerList();
         }
 
+        public async Task<ServiceResponse<BillingSummaryInfoModel>> GetBillingSummaryInfo(int userId)
+        {
+            return await data.GetBillingSummaryInfo(userId);
+        }
+
         public async Task<ServiceResponse<string>> DelPayer(int PayerId)
         {
             return await data.DelPayer(PayerId);
