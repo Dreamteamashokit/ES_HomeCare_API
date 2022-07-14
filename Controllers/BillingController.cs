@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
 
@@ -43,5 +44,55 @@ namespace ES_HomeCare_API.Controllers
                 throw ex;
             }
         }
+
+        [HttpPost("updatePayer")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdatePayer([FromBody] PayerModel model)
+        {
+            try
+            {
+
+                model.IsActive = (int)Status.Active;
+                model.CreatedOn = DateTime.Now;
+                return Ok(await billSrv.UpdatePayer(model));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        [HttpGet("getPayerList")]
+        [ProducesResponseType(typeof(ServiceResponse<List<PayerModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<PayerModel>>), StatusCodes.Status400BadRequest)]
+        public async Task<ServiceResponse<IEnumerable<PayerModel>>> GetPayerList()
+        {
+            return await billSrv.GetPayerList();
+        }
+
+
+        [HttpDelete("delPayer/{PayerId}")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<ServiceResponse<string>> DelPayer(int PayerId)
+        {
+            return await billSrv.DelPayer(PayerId);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }
