@@ -7,5 +7,7 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
     public interface IBillingService
     {
         Task<ServiceResponse<string>> AddPayer(PayerModel _model);
+
+        Task<ServiceResponse<BillingSummaryInfoModel>> GetBillingSummaryInfo(int userId);
     }
 }

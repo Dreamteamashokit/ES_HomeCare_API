@@ -10,7 +10,7 @@ using WebAPI_SAMPLE.Model;
 
 namespace ES_HomeCare_API.WebAPI.Data
 {
-    public class BillingData: IBillingData
+    public class BillingData : IBillingData
     {
 
         private IConfiguration configuration;
@@ -32,7 +32,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                     transaction = cnn.BeginTransaction();
 
 
-                 
+
                     string sqlQuery = @"INSERT INTO tblPayer
 (PayerName,BillToName,Email,Phone,Fax,NPI,FedId,ETIN,Taxonomy,MedicaidId,IsActive,CreatedOn,CreatedBy)
 VALUES
@@ -70,6 +70,44 @@ VALUES
                     transaction.Dispose();
             }
             return sres;
+        }
+
+
+        public async Task<ServiceResponse<BillingSummaryInfoModel>> GetBillingSummaryInfo(int userId)
+        {
+            ServiceResponse<BillingSummaryInfoModel> obj = new ServiceResponse<BillingSummaryInfoModel>();
+            using (SqlConnection con = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                SqlCommand cmd = new SqlCommand("GetBillingSummaryInfo", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@UserId", userId);
+
+                DataTable table = new DataTable();
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(table);
+                if (table.Rows.Count > 0)
+                {
+                    for (int i = 0; i < table.Rows.Count; i++)
+                    {
+                        obj.Data = new BillingSummaryInfoModel
+                        {
+                            BillingId = Convert.ToInt32(table.Rows[i]["BillingId"]),
+                            PayerId = Convert.ToInt32(table.Rows[i]["PayerId"]),
+                            Type = table.Rows[i]["Type"] == null ? "" : table.Rows[i]["Type"].ToString(),
+                            DueDate = string.IsNullOrWhiteSpace(table.Rows[i]["DueDate"].ToString()) ? "" : table.Rows[i]["DueDate"].ToString(),
+                            BillToName = string.IsNullOrWhiteSpace(table.Rows[i]["BillToName"].ToString()) ? "" : table.Rows[i]["BillToName"].ToString()
+                        };
+                        obj.Result = true;
+                        obj.Message = "Billing details retrive successfull.";
+                    }
+                }
+                else
+                {
+                    obj.Result = true;
+                    obj.Message = "Billing details does not exists.";
+                }
+                return obj;
+            }
         }
     }
 

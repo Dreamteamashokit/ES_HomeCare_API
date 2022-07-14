@@ -20,7 +20,10 @@ namespace ES_HomeCare_API.WebAPI.Service
         }
 
 
-
+        public async Task<ServiceResponse<BillingSummaryInfoModel>> GetBillingSummaryInfo(int userId)
+        {
+            return await data.GetBillingSummaryInfo(userId);
+        }
 
 
     }
