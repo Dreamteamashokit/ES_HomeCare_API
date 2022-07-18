@@ -1,4 +1,5 @@
 ﻿using ES_HomeCare_API.Model.Billing;
+using ES_HomeCare_API.ViewModel.Billing;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using System.Collections.Generic;
@@ -39,5 +40,14 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.DelPayer(PayerId);
         }
 
+        public async Task<ServiceResponse<IEnumerable<BillingStatusViewModel>>> GetBillingStatusList()
+        {
+            return await data.GetBillingStatusList();
+        }
+
+        public async Task<ServiceResponse<IEnumerable<PayrollStatusViewModel>>> GetPayrollStatusList()
+        {
+            return await data.GetPayrollStatusList();
+        }
     }
 }

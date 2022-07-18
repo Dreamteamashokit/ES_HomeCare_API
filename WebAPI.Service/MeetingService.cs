@@ -1,6 +1,7 @@
 ﻿using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.Model.Meeting;
+using ES_HomeCare_API.ViewModel.Meeting;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using System;
@@ -52,6 +53,10 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.UpdateMeeting(_model);
         }
 
+        public async Task<ServiceResponse<string>> AddUpdateMeetingRate(MeetingRateModel model)
+        {
+            return await data.AddUpdateMeetingRate(model);
+        }
         public async Task<ServiceResponse<string>> PostNote(NotesModel _model)
         {
             return await data.PostNote(_model);
@@ -86,7 +91,10 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.GetMeetingLog(MeetingId);
         }
 
-       
+        public async Task<ServiceResponse<MeetingRateViewModel>> GetMeetingRateByMeetingId(long MeetingId)
+        {
+            return await data.GetMeetingRateByMeetingId(MeetingId);
+        }
 
     }
 }

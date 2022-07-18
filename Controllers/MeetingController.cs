@@ -3,6 +3,7 @@ using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Employee;
 using ES_HomeCare_API.Model.Meeting;
 using ES_HomeCare_API.ViewModel;
+using ES_HomeCare_API.ViewModel.Meeting;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -234,11 +235,35 @@ namespace ES_HomeCare_API.Controllers
 
 
 
+        [HttpPost("AddUpdateMeetingRate")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddUpdateMeetingRate(MeetingRateModel model)
+        {
+            try
+            {
+                model.CreatedOn = DateTime.Now;
+                return Ok(await mtgSrv.AddUpdateMeetingRate(model));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
-
-
-
-
-
+        [HttpGet("GetMeetingRateByMeetingId/{MeetingId}")]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<MeetingRateViewModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<IEnumerable<MeetingRateViewModel>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetMeetingRateByMeetingId(long MeetingId)
+        {
+            try
+            {
+                return Ok(await mtgSrv.GetMeetingRateByMeetingId(MeetingId));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

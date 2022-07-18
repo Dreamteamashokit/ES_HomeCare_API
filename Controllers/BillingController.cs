@@ -83,19 +83,6 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         [HttpGet("GetBillingSummaryInfo/{userId}")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
@@ -110,5 +97,38 @@ namespace ES_HomeCare_API.Controllers
                 throw ex;
             }
         }
+
+
+        [HttpGet("GetBillingStatusList")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetBillingStatusList()
+        {
+            try
+            {
+                return Ok(await billSrv.GetBillingStatusList());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet("GetPayrollStatusList")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetPayrollStatusList()
+        {
+            try
+            {
+                return Ok(await billSrv.GetPayrollStatusList());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
     }
 }

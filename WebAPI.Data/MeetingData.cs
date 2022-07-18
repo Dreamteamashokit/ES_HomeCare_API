@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
 using ES_HomeCare_API.Model.Common;
 using ES_HomeCare_API.Model;
+using ES_HomeCare_API.ViewModel.Meeting;
 
 namespace ES_HomeCare_API.WebAPI.Data
 {
@@ -194,7 +195,6 @@ namespace ES_HomeCare_API.WebAPI.Data
             }
 
         }
-
 
         public async Task<ServiceResponse<IEnumerable<EmpMeeting>>> GetEmpMeetingList(int empId)
         {
@@ -461,7 +461,7 @@ Where p.MeetingId=@MeetingId;";
                 {
                     string addQuery = "Update tblMeeting SET IsStatus= @IsStatus,MeetingCancelReason=@MeetingCanceledReason Where MeetingId=@MeetingId";
 
-                    var result = cnn.Execute(addQuery, new { _model.IsStatus,_model.MeetingCanceledReason, _model.MeetingId });
+                    var result = cnn.Execute(addQuery, new { _model.IsStatus, _model.MeetingCanceledReason, _model.MeetingId });
                     if (result > 0)
                     {
 
@@ -559,16 +559,89 @@ Where p.MeetingId=@MeetingId;";
         }
 
 
+        public async Task<ServiceResponse<string>> AddUpdateMeetingRate(MeetingRateModel model)
+        {
+            ServiceResponse<string> obj = new ServiceResponse<string>();
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    string sql = "addUpdateMeetingRate";
+                    var sqlParameter = new
+                    {
+                        @MeetingRateId = model.MeetingRateId,
+                        @MeetingId = model.MeetingId,
+                        @BillingCode = model.BillingCode,
+                        @BillingUnits = model.BillingUnits,
+                        @BillingRate = model.BillingRate,
+                        @BillingTotal = model.BillingTotal,
+                        @BillingStatus = model.BillingStatus,
+                        @BillingTravelTime = model.BillingTravelTime,
+                        @PayrollUnitsPaid = model.PayrollUnitsPaid,
+                        @PayrollPayRate = model.PayrollPayRate,
+                        @PayrollPayTotal = model.PayrollPayTotal,
+                        @PayrollPayStatus = model.PayrollPayStatus,
+                        @PayrollMileage = model.PayrollMileage,
+                        @PayrollPublicTrans = model.PayrollPublicTrans,
+                        @PayrollMisc = model.PayrollMisc,
+                        @PayrollDoNotPay = model.PayrollDoNotPay,
+                        @SentPayrollDate = model.SentPayrollDate,
+                        @IsActive = true,
+                        @CreatedBy = model.CreatedBy
+                    };
+                    int rowsAffected = (await connection.ExecuteAsync(sql, sqlParameter, commandType: CommandType.StoredProcedure));
+                    obj.Result = true;
+                    obj.Data = "Sucessfully  Created.";
+                }
+                return obj;
+
+            }
+            catch (Exception ex)
+            {
+
+                obj.Result = false;
+                obj.Message = ex.Message;
+                return obj;
+            }
+
+        }
 
 
+        public async Task<ServiceResponse<MeetingRateViewModel>> GetMeetingRateByMeetingId(long MeetingId)
+        {
+            ServiceResponse<MeetingRateViewModel> obj = new ServiceResponse<MeetingRateViewModel>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = @"SELECT * FROM tblMeetingRate  Where MeetingId = @MeetingId";
 
+                var result = (await connection.QueryAsync(sql, new { @MeetingId = MeetingId })).Select(mom => new MeetingRateViewModel
+                {
+                    MeetingRateId = mom.MeetingId,
+                    MeetingId = mom.MeetingId,
+                    BillingCode = mom.BillingCode,
+                    BillingRate = mom.BillingRate,
+                    BillingStatus = mom.BillingStatus,
+                    BillingTotal = mom.BillingTotal,
+                    BillingTravelTime = mom.BillingTravelTime,
+                    BillingUnits = mom.BillingUnits,
+                    IsActive = mom.IsActive,
+                    PayrollDoNotPay = mom.PayrollDoNotPay,
+                    PayrollMileage = mom.PayrollMileage,
+                    PayrollMisc = mom.PayrollMisc,
+                    PayrollPayRate = mom.PayrollPayRate,
+                    PayrollPayStatus = mom.PayrollPayStatus,
+                    PayrollPayTotal = mom.PayrollPayTotal,
+                    PayrollPublicTrans = mom.PayrollPublicTrans,
+                    PayrollUnitsPaid = mom.PayrollUnitsPaid,
+                    SentPayrollDate = mom.SentPayrollDate
 
-
-
-
-
-
-
+                }).FirstOrDefault();
+                obj.Data = result;
+                obj.Result = result != null ? true : false;
+                obj.Message = result != null ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
 
     }
 }

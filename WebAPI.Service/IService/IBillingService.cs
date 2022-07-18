@@ -1,4 +1,5 @@
 ﻿using ES_HomeCare_API.Model.Billing;
+using ES_HomeCare_API.ViewModel.Billing;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
@@ -13,5 +14,7 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<string>> DelPayer(int PayerId);
 
         Task<ServiceResponse<BillingSummaryInfoModel>> GetBillingSummaryInfo(int userId);
+        Task<ServiceResponse<IEnumerable<BillingStatusViewModel>>> GetBillingStatusList();
+        Task<ServiceResponse<IEnumerable<PayrollStatusViewModel>>> GetPayrollStatusList();
     }
 }

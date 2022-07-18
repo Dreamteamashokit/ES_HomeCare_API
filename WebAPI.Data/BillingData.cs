@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Billing;
+using ES_HomeCare_API.ViewModel.Billing;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -218,6 +219,38 @@ WHERE PayerId=@PayerId";
                 return obj;
             }
         }
+
+
+        public async Task<ServiceResponse<IEnumerable<BillingStatusViewModel>>> GetBillingStatusList()
+        {
+            ServiceResponse<IEnumerable<BillingStatusViewModel>> obj = new ServiceResponse<IEnumerable<BillingStatusViewModel>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = @"SELECT TBS.BillingStatusId,TBS.[Name] FROM tblBillingStatus TBS WHERE TBS.ISACTIVE = @IsActive";
+                IEnumerable<BillingStatusViewModel> dataResult = (await connection.QueryAsync<BillingStatusViewModel>(sql, new { @IsActive = true }));
+                obj.Data = dataResult;
+                obj.Result = dataResult.Any() ? true : false;
+                obj.Message = dataResult.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
+
+
+        public async Task<ServiceResponse<IEnumerable<PayrollStatusViewModel>>> GetPayrollStatusList()
+        {
+            ServiceResponse<IEnumerable<PayrollStatusViewModel>> obj = new ServiceResponse<IEnumerable<PayrollStatusViewModel>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = @"SELECT TPS.PayRollStatusId,TPS.[Name] FROM tblPayrollStatus TPS WHERE TPS.ISACTIVE = @IsActive";
+                IEnumerable<PayrollStatusViewModel> dataResult = (await connection.QueryAsync<PayrollStatusViewModel>(sql, new { @IsActive = true }));
+                obj.Data = dataResult;
+                obj.Result = dataResult.Any() ? true : false;
+                obj.Message = dataResult.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
+
+
     }
 
 }
