@@ -585,7 +585,7 @@ Where p.MeetingId=@MeetingId;";
                         @PayrollPublicTrans = model.PayrollPublicTrans,
                         @PayrollMisc = model.PayrollMisc,
                         @PayrollDoNotPay = model.PayrollDoNotPay,
-                        @SentPayrollDate = model.SentPayrollDate,
+                        @SentPayrollDate = string.IsNullOrWhiteSpace(model.SentPayrollDate) ? "" : model.SentPayrollDate,
                         @IsActive = true,
                         @CreatedBy = model.CreatedBy
                     };

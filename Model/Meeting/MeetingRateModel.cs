@@ -21,7 +21,7 @@ namespace ES_HomeCare_API.Model.Meeting
         public decimal? PayrollPublicTrans { get; set; }
         public decimal? PayrollMisc { get; set; }
         public bool PayrollDoNotPay { get; set; }
-        public DateTime? SentPayrollDate { get; set; }
+        public string SentPayrollDate { get; set; }
         public int CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
     }
