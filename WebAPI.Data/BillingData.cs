@@ -289,13 +289,10 @@ inner join tblUser xx on x.ClientId= xx.UserId
 inner join tblUser xy on x.EmpId= xy.UserId
 inner Join tblClient z on x.ClientId= z.UserId
 inner join tblPayer xz on z.BillTo= xz.PayerId
-Where
-(y.BillTo=(CASE WHEN @PayerId IS NULL THEN y.BillTo ELSE @PayerId END) OR
+Where (z.BillTo=(CASE WHEN @PayerId IS NULL THEN z.BillTo ELSE @PayerId END) OR
 x.EmpId=(CASE WHEN @EmpId IS NULL THEN x.EmpId ELSE @EmpId END) OR
-x.ClientId=(CASE WHEN @ClientId IS NULL THEN x.ClientId ELSE @ClientId END) OR
-y.BillTo=(CASE WHEN @PayerId IS NULL THEN y.BillTo ELSE @PayerId END) OR
-y.BillTo=(CASE WHEN @PayerId IS NULL THEN y.BillTo ELSE @PayerId END)
-) AND    CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS DATE)";
+x.ClientId=(CASE WHEN @ClientId IS NULL THEN x.ClientId ELSE @ClientId END)) AND  
+CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS DATE)";
                 IEnumerable<ScheduleBillingModel> result = (await connection.QueryAsync<ScheduleBillingModel>(sql, new
                 {
                     @FromDate = model.FromDate,

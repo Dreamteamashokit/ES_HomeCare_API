@@ -144,7 +144,7 @@ namespace ES_HomeCare_API.Controllers
             }
         }
 
-        [HttpGet("getScheduleBilling")]
+        [HttpPost("getScheduleBilling")]
         [ProducesResponseType(typeof(ServiceResponse<ScheduleBillingModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<ScheduleBillingModel>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetScheduleBilling([FromBody] SearchSchedule model)
