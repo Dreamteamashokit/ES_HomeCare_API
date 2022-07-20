@@ -616,7 +616,7 @@ Where p.MeetingId=@MeetingId;";
 
                 var result = (await connection.QueryAsync(sql, new { @MeetingId = MeetingId })).Select(mom => new MeetingRateViewModel
                 {
-                    MeetingRateId = mom.MeetingId,
+                    MeetingRateId = mom.MeetingRateId,
                     MeetingId = mom.MeetingId,
                     BillingCode = mom.BillingCode,
                     BillingRate = mom.BillingRate,
