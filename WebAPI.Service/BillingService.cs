@@ -49,5 +49,26 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             return await data.GetPayrollStatusList();
         }
-    }
-}
+
+
+
+        public async Task<ServiceResponse<IEnumerable<ScheduleBillingModel>>> GetScheduleBilling()
+        {
+            return await data.GetScheduleBilling();
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ScheduleBillingModel>>> GetScheduleBilling(SearchSchedule model)
+        {
+            return await data.GetScheduleBilling(model);
+        }
+
+
+
+
+
+
+
+
+
+            }
+        }
