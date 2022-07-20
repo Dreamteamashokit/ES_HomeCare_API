@@ -129,6 +129,35 @@ namespace ES_HomeCare_API.Controllers
             }
         }
 
+        [HttpGet("GetAllScheduleBilling")]
+        [ProducesResponseType(typeof(ServiceResponse<ScheduleBillingModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<ScheduleBillingModel>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetAllScheduleBilling()
+        {
+            try
+            {
+                return Ok(await billSrv.GetScheduleBilling());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpPost("getScheduleBilling")]
+        [ProducesResponseType(typeof(ServiceResponse<ScheduleBillingModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<ScheduleBillingModel>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetScheduleBilling([FromBody] SearchSchedule model)
+        {
+            try
+            {
+                return Ok(await billSrv.GetScheduleBilling(model));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
     }
 }
