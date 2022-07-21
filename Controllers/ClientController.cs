@@ -7,6 +7,7 @@ using ES_HomeCare_API.Helper;
 using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Client;
 using ES_HomeCare_API.ViewModel.Compliance;
+using ES_HomeCare_API.ViewModel.Employee;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI_SAMPLE.Model;
@@ -814,6 +815,14 @@ namespace WebAPI_SAMPLE.Controllers
             return Ok(await service.GetComplianceCountByUserid(userId));
         }
 
+
+        [HttpGet("GetClientANDEmployeeAttendanceDetails/{meetingId}")]
+        [ProducesResponseType(typeof(ServiceResponse<ClientEmployeeAttendanceViewModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<ClientEmployeeAttendanceViewModel>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetClientANDEmployeeAttendanceDetails(int meetingId)
+        {
+            return Ok(await service.GetClientANDEmployeeAttendanceDetails(meetingId));
+        }
     }
 }
 

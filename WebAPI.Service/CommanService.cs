@@ -2,6 +2,7 @@
 using ES_HomeCare_API.Model.Client;
 using ES_HomeCare_API.Model.Common;
 using ES_HomeCare_API.Model.Employee;
+using ES_HomeCare_API.ViewModel.Employee;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using System.Collections.Generic;
@@ -114,11 +115,11 @@ namespace ES_HomeCare_API.WebAPI.Service
         }
 
 
-        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetCMPLCategoryList(int CategoryId,short UserTypeId)
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetCMPLCategoryList(int CategoryId, short UserTypeId)
         {
             return await data.GetCMPLCategoryList(CategoryId, UserTypeId);
         }
 
-
-        }
+        
+    }
 }

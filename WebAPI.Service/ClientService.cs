@@ -1,6 +1,7 @@
 ﻿using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Client;
 using ES_HomeCare_API.ViewModel.Compliance;
+using ES_HomeCare_API.ViewModel.Employee;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -203,6 +204,9 @@ namespace WebAPI_SAMPLE.WebAPI.Service
             return await data.GetComplianceCountByUserid(userId);
         }
 
-
+        public async Task<ServiceResponse<ClientEmployeeAttendanceViewModel>> GetClientANDEmployeeAttendanceDetails(int meetingId)
+        {
+            return await data.GetClientANDEmployeeAttendanceDetails(meetingId);
+        }
     }
 }

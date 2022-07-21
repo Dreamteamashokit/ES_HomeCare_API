@@ -6,6 +6,7 @@ namespace ES_HomeCare_API.ViewModel.Invoice
     {
         public long BillingId { get; set; }
         public long PayerId { get; set; }
+        public long ClientId { get; set; }
         public string ContractClientId { get; set; }
         public string AuthorizationNumber { get; set; }
         public DateTime? FromDate { get; set; }

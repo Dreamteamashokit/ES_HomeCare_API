@@ -1,6 +1,7 @@
 ﻿using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Client;
 using ES_HomeCare_API.ViewModel.Compliance;
+using ES_HomeCare_API.ViewModel.Employee;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -52,7 +53,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<ContactModel>> GetEmergContact(int userId, short typeId);
         Task<ServiceResponse<IEnumerable<ProviderModel>>> GetEmergProvider(int userId);
         Task<ServiceResponse<ComplianceCountsViewModel>> GetComplianceCountByUserid(int userId);
-
-
+        Task<ServiceResponse<ClientEmployeeAttendanceViewModel>> GetClientANDEmployeeAttendanceDetails(int meetingId);
     }
 }

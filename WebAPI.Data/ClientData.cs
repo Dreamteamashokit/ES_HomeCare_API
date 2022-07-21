@@ -3,6 +3,7 @@ using ES_HomeCare_API.Helper;
 using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Client;
 using ES_HomeCare_API.ViewModel.Compliance;
+using ES_HomeCare_API.ViewModel.Employee;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -1816,6 +1817,36 @@ IsActive=@IsActive where ProviderId=@ContactId";
                 obj.Data = null;
                 obj.Result = false;
                 obj.Message = ex.Message.ToString();
+            }
+            return obj;
+        }
+
+        public async Task<ServiceResponse<ClientEmployeeAttendanceViewModel>> GetClientANDEmployeeAttendanceDetails(int meetingId)
+        {
+            ServiceResponse<ClientEmployeeAttendanceViewModel> obj = new ServiceResponse<ClientEmployeeAttendanceViewModel>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = "GetClientANDEmployeeAttendanceDetails";
+                var sqlParameter = new { @MeetingId = meetingId };
+
+                var result = (await connection.QueryAsync(sql, sqlParameter, commandType: CommandType.StoredProcedure)).Select(mom => new ClientEmployeeAttendanceViewModel
+                {
+                    MeetingId = mom.MeetingId,
+                    ClientId = mom.ClientId,
+                    ClientName = mom.ClientName,
+                    ClientClockInOutTime = mom.ClientClockInOutTime,
+                    ClientLatitude = mom.ClientLatitude,
+                    ClientLongitude = mom.ClientLongitude,
+                    EmpId = mom.EmpId,
+                    EmployeeClockInOutTime = mom.EmployeeClockInOutTime,
+                    EmployeeLatitude = mom.EmployeeLatitude,
+                    EmployeeLongitude = mom.EmployeeLongitude,
+                    EmployeeName = mom.EmployeeName
+                }).FirstOrDefault();
+
+                obj.Data = result;
+                obj.Result = result != null ? true : false;
+                obj.Message = result != null ? "Data Found." : "No Data found.";
             }
             return obj;
         }
