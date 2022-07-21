@@ -52,7 +52,7 @@ namespace ES_HomeCare_API.WebAPI.Service
 
 
 
-        public async Task<ServiceResponse<IEnumerable<ScheduleBillingModel>>> GetScheduleBilling()
+        public async Task<ServiceResponse<IEnumerable<ClientSchedule>>> GetScheduleBilling()
         {
             return await data.GetScheduleBilling();
         }
