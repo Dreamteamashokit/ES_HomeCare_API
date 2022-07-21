@@ -34,5 +34,6 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<ClientGeoProvisions>> GetUsersGeoProvision(int UserId);
 
         Task<ServiceResponse<IEnumerable<ItemList>>> GetCMPLCategoryList(int CategoryId, short UserTypeId);
+        Task<bool> SendEmail(Email model);
     }
 }
