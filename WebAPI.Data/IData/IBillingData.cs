@@ -17,7 +17,7 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
         Task<ServiceResponse<IEnumerable<BillingStatusViewModel>>> GetBillingStatusList();
         Task<ServiceResponse<IEnumerable<PayrollStatusViewModel>>> GetPayrollStatusList();
 
-        Task<ServiceResponse<IEnumerable<ScheduleBillingModel>>> GetScheduleBilling();
+        Task<ServiceResponse<IEnumerable<ClientSchedule>>> GetScheduleBilling();
         Task<ServiceResponse<IEnumerable<ScheduleBillingModel>>> GetScheduleBilling(SearchSchedule model);
     }
 }
