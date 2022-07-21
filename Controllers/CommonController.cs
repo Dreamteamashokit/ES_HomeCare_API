@@ -233,6 +233,20 @@ namespace ES_HomeCare_API.Controllers
             return Ok(await comSrv.GetCMPLCategoryList(CategoryId, UserTypeId));
         }
 
+        [HttpPost("sendEmail")]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> SendEmail([FromBody] Email model)
+        {
+            try
+            {
+                return Ok(await comSrv.SendEmail(model));
 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
