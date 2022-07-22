@@ -357,8 +357,8 @@ CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS
                              (CASE WHEN TM.IsCompleted = 1 THEN 'Confirmed' ELSE 'Nonbillable' END) AS BillingStatus
                              FROM tblBilling TB
                              INNER JOIN tblPayer TP ON TB.PayerId = TP.Payerid
-                             LEFT JOIN tblPayerrate TPR ON TB.PayerId = TPR.Payerid
-                             LEFT JOIN tblMeeting TM ON TB.ClientId = TM.ClientId
+                             INNER JOIN tblPayerrate TPR ON TB.PayerId = TPR.Payerid
+                             INNER JOIN tblMeeting TM ON TB.ClientId = TM.ClientId
                              WHERE TB.IsActive = 1 AND TB.ClientId = @clientId AND TM.MeetingId = @meetingId AND TPR.IsActive = 1 
                              AND TM.IsStatus = 1 AND TM.MeetingDate BETWEEN TPR.ValidFrom AND TPR.ValidTo ORDER BY TPR.RateId DESC";
 
