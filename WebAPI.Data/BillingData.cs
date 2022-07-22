@@ -329,7 +329,7 @@ CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS
 
 
         
-        public async Task<ServiceResponse<BillingPayerRateViewModel>> GetBillingPayerRate(long payerId,long clientId)
+        public async Task<ServiceResponse<BillingPayerRateViewModel>> GetBillingPayerRate(long payerId,long clientId,long meetingId)
         {
             ServiceResponse<BillingPayerRateViewModel> obj = new ServiceResponse<BillingPayerRateViewModel>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
@@ -341,10 +341,15 @@ CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS
                              INNER JOIN tblPayer TP ON TB.PayerId = TP.Payerid
                              LEFT JOIN tblPayerrate TPR ON TB.PayerId = TPR.Payerid
                              LEFT JOIN tblMeeting TM ON TB.ClientId = TM.ClientId
-                             WHERE TB.IsActive = 1 AND TB.ClientId = @clientId  AND TPR.IsActive = 1 
+                             WHERE TB.IsActive = 1 AND TB.ClientId = @clientId AND TM.MeetingId = @meetingId AND TPR.IsActive = 1 
                              AND TM.IsStatus = 1 AND TM.MeetingDate BETWEEN TPR.ValidFrom AND TPR.ValidTo ORDER BY TPR.RateId DESC";
 
-                BillingPayerRateViewModel result = (await connection.QueryAsync<BillingPayerRateViewModel>(sql, new { @clientId = clientId, @payerId = payerId })).FirstOrDefault();
+                BillingPayerRateViewModel result = (await connection.QueryAsync<BillingPayerRateViewModel>(sql, new 
+                { 
+                    @clientId = clientId, 
+                    @payerId = payerId, 
+                    @meetingId = meetingId 
+                })).FirstOrDefault();
 
                 obj.Data = result;
                 obj.Result = result != null ? true : false;

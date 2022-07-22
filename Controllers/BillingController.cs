@@ -161,14 +161,14 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
-        [HttpGet("GetBillingPayerRate/{payerId}/{clientId}")]
+        [HttpGet("GetBillingPayerRate/{payerId}/{clientId}/{meetingId}")]
         [ProducesResponseType(typeof(ServiceResponse<BillingPayerRateViewModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<BillingPayerRateViewModel>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetBillingPayerRate(long payerId, long clientId)
+        public async Task<IActionResult> GetBillingPayerRate(long payerId, long clientId, long meetingId)
         {
             try
             {
-                return Ok(await billSrv.GetBillingPayerRate(payerId, clientId));
+                return Ok(await billSrv.GetBillingPayerRate(payerId, clientId,meetingId));
             }
             catch (Exception ex)
             {
