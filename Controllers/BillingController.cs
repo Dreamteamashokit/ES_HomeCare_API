@@ -1,5 +1,6 @@
 ﻿using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Billing;
+using ES_HomeCare_API.ViewModel.Billing;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -152,6 +153,22 @@ namespace ES_HomeCare_API.Controllers
             try
             {
                 return Ok(await billSrv.GetScheduleBilling(model));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        [HttpGet("GetBillingPayerRate/{payerId}/{clientId}")]
+        [ProducesResponseType(typeof(ServiceResponse<BillingPayerRateViewModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<BillingPayerRateViewModel>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetBillingPayerRate(long payerId, long clientId)
+        {
+            try
+            {
+                return Ok(await billSrv.GetBillingPayerRate(payerId, clientId));
             }
             catch (Exception ex)
             {

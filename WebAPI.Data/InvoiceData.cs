@@ -245,6 +245,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@BillingId", billingModel.BillingId);
                     cmd.Parameters.AddWithValue("@PayerId", billingModel.PayerId);
+                    cmd.Parameters.AddWithValue("@ClientId", billingModel.ClientId);
                     cmd.Parameters.AddWithValue("@ContractClientId", billingModel.ContractClientId == null ? "" : billingModel.ContractClientId);
                     cmd.Parameters.AddWithValue("@AuthorizationNumber", billingModel.AuthorizationNumber == null ? "" : billingModel.AuthorizationNumber);
                     if (billingModel.FromDate != null)
@@ -446,7 +447,7 @@ namespace ES_HomeCare_API.WebAPI.Data
         }
 
 
-        public async Task<ServiceResponse<IList<BillingViewModel>>> GetActiveBillAndExpiredBill(bool status)
+        public async Task<ServiceResponse<IList<BillingViewModel>>> GetActiveBillAndExpiredBill(bool status,long clientid)
         {
             ServiceResponse<IList<BillingViewModel>> obj = new ServiceResponse<IList<BillingViewModel>>();
             IList<BillingViewModel> objBillingList = null;
@@ -457,6 +458,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                     SqlCommand cmd = new SqlCommand("GetActiveBillAndExpiredBill", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Status", status);
+                    cmd.Parameters.AddWithValue("@ClientId", clientid);
 
                     DataTable table = new DataTable();
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -470,6 +472,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                             {
                                 BillingId = Convert.ToInt32(table.Rows[i]["BillingId"]),
                                 PayerId = Convert.ToInt32(table.Rows[i]["PayerId"]),
+                                ClientId = Convert.ToInt32(table.Rows[i]["ClientId"]),
                                 ContractClientId = table.Rows[i]["ContractClientId"].ToString(),
                                 AuthorizationNumber = table.Rows[i]["AuthorizationNumber"].ToString(),
                                 FromDate = string.IsNullOrWhiteSpace(table.Rows[i]["FromDate"].ToString()) ? (DateTime?)null : DateTime.Parse(table.Rows[i]["FromDate"].ToString()),

@@ -49,4 +49,9 @@ namespace ES_HomeCare_API.Model
         public short MasterType { get; set; }
         public string ItemName { get; set; }
     }
+
+    public class Email
+    {
+        public string Message { get; set; }
+    }
 }

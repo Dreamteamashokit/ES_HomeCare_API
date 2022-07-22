@@ -2,6 +2,7 @@
 using ES_HomeCare_API.Model.Client;
 using ES_HomeCare_API.Model.Common;
 using ES_HomeCare_API.Model.Employee;
+using ES_HomeCare_API.ViewModel.Employee;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
@@ -36,7 +37,7 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
         Task<ServiceResponse<ClientGeoProvisions>> GetUsersGeoProvision(int UserId);
 
         Task<ServiceResponse<IEnumerable<ItemList>>> GetCMPLCategoryList(int CategoryId, short UserTypeId);
-
+        
     }
 
 

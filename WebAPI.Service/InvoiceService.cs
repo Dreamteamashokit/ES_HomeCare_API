@@ -60,9 +60,9 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.GetBillingDetailsByBillingId(billingId);
         }
 
-        public async Task<ServiceResponse<IList<BillingViewModel>>> GetActiveBillAndExpiredBill(bool status)
+        public async Task<ServiceResponse<IList<BillingViewModel>>> GetActiveBillAndExpiredBill(bool status, long clientid)
         {
-            return await data.GetActiveBillAndExpiredBill(status);
+            return await data.GetActiveBillAndExpiredBill(status,clientid);
         }
 
         public async Task<ServiceResponse<IList<PayerServiceCodeModel>>> GetServiceCodeByPayerId(long payerId)

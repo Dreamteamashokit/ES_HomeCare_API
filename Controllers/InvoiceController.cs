@@ -91,12 +91,12 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
-        [HttpPost("GetActiveBillAndExpiredBill/{status}")]
+        [HttpPost("GetActiveBillAndExpiredBill/{status}/{clientid}")]
         [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<object>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetActiveBillAndExpiredBill(bool status)
+        public async Task<IActionResult> GetActiveBillAndExpiredBill(bool status, long clientid)
         {
-            return Ok(await service.GetActiveBillAndExpiredBill(status));
+            return Ok(await service.GetActiveBillAndExpiredBill(status,clientid));
         }
 
 
