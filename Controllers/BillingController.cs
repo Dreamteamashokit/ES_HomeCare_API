@@ -145,8 +145,8 @@ namespace ES_HomeCare_API.Controllers
         }
 
         [HttpPost("getScheduleBilling")]
-        [ProducesResponseType(typeof(ServiceResponse<ScheduleBillingModel>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<ScheduleBillingModel>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<ClientSchedule>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<ClientSchedule>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetScheduleBilling([FromBody] SearchSchedule model)
         {
             try

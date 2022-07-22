@@ -293,9 +293,9 @@ inner join tblPayer xz on z.BillTo= xz.PayerId";
             return obj;
         }
 
-        public async Task<ServiceResponse<IEnumerable<ScheduleBillingModel>>> GetScheduleBilling(SearchSchedule model)
+        public async Task<ServiceResponse<IEnumerable<ClientSchedule>>> GetScheduleBilling(SearchSchedule model)
         {
-            ServiceResponse<IEnumerable<ScheduleBillingModel>> obj = new ServiceResponse<IEnumerable<ScheduleBillingModel>>();
+            ServiceResponse<IEnumerable<ClientSchedule>> obj = new ServiceResponse<IEnumerable<ClientSchedule>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
                 string sql = @"Select y.MeetingRateId as ScheduleRateId,z.BillTo as PayerId, xz.PayerName, x.MeetingId, x.ClientId,
@@ -307,18 +307,36 @@ inner join tblUser xx on x.ClientId= xx.UserId
 inner join tblUser xy on x.EmpId= xy.UserId
 inner Join tblClient z on x.ClientId= z.UserId
 inner join tblPayer xz on z.BillTo= xz.PayerId
-Where (z.BillTo=(CASE WHEN @PayerId IS NULL THEN z.BillTo ELSE @PayerId END) OR
-x.EmpId=(CASE WHEN @EmpId IS NULL THEN x.EmpId ELSE @EmpId END) OR
-x.ClientId=(CASE WHEN @ClientId IS NULL THEN x.ClientId ELSE @ClientId END)) AND  
+Where (z.BillTo=(CASE WHEN (@PayerId IS NULL OR @PayerId=0) THEN z.BillTo ELSE @PayerId  END) And
+x.EmpId=(CASE WHEN (@EmpId IS NULL OR @EmpId=0)  THEN x.EmpId ELSE @EmpId END) And
+x.ClientId=(CASE WHEN (@ClientId IS NULL OR @ClientId=0) THEN x.ClientId ELSE @ClientId END)) AND  
 CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS DATE)";
-                IEnumerable<ScheduleBillingModel> result = (await connection.QueryAsync<ScheduleBillingModel>(sql, new
+                IEnumerable<ScheduleBillingModel> ObjData = (await connection.QueryAsync<ScheduleBillingModel>(sql, new
                 {
                     @FromDate = model.FromDate,
                     @ToDate = model.ToDate,
                     @PayerId = model.PayerId,
                     @EmpId = model.EmpId,
                     @ClientId = model.ClientId,
-                }));
+                })); ;
+
+                IEnumerable<ClientSchedule> result = ObjData.GroupBy(x => x.ClientId).Select(y => new ClientSchedule
+                {
+
+                    ClientId = y.Key,
+                    ClientName = y.FirstOrDefault().ClientName,
+                    PayerId = y.FirstOrDefault().PayerId,
+                    PayerName = y.FirstOrDefault().PayerName,
+                    Appointments = y.Count(),
+                    Units = y.Sum(z => z.BillingUnits),
+                    Amounts = y.Sum(z => z.BillingTotal),
+                    Schedules = y.ToList()
+
+                });
+
+
+
+
                 obj.Data = result;
                 obj.Result = result.Any() ? true : false;
                 obj.Message = result.Any() ? "Data Found." : "No Data found.";
