@@ -62,13 +62,9 @@ namespace ES_HomeCare_API.WebAPI.Service
             return await data.GetScheduleBilling(model);
         }
 
-
-
-
-
-
-
-
-
-            }
+        public async Task<ServiceResponse<BillingPayerRateViewModel>> GetBillingPayerRate(long payerId, long clientId)
+        {
+            return await data.GetBillingPayerRate(payerId,clientId);
         }
+    }
+}
