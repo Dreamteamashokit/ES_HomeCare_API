@@ -74,7 +74,7 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
-        [HttpDelete("delPayer/{PayerId}")]
+        [HttpDelete("delPayer")]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<ServiceResponse<string>> DelPayer(int PayerId)
