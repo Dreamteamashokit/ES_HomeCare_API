@@ -2,20 +2,23 @@
 using ES_HomeCare_API.Model.Client;
 using ES_HomeCare_API.Model.Common;
 using ES_HomeCare_API.Model.Employee;
+using ES_HomeCare_API.ViewModel.Employee;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
-
+using Microsoft.Extensions.Configuration;
 namespace ES_HomeCare_API.WebAPI.Service
 {
     public class CommanService : ICommanService
     {
         private readonly ICommanData data;
-        public CommanService(ICommanData ldata)
+        private IConfiguration configuration;
+        public CommanService(ICommanData ldata, IConfiguration _configuration)
         {
             data = ldata;
+            configuration = _configuration;
         }
         public async Task<ServiceResponse<IEnumerable<ItemList>>> GetMasterList(short typeId)
         {
@@ -114,11 +117,22 @@ namespace ES_HomeCare_API.WebAPI.Service
         }
 
 
-        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetCMPLCategoryList(int CategoryId,short UserTypeId)
+        public async Task<ServiceResponse<IEnumerable<ItemList>>> GetCMPLCategoryList(int CategoryId, short UserTypeId)
         {
             return await data.GetCMPLCategoryList(CategoryId, UserTypeId);
         }
 
 
+        public async Task<bool> SendEmail(Email model)
+        {
+            bool isSend = false;
+            EmailSmtp EmailSmtpObj = new EmailSmtp(configuration);
+            string emailBody = EmailSmtpObj.SupportEmail();
+            emailBody = emailBody.Replace("{user}", "Admin");
+            emailBody = emailBody.Replace("{message}", model.Message);
+            emailBody = emailBody.Replace("{support}", "Admin");
+            EmailSmtpObj.SendMail(mailTo: "", mailSubject: "Clock in out issue", mailBody: emailBody);
+            return isSend;
         }
+    }
 }

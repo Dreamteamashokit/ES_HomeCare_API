@@ -13,6 +13,7 @@ using System;
 using ES_HomeCare_API.Helper;
 using ES_HomeCare_API.Model.Client;
 using ES_HomeCare_API.Model.Common;
+using ES_HomeCare_API.ViewModel.Employee;
 
 namespace ES_HomeCare_API.WebAPI.Data
 {
@@ -483,10 +484,7 @@ where y.EmpType=@EmpType;";
         }
 
 
-
-
-
-
+        
     }
 }
 
