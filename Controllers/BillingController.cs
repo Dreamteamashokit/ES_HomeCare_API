@@ -223,7 +223,20 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
-
+        [HttpGet("getScheduleInvoice")]
+        [ProducesResponseType(typeof(ServiceResponse<InvoiceView>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<InvoiceView>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetScheduleInvoice()
+        {
+            try
+            {
+                return Ok(await billSrv.GetScheduleInvoice());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
 
     }

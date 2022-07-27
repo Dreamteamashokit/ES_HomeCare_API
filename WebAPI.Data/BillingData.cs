@@ -495,12 +495,12 @@ Update tblMeetingRate SET BillingStatus=@BillingStatus Where MeetingId=@MeetingI
 
 
 
-            
+
 
 
 
                     transaction.Commit();
-                   
+
                     if (rowsAffected > 0)
                     {
                         sres.Result = true;
@@ -542,6 +542,44 @@ Update tblMeetingRate SET BillingStatus=@BillingStatus Where MeetingId=@MeetingI
 
 
 
+        public async Task<ServiceResponse<IEnumerable<InvoiceView>>> GetScheduleInvoice()
+        {
+            ServiceResponse<IEnumerable<InvoiceView>> obj = new ServiceResponse<IEnumerable<InvoiceView>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = @"Select y.MeetingRateId as ScheduleRateId,z.BillTo as PayerId, xz.PayerName, x.MeetingId, x.ClientId,
+xx.FirstName +' '+ ISNULL(xx.MiddleName,'')+' ' + xx.LastName as ClientName,
+x.EmpId,xy.FirstName +' '+ ISNULL(xy.MiddleName,'')+' ' + xy.LastName as EmpName,
+x.MeetingDate as ServiceDate,x.IsCompleted as ScheduleStatus,y.BillingCode,y.BillingRate,y.BillingUnits,y.BillingTotal,y.BillingStatus,
+y.PayrollPayStatus as PayrollStatus, p.InvoiceNo,p.InvoiceAmount,p.InvoiceStatus,q.ScheduleCost,q.PaymentStatus,p.CreatedOn as InvoiceDate from tblInvoice p Inner join tblInvoiceSchedule q on p.InvoiceId=q.InvoiceId
+inner join tblMeeting x on q.MeetingId=x.MeetingId 
+inner join tblMeetingRate y on x.MeetingId=y.MeetingId
+inner join tblUser xx on x.ClientId= xx.UserId
+inner join tblUser xy on x.EmpId= xy.UserId
+inner Join tblClient z on x.ClientId= z.UserId
+inner join tblPayer xz on z.BillTo= xz.PayerId";
+                IEnumerable<ScheduleInvoiceModel> ObjData = (await connection.QueryAsync<ScheduleInvoiceModel>(sql));
+
+                IEnumerable<InvoiceView> result = ObjData.GroupBy(x => x.InvoiceId).Select(y => new InvoiceView
+                {
+                    InvoiceId = y.Key,
+                    InvoiceNo = y.FirstOrDefault().InvoiceNo,
+                    InvoiceStatus = y.FirstOrDefault().InvoiceStatus,
+                    InvoiceDate= y.FirstOrDefault().InvoiceDate,
+                    ClientId = y.FirstOrDefault().ClientId,
+                    ClientName = y.FirstOrDefault().ClientName,
+                    PayerId = y.FirstOrDefault().PayerId,
+                    PayerName = y.FirstOrDefault().PayerName,
+                    Amounts = y.Sum(z => z.BillingTotal),
+                    ScheduleList = y.ToList(),
+
+                });
+                obj.Data = result;
+                obj.Result = result.Any() ? true : false;
+                obj.Message = result.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
 
 
 

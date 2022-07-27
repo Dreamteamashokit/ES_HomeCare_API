@@ -81,7 +81,10 @@ namespace ES_HomeCare_API.WebAPI.Service
         }
 
 
-
+        public async Task<ServiceResponse<IEnumerable<InvoiceView>>> GetScheduleInvoice()
+        {
+            return await data.GetScheduleInvoice();
+        }
 
 
     }

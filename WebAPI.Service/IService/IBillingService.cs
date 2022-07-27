@@ -20,5 +20,6 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<BillingPayerRateViewModel>> GetBillingPayerRate(long payerId, long clientId, long meetingId);
         Task<ServiceResponse<int>> UpdateSchedule(UpdateBillingSchedule model);
         Task<ServiceResponse<int>> CreateInvoice(InvoiceModel model);
+        Task<ServiceResponse<IEnumerable<InvoiceView>>> GetScheduleInvoice();
     }
 }
