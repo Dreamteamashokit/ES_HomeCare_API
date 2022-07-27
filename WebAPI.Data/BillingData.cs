@@ -538,6 +538,20 @@ Update tblMeetingRate SET BillingStatus=@BillingStatus Where MeetingId=@MeetingI
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
 }

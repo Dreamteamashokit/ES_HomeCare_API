@@ -56,17 +56,7 @@ namespace ES_HomeCare_API.Model.Billing
 
 
 
-    public class InvoiceModel: BaseModel
-    {
-        public int InvoiceId { get; set; }
-        public string InvoiceNo { get; set; }
-        public int PayerId { get; set; }
-        public string PayerName { get; set; }
-        public decimal Amounts { get; set; }
 
-        public short InvoiceStatus { get; set; }
-        public List<ScheduleBillingModel> ScheduleList { get; set; }
-    }
 
 
     public class UpdateBillingSchedule
