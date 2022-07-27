@@ -66,5 +66,23 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             return await data.GetBillingPayerRate(payerId,clientId,meetingId);
         }
+
+
+
+
+
+        public async Task<ServiceResponse<int>> UpdateSchedule(UpdateBillingSchedule model)
+        {
+            return await data.UpdateSchedule(model);
+        }
+        public async Task<ServiceResponse<int>> CreateInvoice(InvoiceModel model)
+        {
+            return await data.CreateInvoice(model);
+        }
+
+
+
+
+
     }
 }

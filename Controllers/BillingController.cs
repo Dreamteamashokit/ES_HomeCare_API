@@ -168,13 +168,63 @@ namespace ES_HomeCare_API.Controllers
         {
             try
             {
-                return Ok(await billSrv.GetBillingPayerRate(payerId, clientId,meetingId));
+                return Ok(await billSrv.GetBillingPayerRate(payerId, clientId, meetingId));
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        [HttpPost("updateSchedule")]
+        [ProducesResponseType(typeof(ServiceResponse<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<int>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateSchedule(UpdateBillingSchedule model)
+        {
+            try
+            {
+                return Ok(await billSrv.UpdateSchedule(model));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpPost("createInvoice")]
+        [ProducesResponseType(typeof(ServiceResponse<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<int>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateInvoice(InvoiceModel model)
+        {
+
+            try
+            {
+                model.InvoiceStatus = (short)BillingStatus.Invoiced;
+                model.CreatedOn = DateTime.Now;
+                return Ok(await billSrv.CreateInvoice(model));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+
+
+
 
     }
 }

@@ -15,6 +15,8 @@ namespace ES_HomeCare_API.Model.Billing
     public class ScheduleBillingModel
     {
         public int ScheduleRateId { get; set; }
+
+        public int MeetingId { get; set; }
         public int PayerId { get; set; }
         public int EmpId { get; set; }
         public int ClientId { get; set; }
@@ -45,9 +47,37 @@ namespace ES_HomeCare_API.Model.Billing
         public int Units { get; set; }
         public decimal Amounts { get; set; }
 
-        public List<ScheduleBillingModel> Schedules { get; set; }
+        public List<ScheduleBillingModel> ConfirmList { get; set; }
+        public List<ScheduleBillingModel> HoldList { get; set; }
+        public List<ScheduleBillingModel> UnconfirmList { get; set; }
 
     }
+
+
+
+
+    public class InvoiceModel: BaseModel
+    {
+        public int InvoiceId { get; set; }
+        public string InvoiceNo { get; set; }
+        public int PayerId { get; set; }
+        public string PayerName { get; set; }
+        public decimal Amounts { get; set; }
+
+        public short InvoiceStatus { get; set; }
+        public List<ScheduleBillingModel> ScheduleList { get; set; }
+    }
+
+
+    public class UpdateBillingSchedule
+    {
+        public short BillingStatus { get; set; }
+        public List<int> ScheduleList { get; set; }
+
+    }
+
+
+
 
 
     }

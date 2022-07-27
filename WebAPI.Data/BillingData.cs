@@ -279,7 +279,9 @@ inner join tblPayer xz on z.BillTo= xz.PayerId";
                     Appointments = y.Count(),
                     Units = y.Sum(z => z.BillingUnits),
                     Amounts = y.Sum(z => z.BillingTotal),
-                    Schedules = y.ToList()
+                    ConfirmList = y.Where(z => z.BillingStatus == (short)BillingStatus.Confirmed).ToList(),
+                    HoldList = y.Where(z => z.BillingStatus == (short)BillingStatus.Hold).ToList(),
+                    UnconfirmList = y.Where(z => z.BillingStatus == (short)BillingStatus.Nonbillable).ToList(),
 
                 });
 
@@ -322,7 +324,6 @@ CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS
 
                 IEnumerable<ClientSchedule> result = ObjData.GroupBy(x => x.ClientId).Select(y => new ClientSchedule
                 {
-
                     ClientId = y.Key,
                     ClientName = y.FirstOrDefault().ClientName,
                     PayerId = y.FirstOrDefault().PayerId,
@@ -330,7 +331,9 @@ CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS
                     Appointments = y.Count(),
                     Units = y.Sum(z => z.BillingUnits),
                     Amounts = y.Sum(z => z.BillingTotal),
-                    Schedules = y.ToList()
+                    ConfirmList = y.Where(z => z.BillingStatus == (short)BillingStatus.Confirmed).ToList(),
+                    HoldList = y.Where(z => z.BillingStatus == (short)BillingStatus.Hold).ToList(),
+                    UnconfirmList = y.Where(z => z.BillingStatus == (short)BillingStatus.Nonbillable).ToList(),
 
                 });
 
@@ -346,8 +349,8 @@ CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS
 
 
 
-        
-        public async Task<ServiceResponse<BillingPayerRateViewModel>> GetBillingPayerRate(long payerId,long clientId,long meetingId)
+
+        public async Task<ServiceResponse<BillingPayerRateViewModel>> GetBillingPayerRate(long payerId, long clientId, long meetingId)
         {
             ServiceResponse<BillingPayerRateViewModel> obj = new ServiceResponse<BillingPayerRateViewModel>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
@@ -362,11 +365,11 @@ CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS
                              WHERE TB.IsActive = 1 AND TB.ClientId = @clientId AND TM.MeetingId = @meetingId AND TPR.IsActive = 1 
                              AND TM.IsStatus = 1 AND TM.MeetingDate BETWEEN TPR.ValidFrom AND TPR.ValidTo ORDER BY TPR.RateId DESC";
 
-                BillingPayerRateViewModel result = (await connection.QueryAsync<BillingPayerRateViewModel>(sql, new 
-                { 
-                    @clientId = clientId, 
-                    @payerId = payerId, 
-                    @meetingId = meetingId 
+                BillingPayerRateViewModel result = (await connection.QueryAsync<BillingPayerRateViewModel>(sql, new
+                {
+                    @clientId = clientId,
+                    @payerId = payerId,
+                    @meetingId = meetingId
                 })).FirstOrDefault();
 
                 obj.Data = result;
@@ -374,6 +377,160 @@ CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS
                 obj.Message = result != null ? "Data Found." : "No Data found.";
             }
             return obj;
+        }
+
+
+
+
+
+
+        public async Task<ServiceResponse<int>> UpdateSchedule(UpdateBillingSchedule model)
+        {
+            ServiceResponse<int> sres = new ServiceResponse<int>();
+            IDbTransaction transaction = null;
+
+            try
+            {
+                using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    if (cnn.State != ConnectionState.Open)
+                        cnn.Open();
+                    transaction = cnn.BeginTransaction(IsolationLevel.Serializable);
+                    string _query = "Update tblMeetingRate SET BillingStatus=@BillingStatus Where MeetingRateId=@MeetingRateId";
+                    int rowsAffected = cnn.Execute(_query,
+                        model.ScheduleList.Select(x => new
+                        {
+                            @MeetingRateId = x,
+                            @BillingStatus = model.BillingStatus
+
+                        }), transaction);
+                    transaction.Commit();
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = rowsAffected;
+                        sres.Message = "Sucessfully  Updated.";
+                    }
+                    else
+                    {
+                        sres.Data = 0;
+                        sres.Message = "Failed to Update.";
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
+                sres.Message = ex.Message;
+                return sres;
+            }
+            finally
+            {
+                if (transaction != null)
+                    transaction.Dispose();
+            }
+            return sres;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<ServiceResponse<int>> CreateInvoice(InvoiceModel model)
+        {
+            ServiceResponse<int> sres = new ServiceResponse<int>();
+            IDbTransaction transaction = null;
+
+            try
+            {
+                using (IDbConnection cnn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+                {
+                    if (cnn.State != ConnectionState.Open)
+                        cnn.Open();
+                    transaction = cnn.BeginTransaction();
+                    string _query = @"INSERT INTO tblInvoice (ClientId, InvoiceNO, InvoiceAmount, InvoiceStatus, CreatedBy, CreatedOn) 
+VALUES(@ClientId, @InvoiceNO, @InvoiceAmount, @InvoiceStatus, @CreatedBy, @CreatedOn); select SCOPE_IDENTITY();";
+
+
+
+                    model.InvoiceId = (int)(cnn.ExecuteScalar<int>(_query, new
+                    {
+                        ClientId = model.ScheduleList.FirstOrDefault().ClientId,
+                        InvoiceNO = model.InvoiceNo,
+                        InvoiceAmount = model.ScheduleList.Sum(x => (x.BalanceAmount)),
+                        InvoiceStatus = model.InvoiceStatus,
+                        CreatedBy = model.CreatedBy,
+                        CreatedOn = model.CreatedOn
+                    }, transaction));
+                    string sqlQuery = @"INSERT INTO tblInvoiceSchedule
+(InvoiceId,MeetingId,ScheduleCost,PaymentStatus,CreatedOn,CreatedBy)
+VALUES (@InvoiceId,@MeetingId,@ScheduleCost,@PaymentStatus,@CreatedOn,@CreatedBy);
+Update tblMeetingRate SET BillingStatus=@BillingStatus Where MeetingId=@MeetingId";
+                    int rowsAffected = await cnn.ExecuteAsync(sqlQuery,
+                        model.ScheduleList.Select(x =>
+                        new
+                        {
+                            @BillingStatus = model.InvoiceStatus,
+                            @InvoiceId = model.InvoiceId,
+                            @MeetingId = x.MeetingId,
+                            ScheduleCost = x.BalanceAmount,
+                            PaymentStatus = model.IsActive,
+                            CreatedBy = model.CreatedBy,
+                            CreatedOn = model.CreatedOn
+                        }), transaction);
+
+
+
+
+            
+
+
+
+                    transaction.Commit();
+                   
+                    if (rowsAffected > 0)
+                    {
+                        sres.Result = true;
+                        sres.Data = rowsAffected;
+                        sres.Message = "Sucessfully  Updated.";
+                    }
+                    else
+                    {
+                        sres.Data = 0;
+                        sres.Message = "Failed to Update.";
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
+                sres.Message = ex.Message;
+                return sres;
+            }
+            finally
+            {
+                if (transaction != null)
+                    transaction.Dispose();
+            }
+            return sres;
         }
 
 
