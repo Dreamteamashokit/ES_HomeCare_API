@@ -54,5 +54,6 @@ namespace WebAPI_SAMPLE.WebAPI.Data.IData
         Task<ServiceResponse<IEnumerable<ProviderModel>>> GetEmergProvider(int userId);
         Task<ServiceResponse<ComplianceCountsViewModel>> GetComplianceCountByUserid(int userId);
         Task<ServiceResponse<ClientEmployeeAttendanceViewModel>> GetClientANDEmployeeAttendanceDetails(int meetingId);
+        Task<ServiceResponse<ClockinoutDetailsModel>> GetClockinOutDetailsByClientAndMeetingid(long clientId, long meetingId);
     }
 }

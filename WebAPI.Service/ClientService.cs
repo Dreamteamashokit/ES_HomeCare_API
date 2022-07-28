@@ -208,5 +208,10 @@ namespace WebAPI_SAMPLE.WebAPI.Service
         {
             return await data.GetClientANDEmployeeAttendanceDetails(meetingId);
         }
+
+        public async Task<ServiceResponse<ClockinoutDetailsModel>> GetClockinOutDetailsByClientAndMeetingid(long clientId, long meetingId)
+        {
+            return await data.GetClockinOutDetailsByClientAndMeetingid(clientId, meetingId);
+        }
     }
 }

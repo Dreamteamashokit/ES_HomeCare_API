@@ -1850,5 +1850,25 @@ IsActive=@IsActive where ProviderId=@ContactId";
             }
             return obj;
         }
+
+        public async Task<ServiceResponse<ClockinoutDetailsModel>> GetClockinOutDetailsByClientAndMeetingid(long clientId,long meetingId)
+        {
+            ServiceResponse<ClockinoutDetailsModel> obj = new ServiceResponse<ClockinoutDetailsModel>();
+            using (var conn = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sqlQuery = @"SELECT DISTINCT TOP 1 TCIO.ClockId,TM.ClientId,TM.EmpId,TM.MeetingId,TCIO.ClockInTime,TCIO.ClockOutTime 
+                                    FROM TblClockInout TCIO
+                                    INNER JOIN tblUser TU ON TCIO.UserId = TU.UserId
+                                    LEFT JOIN tblMeeting TM ON TCIO.UserId = TM.EmpId
+                                    WHERE TM.ClientId = @clientId AND MeetingId = @meetingId ORDER BY TCIO.ClockId DESC";
+
+                ClockinoutDetailsModel resObj = (await conn.QueryAsync<ClockinoutDetailsModel>(sqlQuery, new { @clientId = clientId, @meetingId = meetingId })).FirstOrDefault();
+
+                obj.Data = resObj;
+                obj.Result = resObj != null ? true : false;
+                obj.Message = resObj != null ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
     }
 }

@@ -823,6 +823,14 @@ namespace WebAPI_SAMPLE.Controllers
         {
             return Ok(await service.GetClientANDEmployeeAttendanceDetails(meetingId));
         }
+
+        [HttpGet("GetClockinOutDetailsByClientAndMeetingid/{clientId}/{meetingId}")]
+        [ProducesResponseType(typeof(ServiceResponse<ClockinoutDetailsModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<ClockinoutDetailsModel>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetClockinOutDetailsByClientAndMeetingid(long clientId, long meetingId)
+        {
+            return Ok(await service.GetClockinOutDetailsByClientAndMeetingid(clientId,meetingId));
+        }
     }
 }
 
