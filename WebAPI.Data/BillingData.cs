@@ -2,6 +2,7 @@
 using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Billing;
 using ES_HomeCare_API.ViewModel.Billing;
+using ES_HomeCare_API.ViewModel.Invoice;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -352,15 +353,29 @@ CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS
             ServiceResponse<BillingPayerRateViewModel> obj = new ServiceResponse<BillingPayerRateViewModel>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = @"SELECT DISTINCT TOP 1 TB.BillingId,TB.PayerId,TP.PayerName,TB.ClientId,TPR.RateId,TPR.BillCode,TPR.TaxRate,TPR.ValidFrom,TPR.ValidTo,
-                             (DATEDIFF(MINUTE, TM.StartTime,TM.EndTime)/15) AS CalculateUnit,(TPR.TaxRate * (DATEDIFF(MINUTE, TM.StartTime,TM.EndTime)/15)) AS BillTotal,
-                             (CASE WHEN TM.IsCompleted = 1 THEN 'Confirmed' ELSE 'Nonbillable' END) AS BillingStatus
-                             FROM tblBilling TB
-                             INNER JOIN tblPayer TP ON TB.PayerId = TP.Payerid
-                             INNER JOIN tblPayerrate TPR ON TB.PayerId = TPR.Payerid
-                             INNER JOIN tblMeeting TM ON TB.ClientId = TM.ClientId
-                             WHERE TB.IsActive = 1 AND TB.ClientId = @clientId AND TM.MeetingId = @meetingId AND TPR.IsActive = 1 
-                             AND TM.IsStatus = 1 AND TM.MeetingDate BETWEEN TPR.ValidFrom AND TPR.ValidTo ORDER BY TPR.RateId DESC";
+                //string sql = @"SELECT DISTINCT TOP 1 TB.BillingId,TB.PayerId,TP.PayerName,TB.ClientId,TPR.RateId,TPR.BillCode,TPR.TaxRate,
+                //             TPR.Type,TPR.Unit,TPR.ValidFrom,TPR.ValidTo,
+                //             (DATEDIFF(MINUTE, TM.StartTime,TM.EndTime)/15) AS CalculateUnit,(TPR.TaxRate * (DATEDIFF(MINUTE, TM.StartTime,TM.EndTime)/15)) AS BillTotal,
+                //             (CASE WHEN TM.IsCompleted = 1 THEN 'Confirmed' ELSE 'Nonbillable' END) AS BillingStatus
+                //             FROM tblBilling TB
+                //             INNER JOIN tblPayer TP ON TB.PayerId = TP.Payerid
+                //             INNER JOIN tblPayerrate TPR ON TB.PayerId = TPR.Payerid
+                //             INNER JOIN tblMeeting TM ON TB.ClientId = TM.ClientId
+                //             WHERE TB.IsActive = 1 AND TB.ClientId = @clientId AND TM.MeetingId = @meetingId AND TPR.IsActive = 1 
+                //             AND TM.IsStatus = 1 AND TP.PayerId = 2 
+                //             AND TM.MeetingDate BETWEEN TPR.ValidFrom AND TPR.ValidTo ORDER BY TPR.RateId DESC";
+
+                String sql = @"SELECT DISTINCT TOP 1 TB.BillingId,TB.PayerId,TP.PayerName,TB.ClientId,TM.MeetingId,TPR.RateId,
+                                TPR.BillCode,TPR.TaxRate,TER.RateId as EmpRateId,TPR.Type,TPR.Unit,TPR.ValidFrom,TPR.ValidTo,
+                                TER.EmpId,TER.Hourly AS PayRate,TM.MeetingDate
+                                FROM tblBilling TB
+                                INNER JOIN tblPayer TP ON TB.PayerId = TP.Payerid
+                                INNER JOIN tblPayerrate TPR ON TB.PayerId = TPR.Payerid
+                                INNER JOIN tblMeeting TM ON TB.ClientId = TM.ClientId
+                                LEFT JOIN tblEmpRate TER ON TER.EmpId = TM.EmpId
+                                WHERE TB.IsActive = 1 AND TB.ClientId = @clientId AND TM.MeetingId = @meetingId AND TPR.IsActive = 1 
+                                AND TM.IsStatus = 1 AND TP.PayerId = @payerId AND TM.MeetingDate BETWEEN TPR.ValidFrom AND TPR.ValidTo 
+                                ORDER BY TPR.RateId DESC";
 
                 BillingPayerRateViewModel result = (await connection.QueryAsync<BillingPayerRateViewModel>(sql, new 
                 { 
@@ -376,7 +391,33 @@ CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS
             return obj;
         }
 
+        public async Task<ServiceResponse<IList<PayerListViewModel>>> GetPayerListByclientIdAndmeetingId(long clientId, long meetingId)
+        {
+            ServiceResponse<IList<PayerListViewModel>> obj = new ServiceResponse<IList<PayerListViewModel>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = @"SELECT DISTINCT TP.PayerId,TP.PayerName
+                                FROM tblPayer TP
+                                INNER JOIN tblBilling TB ON TB.PayerId = TP.Payerid
+                                LEFT JOIN tblPayerrate TPR ON TP.PayerId = TPR.Payerid 
+                                INNER JOIN tblMeeting TM ON TB.ClientId = TM.ClientId
+                                LEFT JOIN tblEmpRate TER ON TER.EmpId = TM.EmpId
+                                WHERE TB.IsActive = 1 AND TB.ClientId = @clientId AND 
+                                TM.MeetingId = @meetingId AND TPR.IsActive = 1 AND TM.IsStatus = 1
+                                AND TM.MeetingDate BETWEEN TPR.ValidFrom AND TPR.ValidTo ";
 
+                IList<PayerListViewModel> result = (await connection.QueryAsync<PayerListViewModel>(sql, new
+                {
+                    @clientId = clientId,
+                    @meetingId = meetingId
+                })).ToList();
+
+                obj.Data = result;
+                obj.Result = result != null ? true : false;
+                obj.Message = result != null ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
 
 
 

@@ -1,5 +1,6 @@
 ﻿using ES_HomeCare_API.Model.Billing;
 using ES_HomeCare_API.ViewModel.Billing;
+using ES_HomeCare_API.ViewModel.Invoice;
 using ES_HomeCare_API.WebAPI.Data.IData;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using System.Collections.Generic;
@@ -65,6 +66,10 @@ namespace ES_HomeCare_API.WebAPI.Service
         public async Task<ServiceResponse<BillingPayerRateViewModel>> GetBillingPayerRate(long payerId, long clientId, long meetingId)
         {
             return await data.GetBillingPayerRate(payerId,clientId,meetingId);
+        }
+        public async Task<ServiceResponse<IList<PayerListViewModel>>> GetPayerListByclientIdAndmeetingId(long clientId, long meetingId)
+        {
+            return await data.GetPayerListByclientIdAndmeetingId(clientId, meetingId);
         }
     }
 }

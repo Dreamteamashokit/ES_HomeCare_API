@@ -1,5 +1,6 @@
 ﻿using ES_HomeCare_API.Model.Billing;
 using ES_HomeCare_API.ViewModel.Billing;
+using ES_HomeCare_API.ViewModel.Invoice;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebAPI_SAMPLE.Model;
@@ -18,5 +19,6 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<IEnumerable<ClientSchedule>>> GetScheduleBilling();
         Task<ServiceResponse<IEnumerable<ClientSchedule>>> GetScheduleBilling(SearchSchedule model);     
         Task<ServiceResponse<BillingPayerRateViewModel>> GetBillingPayerRate(long payerId, long clientId, long meetingId);
+        Task<ServiceResponse<IList<PayerListViewModel>>> GetPayerListByclientIdAndmeetingId(long clientId, long meetingId);
     }
 }

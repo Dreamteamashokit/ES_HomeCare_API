@@ -1,6 +1,7 @@
 ﻿using ES_HomeCare_API.Model;
 using ES_HomeCare_API.Model.Billing;
 using ES_HomeCare_API.ViewModel.Billing;
+using ES_HomeCare_API.ViewModel.Invoice;
 using ES_HomeCare_API.WebAPI.Service.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -169,6 +170,21 @@ namespace ES_HomeCare_API.Controllers
             try
             {
                 return Ok(await billSrv.GetBillingPayerRate(payerId, clientId,meetingId));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet("GetPayerListByclientIdAndmeetingId/{clientId}/{meetingId}")]
+        [ProducesResponseType(typeof(ServiceResponse<IList<PayerListViewModel>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<IList<PayerListViewModel>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetPayerListByclientIdAndmeetingId(long clientId, long meetingId)
+        {
+            try
+            {
+                return Ok(await billSrv.GetPayerListByclientIdAndmeetingId(clientId, meetingId));
             }
             catch (Exception ex)
             {

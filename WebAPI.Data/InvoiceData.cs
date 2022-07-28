@@ -613,7 +613,7 @@ namespace ES_HomeCare_API.WebAPI.Data
                             objPayerRate.RevenueCode = table.Rows[i]["RevenueCode"].ToString();
                             if (table.Rows[i]["Rate"] != null && table.Rows[i]["Rate"] != DBNull.Value)
                             {
-                                objPayerRate.TaxRate = Convert.ToInt32(table.Rows[i]["Rate"]);
+                                objPayerRate.TaxRate = Convert.ToDecimal(table.Rows[i]["Rate"]);
                             }
                             else { objPayerRate.TaxRate = 0; }
 

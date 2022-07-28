@@ -569,6 +569,8 @@ Where p.MeetingId=@MeetingId;";
                     string sql = "addUpdateMeetingRate";
                     var sqlParameter = new
                     {
+                        @BillingId = model.BillingId,
+                        @PayRollRateId = model.PayRollRateId,
                         @MeetingRateId = model.MeetingRateId,
                         @MeetingId = model.MeetingId,
                         @BillingCode = model.BillingCode,

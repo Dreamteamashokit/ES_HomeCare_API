@@ -5,6 +5,8 @@ namespace ES_HomeCare_API.Model.Meeting
     public class MeetingRateModel
     {
         public long MeetingRateId { get; set; }
+        public long BillingId { get; set; }
+        public long PayRollRateId { get; set; }
         public long MeetingId { get; set; }
         public string BillingCode { get; set; }
         public int BillingUnits { get; set; }
