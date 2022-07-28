@@ -419,7 +419,7 @@ CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS
                                 INNER JOIN tblMeeting TM ON TB.ClientId = TM.ClientId
                                 LEFT JOIN tblEmpRate TER ON TER.EmpId = TM.EmpId
                                 WHERE TB.IsActive = 1 AND TB.ClientId = @clientId AND TM.MeetingId = @meetingId AND TPR.IsActive = 1 
-                                AND TM.IsStatus = 1 AND TP.PayerId = @payerId AND TM.MeetingDate BETWEEN TPR.ValidFrom AND TPR.ValidTo 
+                                AND TP.PayerId = @payerId AND TM.MeetingDate BETWEEN TPR.ValidFrom AND TPR.ValidTo 
                                 ORDER BY TPR.RateId DESC";
 
                 BillingPayerRateViewModel result = (await connection.QueryAsync<BillingPayerRateViewModel>(sql, new
@@ -448,7 +448,7 @@ CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS
                                 INNER JOIN tblMeeting TM ON TB.ClientId = TM.ClientId
                                 LEFT JOIN tblEmpRate TER ON TER.EmpId = TM.EmpId
                                 WHERE TB.IsActive = 1 AND TB.ClientId = @clientId AND 
-                                TM.MeetingId = @meetingId AND TPR.IsActive = 1 AND TM.IsStatus = 1
+                                TM.MeetingId = @meetingId AND TPR.IsActive = 1 
                                 AND TM.MeetingDate BETWEEN TPR.ValidFrom AND TPR.ValidTo ";
 
                 IList<PayerListViewModel> result = (await connection.QueryAsync<PayerListViewModel>(sql, new
