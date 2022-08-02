@@ -276,7 +276,7 @@ xx.FirstName +' '+ ISNULL(xx.MiddleName,'')+' ' + xx.LastName as ClientName,
 x.EmpId,xy.FirstName +' '+ ISNULL(xy.MiddleName,'')+' ' + xy.LastName as EmpName,
 x.MeetingDate,x.IsCompleted as ScheduleStatus,y.BillingCode,y.BillingRate,y.BillingUnits,y.BillingTotal,y.BillingStatus,
 y.PayrollPayStatus as PayrollStatus from tblMeeting x inner join tblMeetingRate y on x.MeetingId=y.MeetingId
-inner join tblPayerRate xzy on y.BillingCode=xzy.BillCode
+inner join tblBilling xzy on y.BillingId=xzy.BillingId
 inner join tblUser xx on x.ClientId= xx.UserId
 inner join tblUser xy on x.EmpId= xy.UserId
 inner Join tblClient z on x.ClientId= z.UserId
@@ -298,6 +298,7 @@ inner join tblPayer xz on xzy.PayerId= xz.PayerId";
                     Appointments = y.Count(),
                     Units = y.Sum(z => z.BillingUnits),
                     Amounts = y.Sum(z => z.BillingTotal),
+                    ScheduleList=y.ToList(),
                     ConfirmList = y.Where(z => z.BillingStatus == (short)BillingStatus.Confirmed).ToList(),
                     HoldList = y.Where(z => z.BillingStatus == (short)BillingStatus.Hold).ToList(),
                     UnconfirmList = y.Where(z => z.BillingStatus == (short)BillingStatus.Nonbillable).ToList(),

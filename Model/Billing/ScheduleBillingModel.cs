@@ -46,7 +46,7 @@ namespace ES_HomeCare_API.Model.Billing
         public int Appointments { get; set; }
         public int Units { get; set; }
         public decimal Amounts { get; set; }
-
+        public List<ScheduleBillingModel> ScheduleList { get; set; }
         public List<ScheduleBillingModel> ConfirmList { get; set; }
         public List<ScheduleBillingModel> HoldList { get; set; }
         public List<ScheduleBillingModel> UnconfirmList { get; set; }
