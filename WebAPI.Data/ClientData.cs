@@ -1837,11 +1837,13 @@ IsActive=@IsActive where ProviderId=@ContactId";
                     ClientClockInOutTime = mom.ClientClockInOutTime,
                     ClientLatitude = mom.ClientLatitude,
                     ClientLongitude = mom.ClientLongitude,
+                    clientSignature = mom.clientSignature,
                     EmpId = mom.EmpId,
                     EmployeeClockInOutTime = mom.EmployeeClockInOutTime,
                     EmployeeLatitude = mom.EmployeeLatitude,
                     EmployeeLongitude = mom.EmployeeLongitude,
-                    EmployeeName = mom.EmployeeName
+                    EmployeeName = mom.EmployeeName,
+                    hhaSignature = mom.hhaSignature
                 }).FirstOrDefault();
 
                 obj.Data = result;

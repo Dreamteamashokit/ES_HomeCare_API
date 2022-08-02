@@ -370,7 +370,8 @@ CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS
 
                 String sql = @"SELECT DISTINCT TOP 1 TB.BillingId,TB.PayerId,TP.PayerName,TB.ClientId,TM.MeetingId,TPR.RateId,
                                 TPR.BillCode,TPR.TaxRate,TER.RateId as EmpRateId,TPR.Type,TPR.Unit,TPR.ValidFrom,TPR.ValidTo,
-                                TER.EmpId,TER.Hourly AS PayRate,TM.MeetingDate
+                                TER.EmpId,TER.Hourly AS EmpHourly,TER.LiveIn AS EmpLiveIn,TER.Mileage AS EmpMileage,
+                                TER.Visit AS EmpVisit,TM.MeetingDate
                                 FROM tblBilling TB
                                 INNER JOIN tblPayer TP ON TB.PayerId = TP.Payerid
                                 INNER JOIN tblPayerrate TPR ON TB.PayerId = TPR.Payerid

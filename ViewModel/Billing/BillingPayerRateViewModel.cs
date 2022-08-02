@@ -23,7 +23,10 @@ namespace ES_HomeCare_API.ViewModel.Billing
         public string BillingStatus { get; set; }
         public long EmpRateId { get; set; }
         public long EmpId { get; set; }
-        public decimal? PayRate { get; set; }
+        public decimal? EmpHourly { get; set; }
+        public decimal? EmpLiveIn { get; set; }
+        public decimal? EmpMileage { get; set; }
+        public decimal? EmpVisit { get; set; }
     }
 
     public class BillingPayRollRateViewModel

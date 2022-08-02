@@ -1652,7 +1652,7 @@ WHERE DeclinedCaseId=@DeclinedCaseId";
                     cmd.Parameters.AddWithValue("@HHAUserSignature", hhaClockin.HHAUserSignature == null ? "" : hhaClockin.HHAUserSignature);
                     cmd.Parameters.AddWithValue("@Type", hhaClockin.Type);
                     cmd.Parameters.AddWithValue("@meetingId", hhaClockin.MeetingId);
-
+                    
                     con.Open();
                     int value = cmd.ExecuteNonQuery();
                     if (value > 0)
