@@ -92,5 +92,27 @@ namespace ES_HomeCare_API.WebAPI.Service
         {
             return await data.GetPayerListByclientIdAndmeetingId(clientId, meetingId);
         }
-    }
+
+
+
+
+        public async Task<ServiceResponse<IEnumerable<InvoiceView>>> GetScheduleInvoice(SearchInvoice model)
+        {
+
+            return await data.GetScheduleInvoice(model);
+
+
+        }
+
+        public async Task<ServiceResponse<InvoiceView>> GetInvoiceById(long InvoiceId)
+        {
+
+            return await data.GetInvoiceById(InvoiceId);
+        }
+
+
+
+
+
+        }
 }

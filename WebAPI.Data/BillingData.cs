@@ -24,6 +24,9 @@ namespace ES_HomeCare_API.WebAPI.Data
             configuration = _configuration;
         }
 
+
+
+
         public async Task<ServiceResponse<string>> AddPayer(PayerModel _model)
         {
             ServiceResponse<string> sres = new ServiceResponse<string>();
@@ -181,9 +184,6 @@ WHERE PayerId=@PayerId";
             return result;
         }
 
-
-
-
         public async Task<ServiceResponse<BillingSummaryInfoModel>> GetBillingSummaryInfo(int userId)
         {
             ServiceResponse<BillingSummaryInfoModel> obj = new ServiceResponse<BillingSummaryInfoModel>();
@@ -250,149 +250,6 @@ WHERE PayerId=@PayerId";
             }
             return obj;
         }
-
-
-
-
-        public async Task<ServiceResponse<IEnumerable<ClientSchedule>>> GetScheduleBilling()
-        {
-            ServiceResponse<IEnumerable<ClientSchedule>> obj = new ServiceResponse<IEnumerable<ClientSchedule>>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-            {
-                //                string sql = @"Select y.MeetingRateId as ScheduleRateId,z.BillTo as PayerId, xz.PayerName, x.MeetingId, x.ClientId,
-                //xx.FirstName +' '+ ISNULL(xx.MiddleName,'')+' ' + xx.LastName as ClientName,
-                //x.EmpId,xy.FirstName +' '+ ISNULL(xy.MiddleName,'')+' ' + xy.LastName as EmpName,
-                //x.MeetingDate,x.IsCompleted as ScheduleStatus,y.BillingCode,y.BillingRate,y.BillingUnits,y.BillingTotal,y.BillingStatus,
-                //y.PayrollPayStatus as PayrollStatus from tblMeeting x inner join tblMeetingRate y on x.MeetingId=y.MeetingId
-                //inner join tblUser xx on x.ClientId= xx.UserId
-                //inner join tblUser xy on x.EmpId= xy.UserId
-                //inner Join tblClient z on x.ClientId= z.UserId
-                //inner join tblPayer xz on z.BillTo= xz.PayerId";
-
-
-
-                string sql = @"Select y.MeetingRateId as ScheduleRateId,xzy.PayerId as PayerId, xz.PayerName, x.MeetingId, x.ClientId,
-xx.FirstName +' '+ ISNULL(xx.MiddleName,'')+' ' + xx.LastName as ClientName,
-x.EmpId,xy.FirstName +' '+ ISNULL(xy.MiddleName,'')+' ' + xy.LastName as EmpName,
-x.MeetingDate,x.IsCompleted as ScheduleStatus,y.BillingCode,y.BillingRate,y.BillingUnits,y.BillingTotal,y.BillingStatus,
-y.PayrollPayStatus as PayrollStatus from tblMeeting x inner join tblMeetingRate y on x.MeetingId=y.MeetingId
-inner join tblBilling xzy on y.BillingId=xzy.BillingId
-inner join tblUser xx on x.ClientId= xx.UserId
-inner join tblUser xy on x.EmpId= xy.UserId
-inner Join tblClient z on x.ClientId= z.UserId
-inner join tblPayer xz on xzy.PayerId= xz.PayerId";
-
-
-
-
-
-                IEnumerable<ScheduleBillingModel> ObjData = (await connection.QueryAsync<ScheduleBillingModel>(sql));
-
-                IEnumerable<ClientSchedule> result = ObjData.GroupBy(x => x.ClientId).Select(y => new ClientSchedule
-                {
-
-                    ClientId = y.Key,
-                    ClientName = y.FirstOrDefault().ClientName,
-                    PayerId = y.FirstOrDefault().PayerId,
-                    PayerName = y.FirstOrDefault().PayerName,
-                    Appointments = y.Count(),
-                    Units = y.Sum(z => z.BillingUnits),
-                    Amounts = y.Sum(z => z.BillingTotal),
-                    ScheduleList=y.ToList(),
-                    ConfirmList = y.Where(z => z.BillingStatus == (short)BillingStatus.Confirmed).ToList(),
-                    HoldList = y.Where(z => z.BillingStatus == (short)BillingStatus.Hold).ToList(),
-                    UnconfirmList = y.Where(z => z.BillingStatus == (short)BillingStatus.Nonbillable).ToList(),
-
-                });
-
-
-
-
-                obj.Data = result;
-                obj.Result = result.Any() ? true : false;
-                obj.Message = result.Any() ? "Data Found." : "No Data found.";
-            }
-            return obj;
-        }
-
-        public async Task<ServiceResponse<IEnumerable<ClientSchedule>>> GetScheduleBilling(SearchSchedule model)
-        {
-            ServiceResponse<IEnumerable<ClientSchedule>> obj = new ServiceResponse<IEnumerable<ClientSchedule>>();
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
-            {
-//                string sql = @"Select y.MeetingRateId as ScheduleRateId,z.BillTo as PayerId, xz.PayerName, x.MeetingId, x.ClientId,
-//xx.FirstName +' '+ ISNULL(xx.MiddleName,'')+' ' + xx.LastName as ClientName,
-//x.EmpId,xy.FirstName +' '+ ISNULL(xy.MiddleName,'')+' ' + xy.LastName as EmpName,
-//x.MeetingDate,x.IsCompleted as ScheduleStatus,y.BillingCode,y.BillingRate,y.BillingUnits,y.BillingTotal,y.BillingStatus,
-//y.PayrollPayStatus as PayrollStatus from tblMeeting x inner join tblMeetingRate y on x.MeetingId=y.MeetingId
-//inner join tblUser xx on x.ClientId= xx.UserId
-//inner join tblUser xy on x.EmpId= xy.UserId
-//inner Join tblClient z on x.ClientId= z.UserId
-//inner join tblPayer xz on z.BillTo= xz.PayerId
-//Where (z.BillTo=(CASE WHEN (@PayerId IS NULL OR @PayerId=0) THEN z.BillTo ELSE @PayerId  END) And
-//x.EmpId=(CASE WHEN (@EmpId IS NULL OR @EmpId=0)  THEN x.EmpId ELSE @EmpId END) And
-//x.ClientId=(CASE WHEN (@ClientId IS NULL OR @ClientId=0) THEN x.ClientId ELSE @ClientId END)) AND  
-//CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS DATE)";
-
-
-
-
-                string sql = @"Select y.MeetingRateId as ScheduleRateId,xzy.PayerId as PayerId, xz.PayerName, x.MeetingId, x.ClientId,
-xx.FirstName +' '+ ISNULL(xx.MiddleName,'')+' ' + xx.LastName as ClientName,
-x.EmpId,xy.FirstName +' '+ ISNULL(xy.MiddleName,'')+' ' + xy.LastName as EmpName,
-x.MeetingDate,x.IsCompleted as ScheduleStatus,y.BillingCode,y.BillingRate,y.BillingUnits,y.BillingTotal,y.BillingStatus,
-y.PayrollPayStatus as PayrollStatus from tblMeeting x inner join tblMeetingRate y on x.MeetingId=y.MeetingId
-inner join tblPayerRate xzy on y.BillingCode=xzy.BillCode
-inner join tblUser xx on x.ClientId= xx.UserId
-inner join tblUser xy on x.EmpId= xy.UserId
-inner Join tblClient z on x.ClientId= z.UserId
-inner join tblPayer xz on xzy.PayerId= xz.PayerId
-Where (z.BillTo=(CASE WHEN (@PayerId IS NULL OR @PayerId=0) THEN z.BillTo ELSE @PayerId  END) And
-x.EmpId=(CASE WHEN (@EmpId IS NULL OR @EmpId=0)  THEN x.EmpId ELSE @EmpId END) And
-x.ClientId=(CASE WHEN (@ClientId IS NULL OR @ClientId=0) THEN x.ClientId ELSE @ClientId END)) AND  
-CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS DATE)";
-
-
-
-
-
-
-                IEnumerable<ScheduleBillingModel> ObjData = (await connection.QueryAsync<ScheduleBillingModel>(sql, new
-                {
-                    @FromDate = model.FromDate,
-                    @ToDate = model.ToDate,
-                    @PayerId = model.PayerId,
-                    @EmpId = model.EmpId,
-                    @ClientId = model.ClientId,
-                })); ;
-
-                IEnumerable<ClientSchedule> result = ObjData.GroupBy(x => x.ClientId).Select(y => new ClientSchedule
-                {
-                    ClientId = y.Key,
-                    ClientName = y.FirstOrDefault().ClientName,
-                    PayerId = y.FirstOrDefault().PayerId,
-                    PayerName = y.FirstOrDefault().PayerName,
-                    Appointments = y.Count(),
-                    Units = y.Sum(z => z.BillingUnits),
-                    Amounts = y.Sum(z => z.BillingTotal),
-                    ConfirmList = y.Where(z => z.BillingStatus == (short)BillingStatus.Confirmed).ToList(),
-                    HoldList = y.Where(z => z.BillingStatus == (short)BillingStatus.Hold).ToList(),
-                    UnconfirmList = y.Where(z => z.BillingStatus == (short)BillingStatus.Nonbillable).ToList(),
-
-                });
-
-
-
-
-                obj.Data = result;
-                obj.Result = result.Any() ? true : false;
-                obj.Message = result.Any() ? "Data Found." : "No Data found.";
-            }
-            return obj;
-        }
-
-
-
 
         public async Task<ServiceResponse<BillingPayerRateViewModel>> GetBillingPayerRate(long payerId, long clientId, long meetingId)
         {
@@ -469,6 +326,147 @@ CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS
 
 
 
+
+
+        #region Rakesh  
+
+        public async Task<ServiceResponse<IEnumerable<ClientSchedule>>> GetScheduleBilling()
+        {
+            ServiceResponse<IEnumerable<ClientSchedule>> obj = new ServiceResponse<IEnumerable<ClientSchedule>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                //                string sql = @"Select y.MeetingRateId as ScheduleRateId,z.BillTo as PayerId, xz.PayerName, x.MeetingId, x.ClientId,
+                //xx.FirstName +' '+ ISNULL(xx.MiddleName,'')+' ' + xx.LastName as ClientName,
+                //x.EmpId,xy.FirstName +' '+ ISNULL(xy.MiddleName,'')+' ' + xy.LastName as EmpName,
+                //x.MeetingDate,x.IsCompleted as ScheduleStatus,y.BillingCode,y.BillingRate,y.BillingUnits,y.BillingTotal,y.BillingStatus,
+                //y.PayrollPayStatus as PayrollStatus from tblMeeting x inner join tblMeetingRate y on x.MeetingId=y.MeetingId
+                //inner join tblUser xx on x.ClientId= xx.UserId
+                //inner join tblUser xy on x.EmpId= xy.UserId
+                //inner Join tblClient z on x.ClientId= z.UserId
+                //inner join tblPayer xz on z.BillTo= xz.PayerId";
+
+
+
+                string sql = @"Select y.MeetingRateId as ScheduleRateId,xzy.PayerId as PayerId, xz.PayerName, x.MeetingId, x.ClientId,
+xx.FirstName +' '+ ISNULL(xx.MiddleName,'')+' ' + xx.LastName as ClientName,
+x.EmpId,xy.FirstName +' '+ ISNULL(xy.MiddleName,'')+' ' + xy.LastName as EmpName,
+x.MeetingDate,x.IsCompleted as ScheduleStatus,y.BillingCode,y.BillingRate,y.BillingUnits,y.BillingTotal,y.BillingStatus,
+y.PayrollPayStatus as PayrollStatus from tblMeeting x inner join tblMeetingRate y on x.MeetingId=y.MeetingId
+inner join tblBilling xzy on y.BillingId=xzy.BillingId
+inner join tblUser xx on x.ClientId= xx.UserId
+inner join tblUser xy on x.EmpId= xy.UserId
+inner Join tblClient z on x.ClientId= z.UserId
+inner join tblPayer xz on xzy.PayerId= xz.PayerId";
+
+
+
+
+
+                IEnumerable<ScheduleBillingModel> ObjData = (await connection.QueryAsync<ScheduleBillingModel>(sql));
+
+                IEnumerable<ClientSchedule> result = ObjData.GroupBy(x => x.ClientId).Select(y => new ClientSchedule
+                {
+
+                    ClientId = y.Key,
+                    ClientName = y.FirstOrDefault().ClientName,
+                    PayerId = y.FirstOrDefault().PayerId,
+                    PayerName = y.FirstOrDefault().PayerName,
+                    Appointments = y.Count(),
+                    Units = y.Sum(z => z.BillingUnits),
+                    Amounts = y.Sum(z => z.BillingTotal),
+                    ScheduleList = y.ToList(),
+                    ConfirmList = y.Where(z => z.BillingStatus == (short)BillingStatus.Confirmed).ToList(),
+                    HoldList = y.Where(z => z.BillingStatus == (short)BillingStatus.Hold).ToList(),
+                    UnconfirmList = y.Where(z => z.BillingStatus == (short)BillingStatus.Nonbillable).ToList(),
+
+                });
+
+
+
+
+                obj.Data = result;
+                obj.Result = result.Any() ? true : false;
+                obj.Message = result.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ClientSchedule>>> GetScheduleBilling(SearchSchedule model)
+        {
+            ServiceResponse<IEnumerable<ClientSchedule>> obj = new ServiceResponse<IEnumerable<ClientSchedule>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                //                string sql = @"Select y.MeetingRateId as ScheduleRateId,z.BillTo as PayerId, xz.PayerName, x.MeetingId, x.ClientId,
+                //xx.FirstName +' '+ ISNULL(xx.MiddleName,'')+' ' + xx.LastName as ClientName,
+                //x.EmpId,xy.FirstName +' '+ ISNULL(xy.MiddleName,'')+' ' + xy.LastName as EmpName,
+                //x.MeetingDate,x.IsCompleted as ScheduleStatus,y.BillingCode,y.BillingRate,y.BillingUnits,y.BillingTotal,y.BillingStatus,
+                //y.PayrollPayStatus as PayrollStatus from tblMeeting x inner join tblMeetingRate y on x.MeetingId=y.MeetingId
+                //inner join tblUser xx on x.ClientId= xx.UserId
+                //inner join tblUser xy on x.EmpId= xy.UserId
+                //inner Join tblClient z on x.ClientId= z.UserId
+                //inner join tblPayer xz on z.BillTo= xz.PayerId
+                //Where (z.BillTo=(CASE WHEN (@PayerId IS NULL OR @PayerId=0) THEN z.BillTo ELSE @PayerId  END) And
+                //x.EmpId=(CASE WHEN (@EmpId IS NULL OR @EmpId=0)  THEN x.EmpId ELSE @EmpId END) And
+                //x.ClientId=(CASE WHEN (@ClientId IS NULL OR @ClientId=0) THEN x.ClientId ELSE @ClientId END)) AND  
+                //CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS DATE)";
+
+
+
+
+                string sql = @"Select y.MeetingRateId as ScheduleRateId,xzy.PayerId as PayerId, xz.PayerName, x.MeetingId, x.ClientId,
+xx.FirstName +' '+ ISNULL(xx.MiddleName,'')+' ' + xx.LastName as ClientName,
+x.EmpId,xy.FirstName +' '+ ISNULL(xy.MiddleName,'')+' ' + xy.LastName as EmpName,
+x.MeetingDate,x.IsCompleted as ScheduleStatus,y.BillingCode,y.BillingRate,y.BillingUnits,y.BillingTotal,y.BillingStatus,
+y.PayrollPayStatus as PayrollStatus from tblMeeting x inner join tblMeetingRate y on x.MeetingId=y.MeetingId
+inner join tblBilling xzy on y.BillingId=xzy.BillingId
+inner join tblUser xx on x.ClientId= xx.UserId
+inner join tblUser xy on x.EmpId= xy.UserId
+inner Join tblClient z on x.ClientId= z.UserId
+inner join tblPayer xz on xzy.PayerId= xz.PayerId
+Where (xzy.PayerId=(CASE WHEN (@PayerId IS NULL OR @PayerId=0) THEN xzy.PayerId ELSE @PayerId  END) And
+x.EmpId=(CASE WHEN (@EmpId IS NULL OR @EmpId=0)  THEN x.EmpId ELSE @EmpId END) And
+x.ClientId=(CASE WHEN (@ClientId IS NULL OR @ClientId=0) THEN x.ClientId ELSE @ClientId END)) AND  
+CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS DATE)";
+
+
+
+
+
+
+                IEnumerable<ScheduleBillingModel> ObjData = (await connection.QueryAsync<ScheduleBillingModel>(sql, new
+                {
+                    @FromDate = model.FromDate,
+                    @ToDate = model.ToDate,
+                    @PayerId = model.PayerId,
+                    @EmpId = model.EmpId,
+                    @ClientId = model.ClientId,
+                }));
+
+                IEnumerable<ClientSchedule> result = ObjData.GroupBy(x => x.ClientId).Select(y => new ClientSchedule
+                {
+                    ClientId = y.Key,
+                    ClientName = y.FirstOrDefault().ClientName,
+                    PayerId = y.FirstOrDefault().PayerId,
+                    PayerName = y.FirstOrDefault().PayerName,
+                    Appointments = y.Count(),
+                    Units = y.Sum(z => z.BillingUnits),
+                    Amounts = y.Sum(z => z.BillingTotal),
+                    ConfirmList = y.Where(z => z.BillingStatus == (short)BillingStatus.Confirmed).ToList(),
+                    HoldList = y.Where(z => z.BillingStatus == (short)BillingStatus.Hold).ToList(),
+                    UnconfirmList = y.Where(z => z.BillingStatus == (short)BillingStatus.Nonbillable).ToList(),
+
+                });
+
+
+
+
+                obj.Data = result;
+                obj.Result = result.Any() ? true : false;
+                obj.Message = result.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
+
         public async Task<ServiceResponse<int>> UpdateSchedule(UpdateBillingSchedule model)
         {
             ServiceResponse<int> sres = new ServiceResponse<int>();
@@ -482,7 +480,7 @@ CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS
                         cnn.Open();
                     transaction = cnn.BeginTransaction(IsolationLevel.Serializable);
                     string _query = "Update tblMeetingRate SET BillingStatus=@BillingStatus Where MeetingRateId=@MeetingRateId";
-                    int rowsAffected = cnn.Execute(_query,
+                    int rowsAffected = await cnn.ExecuteAsync(_query,
                         model.ScheduleList.Select(x => new
                         {
                             @MeetingRateId = x,
@@ -521,18 +519,6 @@ CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS
             }
             return sres;
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
         public async Task<ServiceResponse<int>> CreateInvoice(InvoiceModel model)
         {
@@ -577,13 +563,6 @@ Update tblMeetingRate SET BillingStatus=@BillingStatus Where MeetingId=@MeetingI
                             CreatedOn = model.CreatedOn
                         }), transaction);
 
-
-
-
-
-
-
-
                     transaction.Commit();
 
                     if (rowsAffected > 0)
@@ -618,39 +597,32 @@ Update tblMeetingRate SET BillingStatus=@BillingStatus Where MeetingId=@MeetingI
             return sres;
         }
 
-
-
-
-
-
-
-
-
-
         public async Task<ServiceResponse<IEnumerable<InvoiceView>>> GetScheduleInvoice()
         {
             ServiceResponse<IEnumerable<InvoiceView>> obj = new ServiceResponse<IEnumerable<InvoiceView>>();
             using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
             {
-                string sql = @"Select y.MeetingRateId as ScheduleRateId,z.BillTo as PayerId, xz.PayerName, x.MeetingId, x.ClientId,
-xx.FirstName +' '+ ISNULL(xx.MiddleName,'')+' ' + xx.LastName as ClientName,
-x.EmpId,xy.FirstName +' '+ ISNULL(xy.MiddleName,'')+' ' + xy.LastName as EmpName,
-x.MeetingDate as ServiceDate,x.IsCompleted as ScheduleStatus,y.BillingCode,y.BillingRate,y.BillingUnits,y.BillingTotal,y.BillingStatus,
-y.PayrollPayStatus as PayrollStatus, p.InvoiceNo,p.InvoiceAmount,p.InvoiceStatus,q.ScheduleCost,q.PaymentStatus,p.CreatedOn as InvoiceDate from tblInvoice p Inner join tblInvoiceSchedule q on p.InvoiceId=q.InvoiceId
+                string sql = @"Select p.InvoiceId,p.InvoiceNo,p.InvoiceAmount,p.InvoiceStatus,p.CreatedOn as InvoiceDate,q.InvoiceItemId,
+q.ScheduleCost,q.PaymentStatus,y.MeetingRateId as ScheduleRateId,xzy.PayerId as PayerId, xz.PayerName, 
+x.MeetingId, x.ClientId,xx.FirstName +' '+ ISNULL(xx.MiddleName,'')+' ' + xx.LastName as ClientName,
+x.EmpId,xy.FirstName +' '+ ISNULL(xy.MiddleName,'')+' ' + xy.LastName as EmpName,x.MeetingDate as ServiceDate,
+x.IsCompleted as ScheduleStatus,y.BillingCode,y.BillingRate,y.BillingUnits,y.BillingTotal,y.BillingStatus,
+y.PayrollPayStatus as PayrollStatus
+from tblInvoice p Inner join tblInvoiceSchedule q on p.InvoiceId=q.InvoiceId
 inner join tblMeeting x on q.MeetingId=x.MeetingId 
 inner join tblMeetingRate y on x.MeetingId=y.MeetingId
+inner join tblBilling xzy on y.BillingId=xzy.BillingId
 inner join tblUser xx on x.ClientId= xx.UserId
 inner join tblUser xy on x.EmpId= xy.UserId
 inner Join tblClient z on x.ClientId= z.UserId
-inner join tblPayer xz on z.BillTo= xz.PayerId";
+inner join tblPayer xz on xzy.PayerId= xz.PayerId";
                 IEnumerable<ScheduleInvoiceModel> ObjData = (await connection.QueryAsync<ScheduleInvoiceModel>(sql));
-
                 IEnumerable<InvoiceView> result = ObjData.GroupBy(x => x.InvoiceId).Select(y => new InvoiceView
                 {
                     InvoiceId = y.Key,
                     InvoiceNo = y.FirstOrDefault().InvoiceNo,
                     InvoiceStatus = y.FirstOrDefault().InvoiceStatus,
-                    InvoiceDate= y.FirstOrDefault().InvoiceDate,
+                    InvoiceDate = y.FirstOrDefault().InvoiceDate,
                     ClientId = y.FirstOrDefault().ClientId,
                     ClientName = y.FirstOrDefault().ClientName,
                     PayerId = y.FirstOrDefault().PayerId,
@@ -665,6 +637,128 @@ inner join tblPayer xz on z.BillTo= xz.PayerId";
             }
             return obj;
         }
+
+        public async Task<ServiceResponse<IEnumerable<InvoiceView>>> GetScheduleInvoice(SearchInvoice model)
+        {
+            ServiceResponse<IEnumerable<InvoiceView>> obj = new ServiceResponse<IEnumerable<InvoiceView>>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = @"Select p.InvoiceId,p.InvoiceNo,p.InvoiceAmount,p.InvoiceStatus,p.CreatedOn as InvoiceDate,q.InvoiceItemId,
+q.ScheduleCost,q.PaymentStatus,y.MeetingRateId as ScheduleRateId,xzy.PayerId as PayerId, xz.PayerName, 
+x.MeetingId, x.ClientId,xx.FirstName +' '+ ISNULL(xx.MiddleName,'')+' ' + xx.LastName as ClientName,
+x.EmpId,xy.FirstName +' '+ ISNULL(xy.MiddleName,'')+' ' + xy.LastName as EmpName,x.MeetingDate as ServiceDate,
+x.IsCompleted as ScheduleStatus,y.BillingCode,y.BillingRate,y.BillingUnits,y.BillingTotal,y.BillingStatus,
+y.PayrollPayStatus as PayrollStatus
+from tblInvoice p Inner join tblInvoiceSchedule q on p.InvoiceId=q.InvoiceId
+inner join tblMeeting x on q.MeetingId=x.MeetingId 
+inner join tblMeetingRate y on x.MeetingId=y.MeetingId
+inner join tblBilling xzy on y.BillingId=xzy.BillingId
+inner join tblUser xx on x.ClientId= xx.UserId
+inner join tblUser xy on x.EmpId= xy.UserId
+inner Join tblClient z on x.ClientId= z.UserId
+inner join tblPayer xz on xzy.PayerId= xz.PayerId
+Where (xzy.PayerId=(CASE WHEN (@PayerId IS NULL OR @PayerId=0) THEN xzy.PayerId ELSE @PayerId  END) And
+x.ClientId=(CASE WHEN (@ClientId IS NULL OR @ClientId=0) THEN x.ClientId ELSE @ClientId END)) AND  
+CAST(x.MeetingDate AS DATE) Between CAST(@FromDate AS DATE)  And CAST(@ToDate AS DATE)";
+
+
+                IEnumerable<ScheduleInvoiceModel> ObjData = (await connection.QueryAsync<ScheduleInvoiceModel>(sql, new
+                {
+                    @FromDate = model.FromDate,
+                    @ToDate = model.ToDate,
+                    @PayerId = model.PayerId,
+                    @ClientId = model.ClientId,
+                }));
+
+                IEnumerable<InvoiceView> result = ObjData.GroupBy(x => x.InvoiceId).Select(y => new InvoiceView
+                {
+                    InvoiceId = y.Key,
+                    InvoiceNo = y.FirstOrDefault().InvoiceNo,
+                    InvoiceStatus = y.FirstOrDefault().InvoiceStatus,
+                    InvoiceDate = y.FirstOrDefault().InvoiceDate,
+                    ClientId = y.FirstOrDefault().ClientId,
+                    ClientName = y.FirstOrDefault().ClientName,
+                    PayerId = y.FirstOrDefault().PayerId,
+                    PayerName = y.FirstOrDefault().PayerName,
+                    Amounts = y.Sum(z => z.BillingTotal),
+                    ScheduleList = y.ToList(),
+
+                });
+                obj.Data = result;
+                obj.Result = result.Any() ? true : false;
+                obj.Message = result.Any() ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<ServiceResponse<InvoiceView>> GetInvoiceById(long InvoiceId)
+        {
+            ServiceResponse<InvoiceView> obj = new ServiceResponse<InvoiceView>();
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DBConnectionString").ToString()))
+            {
+                string sql = @"Select p.InvoiceId,p.InvoiceNo,p.InvoiceAmount,p.InvoiceStatus,p.CreatedOn as InvoiceDate,q.InvoiceItemId,
+q.ScheduleCost,q.PaymentStatus,y.MeetingRateId as ScheduleRateId,xzy.PayerId as PayerId, xz.PayerName, 
+x.MeetingId, x.ClientId,xx.FirstName +' '+ ISNULL(xx.MiddleName,'')+' ' + xx.LastName as ClientName,
+x.EmpId,xy.FirstName +' '+ ISNULL(xy.MiddleName,'')+' ' + xy.LastName as EmpName,x.MeetingDate as ServiceDate,
+x.IsCompleted as ScheduleStatus,y.BillingCode,y.BillingRate,y.BillingUnits,y.BillingTotal,y.BillingStatus,
+y.PayrollPayStatus as PayrollStatus,
+xz.Email as PayerEmail,xz.Fax as PayerFax,xz.Phone as PayerPhone,
+zx.Address as ClientAddress,zx.City as ClientCity,zx.State as ClientState,zx.ZipCode as ClientZipCode
+from tblInvoice p Inner join tblInvoiceSchedule q on p.InvoiceId=q.InvoiceId
+inner join tblMeeting x on q.MeetingId=x.MeetingId 
+inner join tblMeetingRate y on x.MeetingId=y.MeetingId
+inner join tblBilling xzy on y.BillingId=xzy.BillingId
+inner join tblUser xx on x.ClientId= xx.UserId
+inner join tblUser xy on x.EmpId= xy.UserId
+inner Join tblClient z on x.ClientId= z.UserId
+inner join tblPayer xz on xzy.PayerId= xz.PayerId
+inner join tblAddress zx on z.UserId=zx.UserId
+Where p.InvoiceId=@InvoiceId";
+                IEnumerable<ScheduleInvoiceModel> ObjData = (await connection.QueryAsync<ScheduleInvoiceModel>(sql, new { @InvoiceId = InvoiceId }));
+                InvoiceView result = ObjData.GroupBy(x => x.InvoiceId).Select(y => new InvoiceView
+                {
+                    InvoiceId = y.Key,
+                    InvoiceNo = y.FirstOrDefault().InvoiceNo,
+                    InvoiceStatus = y.FirstOrDefault().InvoiceStatus,
+                    InvoiceDate = y.FirstOrDefault().InvoiceDate,
+                    ClientId = y.FirstOrDefault().ClientId,
+                    ClientName = y.FirstOrDefault().ClientName,
+                    PayerId = y.FirstOrDefault().PayerId,
+                    PayerName = y.FirstOrDefault().PayerName,
+                    Amounts = y.Sum(z => z.BillingTotal),
+                    ScheduleList = y.ToList(),
+
+                }).FirstOrDefault();
+                obj.Data = result;
+                obj.Result = result.InvoiceId > 0 ? true : false;
+                obj.Message = result.InvoiceId > 0 ? "Data Found." : "No Data found.";
+            }
+            return obj;
+        }
+
+
+
+
+
+
+
+
+        #endregion
+
+
+
+
 
 
 

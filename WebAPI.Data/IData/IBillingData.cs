@@ -23,5 +23,22 @@ namespace ES_HomeCare_API.WebAPI.Data.IData
         Task<ServiceResponse<int>> CreateInvoice(InvoiceModel model);
         Task<ServiceResponse<IEnumerable<InvoiceView>>> GetScheduleInvoice();
         Task<ServiceResponse<IList<PayerListViewModel>>> GetPayerListByclientIdAndmeetingId(long clientId, long meetingId);
+
+
+
+        Task<ServiceResponse<IEnumerable<InvoiceView>>> GetScheduleInvoice(SearchInvoice model);
+
+
+        Task<ServiceResponse<InvoiceView>> GetInvoiceById(long InvoiceId);
+
+
+
+
+
+
+
+
+
+
     }
 }

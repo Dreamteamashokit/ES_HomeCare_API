@@ -132,8 +132,8 @@ namespace ES_HomeCare_API.Controllers
         }
 
         [HttpGet("getAllScheduleBilling")]
-        [ProducesResponseType(typeof(ServiceResponse<ClientSchedule>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<ClientSchedule>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientSchedule>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientSchedule>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAllScheduleBilling()
         {
             try
@@ -147,8 +147,8 @@ namespace ES_HomeCare_API.Controllers
         }
 
         [HttpPost("getScheduleBilling")]
-        [ProducesResponseType(typeof(ServiceResponse<ClientSchedule>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<ClientSchedule>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientSchedule>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<ClientSchedule>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetScheduleBilling([FromBody] SearchSchedule model)
         {
             try
@@ -178,17 +178,6 @@ namespace ES_HomeCare_API.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
         [HttpPost("updateSchedule")]
         [ProducesResponseType(typeof(ServiceResponse<int>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<int>), StatusCodes.Status400BadRequest)]
@@ -209,7 +198,6 @@ namespace ES_HomeCare_API.Controllers
         [ProducesResponseType(typeof(ServiceResponse<int>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateInvoice(InvoiceModel model)
         {
-
             try
             {
                 model.InvoiceStatus = (short)BillingStatus.Invoiced;
@@ -220,18 +208,34 @@ namespace ES_HomeCare_API.Controllers
             {
                 throw ex;
             }
-
         }
 
 
-        [HttpGet("getScheduleInvoice")]
-        [ProducesResponseType(typeof(ServiceResponse<InvoiceView>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse<InvoiceView>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetScheduleInvoice()
+        [HttpGet("getAllScheduleInvoice")]
+        [ProducesResponseType(typeof(ServiceResponse<List<InvoiceView>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<InvoiceView>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetAllScheduleInvoice()
         {
             try
             {
                 return Ok(await billSrv.GetScheduleInvoice());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+        [HttpGet("getScheduleInvoice")]
+        [ProducesResponseType(typeof(ServiceResponse<List<InvoiceView>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<List<InvoiceView>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetScheduleInvoice([FromBody] SearchInvoice model)
+        {
+            try
+            {
+                return Ok(await billSrv.GetScheduleInvoice(model));
             }
             catch (Exception ex)
             {
@@ -253,6 +257,36 @@ namespace ES_HomeCare_API.Controllers
                 throw ex;
             }
         }
+
+
+        [HttpGet("getInvoiceById/{InvoiceId}")]
+        [ProducesResponseType(typeof(ServiceResponse<InvoiceView>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse<InvoiceView>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetInvoiceById(long InvoiceId)
+        {
+            try
+            {
+                return Ok(await billSrv.GetInvoiceById(InvoiceId));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
 }

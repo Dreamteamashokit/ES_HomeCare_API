@@ -17,11 +17,19 @@ namespace ES_HomeCare_API.WebAPI.Service.IService
         Task<ServiceResponse<IEnumerable<BillingStatusViewModel>>> GetBillingStatusList();
         Task<ServiceResponse<IEnumerable<PayrollStatusViewModel>>> GetPayrollStatusList();
         Task<ServiceResponse<IEnumerable<ClientSchedule>>> GetScheduleBilling();
-        Task<ServiceResponse<IEnumerable<ClientSchedule>>> GetScheduleBilling(SearchSchedule model);     
+        Task<ServiceResponse<IEnumerable<ClientSchedule>>> GetScheduleBilling(SearchSchedule model);
         Task<ServiceResponse<BillingPayerRateViewModel>> GetBillingPayerRate(long payerId, long clientId, long meetingId);
         Task<ServiceResponse<int>> UpdateSchedule(UpdateBillingSchedule model);
         Task<ServiceResponse<int>> CreateInvoice(InvoiceModel model);
         Task<ServiceResponse<IEnumerable<InvoiceView>>> GetScheduleInvoice();
         Task<ServiceResponse<IList<PayerListViewModel>>> GetPayerListByclientIdAndmeetingId(long clientId, long meetingId);
-    }
+
+
+
+        Task<ServiceResponse<IEnumerable<InvoiceView>>> GetScheduleInvoice(SearchInvoice model);
+
+        Task<ServiceResponse<InvoiceView>> GetInvoiceById(long InvoiceId);
+        
+
+        }
 }
