@@ -66,16 +66,12 @@ namespace ES_HomeCare_API.Model.Billing
         public string InvoiceNo { get; set; }
         public decimal ScheduleCost { get; set; }
         public int MeetingId { get; set; }
-
         public int EmpId { get; set; }
-
-
         public int PayerId { get; set; }
         public string PayerName { get; set; }
         public string PayerFax { get; set; }
         public string PayerEmail { get; set; }
         public string PayerPhone { get; set; }
-
         public int ClientId { get; set; }
         public string ClientName { get; set; }
         public string ClientAddress { get; set; }
@@ -83,35 +79,9 @@ namespace ES_HomeCare_API.Model.Billing
         public string ClientState { get; set; }
         public string ClientCity { get; set; }
         public string ClientZipCode { get; set; }
-
-
-
-
-
- 
-
-
-
-
         public DateTime InvoiceDate { get; set; }
         public DateTime ServiceDate { get; set; }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         public string EmpName { get; set; }
-
         public string BillingCode { get; set; }
         public int BillingUnits { get; set; }
         public decimal BillingRate { get; set; }

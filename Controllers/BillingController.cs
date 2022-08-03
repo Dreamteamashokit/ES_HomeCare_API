@@ -228,7 +228,7 @@ namespace ES_HomeCare_API.Controllers
 
 
 
-        [HttpGet("getScheduleInvoice")]
+        [HttpPost("getScheduleInvoice")]
         [ProducesResponseType(typeof(ServiceResponse<List<InvoiceView>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResponse<List<InvoiceView>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetScheduleInvoice([FromBody] SearchInvoice model)
